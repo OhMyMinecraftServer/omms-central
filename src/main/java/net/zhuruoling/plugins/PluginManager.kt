@@ -1,5 +1,6 @@
 package net.zhuruoling.plugins
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sun.jdi.event.StepEvent
 import net.zhuruoling.util.Util
@@ -21,7 +22,7 @@ object PluginManager {
     var pluginFileList = ArrayList<String>()
     var manager = ScriptEngineManager()
     var pluginTable = HashMap<String,Invocable>()
-    val gson = GsonBuilder().serializeNulls().create()
+    val gson: Gson = GsonBuilder().serializeNulls().create()
     fun init(): Unit {
         val files = Files.list(Path.of(Util.joinFilePaths("plugins")))
         files.forEach{
@@ -42,16 +43,24 @@ object PluginManager {
             }
             pluginTable[metadata.id] = (engine as Invocable)
         }
-        loadAll()
     }
 
     fun loadAll(): Unit {
-
+        pluginTable.forEach{
+            logger.info("Loading Plugin:%s".format(it.key))
+            val pluginInstance = it.value
+            val initServerInterface = InitServerInterface(it.key)
+            pluginInstance.invokeFunction("onLoad", initServerInterface)
+        }
     }
 
     fun unloadAll(): Unit {
-        throw java.lang.RuntimeException()
-
+        pluginTable.forEach{
+            logger.info("Loading Plugin:%s".format(it.key))
+            val pluginInstance = it.value
+            val initServerInterface = InitServerInterface(it.key)
+            pluginInstance.invokeFunction("onUnload", initServerInterface)
+        }
     }
 
     fun load(pluginName: String): Unit {

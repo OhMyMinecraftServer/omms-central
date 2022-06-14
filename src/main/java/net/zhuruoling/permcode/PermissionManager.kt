@@ -33,6 +33,7 @@ object PermissionManager {
             jsonContent += it
         }
         val gson = GsonBuilder().serializeNulls().create()
+        logger.debug(jsonContent)
         val perm = gson.fromJson(jsonContent, Perm::class.javaObjectType)
         val components = perm.permissions
         val s = components.toString()
