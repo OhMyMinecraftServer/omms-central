@@ -4,6 +4,7 @@ import io.ktor.server.routing.Routing;
 import net.zhuruoling.broadcast.UdpBroadcastReceiver;
 import net.zhuruoling.configuration.ConfigReader;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.handler.CommandHandler;
 import net.zhuruoling.kt.TryKotlin;
 import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.plugins.PluginManager;
@@ -36,7 +37,8 @@ public class Main {
                 System.exit(0);
             }
         }
-        boolean test = true;
+        boolean test = false;
+
 
         if (test){
             logger.info(Util.joinFilePaths("a", "b"));
@@ -82,13 +84,13 @@ public class Main {
         try {
             PluginManager.INSTANCE.init();
             PluginManager.INSTANCE.loadAll();
+            PermissionManager.INSTANCE.init();
         }
-        catch (Exception ignored){
-            ignored.printStackTrace();
+        catch (Exception e){
+            e.printStackTrace();
             System.exit(2);
         }
 
-        logger.info("Server key:" + config.getKey() + " Server crypto key:" + config.getCryptoKey());
         logger.info("Launching...");
 
         var socketServer = new SessionInitialServer();

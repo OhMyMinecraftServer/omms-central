@@ -6,6 +6,8 @@ import net.zhuruoling.EncryptedConnector;
 import net.zhuruoling.command.CommandBuilderKt;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.util.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,7 +20,7 @@ import java.util.Objects;
 public class SessionServer extends Thread {
     private Session session;
     private EncryptedConnector encryptedConnector = null;
-    private Gson gson = new  GsonBuilder().serializeNulls().create();
+    Logger logger = LoggerFactory.getLogger("SessionServer");
     public SessionServer(Session session){
         this.session = session;
         try {
@@ -49,8 +51,9 @@ public class SessionServer extends Thread {
             while (true){
                 try {
                     var command = CommandBuilderKt.buildFromJson(line);
+                    logger.info("Received " + command);
                     line = encryptedConnector.readLine();
-                } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+                } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException | NullPointerException e) {
                     e.printStackTrace();
                 }
             }

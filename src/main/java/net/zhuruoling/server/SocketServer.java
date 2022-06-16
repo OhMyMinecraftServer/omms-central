@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+@Deprecated
 public class SocketServer extends Thread {
 
     final static Logger logger = LoggerFactory.getLogger("SocketServer");

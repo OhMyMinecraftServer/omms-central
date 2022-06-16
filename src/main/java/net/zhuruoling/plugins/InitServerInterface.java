@@ -8,6 +8,7 @@ public class InitServerInterface {
 
     public void registerRequestCode(int code, String functionName){
         logger.info("Registering %s -> %s".formatted(code,functionName));
+
     }
 
     public PluginLogger getLogger() {

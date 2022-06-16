@@ -5,6 +5,7 @@ import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.math.log
 
 object PermissionManager {
     var permissionTable :HashMap<Int, List<Permission>> = java.util.HashMap()
@@ -33,15 +34,17 @@ object PermissionManager {
             jsonContent += it
         }
         val gson = GsonBuilder().serializeNulls().create()
-        logger.debug(jsonContent)
+        jsonContent = jsonContent.replace(" ","")
         val perm = gson.fromJson(jsonContent, Perm::class.javaObjectType)
         val components = perm.permissions
         val s = components.toString()
-        logger.debug(s)
         components.forEach {
             permissionTable.put(it.code, readPermFromInt(it))
         }
-        logger.debug(permissionTable.toString())
+        logger.info("Permissions configured in permissions.json:")
+        permissionTable.forEach {
+            logger.info("${it.key} -> ${it.value}")
+        }
     }
 
     private fun readPermFromInt(components: PermComponents): List<Permission> {
@@ -161,10 +164,14 @@ higher bits
  */
 
     fun reload(): Unit {
+        logger.info("Reloading Permissions.")
         init()
     }
 
     fun getPermission(code: Int): List<Permission?>? {
-        return permissionTable[code]
+        if (permissionTable.contains(code)){
+            return permissionTable[code]
+        }
+        return null
     }
 }

@@ -1,6 +1,7 @@
 function onLoad(serverInterface){
     serverInterface.registerRequestCode(114512, "testFunc")
     serverInterface.getLogger().info("Test Plugin loaded!")
+    serverInterface.getLogger().info("awa")
 }
 
 function testFunc(serverInterface, request){
