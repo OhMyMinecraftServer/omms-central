@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
+import java.util.Objects;
 
 public class UdpBroadcastReceiver extends Thread{
     private static final Logger logger = LoggerFactory.getLogger("UdpBroadcastReceiver");
@@ -31,7 +32,7 @@ public class UdpBroadcastReceiver extends Thread{
                     String msg = new String(packet.getData(), packet.getOffset(),
                             packet.getLength());
                     var broadcast = BroadcastBuilderKt.buildFromJson(msg);
-                    logger.info(String.format("%s <%s[%s]> %s", Integer.toString(broadcast.getTime()), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
+                    logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getTime(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
                 }
                 catch (Exception e){
                     e.printStackTrace();

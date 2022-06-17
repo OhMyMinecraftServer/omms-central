@@ -39,6 +39,7 @@ public class InitSession extends Thread {
         var date = LocalDateTime.now();
         var key = date.format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
         key = Util.base64Encode(Util.base64Encode(key));
+        logger.debug("key:%s".formatted(key));
         this.encryptedConnector = new EncryptedConnector(in, out, key);
         logger.info("client:" + socket.getInetAddress() + ":" + socket.getPort() + " connected.");
         this.socket = socket;
@@ -50,17 +51,17 @@ public class InitSession extends Thread {
             String line = encryptedConnector.readLine();
             while (true){
                 var command = CommandBuilderKt.buildFromJson(line);
+                logger.info(String.valueOf(command));
                 if (Objects.equals(Objects.requireNonNull(command).getCmd(), "PING")) {
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(command.getLoad()[0])));
                     //202205290840#114514
-                    var date = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
-                    var key = Integer.parseInt(authKey);
-                    var permCode = key ^ date;
-
+                    var date = Long.parseLong(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
+                    var key = Long.parseLong(authKey);
+                    long permCode = key ^ date;
+                    logger.debug("Got permission code %d".formatted(permCode));
                     boolean isCodeExist = !(PermissionManager.INSTANCE.getPermission(
-                            permCode
+                            (int) permCode
                     ) == null);
-
                     if (isCodeExist) {
                         var randomKey = Util.randomStringGen(32);
                         encryptedConnector.send(
@@ -70,20 +71,18 @@ public class InitSession extends Thread {
                                 )
                         );
                         logger.info(String.format("Starting Session for #%s:%d", socket.getInetAddress(), socket.getPort()));
-                        logger.info(String.format("Key of #%s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
+                        logger.info(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
                         var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)));
                         session.start();
                         break;
                     }
                     encryptedConnector.send(
                             MessageBuilderKt.build(Result.FAIL)
-
                     );
                     break;
                 }
                 line = encryptedConnector.readLine();
             }
-            this.socket.close();
             return;
         } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             e.printStackTrace();

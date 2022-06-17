@@ -3,7 +3,6 @@ package net.zhuruoling.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.configuration.Configuration;
-import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.scontrol.SControlClient;
 import net.zhuruoling.scontrol.SControlClientFileReader;
 import net.zhuruoling.whitelist.Whitelist;
@@ -23,12 +22,21 @@ public class Util {
 
     public static final String PRODUCT_NAME = "Oh My Minecraft Server Central";
     public static final String PRODUCT_NAME_SHORT = "OMMS Central";
-    public static final String[] dataFolders = {
+    public static final String[] DATA_FOLDERS = {
             "controllers",
             "broadcasts",
             "whitelists",
             "plugins",
     };
+
+    public static final String[] BUILTIN_COMMANDS = {
+            "WHITELIST_QUERY",
+            "WHITELIST_CREATE",
+            "WHITELIST_LIST",
+            "WHITELIST_GET",
+            "WHITELIST_ADD",
+            "WHITELIST_REMOVE"
+    } ;
     public static boolean fileExists(String fileName){
         try {
             new FileReader(fileName);

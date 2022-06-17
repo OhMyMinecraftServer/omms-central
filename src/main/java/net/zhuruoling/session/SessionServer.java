@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.EncryptedConnector;
 import net.zhuruoling.command.CommandBuilderKt;
+import net.zhuruoling.command.CommandManager;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.util.Result;
 import org.slf4j.Logger;
@@ -18,11 +19,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class SessionServer extends Thread {
-    private Session session;
+    private final Session session;
     private EncryptedConnector encryptedConnector = null;
     Logger logger = LoggerFactory.getLogger("SessionServer");
     public SessionServer(Session session){
         this.session = session;
+        var socket = this.session.socket;
+        this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress(), socket.getPort()));
         try {
             this.encryptedConnector = new EncryptedConnector(
                     new BufferedReader(
@@ -38,23 +41,27 @@ public class SessionServer extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        var socket = this.session.socket;
-        this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress(), socket.getPort()));
 
+        if (socket.isClosed()){
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public void run() {
-        String line = null;
+        logger.info("%s started.".formatted(this.getName()));
+        String line;
         try {
             line = encryptedConnector.readLine();
             while (true){
                 try {
                     var command = CommandBuilderKt.buildFromJson(line);
                     logger.info("Received " + command);
+                    Objects.requireNonNull(CommandManager.INSTANCE.getCommandHandler(Objects.requireNonNull(command).getCmd())).handle(command,new HandlerSession(encryptedConnector,session));
                     line = encryptedConnector.readLine();
-                } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException | NullPointerException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                    break;
                 }
             }
         } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
@@ -62,33 +69,4 @@ public class SessionServer extends Thread {
         }
     }
 
-    private void sendOK(String[] data){
-        String content = "";
-        if (Objects.isNull(data)){
-            content = MessageBuilderKt.build(Result.OK, new String[]{});
-        }
-        else {
-            content = MessageBuilderKt.build(Result.OK, data);
-        }
-        try {
-            encryptedConnector.send(Objects.requireNonNull(content));
-        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendResult(Result result, String[] data){
-        String content = "";
-        if (Objects.isNull(data)){
-            content = MessageBuilderKt.build(Result.OK, new String[]{});
-        }
-        else {
-            content = MessageBuilderKt.build(result, data);
-        }
-        try {
-            encryptedConnector.send(Objects.requireNonNull(content));
-        } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-    }
 }

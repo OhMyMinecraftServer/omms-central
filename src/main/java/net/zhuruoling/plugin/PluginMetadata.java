@@ -1,4 +1,4 @@
-package net.zhuruoling.plugins;
+package net.zhuruoling.plugin;
 
 public class PluginMetadata {
     String id;

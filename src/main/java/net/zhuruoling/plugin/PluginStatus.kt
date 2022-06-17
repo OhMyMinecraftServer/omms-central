@@ -1,4 +1,4 @@
-package net.zhuruoling.plugins
+package net.zhuruoling.plugin
 
 enum class PluginStatus {
     LOADED,UNLOADED,NONE

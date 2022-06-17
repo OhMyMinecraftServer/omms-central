@@ -26,10 +26,13 @@ public class SessionInitialServer extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         while (true){
             try {
                 logger.info("Started SessionInitialServer.");
                 var socket = server.accept();
+                logger.debug(String.valueOf(socket.getKeepAlive()));
+                socket.setKeepAlive(true);
                 InitSession session = new InitSession(socket);
                 session.start();
             } catch (IOException e) {

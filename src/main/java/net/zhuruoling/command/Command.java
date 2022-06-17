@@ -2,6 +2,8 @@ package net.zhuruoling.command;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 public class Command {
     public Command(String cmd, String[] load){
         this.cmd = cmd;
@@ -28,4 +30,11 @@ public class Command {
         this.load = load;
     }
 
+    @Override
+    public String toString() {
+        return "Command{" +
+                "cmd='" + cmd + '\'' +
+                ", load=" + Arrays.toString(load) +
+                '}';
+    }
 }

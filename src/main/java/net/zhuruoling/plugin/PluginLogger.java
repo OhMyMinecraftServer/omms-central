@@ -1,4 +1,4 @@
-package net.zhuruoling.plugins;
+package net.zhuruoling.plugin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

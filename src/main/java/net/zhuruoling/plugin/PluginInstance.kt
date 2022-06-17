@@ -1,4 +1,4 @@
-package net.zhuruoling.plugins
+package net.zhuruoling.plugin
 
 import javax.script.Invocable
 
