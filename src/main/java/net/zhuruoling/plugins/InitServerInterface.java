@@ -1,8 +1,5 @@
 package net.zhuruoling.plugins;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class InitServerInterface {
     PluginLogger logger = null;
     public InitServerInterface(String name){
@@ -10,6 +7,11 @@ public class InitServerInterface {
     }
 
     public void registerRequestCode(int code, String functionName){
+        logger.info("Registering %s -> %s".formatted(code,functionName));
 
+    }
+
+    public PluginLogger getLogger() {
+        return logger;
     }
 }

@@ -48,31 +48,43 @@ public class InitSession extends Thread {
     public void run() {
         try {
             String line = encryptedConnector.readLine();
-            var command = CommandBuilderKt.buildFromJson(line);
-            if (Objects.equals(Objects.requireNonNull(command).getCmd(), "PING")){
-                var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(command.getLoad()[0])));
-                //202205290840#114514
-                var date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
-                boolean isTimeCorrect = (date.equals(authKey.split("#")[0]));
-                boolean isCodeExist = !(PermissionManager.INSTANCE.getPermission(
-                        Integer.getInteger(
-                                authKey.split("#")[1]
-                        )
-                ) == null);
-                if (isCodeExist && isTimeCorrect){
-                    var randomKey = Util.randomStringGen(32);
+            while (true){
+                var command = CommandBuilderKt.buildFromJson(line);
+                if (Objects.equals(Objects.requireNonNull(command).getCmd(), "PING")) {
+                    var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(command.getLoad()[0])));
+                    //202205290840#114514
+                    var date = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
+                    var key = Integer.parseInt(authKey);
+                    var permCode = key ^ date;
+
+                    boolean isCodeExist = !(PermissionManager.INSTANCE.getPermission(
+                            permCode
+                    ) == null);
+
+                    if (isCodeExist) {
+                        var randomKey = Util.randomStringGen(32);
+                        encryptedConnector.send(
+                                MessageBuilderKt.build(
+                                        Result.OK,
+                                        new String[]{randomKey}
+                                )
+                        );
+                        logger.info(String.format("Starting Session for #%s:%d", socket.getInetAddress(), socket.getPort()));
+                        logger.info(String.format("Key of #%s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
+                        var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)));
+                        session.start();
+                        break;
+                    }
                     encryptedConnector.send(
-                            MessageBuilderKt.build(
-                                    Result.OK,
-                                    new String[]{randomKey}
-                            )
+                            MessageBuilderKt.build(Result.FAIL)
+
                     );
-                    logger.info(String.format("Starting Session for #%s:%d",socket.getInetAddress(), socket.getPort()));
-                    logger.info(String.format("Key of #%s:%d is %s",socket.getInetAddress(), socket.getPort(), randomKey));
-                    var session = new SessionServer(new Session(socket,randomKey.getBytes(StandardCharsets.UTF_8)));
-                    session.start();
+                    break;
                 }
+                line = encryptedConnector.readLine();
             }
+            this.socket.close();
+            return;
         } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             e.printStackTrace();
         }

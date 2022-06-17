@@ -20,10 +20,15 @@ public class SessionInitialServer extends Thread {
     @Override
 
     public void run() {
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(Objects.requireNonNull(ConfigReader.read()).getPort());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         while (true){
             try {
                 logger.info("Started SessionInitialServer.");
-                ServerSocket server = new ServerSocket(Objects.requireNonNull(ConfigReader.read()).getPort());
                 var socket = server.accept();
                 InitSession session = new InitSession(socket);
                 session.start();

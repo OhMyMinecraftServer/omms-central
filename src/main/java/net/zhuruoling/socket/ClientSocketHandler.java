@@ -1,31 +1,14 @@
 package net.zhuruoling.socket;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.zhuruoling.EncryptedConnector;
 import net.zhuruoling.command.Command;
-import net.zhuruoling.configuration.ConfigReader;
-import net.zhuruoling.message.Message;
-import net.zhuruoling.message.MessageBuilderKt;
-import net.zhuruoling.scontrol.SControlClientFileReader;
-import net.zhuruoling.util.Result;
-import net.zhuruoling.util.Util;
-import net.zhuruoling.whitelist.Whitelist;
-import net.zhuruoling.whitelist.WhitelistManager;
-import net.zhuruoling.whitelist.WhitelistReader;
 import org.slf4j.Logger;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
-
+@Deprecated
 public class ClientSocketHandler extends SocketHandler {
 
     public ClientSocketHandler(Socket socket) throws IOException {
@@ -35,6 +18,8 @@ public class ClientSocketHandler extends SocketHandler {
 
     @Override
     public void handle(Command command, Logger logger, EncryptedConnector encryptedConnector) {
+
+        /*
         try {
 
             Gson gson = new Gson();
@@ -208,6 +193,8 @@ public class ClientSocketHandler extends SocketHandler {
         catch (Exception e) {
             e.printStackTrace();
         }
+        */
+
     }
 
 }

@@ -3,6 +3,7 @@ package net.zhuruoling.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.scontrol.SControlClient;
 import net.zhuruoling.scontrol.SControlClientFileReader;
 import net.zhuruoling.whitelist.Whitelist;
@@ -138,6 +139,7 @@ public class Util {
             logger.error("Failed to read Whitelists.");
             System.exit(1);
         }
+
         if (!reader_.isNoWhitelist()) {
             List<Whitelist> whitelists = reader_.getWhitelists();
             whitelists.forEach(client -> logger.info( "  -" + client.toString()));

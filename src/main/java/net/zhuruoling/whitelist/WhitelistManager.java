@@ -16,9 +16,6 @@ public class WhitelistManager {
     public WhitelistManager(){
 
     }
-    public void addToWhitelist(String whitelistName, String value){
-
-    }
 
     public void createWhitelist(String whitelistName){
 
