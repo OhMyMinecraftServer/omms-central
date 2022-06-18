@@ -37,10 +37,6 @@ public class CommandHandlerImpl extends CommandHandler {
             Gson gson = new Gson();
             logger.info("Received command:" + command.getCmd() + " with load:" + Arrays.toString(command.getLoad()));
             var load = command.getLoad();
-            var lastElementIndex = load.length - 1;
-            while (load[lastElementIndex] == null) {
-                lastElementIndex = lastElementIndex - 1;
-            }
 
             switch (command.getCmd()) {
                 case "WHITELIST_QUERY" -> {
@@ -117,6 +113,10 @@ public class CommandHandlerImpl extends CommandHandler {
                         break;
                     }
                     encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.removeFromWhiteList(whiteName, player)));
+                }
+                case "END" -> {
+                    encryptedConnector.println(MessageBuilderKt.build(Result.OK));
+                    session.getSession().getSocket().close();
                 }
                 default -> throw new OperationNotSupportedException();
             }

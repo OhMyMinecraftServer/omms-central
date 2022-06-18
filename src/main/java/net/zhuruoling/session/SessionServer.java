@@ -55,9 +55,13 @@ public class SessionServer extends Thread {
             line = encryptedConnector.readLine();
             while (true){
                 try {
+                    if (session.getSocket().isClosed())
+                        break;
                     var command = CommandBuilderKt.buildFromJson(line);
                     logger.info("Received " + command);
                     Objects.requireNonNull(CommandManager.INSTANCE.getCommandHandler(Objects.requireNonNull(command).getCmd())).handle(command,new HandlerSession(encryptedConnector,session));
+                    if (session.getSocket().isClosed())
+                        break;
                     line = encryptedConnector.readLine();
                 } catch (Exception e) {
                     e.printStackTrace();

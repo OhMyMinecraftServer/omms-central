@@ -35,7 +35,8 @@ public class Util {
             "WHITELIST_LIST",
             "WHITELIST_GET",
             "WHITELIST_ADD",
-            "WHITELIST_REMOVE"
+            "WHITELIST_REMOVE",
+            "END"
     } ;
     public static boolean fileExists(String fileName){
         try {
