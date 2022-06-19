@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorCompletionService
 import javax.script.Invocable
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
+import kotlin.math.log
 
 object PluginManager {
     val logger: Logger = LoggerFactory.getLogger("PluginManger")
@@ -27,17 +28,22 @@ object PluginManager {
     var pluginCommandTable: HashMap<String,ArrayList<String>> = java.util.HashMap()
     fun init() {
         pluginTable.clear()
-        val files = Files.list(Path.of(Util.joinFilePaths("plugins")))
+        pluginFileList.clear()
+        var files = Files.list(Path.of(Util.joinFilePaths("plugins")))
+        var x = 0
         files.forEach {
-            if (it.toFile().extension == "js")
+            if (it.toFile().extension == "js") {
+                x++
                 pluginFileList.add(it.toFile().absolutePath)
+            }
         }
+        logger.debug(x.toString())
         logger.debug(pluginFileList.toString())
         pluginFileList.forEach {
             val engine: ScriptEngine = manager.getEngineByName("JavaScript")
             engine.eval(FileReader(it))
             val pluginMetadata = ((engine as Invocable).invokeFunction("getMetadata")) as String
-            logger.debug("Metadata of plugin $it is $pluginMetadata")
+            logger.info("Metadata of plugin $it is $pluginMetadata")
             val metadata = gson.fromJson(pluginMetadata, PluginMetadata::class.javaObjectType) as PluginMetadata
             if (pluginTable.contains(metadata.id)) {
                 val pluginId = metadata.id

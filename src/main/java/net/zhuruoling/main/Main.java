@@ -28,6 +28,7 @@ public class Main {
     static boolean isInit = false;
 
     public static void main(String [] args) throws IOException {
+        var timeStart = System.currentTimeMillis();
         TryKotlin.INSTANCE.printOS();
         boolean isExampleGen = false;
         if (args.length >= 1) {
@@ -95,7 +96,7 @@ public class Main {
             System.exit(2);
         }
 
-        logger.info("Launching...");
+
 
         var socketServer = new SessionInitialServer();
         socketServer.start();
@@ -103,8 +104,9 @@ public class Main {
         receiver.start();
         var httpServerKt = new HttpServer();
         //httpServerKt.start();
-
-
+        var timeComplete = System.currentTimeMillis();
+        var timeUsed = Float.parseFloat(Long.valueOf(timeComplete - timeStart).toString() + ".0f") / 1000;
+        logger.info("Done(%.3fs)! For help, type \"help\" or \"?\"".formatted(timeUsed));
         while (true){
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();

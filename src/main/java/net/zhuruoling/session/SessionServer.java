@@ -6,6 +6,7 @@ import net.zhuruoling.EncryptedConnector;
 import net.zhuruoling.command.CommandBuilderKt;
 import net.zhuruoling.command.CommandManager;
 import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.permcode.Permission;
 import net.zhuruoling.util.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +17,18 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SessionServer extends Thread {
     private final Session session;
     private EncryptedConnector encryptedConnector = null;
     Logger logger = LoggerFactory.getLogger("SessionServer");
-    public SessionServer(Session session){
+    List<Permission> permissions = new ArrayList<>();
+    public SessionServer(Session session, List<Permission> permissions){
         this.session = session;
+        this.permissions = permissions;
         var socket = this.session.socket;
         this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress(), socket.getPort()));
         try {
@@ -59,7 +64,7 @@ public class SessionServer extends Thread {
                         break;
                     var command = CommandBuilderKt.buildFromJson(line);
                     logger.info("Received " + command);
-                    Objects.requireNonNull(CommandManager.INSTANCE.getCommandHandler(Objects.requireNonNull(command).getCmd())).handle(command,new HandlerSession(encryptedConnector,session));
+                    Objects.requireNonNull(CommandManager.INSTANCE.getCommandHandler(Objects.requireNonNull(command).getCmd())).handle(command,new HandlerSession(encryptedConnector,session,this.permissions));
                     if (session.getSocket().isClosed())
                         break;
                     line = encryptedConnector.readLine();

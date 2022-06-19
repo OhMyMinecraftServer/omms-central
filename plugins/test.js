@@ -1,5 +1,5 @@
 function onLoad(serverInterface){
-    serverInterface.registerRequestCode("TEST1", "testFunc")
+    serverInterface.registerRequestCode("TEST", "testFunc")
     serverInterface.getLogger().info("Test Plugin loaded!")
     serverInterface.getLogger().info("awa")
 }
@@ -10,7 +10,7 @@ function testFunc(serverInterface, request){
 }
 
 function getMetadata(){
-    return "{\"id\":\"test_plugin2\",\"version\":\"0.0.1\",\"author\":\"ZhuRuoLing\"}"
+    return "{\"id\":\"test_plugin2\",\"version\":\"0.0.4\",\"author\":\"ZhuRuoLing\"}"
 }
 
 function onUnload(serverInterface){

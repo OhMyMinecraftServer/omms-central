@@ -30,13 +30,18 @@ public class Util {
     };
 
     public static final String[] BUILTIN_COMMANDS = {
-            "WHITELIST_QUERY",
             "WHITELIST_CREATE",
             "WHITELIST_LIST",
             "WHITELIST_GET",
             "WHITELIST_ADD",
             "WHITELIST_REMOVE",
-            "END"
+            "END",
+            "PERMISSION_CREATE",
+            "PERMISSION_MODIFY",
+            "PERMISSION_REMOVE",
+            "PERMISSION_LIST",
+            "RUN_MCDR_COMMAND",
+            "RUN_MINECRAFT_COMMAND",
     } ;
     public static boolean fileExists(String fileName){
         try {

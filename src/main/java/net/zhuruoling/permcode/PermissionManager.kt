@@ -2,14 +2,16 @@ package net.zhuruoling.permcode
 
 import com.google.gson.GsonBuilder
 import net.zhuruoling.util.Util
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.math.log
+import kotlin.random.Random
 
 object PermissionManager {
     var permissionTable :HashMap<Int, List<Permission>> = java.util.HashMap()
-    val logger = LoggerFactory.getLogger("Main")
+    val logger: Logger = LoggerFactory.getLogger("Main")
 
     data class Perm(
         val permissions: List<PermComponents>
@@ -21,13 +23,22 @@ object PermissionManager {
     )
 
     fun init(): Unit {
-        if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) Files.createFile(
-            Path.of(
-                Util.joinFilePaths(
-                    "permissions.json"
+        if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) {
+            logger.warn("Permission File does not exist!")
+            Files.createFile(
+                Path.of(
+                    Util.joinFilePaths(
+                        "permissions.json"
+                    )
                 )
             )
-        )
+            logger.info("Creating empty permission file.")
+            Files.writeString(Path.of(Util.joinFilePaths("permissions.json")),"{\"permissions\":[]}")
+            val code = Random(System.nanoTime()).nextInt(100000,999999)
+            logger.info("Created temporary permission code: $code,this code has got super cow power and it is available to use until the next time omms startup.")
+            permissionTable[code] = Permission.values().toList()
+            return
+        }
         val stringMutableList = Files.readAllLines(Path.of(Util.joinFilePaths("permissions.json")))
         var jsonContent = ""
         stringMutableList.forEach {
@@ -37,9 +48,8 @@ object PermissionManager {
         jsonContent = jsonContent.replace(" ","")
         val perm = gson.fromJson(jsonContent, Perm::class.javaObjectType)
         val components = perm.permissions
-        val s = components.toString()
         components.forEach {
-            permissionTable.put(it.code, readPermFromInt(it))
+            permissionTable[it.code] = readPermFromInt(it)
         }
         logger.info("Permissions configured in permissions.json:")
         permissionTable.forEach {
@@ -67,6 +77,7 @@ object PermissionManager {
          */
         var code : Int = components.permission
         var list :ArrayList<Permission> = ArrayList()
+        //HIGHEST perm : 32767
         for (i in 1..16){
             val m = 1 shl i-1
             val x = code and m
@@ -79,11 +90,12 @@ object PermissionManager {
                     p = Permission.CENTRAL_SERVER_CONFIG
                 }
                 3 -> {
-                    p = null
+                    p = Permission.PERMISSION_LIST
                 }
                 4 -> {
-                    p = null
+                    p = Permission.PERMISSION_MODIFY
                 }
+
                 5 -> {
                     p = Permission.RUN_MCDR_COMMAND
                 }
@@ -96,6 +108,7 @@ object PermissionManager {
                 8 -> {
                     p = Permission.STOP_SERVER
                 }
+
                 9 -> {
                     p = Permission.WHITELIST_ADD
                 }
@@ -108,17 +121,18 @@ object PermissionManager {
                 12 -> {
                     p = Permission.WHITELIST_DELETE
                 }
+
                 13 -> {
                     p = Permission.ANNOUNCEMENT_CREATE
                 }
                 14 -> {
-                    p = Permission.WHITELIST_DELETE
+                    p = Permission.ANNOUNCEMENT_DELETE
                 }
                 15 -> {
                     p = Permission.ANNOUNCEMENT_EDIT
                 }
                 16 -> {
-                    p = null
+                    p = Permission.EXECUTE_PLUGIN_COMMAND
                 }
             }
             if (x == 0){

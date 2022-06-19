@@ -20,7 +20,7 @@ public class WhitelistReader {
     boolean fail = false;
     boolean noWhitelist = false;
     public WhitelistReader(){
-        File folder = new File(new Util().getWorkingDir() + File.separator + "whitelists");
+        File folder = new File(Util.joinFilePaths("whitelists"));
         if (folder.isDirectory() && folder.exists()){
             var v1 = folder.listFiles();
             assert v1 != null;
@@ -53,6 +53,8 @@ public class WhitelistReader {
     }
 
     public List<Whitelist> getWhitelists() {
+        if (noWhitelist)
+            return null;
         return whitelists;
     }
 

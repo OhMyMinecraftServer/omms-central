@@ -8,6 +8,7 @@ import net.zhuruoling.command.Command;
 import net.zhuruoling.configuration.ConfigReader;
 import net.zhuruoling.message.Message;
 import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.permcode.Permission;
 import net.zhuruoling.scontrol.SControlClientFileReader;
 import net.zhuruoling.session.HandlerSession;
 import net.zhuruoling.util.Result;
@@ -15,6 +16,7 @@ import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
 import net.zhuruoling.whitelist.WhitelistReader;
+import net.zhuruoling.whitelist.WhitelistResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,16 +41,8 @@ public class CommandHandlerImpl extends CommandHandler {
             var load = command.getLoad();
 
             switch (command.getCmd()) {
-                case "WHITELIST_QUERY" -> {
-                    var whitelistName = command.getLoad()[0];
-                    var playerName = command.getLoad()[1];
-                    if (playerName.contains("bot")) { //bot直接通过
-                        encryptedConnector.println(gson.toJson(new Message("OK", new String[]{}), Message.class));
-                        break;
-                    }
-                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.queryWhitelist(whitelistName, playerName)));
-                }
                 case "WHITELIST_CREATE" -> {
+                    if (!session.getPermissions().contains(Permission.WHITELIST_CREATE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     var name = command.getLoad()[0];
                     if (!(new WhitelistReader().isFail()) && (new WhitelistReader().read(name) != null)) {
                         encryptedConnector.println(gson.toJson(new Message("WHITELIST_EXISTS", new String[]{}), Message.class));
@@ -66,7 +60,6 @@ public class CommandHandlerImpl extends CommandHandler {
                         writer.close();
                         stream.close();
                         encryptedConnector.println(gson.toJson(new Message("OK", new String[]{}), Message.class));
-                        break;
                     } catch (Exception e) {
                         logger.error("An exception occurred:" + e.getMessage());
                         e.printStackTrace();
@@ -77,6 +70,10 @@ public class CommandHandlerImpl extends CommandHandler {
 
                 case "WHITELIST_LIST" -> {
                     var whitelists = new WhitelistReader().getWhitelists();
+                    if (whitelists == null){
+                        encryptedConnector.println(MessageBuilderKt.build(WhitelistResult.NO_WHITELIST));
+
+                    }
                     String[] whitelistNames = new String[whitelists.size()];
                     for (int i = 0; i < whitelistNames.length; i++) {
                         whitelistNames[i] = whitelists.get(i).getName();
@@ -88,28 +85,32 @@ public class CommandHandlerImpl extends CommandHandler {
                     var wlName = command.getLoad()[0];
                     Whitelist wl = new WhitelistReader().read(wlName);
                     if (wl == null) {
-                        encryptedConnector.println(gson.toJson(new Message("NO_SUCH_WHITELIST", new String[]{}), Message.class));
+                        encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
                     }
                     encryptedConnector.println(gson.toJson(new Message("OK", new WhitelistReader().read(wlName).getPlayers())));
                 }
 
                 case "WHITELIST_ADD" -> {
+                    if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
                     String whiteName = command.getLoad()[0];
                     String operation = command.getLoad()[1];
                     String player = command.getLoad()[2];
                     if (new WhitelistReader().read(whiteName) == null) {
-                        encryptedConnector.println(gson.toJson(new Message("NO_SUCH_WHITELIST", new String[]{}), Message.class));
+                        encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
                     }
                     encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.addToWhiteList(whiteName, player)));
                 }
                 case "WHITELIST_REMOVE" -> {
+                    if (!session.getPermissions().contains(Permission.WHITELIST_REMOVE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
                     String whiteName = command.getLoad()[0];
                     String operation = command.getLoad()[1];
                     String player = command.getLoad()[2];
                     if (new WhitelistReader().read(whiteName) == null) {
-                        encryptedConnector.println(gson.toJson(new Message("NO_SUCH_WHITELIST", new String[]{}), Message.class));
+                        encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
                     }
                     encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.removeFromWhiteList(whiteName, player)));
@@ -118,6 +119,7 @@ public class CommandHandlerImpl extends CommandHandler {
                     encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     session.getSession().getSocket().close();
                 }
+                case "PING" -> encryptedConnector.println(MessageBuilderKt.build("PONG",new String[]{}));
                 default -> throw new OperationNotSupportedException();
             }
 

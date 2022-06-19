@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.zhuruoling.EncryptedConnector;
 import net.zhuruoling.command.CommandBuilderKt;
 import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.permcode.Permission;
 import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
@@ -62,6 +63,7 @@ public class InitSession extends Thread {
                     boolean isCodeExist = !(PermissionManager.INSTANCE.getPermission(
                             (int) permCode
                     ) == null);
+                    var permissions = PermissionManager.INSTANCE.getPermission((int) permCode);
                     if (isCodeExist) {
                         var randomKey = Util.randomStringGen(32);
                         encryptedConnector.send(
@@ -72,7 +74,7 @@ public class InitSession extends Thread {
                         );
                         logger.info(String.format("Starting Session for #%s:%d", socket.getInetAddress(), socket.getPort()));
                         logger.info(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
-                        var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)));
+                        var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)),permissions);
                         session.start();
                         break;
                     }
