@@ -1,7 +1,9 @@
 package net.zhuruoling.message;
 
 import com.google.gson.annotations.SerializedName;
+import kotlinx.serialization.Serializable;
 
+@Serializable
 public class Message {
     public Message(String msg, String[] load){
         this.msg = msg;

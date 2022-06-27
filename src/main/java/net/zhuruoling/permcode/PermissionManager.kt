@@ -77,7 +77,7 @@ object PermissionManager {
          */
         var code : Int = components.permission
         var list :ArrayList<Permission> = ArrayList()
-        //HIGHEST perm : 32767
+        //HIGHEST perm : 131071
         for (i in 1..16){
             val m = 1 shl i-1
             val x = code and m

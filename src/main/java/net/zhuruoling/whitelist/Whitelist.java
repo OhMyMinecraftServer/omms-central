@@ -1,9 +1,10 @@
 package net.zhuruoling.whitelist;
 
 import com.google.gson.annotations.SerializedName;
+import kotlinx.serialization.Serializable;
 
 import java.util.Arrays;
-
+@Serializable
 public class Whitelist {
     @SerializedName("players")
     String[] players;
@@ -44,4 +45,5 @@ public class Whitelist {
     public boolean containsPlayer(String player){
         return Arrays.stream(players).toList().contains(player);
     }
+
 }

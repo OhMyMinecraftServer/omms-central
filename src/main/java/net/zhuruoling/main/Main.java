@@ -8,7 +8,7 @@ import net.zhuruoling.handler.CommandHandlerImpl;
 import net.zhuruoling.kt.TryKotlin;
 import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.plugin.PluginManager;
-import net.zhuruoling.server.HttpServer;
+import net.zhuruoling.server.HttpServerKt;
 import net.zhuruoling.session.SessionInitialServer;
 import net.zhuruoling.util.Util;
 import org.slf4j.Logger;
@@ -16,10 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Year;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.logging.XMLFormatter;
 
 public class Main {
     final static Logger logger = LoggerFactory.getLogger("Main");
@@ -102,7 +100,7 @@ public class Main {
         socketServer.start();
         var receiver = new UdpBroadcastReceiver();
         receiver.start();
-        var httpServerKt = new HttpServer();
+        HttpServerKt.launchHttpServerAsync(args);
         //httpServerKt.start();
         var timeComplete = System.currentTimeMillis();
         var timeUsed = Float.parseFloat(Long.valueOf(timeComplete - timeStart).toString() + ".0f") / 1000;
@@ -112,6 +110,7 @@ public class Main {
             String line = scanner.nextLine();
             logger.info("CONSOLE issued a command:%s".formatted(line));
             if (Objects.equals(line, "stop")){
+                logger.info("Stopping!");
                 break;
             }
             if (Objects.equals(line,"reload")){
@@ -124,8 +123,6 @@ public class Main {
         }
         receiver.interrupt();
         socketServer.interrupt();
-        httpServerKt.interrupt();
         System.exit(0);
-        //logger.info("Exit.");
     }
 }

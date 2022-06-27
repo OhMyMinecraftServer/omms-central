@@ -26,6 +26,7 @@ public class WhitelistReader {
             assert v1 != null;
             if (v1.length == 0){
                 noWhitelist = true;
+                return;
             }
             for (File file:v1) {
                 BufferedReader reader = null;

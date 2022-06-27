@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.naming.OperationNotSupportedException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 public class CommandHandlerImpl extends CommandHandler {
@@ -95,8 +96,8 @@ public class CommandHandlerImpl extends CommandHandler {
                     if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
                     String whiteName = command.getLoad()[0];
-                    String operation = command.getLoad()[1];
                     String player = command.getLoad()[2];
+
                     if (new WhitelistReader().read(whiteName) == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
@@ -121,6 +122,18 @@ public class CommandHandlerImpl extends CommandHandler {
                 }
                 case "PING" -> encryptedConnector.println(MessageBuilderKt.build("PONG",new String[]{}));
                 default -> throw new OperationNotSupportedException();
+                case "WHITELIST_DELETE" -> {
+                    String name = command.getLoad()[0];
+                    var file = new File(Util.joinFilePaths("whitelists",name + ".json"));
+                    if (file.exists()){
+                        boolean result = file.delete();
+                        if (result){
+                            encryptedConnector.println(MessageBuilderKt.build(Result.OK));
+                            return;
+                        }
+                        encryptedConnector.println(MessageBuilderKt.build(Result.FAIL));
+                    }
+                }
             }
 
         } catch (Exception e) {

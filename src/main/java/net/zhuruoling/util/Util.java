@@ -35,6 +35,7 @@ public class Util {
             "WHITELIST_GET",
             "WHITELIST_ADD",
             "WHITELIST_REMOVE",
+            "WHITELIST_DELETE",
             "END",
             "PERMISSION_CREATE",
             "PERMISSION_MODIFY",
@@ -52,6 +53,7 @@ public class Util {
             return false;
         }
     }
+
 
     public static String getWorkingDir(){
         File directory = new File("");
