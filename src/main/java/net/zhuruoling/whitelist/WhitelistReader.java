@@ -68,7 +68,6 @@ public class WhitelistReader {
             if (Objects.equals(whitelist.name, name)){
                 cl.set(whitelist);
             }
-
         });
         if (cl.get() == null){
             return null;

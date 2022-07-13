@@ -156,6 +156,11 @@
             <artifactId>ktor-server-content-negotiation</artifactId>
             <version>2.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.zhuruoling</groupId>
+            <artifactId>omms-central</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -5,7 +5,7 @@ import net.zhuruoling.handler.CommandHandlerImpl
 import net.zhuruoling.handler.PluginCommandHandler
 import net.zhuruoling.plugin.PluginManager
 import net.zhuruoling.util.CommandAlreadyExistsException
-import net.zhuruoling.util.CommandNotExistException
+import net.zhuruoling.util.CanNotFindThatFuckingCommandException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -30,7 +30,7 @@ object CommandManager {
 
     fun getCommandHandler(command: String): CommandHandler? {
         if (!commandTable.containsKey(command))
-            throw CommandNotExistException("Command $command does not exist.")
+            throw CanNotFindThatFuckingCommandException("Command $command does not exist.")
         return commandTable[command]
     }
 
@@ -40,6 +40,6 @@ object CommandManager {
             commandTable.remove(command)
             return
         }
-        throw CommandNotExistException("Command $command does not exist.")
+        throw CanNotFindThatFuckingCommandException("Command $command does not exist.")
     }
 }

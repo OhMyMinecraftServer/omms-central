@@ -29,15 +29,12 @@ object PluginManager {
     fun init() {
         pluginTable.clear()
         pluginFileList.clear()
-        var files = Files.list(Path.of(Util.joinFilePaths("plugins")))
-        var x = 0
+        val files = Files.list(Path.of(Util.joinFilePaths("plugins")))
         files.forEach {
             if (it.toFile().extension == "js") {
-                x++
                 pluginFileList.add(it.toFile().absolutePath)
             }
         }
-        logger.debug(x.toString())
         logger.debug(pluginFileList.toString())
         pluginFileList.forEach {
             val engine: ScriptEngine = manager.getEngineByName("JavaScript")

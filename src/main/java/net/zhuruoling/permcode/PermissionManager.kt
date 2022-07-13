@@ -57,7 +57,7 @@ object PermissionManager {
         }
     }
 
-    private fun readPermFromInt(components: PermComponents): List<Permission> {
+    fun readPermFromInt(components: PermComponents): List<Permission> {
         /*
         def main():
         code :int = int(input("code>"))
@@ -139,9 +139,11 @@ object PermissionManager {
                 continue
             }
             else{
-                if (p == null)
-                    continue
-                p.let { list.add(it) }
+                p.let {
+                    if (it != null) {
+                        list.add(it)
+                    }
+                }
             }
         }
         if (list.isEmpty()){
@@ -156,8 +158,8 @@ lower bits
 group_server:
     server_os_control
     omms_configuration
-    none
-    none
+    PERMISSION_LIST
+    PERMISSION_MODIFY
 group_minecraft_server_control:
     run_mcdr_command
     run_minecraft_command
@@ -172,7 +174,7 @@ group_announcement:
     announcement_create
     announcement_delete
     announcement_edit
-    none
+    EXECUTE_PLUGIN_COMMAND
 higher bits
 16371: owner
  */
@@ -181,6 +183,73 @@ higher bits
         logger.info("Reloading Permissions.")
         init()
     }
+
+    @JvmStatic
+    fun calcPermission(permission: List<Permission>): Int{
+        var code = 0
+        val permissions = mutableListOf<Permission>()
+        permission.forEach {
+            if (!permissions.contains(it)) permissions.add(it)
+        }
+        permissions.forEach {
+            when (it) {
+                Permission.SERVER_OS_CONTROL -> {
+                    code += 1 shl 0
+                }
+                Permission.CENTRAL_SERVER_CONFIG -> {
+                    code += 1 shl 1
+                }
+                Permission.PERMISSION_LIST -> {
+                    code += 1 shl 2
+                }
+                Permission.PERMISSION_MODIFY -> {
+                    code += 1 shl 3
+                }
+
+                Permission.RUN_MCDR_COMMAND -> {
+                    code += 1 shl 4
+                }
+                Permission.RUN_MINECRAFT_COMMAND -> {
+                    code += 1 shl 5
+                }
+                Permission.START_SERVER -> {
+                    code += 1 shl 6
+                }
+                Permission.STOP_SERVER -> {
+                    code += 1 shl 7
+                }
+
+                Permission.WHITELIST_ADD -> {
+                    code += 1 shl 8
+                }
+                Permission.WHITELIST_REMOVE -> {
+                    code += 1 shl 9
+                }
+                Permission.WHITELIST_CREATE -> {
+                    code += 1 shl 10
+                }
+                Permission.WHITELIST_DELETE -> {
+                    code += 1 shl 11
+                }
+
+                Permission.ANNOUNCEMENT_CREATE -> {
+                    code += 1 shl 12
+                }
+                Permission.ANNOUNCEMENT_DELETE -> {
+                    code += 1 shl 13
+                }
+                Permission.ANNOUNCEMENT_EDIT -> {
+                    code += 1 shl 14
+                }
+                Permission.EXECUTE_PLUGIN_COMMAND -> {
+                    code += 1 shl 15
+                }
+            }
+        }
+        return code
+    }
+
+
 
     fun getPermission(code: Int): List<Permission?>? {
         if (permissionTable.contains(code)){

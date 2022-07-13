@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -22,6 +24,7 @@ public class Util {
 
     public static final String PRODUCT_NAME = "Oh My Minecraft Server Central";
     public static final String PRODUCT_NAME_SHORT = "OMMS Central";
+    public static final String LOCK_NAME = "omms.lck";
     public static final String[] DATA_FOLDERS = {
             "controllers",
             "broadcasts",
@@ -54,6 +57,26 @@ public class Util {
         }
     }
 
+    public static FileLock acquireLock(RandomAccessFile file){
+        try {
+            FileChannel channel = file.getChannel();
+            return channel.tryLock();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void releaseLock(FileLock lock){
+        try {
+            var ch = lock.acquiredBy();
+            lock.release();
+            ch.close();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     public static String getWorkingDir(){
         File directory = new File("");

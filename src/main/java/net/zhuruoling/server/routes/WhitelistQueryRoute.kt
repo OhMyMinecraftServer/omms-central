@@ -29,8 +29,13 @@ fun Route.whitelistQueryRouting(){
                 "Missing name",
                 status = HttpStatusCode.BadRequest
             )
+
             logger.info("Querying whitelist $name content.")
             val content = WhitelistReader().read(name)
+            if (content == null){
+                call.respondText("", status = HttpStatusCode.NotFound)
+                return@get
+            }
             call.respond(content.players)
         }
         get ("{name?}/query/{playerName?}"){

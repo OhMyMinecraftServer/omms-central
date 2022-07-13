@@ -4,6 +4,9 @@ import net.zhuruoling.broadcast.UdpBroadcastReceiver;
 import net.zhuruoling.command.CommandManager;
 import net.zhuruoling.configuration.ConfigReader;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.console.ConsoleHandler;
+import net.zhuruoling.controller.Controller;
+import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.handler.CommandHandlerImpl;
 import net.zhuruoling.kt.TryKotlin;
 import net.zhuruoling.permcode.PermissionManager;
@@ -16,6 +19,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -36,7 +44,7 @@ public class Main {
                 System.exit(0);
             }
         }
-        boolean test = false;
+        boolean test = true;
 
 
         if (test){
@@ -45,6 +53,8 @@ public class Main {
             PluginManager.INSTANCE.init();
             PluginManager.INSTANCE.loadAll();
             logger.info(PermissionManager.INSTANCE.getPermissionTable().toString());
+            ControllerManager.INSTANCE.init();
+            logger.info(String.valueOf(PermissionManager.calcPermission(Objects.requireNonNull(PermissionManager.INSTANCE.getPermission(100860)))));
             System.exit(114514);
         }
 
@@ -78,7 +88,24 @@ public class Main {
             logger.error("Empty CONFIG.");
             System.exit(1);
         }
-
+        if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))){
+            logger.error("Failed to acquire lock.Might another server instance are running?");
+            logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(Util.LOCK_NAME));
+            logger.info("Stopping.");
+            System.exit(0);
+        }
+        var randomAccessFile = new RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME),"rw");
+        FileLock lock = null;
+        try {
+            lock = Util.acquireLock(randomAccessFile);
+        }
+        catch (Exception e){
+            logger.error("Failed to acquire lock.Might another server instance are running?");
+            logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(Util.LOCK_NAME));
+            logger.info("Stopping.");
+            System.exit(3);
+            e.printStackTrace();
+        }
         Util.listAll(logger);
         try {
             PluginManager.INSTANCE.init();
@@ -100,7 +127,7 @@ public class Main {
         socketServer.start();
         var receiver = new UdpBroadcastReceiver();
         receiver.start();
-        HttpServerKt.launchHttpServerAsync(args);
+        var httpServer = HttpServerKt.launchHttpServerAsync(args);
         //httpServerKt.start();
         var timeComplete = System.currentTimeMillis();
         var timeUsed = Float.parseFloat(Long.valueOf(timeComplete - timeStart).toString() + ".0f") / 1000;
@@ -108,9 +135,9 @@ public class Main {
         while (true){
             Scanner scanner = new Scanner(System.in);
             String line = scanner.nextLine();
+            if (line.isBlank()) continue;
             logger.info("CONSOLE issued a command:%s".formatted(line));
             if (Objects.equals(line, "stop")){
-                logger.info("Stopping!");
                 break;
             }
             if (Objects.equals(line,"reload")){
@@ -119,10 +146,23 @@ public class Main {
                 PluginManager.INSTANCE.init();
                 PermissionManager.INSTANCE.init();
                 PluginManager.INSTANCE.loadAll();
+                continue;
+            }
+            ConsoleHandler handler = new ConsoleHandler(logger);
+            try {
+                handler.handle(line);
+            }
+            catch (RuntimeException e){
+                e.printStackTrace();
             }
         }
+        httpServer.interrupt();
         receiver.interrupt();
         socketServer.interrupt();
+        logger.info("Releasing lock.");
+        Util.releaseLock(lock);
+        Files.delete(Path.of(Util.joinFilePaths("omms.lck")));
+        logger.info("Stopping.");
         System.exit(0);
     }
 }

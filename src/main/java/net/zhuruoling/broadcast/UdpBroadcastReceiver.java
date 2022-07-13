@@ -32,7 +32,7 @@ public class UdpBroadcastReceiver extends Thread{
                     String msg = new String(packet.getData(), packet.getOffset(),
                             packet.getLength());
                     var broadcast = BroadcastBuilderKt.buildFromJson(msg);
-                    logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getTime(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
+                    logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getChannel(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
                 }
                 catch (Exception e){
                     e.printStackTrace();
