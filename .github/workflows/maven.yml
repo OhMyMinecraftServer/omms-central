@@ -26,9 +26,9 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Create Dev Build
       run: |
-          mkdir Uranium_qLink
-          cp ./target/*.jar ./Uranium_qLink
+          mkdir omms-central
+          cp ./target/*.jar ./omms-central
     - uses: actions/upload-artifact@v2
       with:
-        name: Uranium-qLink-full
-        path: Uranium_qLink
+        name: omms-central-full
+        path: omms-central
