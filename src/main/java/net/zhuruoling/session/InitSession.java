@@ -50,6 +50,7 @@ public class InitSession extends Thread {
     public void run() {
         try {
             String line = encryptedConnector.readLine();
+            logger.debug("recv:" + line);
             while (true){
                 var command = CommandBuilderKt.buildFromJson(line);
                 logger.info(String.valueOf(command));

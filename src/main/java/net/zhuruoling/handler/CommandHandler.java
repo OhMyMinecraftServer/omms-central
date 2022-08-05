@@ -19,7 +19,7 @@ public abstract class CommandHandler {
         this.register = register;
     }
 
-    private String register = "";
+    private String register;
     abstract public void handle(Command command, HandlerSession session);
 
 }

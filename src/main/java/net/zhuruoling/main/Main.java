@@ -1,5 +1,6 @@
 package net.zhuruoling.main;
 
+import com.google.gson.Gson;
 import net.zhuruoling.broadcast.UdpBroadcastReceiver;
 import net.zhuruoling.command.CommandManager;
 import net.zhuruoling.configuration.ConfigReader;
@@ -24,6 +25,7 @@ import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -36,18 +38,23 @@ public class Main {
     public static void main(String [] args) throws IOException {
         var timeStart = System.currentTimeMillis();
         TryKotlin.INSTANCE.printOS();
-        boolean isExampleGen = false;
         if (args.length >= 1) {
-            if (Objects.equals(args[0], "--exampleGenerate")){
+            var argList = Arrays.stream(args).toList();
+            if (argList.contains("--generateExample")) {
                 logger.info("Generating examples.");
                 Util.generateExample();
                 System.exit(0);
             }
+            if (argList.contains("--test")){
+                Flags.INSTANCE.setTest(true);
+            }
+            if (argList.contains("--noplugin")){
+                Flags.INSTANCE.setNoPlugins(true);
+            }
         }
-        boolean test = true;
-
-
-        if (test){
+        if (Flags.INSTANCE.getTest()){
+            Gson gson = new Gson();
+            logger.info(Arrays.toString(gson.fromJson("[\"1\",\"2\",\"3\"]", String[].class)));
             logger.info(Util.joinFilePaths("a", "b"));
             PermissionManager.INSTANCE.init();
             PluginManager.INSTANCE.init();
@@ -55,6 +62,12 @@ public class Main {
             logger.info(PermissionManager.INSTANCE.getPermissionTable().toString());
             ControllerManager.INSTANCE.init();
             logger.info(String.valueOf(PermissionManager.calcPermission(Objects.requireNonNull(PermissionManager.INSTANCE.getPermission(100860)))));
+            try {
+                throw new RuntimeException("Test!");
+            }
+            catch (RuntimeException e){
+                logger.error("An error occurred.",e);
+            }
             System.exit(114514);
         }
 
@@ -121,14 +134,11 @@ public class Main {
             System.exit(2);
         }
 
-
-
         var socketServer = new SessionInitialServer();
         socketServer.start();
         var receiver = new UdpBroadcastReceiver();
         receiver.start();
         var httpServer = HttpServerKt.launchHttpServerAsync(args);
-        //httpServerKt.start();
         var timeComplete = System.currentTimeMillis();
         var timeUsed = Float.parseFloat(Long.valueOf(timeComplete - timeStart).toString() + ".0f") / 1000;
         logger.info("Done(%.3fs)! For help, type \"help\" or \"?\"".formatted(timeUsed));
@@ -153,9 +163,10 @@ public class Main {
                 handler.handle(line);
             }
             catch (RuntimeException e){
-                e.printStackTrace();
+                logger.error("An error occurred while parsing commands.",e);
             }
         }
+        PluginManager.INSTANCE.unloadAll();
         httpServer.interrupt();
         receiver.interrupt();
         socketServer.interrupt();

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.command.Command
 import net.zhuruoling.command.CommandManager
+import net.zhuruoling.main.Flags
 import net.zhuruoling.util.PluginAlreadyLoadedException
 import net.zhuruoling.util.PluginNotExistException
 import net.zhuruoling.util.PluginNotLoadedException
@@ -27,17 +28,25 @@ object PluginManager {
     val gson: Gson = GsonBuilder().serializeNulls().create()
     var pluginCommandTable: HashMap<String,ArrayList<String>> = java.util.HashMap()
     fun init() {
+        if (Flags.noPlugins){
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            return
+        }
         pluginTable.clear()
         pluginFileList.clear()
         val files = Files.list(Path.of(Util.joinFilePaths("plugins")))
         files.forEach {
-            if (it.toFile().extension == "js") {
+            if (it.toFile().extension == "kts") {
                 pluginFileList.add(it.toFile().absolutePath)
             }
         }
         logger.debug(pluginFileList.toString())
         pluginFileList.forEach {
-            val engine: ScriptEngine = manager.getEngineByName("JavaScript")
+            val engine: ScriptEngine = manager.getEngineByName("kotlin")
+            if (engine.equals(null)){
+                logger.error("Failed to init plugin engine.")
+                return
+            }
             engine.eval(FileReader(it))
             val pluginMetadata = ((engine as Invocable).invokeFunction("getMetadata")) as String
             logger.info("Metadata of plugin $it is $pluginMetadata")
@@ -45,7 +54,7 @@ object PluginManager {
             if (pluginTable.contains(metadata.id)) {
                 val pluginId = metadata.id
                 logger.error("Plugin $pluginId existed.")
-                return
+                return@forEach
             }
             pluginTable[metadata.id] = PluginInstance(engine as Invocable, PluginStatus.UNLOADED, metadata)
         }
@@ -63,12 +72,20 @@ object PluginManager {
     }
 
     fun loadAll() {
+        if (Flags.noPlugins){
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            return
+        }
         pluginTable.forEach {
             load(it.key)
         }
     }
 
     fun unloadAll() {
+        if (Flags.noPlugins){
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            return
+        }
         pluginTable.forEach {
             unload(it.key)
         }
@@ -125,11 +142,12 @@ object PluginManager {
     }
 
     fun reload(pluginId: String): Unit {
+        if (Flags.noPlugins){
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            return
+        }
         unload(pluginId)
-        load(pluginId)
         init()
+        load(pluginId)
     }
-
-
-
 }

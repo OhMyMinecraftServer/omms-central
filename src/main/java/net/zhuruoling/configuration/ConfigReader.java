@@ -15,9 +15,8 @@ public class ConfigReader {
 
     @Nullable
     public static Configuration read(){
-        char[] buf = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(Util.getWorkingDir() + File.separator + "config.json"));
+            BufferedReader reader = new BufferedReader(new FileReader(Util.joinFilePaths("config.json")));
             Gson json = new Gson();
             Configuration config = json.fromJson(reader,Configuration.class);
             if (!(config == null)){
