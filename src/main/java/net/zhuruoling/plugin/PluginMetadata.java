@@ -11,4 +11,13 @@ public class PluginMetadata {
         this.id = id;
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id='" + id + '\'' +
+                ", version='" + version + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
 }

@@ -3,10 +3,10 @@ package net.zhuruoling.plugin;
 import net.zhuruoling.command.CommandManager;
 import net.zhuruoling.handler.PluginCommandHandler;
 
-public class InitServerInterface {
+public class LifecycleServerInterface {
     PluginLogger logger;
     String pluginName;
-    public InitServerInterface(String name){
+    public LifecycleServerInterface(String name){
         logger = new PluginLogger(name);
         this.pluginName = name;
     }

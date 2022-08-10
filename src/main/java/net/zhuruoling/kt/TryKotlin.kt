@@ -17,8 +17,6 @@ object TryKotlin {
         val logger = LoggerFactory.getLogger("YEE")
         val os = ManagementFactory.getOperatingSystemMXBean()
         logger.info(String.format("${Util.PRODUCT_NAME} is running on %s %s %s",os.name, os.arch, os.version))
-        //SystemUtil.print()
-        ScriptEngineManager().engineFactories.forEach { println(it.names) }
     }
 
 }
