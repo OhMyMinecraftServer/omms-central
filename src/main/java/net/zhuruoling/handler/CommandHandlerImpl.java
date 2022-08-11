@@ -96,7 +96,7 @@ public class CommandHandlerImpl extends CommandHandler {
                     if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
                     String whiteName = command.getLoad()[0];
-                    String player = command.getLoad()[2];
+                    String player = command.getLoad()[1];
 
                     if (new WhitelistReader().read(whiteName) == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
@@ -108,8 +108,7 @@ public class CommandHandlerImpl extends CommandHandler {
                     if (!session.getPermissions().contains(Permission.WHITELIST_REMOVE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
                     String whiteName = command.getLoad()[0];
-                    String operation = command.getLoad()[1];
-                    String player = command.getLoad()[2];
+                    String player = command.getLoad()[1];
                     if (new WhitelistReader().read(whiteName) == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
