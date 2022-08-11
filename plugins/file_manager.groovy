@@ -1,0 +1,34 @@
+import net.zhuruoling.command.Command
+import net.zhuruoling.plugin.LifecycleServerInterface
+import net.zhuruoling.plugin.PluginLogger
+import net.zhuruoling.plugin.RequestServerInterface
+
+import java.nio.file.Files
+import java.nio.file.Path
+
+class PluginMain {
+    public static String metadata = "{\"id\":\"file_manager\",\"version\":\"0.0.1\",\"author\":\"ZhuRuoLing\"}"
+    void onLoad(LifecycleServerInterface serverInterface) {
+        serverInterface.registerRequestCode("READ_FILE", "readFile")
+        PluginLogger logger = serverInterface.getLogger()
+        logger.info("Hello World!")
+    }
+
+
+    def readFile(RequestServerInterface serverInterface, Command command) {
+        serverInterface.logger.info(command.toString())
+        String fileName = command.load[1]
+        if (Files.exists(Path.of(fileName))){
+            String[] lines = Files.readAllLines(Path.of(fileName))
+            serverInterface.sendBack("OK", lines)
+        }
+        else {
+            serverInterface.sendBack("FILE_NOT_EXIST", new String[]{"FUCK U"})
+        }
+
+    }
+
+    def onUnload(LifecycleServerInterface serverInterface) {
+        serverInterface.getLogger().info("Bye")
+    }
+}
