@@ -7,7 +7,6 @@ import net.zhuruoling.util.PluginNotExistException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 

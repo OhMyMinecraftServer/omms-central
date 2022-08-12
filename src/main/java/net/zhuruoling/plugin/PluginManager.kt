@@ -11,6 +11,7 @@ import net.zhuruoling.util.PluginNotLoadedException
 import net.zhuruoling.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -35,16 +36,21 @@ object PluginManager {
         }
         logger.debug(pluginFileList.toString())
         pluginFileList.forEach {
-            val pluginInstance = GroovyPluginInstance(it)
-            val metadata = pluginInstance.initPlugin()
-            logger.info("Metadata of plugin $it is $metadata")
-            if (pluginTable.contains(metadata.id)) {
-                val pluginId = metadata.id
-                logger.error("Plugin $it got a conflicted plugin id with plugin ${pluginTable[pluginId]?.pluginFilePath}")
-                return@forEach
+            try {
+                val pluginInstance = GroovyPluginInstance(it)
+                val metadata = pluginInstance.initPlugin()
+                logger.info("Metadata of plugin $it is $metadata")
+                if (pluginTable.contains(metadata.id)) {
+                    val pluginId = metadata.id
+                    logger.error("Plugin $it got a conflicted plugin id with plugin ${pluginTable[pluginId]?.pluginFilePath}")
+                    return@forEach
+                }
+                pluginInstance.pluginStatus = PluginStatus.UNLOADED
+                pluginTable[metadata.id] = pluginInstance
             }
-            pluginInstance.pluginStatus = PluginStatus.UNLOADED
-            pluginTable[metadata.id] = pluginInstance
+            catch (e: Exception){
+                logger.error("An error occurred while loading plugin $it", e)
+            }
         }
     }
 
@@ -75,7 +81,7 @@ object PluginManager {
             return
         }
         pluginTable.forEach {
-            unload(it.key)
+            unload(it.key, true)
         }
     }
 
@@ -104,19 +110,21 @@ object PluginManager {
         }
     }
 
-    fun unload(pluginName: String) {
+    fun unload(pluginName: String, ignorePluginStatus: Boolean) {
         logger.info("Unloading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
         val commands = pluginCommandTable[pluginName]
         val initServerInterface = LifecycleServerInterface(pluginName)
         if (pluginInstance != null) {
-            if (pluginInstance.pluginStatus != PluginStatus.LOADED){
-                throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
+            if (!ignorePluginStatus){
+                if (pluginInstance.pluginStatus != PluginStatus.LOADED) {
+                    throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
+                }
             }
             try {
                 pluginInstance.invokeMethod("onUnload", initServerInterface)
             }
-            catch (e: java.lang.Exception){
+            catch (e: Exception){
                 e.printStackTrace()
             }
             commands?.forEach {
@@ -134,7 +142,7 @@ object PluginManager {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
-        unload(pluginId)
+        unload(pluginId, true)
         init()
         load(pluginId)
     }

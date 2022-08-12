@@ -12,8 +12,8 @@ class PluginMain {
         serverInterface.registerRequestCode("READ_FILE", "readFile")
         PluginLogger logger = serverInterface.getLogger()
         logger.info("Hello World!")
+        logger.error("wdnmd")
     }
-
 
     def readFile(RequestServerInterface serverInterface, Command command) {
         serverInterface.logger.info(command.toString())

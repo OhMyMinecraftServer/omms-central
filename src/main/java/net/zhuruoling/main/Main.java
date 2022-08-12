@@ -151,12 +151,19 @@ public class Main {
                 break;
             }
             if (Objects.equals(line,"reload")){
-                PluginManager.INSTANCE.unloadAll();
-                logger.debug(CommandManager.INSTANCE.getCommandTable().toString());
-                PluginManager.INSTANCE.init();
-                PermissionManager.INSTANCE.init();
-                PluginManager.INSTANCE.loadAll();
-                continue;
+                try {
+                    PluginManager.INSTANCE.unloadAll();
+                    logger.debug(CommandManager.INSTANCE.getCommandTable().toString());
+                    PluginManager.INSTANCE.init();
+                    PermissionManager.INSTANCE.init();
+                    PluginManager.INSTANCE.loadAll();
+                    continue;
+                }
+                catch (Exception e){
+                    logger.error("An error occurred while reloading.", e);
+                    continue;
+                }
+
             }
             ConsoleHandler handler = new ConsoleHandler(logger);
             try {

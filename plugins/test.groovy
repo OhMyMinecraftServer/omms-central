@@ -8,6 +8,7 @@ class PluginMain {
 
     void onLoad(LifecycleServerInterface serverInterface) {
         serverInterface.registerRequestCode("TEST", "test")
+        serverInterface.registerRequestCode("HELLO","hello")
         PluginLogger logger = serverInterface.getLogger()
         logger.info("Test Plugin loaded!")
     }
@@ -15,6 +16,11 @@ class PluginMain {
     def test(RequestServerInterface serverInterface, Command command) {
         serverInterface.logger.info(command.toString())
         serverInterface.sendBack("OK", new String[]{"wdnmd"})
+    }
+
+    def hello(RequestServerInterface serverInterface, Command command){
+        serverInterface.logger.info("HELLO COMMAND TRIGGERED")
+        serverInterface.sendBack("OK",new String[]{"o/"})
     }
 
     def onUnload(LifecycleServerInterface serverInterface) {
