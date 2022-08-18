@@ -1,4 +1,4 @@
-package net.zhuruoling;
+package net.zhuruoling.network;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -3,6 +3,7 @@ package net.zhuruoling.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.network.UdpBroadcastSender;
 import net.zhuruoling.scontrol.SControlClient;
 import net.zhuruoling.scontrol.SControlClientFileReader;
 import net.zhuruoling.whitelist.Whitelist;
@@ -25,6 +26,9 @@ public class Util {
     public static final String PRODUCT_NAME = "Oh My Minecraft Server Central";
     public static final String PRODUCT_NAME_SHORT = "OMMS Central";
     public static final String LOCK_NAME = "omms.lck";
+
+    public static final UdpBroadcastSender.Target TARGET_CHAT = new UdpBroadcastSender.Target("224.114.51.4",10086);
+    public static final UdpBroadcastSender.Target TARGET_CONTROL = new UdpBroadcastSender.Target("224.114.51.4",10087);
     public static final String[] DATA_FOLDERS = {
             "controllers",
             "broadcasts",

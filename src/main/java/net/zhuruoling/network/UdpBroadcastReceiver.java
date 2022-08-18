@@ -1,9 +1,11 @@
-package net.zhuruoling.broadcast;
+package net.zhuruoling.network;
 
+import net.zhuruoling.broadcast.BroadcastBuilderKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class UdpBroadcastReceiver extends Thread{
@@ -30,7 +32,7 @@ public class UdpBroadcastReceiver extends Thread{
                 try {
                     socket.receive(packet);
                     String msg = new String(packet.getData(), packet.getOffset(),
-                            packet.getLength());
+                            packet.getLength(), StandardCharsets.UTF_8);
                     var broadcast = BroadcastBuilderKt.buildFromJson(msg);
                     logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getChannel(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
                 }

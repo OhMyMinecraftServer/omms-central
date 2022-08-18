@@ -1,4 +1,4 @@
-package net.zhuruoling.server.plugins
+package net.zhuruoling.network.server.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

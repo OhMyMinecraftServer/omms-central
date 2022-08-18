@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.command.Command
 import net.zhuruoling.command.CommandManager
-import net.zhuruoling.main.Flags
+import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.util.PluginAlreadyLoadedException
 import net.zhuruoling.util.PluginNotExistException
 import net.zhuruoling.util.PluginNotLoadedException
@@ -22,7 +22,7 @@ object PluginManager {
     val gson: Gson = GsonBuilder().serializeNulls().create()
     var pluginCommandTable: HashMap<String,ArrayList<String>> = java.util.HashMap()
     fun init() {
-        if (Flags.noPlugins){
+        if (RuntimeConstants.noPlugins){
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -66,7 +66,7 @@ object PluginManager {
     }
 
     fun loadAll() {
-        if (Flags.noPlugins){
+        if (RuntimeConstants.noPlugins){
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -76,7 +76,7 @@ object PluginManager {
     }
 
     fun unloadAll() {
-        if (Flags.noPlugins){
+        if (RuntimeConstants.noPlugins){
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -138,7 +138,7 @@ object PluginManager {
     }
 
     fun reload(pluginId: String) {
-        if (Flags.noPlugins){
+        if (RuntimeConstants.noPlugins){
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }

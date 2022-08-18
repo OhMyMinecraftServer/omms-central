@@ -1,8 +1,8 @@
-package net.zhuruoling.server
+package net.zhuruoling.network.server
 
 import io.ktor.server.application.*
-import net.zhuruoling.server.plugins.configureRouting
-import net.zhuruoling.server.plugins.configureSerialization
+import net.zhuruoling.network.server.plugins.configureRouting
+import net.zhuruoling.network.server.plugins.configureSerialization
 
 fun launchHttpServerAsync(args: Array<String>): Thread {
    val thread = Thread {

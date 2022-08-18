@@ -2,6 +2,7 @@ package net.zhuruoling.permcode
 
 import com.google.gson.GsonBuilder
 import net.zhuruoling.util.Util
+import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
@@ -251,7 +252,8 @@ higher bits
 
 
 
-    fun getPermission(code: Int): List<Permission?>? {
+    @NotNull
+    fun getPermission(code: Int): List<Permission>? {
         if (permissionTable.contains(code)){
             return permissionTable[code]
         }

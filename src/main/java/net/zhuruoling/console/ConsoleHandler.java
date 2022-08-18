@@ -1,5 +1,10 @@
 package net.zhuruoling.console;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.zhuruoling.broadcast.Broadcast;
+import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.util.CommandIncompleteException;
 import net.zhuruoling.util.CanNotFindThatFuckingCommandException;
 import net.zhuruoling.util.Util;
@@ -10,6 +15,7 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConsoleHandler{
@@ -21,6 +27,21 @@ public class ConsoleHandler{
     public void handle(String command){
         var parts = command.split(" ");
         parts[0] = parts[0].toUpperCase();
+        if  (parts[0].equals("BROADCAST")){
+            StringBuilder message = new StringBuilder();
+            for (int i = 1; i < parts.length; i++) {
+                message.append(parts[i]);
+                message.append(" ");
+            }
+            logger.info("Sending message:" + message);
+            Broadcast broadcast = new Broadcast();
+            broadcast.setChannel("GLOBAL");
+            broadcast.setContent(message.toString());
+            broadcast.setPlayer(Util.randomStringGen(8));
+            broadcast.setServer("OMMS CENTRAL");
+            Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).send(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
+            return;
+        }
         if (parts[0].equals("WHITELIST_LIST")){
             var list = new WhitelistReader().getWhitelists();
             ArrayList<String> arrayList = new ArrayList<>();
