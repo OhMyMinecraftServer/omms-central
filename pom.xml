@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zhuruoling</groupId>
     <artifactId>omms-central</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
+    <repositories>
+        <repository>
+            <id>minecraft-libraries</id>
+            <name>Minecraft Libraries</name>
+            <url>https://libraries.minecraft.net</url>
+        </repository>
+    </repositories>
+
 
     <properties>
         <ktor_version>2.0.2</ktor_version>
@@ -17,6 +25,16 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>brigadier</artifactId>
+            <version>1.0.18</version>
+        </dependency>
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-call-logging-jvm</artifactId>

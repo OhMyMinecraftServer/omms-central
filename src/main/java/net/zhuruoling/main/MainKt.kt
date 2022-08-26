@@ -1,7 +1,6 @@
 package net.zhuruoling.main
 
 import com.google.gson.Gson
-import net.zhuruoling.command.CommandManager.commandTable
 import net.zhuruoling.command.CommandManager.registerCommand
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
@@ -23,6 +22,8 @@ import net.zhuruoling.plugin.PluginManager.loadAll
 import net.zhuruoling.plugin.PluginManager.unloadAll
 import net.zhuruoling.session.SessionInitialServer
 import net.zhuruoling.util.Util
+import org.jline.terminal.TerminalBuilder
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -32,22 +33,25 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.system.exitProcess
 
 object MainKt {
-    val logger = LoggerFactory.getLogger("Main")
-    var config: Configuration? = null
-    var isInit = false
+    val logger: Logger = LoggerFactory.getLogger("Main")
+    private var config: Configuration? = null
+    private var isInit = false
+
     @Throws(IOException::class)
     @JvmStatic
     fun main(args: Array<String>) {
         val timeStart = System.currentTimeMillis()
+        RuntimeConstants.launchTime = timeStart;
         printOS()
-        if (args.size >= 1) {
+        if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             if (argList.contains("--generateExample")) {
                 logger.info("Generating examples.")
                 Util.generateExample()
-                System.exit(0)
+                exitProcess(0)
             }
             if (argList.contains("--test")) {
                 test = true
@@ -73,10 +77,15 @@ object MainKt {
             } catch (e: RuntimeException) {
                 logger.error("An error occurred.", e)
             }
-            System.exit(114514)
+            val scanner = Scanner(System.`in`)
+            val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
+            while (true) {
+                val handler0 = ConsoleHandler()
+                ConsoleHandler.logger = logger
+                handler0.handle(terminal)
+            }
+
         }
-
-
 
 
         logger.info("Hello World!")
@@ -94,12 +103,12 @@ object MainKt {
             for (folder in Util.DATA_FOLDERS.clone()) {
                 Util.createFolder(Util.getWorkingDir() + File.separator + folder, logger)
             }
-            System.exit(0)
+            exitProcess(0)
         }
         config = ConfigReader.read()
         if (config == null) {
             logger.error("Empty CONFIG.")
-            System.exit(1)
+            exitProcess(1)
         }
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
@@ -109,14 +118,15 @@ object MainKt {
                 )
             )
             logger.info("Stopping.")
-            System.exit(0)
+            exitProcess(1)
         }
 
 
         val randomAccessFile = RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME), "rw")
-        var lock: FileLock? = null
+        val lock: FileLock?
         try {
             lock = Util.acquireLock(randomAccessFile)
+            RuntimeConstants.lock = lock
         } catch (e: Exception) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
             logger.info(
@@ -125,8 +135,7 @@ object MainKt {
                 )
             )
             logger.info("Stopping.")
-            System.exit(3)
-            e.printStackTrace()
+            exitProcess(3)
         }
 
 
@@ -141,60 +150,32 @@ object MainKt {
             loadAll()
         } catch (e: Exception) {
             e.printStackTrace()
-            System.exit(2)
+            exitProcess(2)
         }
+        Integer.MIN_VALUE
 
 
         val socketServer = SessionInitialServer()
-        socketServer.start()
         val receiver = UdpBroadcastReceiver()
-        receiver.start()
         val httpServer = launchHttpServerAsync(args)
         val sender = UdpBroadcastSender()
+        socketServer.start()
+        receiver.start()
         sender.start()
+        RuntimeConstants.socketServer = socketServer
+        RuntimeConstants.reciever = receiver
+        RuntimeConstants.httpServer = httpServer
+        RuntimeConstants.udpBroadcastSender = sender
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(%.3fs)! For help, type \"help\" or \"?\"".formatted(timeUsed))
         RuntimeConstants.udpBroadcastSender = sender
 
+        val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
         while (true) {
-            val scanner = Scanner(System.`in`)
-            val line = scanner.nextLine()
-            if (line.isBlank()) continue
-            logger.info("CONSOLE issued a command:%s".formatted(line))
-            if (line == "stop") {
-                break
-            }
-            if (line == "reload") {
-                try {
-                    unloadAll()
-                    logger.debug(commandTable.toString())
-                    PluginManager.init()
-                    PermissionManager.init()
-                    loadAll()
-                    continue
-                } catch (e: Exception) {
-                    logger.error("An error occurred while reloading.", e)
-                    continue
-                }
-            }
-            val handler = ConsoleHandler(logger)
-            try {
-                handler.handle(line)
-            } catch (e: RuntimeException) {
-                logger.error("An error occurred while parsing commands.", e)
-            }
+            val handler0 = ConsoleHandler()
+            ConsoleHandler.logger = logger
+            handler0.handle(terminal)
         }
-
-        unloadAll()
-        sender.setStopped(true)
-        httpServer.interrupt()
-        receiver.interrupt()
-        socketServer.interrupt()
-        logger.info("Releasing lock.")
-        Util.releaseLock(lock)
-        Files.delete(Path.of(Util.joinFilePaths("omms.lck")))
-        logger.info("Stopping.")
-        System.exit(0)
     }
 }

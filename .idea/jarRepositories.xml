@@ -51,5 +51,10 @@
       <option name="name" value="Central Repository" />
       <option name="url" value="https://maven.aliyun.com/repository/public" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="minecraft-libraries" />
+      <option name="name" value="Minecraft Libraries" />
+      <option name="url" value="https://maven.aliyun.com/repository/public" />
+    </remote-repository>
   </component>
 </project>

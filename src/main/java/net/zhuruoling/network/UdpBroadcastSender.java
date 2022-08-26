@@ -37,7 +37,7 @@ public class UdpBroadcastSender extends Thread {
         logger.info("Starting UdpBroadcastSender.");
         while (!stopped) {
             if (!queue.isEmpty()) {
-                queue.forEach(this::send);
+                queue.forEach(this::addToQueue);
             }
         }
         logger.info("Stopped!");
@@ -51,12 +51,12 @@ public class UdpBroadcastSender extends Thread {
         this.stopped = stopped;
     }
 
-    public void send(Target target, String content){
+    public void addToQueue(Target target, String content){
         queue.put(target,content.getBytes(StandardCharsets.UTF_8));
     }
 
 
-    private void send(Target target, byte[] content) {
+    private void addToQueue(Target target, byte[] content) {
         MulticastSocket socket = null;
 
         try {
