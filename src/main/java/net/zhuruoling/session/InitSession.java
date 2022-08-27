@@ -2,9 +2,9 @@ package net.zhuruoling.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.network.EncryptedConnector;
 import net.zhuruoling.command.CommandBuilderKt;
 import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.network.EncryptedConnector;
 import net.zhuruoling.permcode.PermissionManager;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
@@ -85,7 +85,6 @@ public class InitSession extends Thread {
                 }
                 line = encryptedConnector.readLine();
             }
-            return;
         } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             e.printStackTrace();
         }

@@ -47,8 +47,8 @@ public class ConsoleHandler {
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
-                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("name", word()).executes(c -> {
-                                            String name = getString(c, "name");
+                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word()).executes(c -> {
+                                            String name = getString(c, "whitelist");
                                             var list = new WhitelistReader().getWhitelists();
                                             AtomicBoolean succeed = new AtomicBoolean(false);
                                             list.forEach(x -> {
@@ -146,7 +146,7 @@ public class ConsoleHandler {
                 )
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("stop").executes(context -> {
-                    if (RuntimeConstants.INSTANCE.getTest())System.exit(0);
+                    if (RuntimeConstants.INSTANCE.getTest()) System.exit(0);
                     try {
                         logger.info("Stopping!");
                         PluginManager.INSTANCE.unloadAll();
@@ -213,6 +213,14 @@ public class ConsoleHandler {
                     return 0;
                 })
         );
+
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("help").executes(x -> {
+            var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(), false);
+            for (String usage : usages) {
+                logger.info(usage);
+            }
+            return 0;
+        }));
 
     }
 
@@ -285,6 +293,10 @@ public class ConsoleHandler {
                 new ArgumentCompleter(
                         new StringsCompleter("status"),
                         NullCompleter.INSTANCE
+                ),
+                new ArgumentCompleter(
+                        new StringsCompleter("help"),
+                        NullCompleter.INSTANCE
                 )
         );
 
@@ -292,7 +304,7 @@ public class ConsoleHandler {
             LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer).build();
             String line = lineReader.readLine();
             line = line.strip().stripIndent().stripLeading().stripTrailing();
-            if (line.isEmpty()){
+            if (line.isEmpty()) {
                 return;
             }
             dispatchCommand(line);

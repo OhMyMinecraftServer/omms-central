@@ -2,12 +2,10 @@ package net.zhuruoling.permcode
 
 import com.google.gson.GsonBuilder
 import net.zhuruoling.util.Util
-import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.math.log
 import kotlin.random.Random
 
 object PermissionManager {
@@ -252,7 +250,7 @@ higher bits
 
 
 
-    @NotNull
+
     fun getPermission(code: Int): List<Permission>? {
         if (permissionTable.contains(code)){
             return permissionTable[code]
