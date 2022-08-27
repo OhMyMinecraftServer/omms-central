@@ -2,7 +2,6 @@ package net.zhuruoling.console;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -49,7 +48,7 @@ public class ConsoleHandler {
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("name", word()).executes(c -> {
-                                            String name = StringArgumentType.getString(c, "name");
+                                            String name = getString(c, "name");
                                             var list = new WhitelistReader().getWhitelists();
                                             AtomicBoolean succeed = new AtomicBoolean(false);
                                             list.forEach(x -> {
@@ -76,7 +75,7 @@ public class ConsoleHandler {
 
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("query").then(
                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
-                            String player = StringArgumentType.getString(commandContext, "player");
+                            String player = getString(commandContext, "player");
                             var whitelists = new WhitelistReader().getWhitelists();
                             ArrayList<String> names = new ArrayList<>();
                             whitelists.forEach(x -> {
@@ -95,8 +94,8 @@ public class ConsoleHandler {
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("add").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word()).then(
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
-                                                    String whitelist = StringArgumentType.getString(commandContext, "whitelist");
-                                                    String player = StringArgumentType.getString(commandContext, "player");
+                                                    String whitelist = getString(commandContext, "whitelist");
+                                                    String player = getString(commandContext, "player");
                                                     var result = WhitelistManager.addToWhiteList(whitelist, player);
                                                     if (result.equals(WhitelistResult.OK)) {
                                                         logger.info("Successfully added %s to %s".formatted(player, whitelist));
@@ -113,8 +112,8 @@ public class ConsoleHandler {
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("remove").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word()).then(
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
-                                                    String whitelist = StringArgumentType.getString(commandContext, "whitelist");
-                                                    String player = StringArgumentType.getString(commandContext, "player");
+                                                    String whitelist = getString(commandContext, "whitelist");
+                                                    String player = getString(commandContext, "player");
                                                     var result = WhitelistManager.removeFromWhiteList(whitelist, player);
                                                     if (result.equals(WhitelistResult.OK)) {
                                                         logger.info("Successfully removed %s from %s".formatted(player, whitelist));
@@ -147,6 +146,7 @@ public class ConsoleHandler {
                 )
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("stop").executes(context -> {
+                    if (RuntimeConstants.INSTANCE.getTest())System.exit(0);
                     try {
                         logger.info("Stopping!");
                         PluginManager.INSTANCE.unloadAll();
@@ -291,7 +291,11 @@ public class ConsoleHandler {
         try {
             LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer).build();
             String line = lineReader.readLine();
-            dispatchCommand(line.strip().stripIndent().stripLeading().stripTrailing());
+            line = line.strip().stripIndent().stripLeading().stripTrailing();
+            if (line.isEmpty()){
+                return;
+            }
+            dispatchCommand(line);
         } catch (UserInterruptException | EndOfFileException ignored) {
             //DO NOTHING
         }

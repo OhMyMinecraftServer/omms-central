@@ -19,7 +19,6 @@ import net.zhuruoling.permcode.PermissionManager.getPermission
 import net.zhuruoling.permcode.PermissionManager.permissionTable
 import net.zhuruoling.plugin.PluginManager
 import net.zhuruoling.plugin.PluginManager.loadAll
-import net.zhuruoling.plugin.PluginManager.unloadAll
 import net.zhuruoling.session.SessionInitialServer
 import net.zhuruoling.util.Util
 import org.jline.terminal.TerminalBuilder
@@ -30,7 +29,6 @@ import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileLock
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess

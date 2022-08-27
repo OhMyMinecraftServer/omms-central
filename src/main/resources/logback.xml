@@ -10,7 +10,7 @@
         </filter>
         <encoder>
             <pattern>[%cyan(%d{yyyy-MM-dd HH:mm:ss.SSS})] [%boldYellow(%thread)/%highlight(%level)]: %msg%n</pattern>
-            <charset>UTF-8</charset>
+
         </encoder>
     </appender>
 

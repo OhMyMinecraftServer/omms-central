@@ -26,4 +26,5 @@ class PluginMain {
     def onUnload(LifecycleServerInterface serverInterface) {
         serverInterface.getLogger().info("Test Plugin unloaded!")
     }
+
 }
