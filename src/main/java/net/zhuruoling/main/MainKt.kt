@@ -1,22 +1,22 @@
 package net.zhuruoling.main
 
 import com.google.gson.Gson
-import net.zhuruoling.command.CommandManager.registerCommand
+import net.zhuruoling.request.RequestManager.registerRequest
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.controller.ControllerManager
-import net.zhuruoling.handler.CommandHandlerImpl
+import net.zhuruoling.handler.RequestHandlerImpl
 import net.zhuruoling.kt.TryKotlin.printOS
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.test
 import net.zhuruoling.network.UdpBroadcastReceiver
 import net.zhuruoling.network.UdpBroadcastSender
 import net.zhuruoling.network.server.launchHttpServerAsync
-import net.zhuruoling.permcode.PermissionManager
-import net.zhuruoling.permcode.PermissionManager.calcPermission
-import net.zhuruoling.permcode.PermissionManager.getPermission
-import net.zhuruoling.permcode.PermissionManager.permissionTable
+import net.zhuruoling.permission.PermissionManager
+import net.zhuruoling.permission.PermissionManager.calcPermission
+import net.zhuruoling.permission.PermissionManager.getPermission
+import net.zhuruoling.permission.PermissionManager.permissionTable
 import net.zhuruoling.plugin.PluginManager
 import net.zhuruoling.plugin.PluginManager.loadAll
 import net.zhuruoling.session.SessionInitialServer
@@ -143,7 +143,7 @@ object MainKt {
             PermissionManager.init()
             for (command in Util.BUILTIN_COMMANDS.clone()) {
                 logger.info("Registering built-in command %s".formatted(command))
-                registerCommand(command!!, CommandHandlerImpl())
+                registerRequest(command!!, RequestHandlerImpl())
             }
             loadAll()
         } catch (e: Exception) {

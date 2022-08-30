@@ -1,4 +1,4 @@
-import net.zhuruoling.command.Command
+import net.zhuruoling.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.RequestServerInterface
@@ -13,12 +13,12 @@ class PluginMain {
         logger.info("Test Plugin loaded!")
     }
 
-    def test(RequestServerInterface serverInterface, Command command) {
+    def test(RequestServerInterface serverInterface, Request command) {
         serverInterface.logger.info(command.toString())
         serverInterface.sendBack("OK", new String[]{"wdnmd"})
     }
 
-    def hello(RequestServerInterface serverInterface, Command command){
+    def hello(RequestServerInterface serverInterface, Request command){
         serverInterface.logger.info("HELLO COMMAND TRIGGERED")
         serverInterface.sendBack("OK",new String[]{"o/"})
     }

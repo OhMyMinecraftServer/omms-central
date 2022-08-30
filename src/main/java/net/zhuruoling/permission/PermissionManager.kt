@@ -1,4 +1,4 @@
-package net.zhuruoling.permcode
+package net.zhuruoling.permission
 
 import com.google.gson.GsonBuilder
 import net.zhuruoling.util.Util
@@ -11,7 +11,8 @@ import kotlin.random.Random
 object PermissionManager {
     var permissionTable :HashMap<Int, List<Permission>> = java.util.HashMap()
     val logger: Logger = LoggerFactory.getLogger("Main")
-
+    var tableHash: Int = 0;
+    val changesTable: MutableList<PermissionChange> = mutableListOf()
     data class Perm(
         val permissions: List<PermComponents>
     )
@@ -54,6 +55,7 @@ object PermissionManager {
         permissionTable.forEach {
             logger.info("${it.key} -> ${it.value}")
         }
+        tableHash = permissionTable.hashCode()
     }
 
     fun readPermFromInt(components: PermComponents): List<Permission> {
@@ -248,13 +250,37 @@ higher bits
         return code
     }
 
+    private fun makePermComponents (code: Int, permissions: List<Permission>): PermComponents {
+        return PermComponents(code, calcPermission(permissions))
+    }
 
+    fun savePermissionFile(){
+        logger.info("Saving modified buffer.")
+        val list: MutableList<PermComponents> = mutableListOf()
+        permissionTable.forEach {
+            list.apply {
+                list.add(makePermComponents(it.key,it.value))
+            }
+        }
+        val perm: Perm = Perm(list)
+
+    }
 
 
     fun getPermission(code: Int): List<Permission>? {
         if (permissionTable.contains(code)){
             return permissionTable[code]
         }
+
         return null
     }
+
+
+    fun submitPermissionChanges(permissionChange: PermissionChange){
+        changesTable.add(permissionChange)
+    }
+
+
+
+
 }

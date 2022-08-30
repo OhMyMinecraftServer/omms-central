@@ -29,7 +29,6 @@ public class UdpBroadcastSender extends Thread {
         socket = new MulticastSocket(port);
         socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
         return socket;
-
     }
 
     @Override

@@ -2,12 +2,9 @@ package net.zhuruoling.plugin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.command.Command
-import net.zhuruoling.command.CommandManager
+import net.zhuruoling.request.Request
+import net.zhuruoling.request.RequestManager
 import net.zhuruoling.main.RuntimeConstants
-import net.zhuruoling.util.PluginAlreadyLoadedException
-import net.zhuruoling.util.PluginNotExistException
-import net.zhuruoling.util.PluginNotLoadedException
 import net.zhuruoling.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -85,8 +82,10 @@ object PluginManager {
         }
     }
 
-    fun execute(pluginName: String,functionName:String, command: Command, serverInterface: RequestServerInterface){
-        val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException("Plugin $pluginName does not exist.")
+    fun execute(pluginName: String, functionName:String, command: Request, serverInterface: RequestServerInterface){
+        val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
+            "Plugin $pluginName does not exist."
+        )
         if (pluginInstance.pluginStatus == PluginStatus.UNLOADED)
             throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
         pluginInstance.invokeMethod(functionName, serverInterface, command)
@@ -128,7 +127,7 @@ object PluginManager {
                 e.printStackTrace()
             }
             commands?.forEach {
-                CommandManager.unregisterCommand(it)
+                RequestManager.unregisterCommand(it)
             }
             pluginInstance.pluginStatus = PluginStatus.UNLOADED
         }

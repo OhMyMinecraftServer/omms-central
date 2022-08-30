@@ -2,10 +2,10 @@ package net.zhuruoling.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.command.CommandBuilderKt;
+import net.zhuruoling.request.RequestBuilderKt;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.network.EncryptedConnector;
-import net.zhuruoling.permcode.PermissionManager;
+import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 import org.slf4j.Logger;
@@ -51,10 +51,10 @@ public class InitSession extends Thread {
             String line = encryptedConnector.readLine();
             logger.debug("recv:" + line);
             while (true){
-                var command = CommandBuilderKt.buildFromJson(line);
-                logger.info(String.valueOf(command));
-                if (Objects.equals(Objects.requireNonNull(command).getCmd(), "PING")) {
-                    var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(command.getLoad()[0])));
+                var request = RequestBuilderKt.buildFromJson(line);
+                logger.info(String.valueOf(request));
+                if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
+                    var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(request.getLoad()[0])));
                     //202205290840#114514
                     var date = Long.parseLong(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
                     var key = Long.parseLong(authKey);

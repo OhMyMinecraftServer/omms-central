@@ -1,4 +1,4 @@
-package net.zhuruoling.util;
+package net.zhuruoling.plugin;
 
 public class PluginAlreadyLoadedException extends RuntimeException{
     public PluginAlreadyLoadedException(String message) {

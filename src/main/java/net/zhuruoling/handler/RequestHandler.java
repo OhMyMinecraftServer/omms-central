@@ -1,13 +1,11 @@
 package net.zhuruoling.handler;
 
-import net.zhuruoling.command.Command;
-import net.zhuruoling.message.Message;
+import net.zhuruoling.request.Request;
 import net.zhuruoling.session.HandlerSession;
-import net.zhuruoling.session.Session;
 
-public abstract class CommandHandler {
+public abstract class RequestHandler {
 
-    public CommandHandler(String register) {
+    public RequestHandler(String register) {
         this.register = register;
     }
 
@@ -20,6 +18,6 @@ public abstract class CommandHandler {
     }
 
     private String register;
-    abstract public void handle(Command command, HandlerSession session);
+    abstract public void handle(Request command, HandlerSession session);
 
 }

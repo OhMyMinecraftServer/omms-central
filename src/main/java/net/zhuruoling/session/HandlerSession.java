@@ -1,7 +1,7 @@
 package net.zhuruoling.session;
 
 import net.zhuruoling.network.EncryptedConnector;
-import net.zhuruoling.permcode.Permission;
+import net.zhuruoling.permission.Permission;
 
 import java.util.List;
 

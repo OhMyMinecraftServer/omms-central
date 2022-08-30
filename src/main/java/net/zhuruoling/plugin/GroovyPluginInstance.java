@@ -3,7 +3,6 @@ package net.zhuruoling.plugin;
 import com.google.gson.Gson;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
-import net.zhuruoling.util.PluginNotExistException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.File;

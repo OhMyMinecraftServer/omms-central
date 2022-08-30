@@ -1,4 +1,4 @@
-package net.zhuruoling.permcode;
+package net.zhuruoling.permission;
 
 public enum Permission {
     SERVER_OS_CONTROL,

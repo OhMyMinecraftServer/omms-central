@@ -166,21 +166,10 @@ public class Util {
     }
     public static void listAll(Logger logger){
         logger.info("Listing controllers");
-        SControlClientFileReader reader = new SControlClientFileReader();
-        if (reader.isFail()){
-            logger.error("Failed to read controllers.");
-            System.exit(1);
-        }
-        if (!reader.isNoClient()) {
-            List<SControlClient> clientList = reader.getClientList();
-            clientList.forEach(client -> logger.info( "  -" + client.toString()));
-        }
-        else {
-            logger.warn("No controllers added.");
-        }
+
         logger.info("Listing Whitelist contents:");
         WhitelistReader reader_ = new WhitelistReader();
-        if (reader.isFail()){
+        if (reader_.isFail()){
             logger.error("Failed to read Whitelists.");
             System.exit(1);
         }

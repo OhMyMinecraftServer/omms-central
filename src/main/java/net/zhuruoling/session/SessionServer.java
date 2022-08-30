@@ -1,9 +1,9 @@
 package net.zhuruoling.session;
 
 import net.zhuruoling.network.EncryptedConnector;
-import net.zhuruoling.command.CommandBuilderKt;
-import net.zhuruoling.command.CommandManager;
-import net.zhuruoling.permcode.Permission;
+import net.zhuruoling.request.RequestBuilderKt;
+import net.zhuruoling.request.RequestManager;
+import net.zhuruoling.permission.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +58,9 @@ public class SessionServer extends Thread {
                 try {
                     if (session.getSocket().isClosed())
                         break;
-                    var command = CommandBuilderKt.buildFromJson(line);
+                    var command = RequestBuilderKt.buildFromJson(line);
                     logger.info("Received " + command);
-                    Objects.requireNonNull(CommandManager.INSTANCE.getCommandHandler(Objects.requireNonNull(command).getCmd())).handle(command,new HandlerSession(encryptedConnector,session,this.permissions));
+                    Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(command).getRequest())).handle(command,new HandlerSession(encryptedConnector,session,this.permissions));
                     if (session.getSocket().isClosed())
                         break;
                     line = encryptedConnector.readLine();

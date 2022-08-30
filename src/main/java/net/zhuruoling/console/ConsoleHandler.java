@@ -2,13 +2,18 @@ package net.zhuruoling.console;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.zhuruoling.broadcast.Broadcast;
 import net.zhuruoling.kt.TryKotlin;
 import net.zhuruoling.main.RuntimeConstants;
-import net.zhuruoling.permcode.PermissionManager;
+import net.zhuruoling.permission.IllegalPermissionNameException;
+import net.zhuruoling.permission.Permission;
+import net.zhuruoling.permission.PermissionChange;
+import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.plugin.PluginManager;
 import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.WhitelistManager;
@@ -32,9 +37,11 @@ import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
@@ -190,10 +197,12 @@ public class ConsoleHandler {
                     MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
                     MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
                     MemoryUsage nonHeapMemoryUsage = memoryMXBean.getNonHeapMemoryUsage();
-                    double totalMemory = ((heapMemoryUsage.getInit() + nonHeapMemoryUsage.getInit()) / 1024.0) / 1024.0;
+                    //double totalMemory = ((heapMemoryUsage.getInit() + nonHeapMemoryUsage.getInit()) / 1024.0) / 1024.0;
                     double maxMemory = ((heapMemoryUsage.getMax() + nonHeapMemoryUsage.getMax()) / 1024.0) / 1024.0;
                     double usedMemory = ((heapMemoryUsage.getUsed() + nonHeapMemoryUsage.getUsed()) / 1024.0) / 1024.0;
                     logger.info("Memory usage: %.3fMiB/%.3fMiB".formatted(usedMemory, maxMemory));
+
+                    Util.listAll(logger);
 
                     var threadGroup = Thread.currentThread().getThreadGroup();
                     int count = threadGroup.activeCount();
@@ -222,6 +231,140 @@ public class ConsoleHandler {
             return 0;
         }));
 
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("permission").then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
+                            var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
+                            logger.info("Listing permissions:");
+                            permissionMap.forEach((i, p) -> {
+                                logger.info("\tcode %d has got those permissions:".formatted(i));
+                                p.forEach(permission -> {
+                                    logger.info("\t\t- %s".formatted(permission.name()));
+                                });
+                            });
+                            if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
+                                logger.info("Changes listed below will be applied to permission files.");
+                                var changes = PermissionManager.INSTANCE.getChangesTable();
+                                changes.forEach(permissionChange -> {
+                                    switch (permissionChange.getOperation()) {
+                                        case ADD -> {
+                                            var ref = new Object() {
+                                                String affection = "";
+                                            };
+                                            permissionChange.getChanges().forEach(permission -> {
+                                                ref.affection += permission.name();
+                                                if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1 ){
+                                                    ref.affection += ", ";
+                                                }
+                                            });
+                                            logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), ref.affection));
+                                        }
+                                        case CREATE -> {
+                                            logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                        }
+                                        case DELETE -> {
+                                            logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
+                                        }
+                                        case REMOVE -> {
+                                            var ref = new Object() {
+                                                String affection = "";
+                                            };
+                                            permissionChange.getChanges().forEach(permission -> {
+                                                ref.affection += permission.name();
+                                                if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1 ){
+                                                    ref.affection += ", ";
+                                                }
+                                            });
+                                            logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), ref.affection));
+
+                                        }
+                                        default -> {
+
+                                        }
+                                    }
+
+                                });
+                            }
+                            return 0;
+                        })
+                ).then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("remove")
+                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
+                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", string())
+                                                .executes(x -> {
+                                                    int code = IntegerArgumentType.getInteger(x, "code");
+                                                    String permissionName = StringArgumentType.getString(x, "permission_name");
+                                                    try {
+                                                        Permission permission = Permission.valueOf(permissionName);
+                                                        var p = PermissionManager.INSTANCE.getPermission(code);
+                                                        if (p == null) {
+                                                            logger.warn("Permission code %d does not exist.".formatted(code));
+                                                            return -1;
+                                                        }
+                                                        ArrayList<Permission> permissions = new ArrayList<>(p);
+                                                        if (!permissions.contains(permission)) {
+                                                            logger.warn("Code %d has not got permission %s".formatted(code, permissionName));
+                                                            return -1;
+                                                        }
+                                                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, code, List.of(permission)));
+
+                                                    } catch (IllegalArgumentException e) {
+                                                        logger.warn("%s is not a valid permission name".formatted(permissionName), new IllegalPermissionNameException(permissionName, e));
+                                                    }
+                                                    return 0;
+                                                })
+                                ))
+                ).then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("get")
+                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0))
+                                        .executes(x -> {
+                                            int code = IntegerArgumentType.getInteger(x, "code");
+                                            List<Permission> permissions = PermissionManager.INSTANCE.getPermission(code);
+                                            if (permissions == null) {
+                                                logger.warn("Permission code %d does not exist.".formatted(code));
+                                                return -1;
+                                            }
+                                            logger.info("Permission code %d has got those permissions:");
+                                            permissions.forEach(permission -> logger.info("\t- " + permission));
+                                            return 0;
+                                        })
+                                )
+                ).then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("grant")
+                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
+                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", string())
+                                                .executes(x -> {
+                                                    int code = IntegerArgumentType.getInteger(x, "code");
+                                                    String permissionName = StringArgumentType.getString(x, "permission_name");
+
+                                                    try {
+                                                        Permission permission = Permission.valueOf(permissionName);
+                                                        var p = PermissionManager.INSTANCE.getPermission(code);
+                                                        if (p == null) {
+                                                            logger.warn("Permission code %d does not exist.".formatted(code));
+                                                            return -1;
+                                                        }
+                                                        ArrayList<Permission> permissions = new ArrayList<>(p);
+                                                        if (permissions.contains(permission)) {
+                                                            logger.warn("Code %d already got permission %s".formatted(code, permissionName));
+                                                            return -1;
+                                                        }
+                                                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, List.of(permission)));
+
+                                                    } catch (IllegalArgumentException e) {
+                                                        logger.error("%s is not a valid permission name".formatted(permissionName), new IllegalPermissionNameException(permissionName, e));
+                                                    }
+
+                                                    return 0;
+                                                })
+                                ))
+                ).then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("save").executes(x -> {
+                            PermissionManager.INSTANCE.savePermissionFile();
+                            return 0;
+                        })
+                )
+        );
+
     }
 
 
@@ -229,18 +372,20 @@ public class ConsoleHandler {
         try {
             logger.info("CONSOLE issued a command:%s".formatted(command));
             ConsoleHandler.dispatcher.execute(command, new CommandSourceStack());
-        } catch (CommandSyntaxException e) {
-            logger.error("An error occurred while dispatching command.", e);
+        } catch (CommandSyntaxException ignored) {
+            logger.error("An error occurred while dispatching command.", new RuntimeException(ignored));
         }
     }
 
     public void handle(Terminal terminal) {
         WhitelistCompleter whitelistCompleter = new WhitelistCompleter();
         PlayerNameCompleter playerNameCompleter = new PlayerNameCompleter();
+        PermissionCodeCompleter permissionCodeCompleter = new PermissionCodeCompleter();
+        PermissionNameCompleter permissionNameCompleter = new PermissionNameCompleter();
         var completer = new AggregateCompleter(
                 new ArgumentCompleter(
                         new StringsCompleter("whitelist"),
-                        new StringsCompleter("list"),
+                        new StringsCompleter("list", "query"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
@@ -256,32 +401,28 @@ public class ConsoleHandler {
                         playerNameCompleter,
                         NullCompleter.INSTANCE
                 ),
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("query"),
-                        NullCompleter.INSTANCE
-                ),
+
 
                 new ArgumentCompleter(
                         new StringsCompleter("permission"),
-                        new StringsCompleter("grant"),
+                        new StringsCompleter("grant", "remove"),
+                        permissionCodeCompleter,
+                        permissionNameCompleter,
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("permission"),
-                        new StringsCompleter("list"),
+                        new StringsCompleter("list", "create", "save"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("permission"),
-                        new StringsCompleter("query"),
+                        new StringsCompleter("get", "delete"),
+                        permissionCodeCompleter,
                         NullCompleter.INSTANCE
                 ),
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("remove"),
-                        NullCompleter.INSTANCE
-                ),
+
+
                 new ArgumentCompleter(
                         new StringsCompleter("stop"),
                         NullCompleter.INSTANCE

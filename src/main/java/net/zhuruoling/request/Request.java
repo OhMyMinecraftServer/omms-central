@@ -1,29 +1,29 @@
-package net.zhuruoling.command;
+package net.zhuruoling.request;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
-public class Command {
-    public Command(String cmd, String[] load){
-        this.cmd = cmd;
+public class Request {
+    public Request(String req, String[] load){
+        this.request = req;
         this.load = load;
     }
     @SerializedName("cmd")
-    String cmd = "";
+    String request = "";
     @SerializedName("load")
     String[] load;
 
-    public String getCmd() {
-        return cmd;
+    public String getRequest() {
+        return request;
     }
 
     public String[] getLoad() {
         return load;
     }
 
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
+    public void setRequest(String request) {
+        this.request = request;
     }
 
     public void setLoad(String[] load) {
@@ -32,8 +32,8 @@ public class Command {
 
     @Override
     public String toString() {
-        return "Command{" +
-                "cmd='" + cmd + '\'' +
+        return "Request{" +
+                "request='" + request + '\'' +
                 ", load=" + Arrays.toString(load) +
                 '}';
     }

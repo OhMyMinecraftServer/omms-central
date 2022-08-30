@@ -9,20 +9,14 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class RequestServerInterface {
-    private final HandlerSession session;
-    private PluginLogger logger;
+public class RequestServerInterface extends ServerInterface {
     public RequestServerInterface(HandlerSession session, String name) {
-        this.session = session;
-        logger = new PluginLogger(name);
+        super(session, name);
     }
 
     public void sendBack(String code, String[] load) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var message = MessageBuilderKt.build(code,load);
-        session.getEncryptedConnector().println(message);
-    }
-
-    public PluginLogger getLogger() {
-        return logger;
+        this.getSession().getEncryptedConnector().println(message);
     }
 }
+

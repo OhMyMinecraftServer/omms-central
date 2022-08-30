@@ -1,22 +1,18 @@
 package net.zhuruoling.plugin;
 
-import net.zhuruoling.command.CommandManager;
-import net.zhuruoling.handler.PluginCommandHandler;
+import net.zhuruoling.request.RequestManager;
+import net.zhuruoling.handler.PluginRequestHandler;
 
-public class LifecycleServerInterface {
-    PluginLogger logger;
-    String pluginName;
+public class LifecycleServerInterface extends ServerInterface {
+
+
     public LifecycleServerInterface(String name){
-        logger = new PluginLogger(name);
-        this.pluginName = name;
+        super(null, name);
     }
 
     public void registerRequestCode(String code, String functionName){
-        logger.info("Registering %s -> %s".formatted(code,functionName));
-        CommandManager.INSTANCE.registerCommand(code,new PluginCommandHandler(pluginName,code,functionName));
+        this.getLogger().info("Registering %s -> %s".formatted(code,functionName));
+        RequestManager.INSTANCE.registerRequest(code,new PluginRequestHandler(this.getPluginName(),code,functionName));
     }
 
-    public PluginLogger getLogger() {
-        return logger;
-    }
 }

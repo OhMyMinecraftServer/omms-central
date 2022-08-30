@@ -2,10 +2,10 @@ package net.zhuruoling.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.command.Command;
+import net.zhuruoling.request.Request;
 import net.zhuruoling.message.Message;
 import net.zhuruoling.message.MessageBuilderKt;
-import net.zhuruoling.permcode.Permission;
+import net.zhuruoling.permission.Permission;
 import net.zhuruoling.session.HandlerSession;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
@@ -21,22 +21,22 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class CommandHandlerImpl extends CommandHandler {
+public class RequestHandlerImpl extends RequestHandler {
     Logger logger = LoggerFactory.getLogger("InternalCommandHandler");
 
-    public CommandHandlerImpl() {
+    public RequestHandlerImpl() {
         super("BUILTIN");
     }
 
     @Override
-    public void handle(Command command, HandlerSession session) {
+    public void handle(Request command, HandlerSession session) {
         var encryptedConnector = session.getEncryptedConnector();
         try {
             Gson gson = new Gson();
-            logger.info("Received command:" + command.getCmd() + " with load:" + Arrays.toString(command.getLoad()));
+            logger.info("Received command:" + command.getRequest() + " with load:" + Arrays.toString(command.getLoad()));
             var load = command.getLoad();
 
-            switch (command.getCmd()) {
+            switch (command.getRequest()) {
                 case "WHITELIST_CREATE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_CREATE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     var name = command.getLoad()[0];
