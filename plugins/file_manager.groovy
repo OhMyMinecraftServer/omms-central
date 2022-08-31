@@ -1,4 +1,3 @@
-import jdk.dynalink.Operation
 import net.zhuruoling.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
@@ -33,4 +32,5 @@ class PluginMain {
     def onUnload(LifecycleServerInterface serverInterface) {
         serverInterface.getLogger().info("Bye")
     }
+
 }

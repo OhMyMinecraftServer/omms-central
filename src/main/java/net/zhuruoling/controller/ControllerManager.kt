@@ -11,7 +11,7 @@ import java.io.FileReader
 import java.io.FilenameFilter
 
 object ControllerManager {
-    private val controllers = mutableMapOf<String,Controller>()
+    private val controllers = mutableMapOf<String,ControllerInstance>()
     val logger:Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().serializeNulls().create()
 
@@ -28,8 +28,15 @@ object ControllerManager {
                     logger.debug("server:$it")
                     val controller: Controller = gson.fromJson(FileReader(Util.joinFilePaths("./controllers/",it)), Controller().javaClass)
                     logger.debug(controller.toString())
-                    controllers[controller.name] = controller
+                    try {
+                        controllers[controller.name] = ControllerInstance(controller, ControllerUtils.resloveTypeFromString(controller.type))
+                    }
+                    catch (e: IllegalArgumentException){
+                        logger.error("Cannot resolve controller type symbol: %s".format(controller.type), IllegalControllerTypeException("Cannot resolve controller type symbol: %s".format(controller.type), e))
+                    }
+                        //controllers[controller.name] = controller
                 }
+
                 logger.debug(controllers.toString())
             }
         }
@@ -43,12 +50,12 @@ object ControllerManager {
         getControllerByName(controllerName)?.let { this.sendInstruction(it, command) }
     }
 
-    fun sendInstruction(instance: Controller, command: String){
-        val instruction = Instruction(ControllerUtils.resloveTypeFromString(instance.type),instance.name, command)
+    fun sendInstruction(instance: ControllerInstance, command: String){
+        val instruction = Instruction(instance.controllerType,instance.controller.name, command)
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(instruction))
     }
 
-    fun getControllerByName(name: String): Controller?{
+    fun getControllerByName(name: String): ControllerInstance? {
         return controllers[name]
     }
 }
