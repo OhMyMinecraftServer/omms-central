@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 public class GroovyPluginInstance {
     private final String pluginFilePath;
-    private GroovyClassLoader groovyClassLoader = null;
+    private GroovyClassLoader groovyClassLoader;
     private GroovyObject object = null;
 
     private PluginStatus pluginStatus = PluginStatus.NONE;

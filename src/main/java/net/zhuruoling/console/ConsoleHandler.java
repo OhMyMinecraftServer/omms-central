@@ -37,6 +37,7 @@ import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,11 +47,26 @@ import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
 public class ConsoleHandler {
-    private static final CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
+    private static CommandDispatcher<CommandSourceStack> dispatcher;
     public static Logger logger;
+    public static HashMap<String, PluginCommand> pluginCommandHashMap;
+    private static ArrayList<String> literalSimplePluginCommands = new ArrayList<>();
+    public static CommandDispatcher<CommandSourceStack> getDispatcher(){
+        return dispatcher;
+    }
 
-    static {
+    public static ArrayList<String> getLiteralSimplePluginCommands() {
+        return literalSimplePluginCommands;
+    }
 
+    public ConsoleHandler(){
+        init();
+    }
+
+
+    public void init() {
+        dispatcher = new CommandDispatcher<>();
+        pluginCommandHashMap = new HashMap<>();
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -179,7 +195,6 @@ public class ConsoleHandler {
                     PluginManager.INSTANCE.init();
                     PluginManager.INSTANCE.loadAll();
                     PermissionManager.INSTANCE.init();
-                    System.exit(0);
                     return 0;
                 })
 
@@ -224,7 +239,7 @@ public class ConsoleHandler {
         );
 
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("help").executes(x -> {
-            var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(), false);
+            var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(CommandSourceStack.Source.INTERNAL), false);
             for (String usage : usages) {
                 logger.info(usage);
             }
@@ -247,16 +262,9 @@ public class ConsoleHandler {
                                 changes.forEach(permissionChange -> {
                                     switch (permissionChange.getOperation()) {
                                         case ADD -> {
-                                            var ref = new Object() {
-                                                String affection = "";
-                                            };
-                                            permissionChange.getChanges().forEach(permission -> {
-                                                ref.affection += permission.name();
-                                                if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1 ){
-                                                    ref.affection += ", ";
-                                                }
-                                            });
-                                            logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), ref.affection));
+
+
+                                            logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
                                         }
                                         case CREATE -> {
                                             logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
@@ -265,16 +273,8 @@ public class ConsoleHandler {
                                             logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
                                         }
                                         case REMOVE -> {
-                                            var ref = new Object() {
-                                                String affection = "";
-                                            };
-                                            permissionChange.getChanges().forEach(permission -> {
-                                                ref.affection += permission.name();
-                                                if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1 ){
-                                                    ref.affection += ", ";
-                                                }
-                                            });
-                                            logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), ref.affection));
+                                            makeChangesString(permissionChange);
+                                            logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
 
                                         }
                                         default -> {
@@ -367,13 +367,26 @@ public class ConsoleHandler {
 
     }
 
+    private String makeChangesString(PermissionChange permissionChange) {
+        var ref = new Object() {
+            String affection = "";
+        };
+        permissionChange.getChanges().forEach(permission -> {
+            ref.affection += permission.name();
+            if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1 ){
+                ref.affection += ", ";
+            }
+        });
+        return ref.affection;
+    }
+
 
     public void dispatchCommand(String command) {
         try {
             logger.info("CONSOLE issued a command:%s".formatted(command));
-            ConsoleHandler.dispatcher.execute(command, new CommandSourceStack());
-        } catch (CommandSyntaxException ignored) {
-            logger.error("An error occurred while dispatching command.", new RuntimeException(ignored));
+            ConsoleHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
+        } catch (CommandSyntaxException | NullPointerException exception) {
+            logger.error("An error occurred while dispatching command.", new RuntimeException(exception));
         }
     }
 
@@ -438,7 +451,12 @@ public class ConsoleHandler {
                 new ArgumentCompleter(
                         new StringsCompleter("help"),
                         NullCompleter.INSTANCE
+                ),
+                new ArgumentCompleter(
+                        new PluginCommandCompleter(),
+                        NullCompleter.INSTANCE
                 )
+
         );
 
         try {

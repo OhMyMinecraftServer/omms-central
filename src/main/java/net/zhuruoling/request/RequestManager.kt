@@ -1,29 +1,19 @@
 package net.zhuruoling.request
 
 import net.zhuruoling.handler.RequestHandler
-import net.zhuruoling.handler.RequestHandlerImpl
-import net.zhuruoling.handler.PluginRequestHandler
-import net.zhuruoling.plugin.PluginManager
+import net.zhuruoling.plugin.RequestServerInterface
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.function.BiConsumer
 
 object RequestManager {
     val logger:Logger = LoggerFactory.getLogger("CommandManager")
     var commandTable:HashMap<String, RequestHandler> = java.util.HashMap()
-    fun registerRequest(command: String, handler: RequestHandlerImpl) {
+    fun registerRequest(command: String, handler: RequestHandler) {
         if (commandTable.containsKey(command)) {
             throw RequestAlreadyExistsException("Command $command already registered by ${commandTable[command]?.register}")
         }
         commandTable[command] = handler
-    }
-
-    fun registerRequest(request: String, handler: PluginRequestHandler) {
-
-        if (commandTable.containsKey(request)) {
-            throw RequestAlreadyExistsException("Command $request already registered by ${commandTable[request]?.register}")
-        }
-        commandTable[request] = handler
-        PluginManager.registerPluginCommand(handler.pluginName,request)
     }
 
     fun getRequestHandler(request: String): RequestHandler? {
@@ -40,4 +30,6 @@ object RequestManager {
         }
         throw CanNotFindThatFuckingRequestException("Command $command does not exist.")
     }
+
+
 }

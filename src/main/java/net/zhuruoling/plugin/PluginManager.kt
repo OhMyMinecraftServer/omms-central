@@ -126,9 +126,12 @@ object PluginManager {
             catch (e: Exception){
                 e.printStackTrace()
             }
-            commands?.forEach {
-                RequestManager.unregisterCommand(it)
+            if (!commands.isNullOrEmpty()){
+                commands.forEach {
+                    RequestManager.unregisterCommand(it)
+                }
             }
+
             pluginInstance.pluginStatus = PluginStatus.UNLOADED
         }
         else{
