@@ -145,7 +145,7 @@ public class Util {
             }
             logger.info("Created Config,writing default config.");
             Gson gson = new GsonBuilder().serializeNulls().create();
-            String cont = gson.toJson(new Configuration(50000, "Uranium"));
+            String cont = gson.toJson(new Configuration(50000, "OMMS-Central", 50001));
             File fp = new File(Util.getWorkingDir() + File.separator + "config.json");
             FileOutputStream stream = new FileOutputStream(fp);
             OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);

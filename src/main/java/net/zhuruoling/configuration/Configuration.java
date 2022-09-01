@@ -3,19 +3,33 @@ package net.zhuruoling.configuration;
 import com.google.gson.annotations.SerializedName;
 import net.zhuruoling.util.Util;
 public class Configuration {
-    public Configuration(int port,String serverName,String key,String cryptoKey){
+    public Configuration(int port,String serverName, int httpPort){
         this.port = port;
         this.serverName = serverName;
+        this.httpPort = httpPort;
     }
     public Configuration(int port,String serverName){
         this.port = port;
         this.serverName = serverName;
     }
     @SerializedName("port")
-    public int port;
-    @SerializedName("server_name")
-    public String serverName;
+    int port;
 
+    @SerializedName("http_port")
+    int httpPort;
+
+    @SerializedName("server_name")
+    String serverName;
+
+
+
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
+    }
 
     public int getPort() {
         return port;

@@ -8,6 +8,7 @@ import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.controller.ControllerManager
 import net.zhuruoling.handler.RequestHandlerImpl
 import net.zhuruoling.kt.TryKotlin.printOS
+import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.test
 import net.zhuruoling.network.UdpBroadcastReceiver
@@ -56,6 +57,9 @@ object MainKt {
             }
             if (argList.contains("--noplugin")) {
                 noPlugins = true
+            }
+            if (argList.contains("--nolock")){
+                RuntimeConstants.noLock = true
             }
         }
 
@@ -108,6 +112,7 @@ object MainKt {
             logger.error("Empty CONFIG.")
             exitProcess(1)
         }
+        RuntimeConstants.config = config
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
             logger.info(
@@ -120,20 +125,22 @@ object MainKt {
         }
 
 
-        val randomAccessFile = RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME), "rw")
-        val lock: FileLock?
-        try {
-            lock = Util.acquireLock(randomAccessFile)
-            RuntimeConstants.lock = lock
-        } catch (e: Exception) {
-            logger.error("Failed to acquire lock.Might another server instance are running?")
-            logger.info(
-                "HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(
-                    Util.LOCK_NAME
+        if (!noLock){
+            val randomAccessFile = RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME), "rw")
+            val lock: FileLock?
+            try {
+                lock = Util.acquireLock(randomAccessFile)
+                RuntimeConstants.lock = lock
+            } catch (e: Exception) {
+                logger.error("Failed to acquire lock.Might another server instance are running?")
+                logger.info(
+                    "HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(
+                        Util.LOCK_NAME
+                    )
                 )
-            )
-            logger.info("Stopping.")
-            exitProcess(3)
+                logger.info("Stopping.")
+                exitProcess(3)
+            }
         }
 
 
@@ -171,9 +178,9 @@ object MainKt {
 
         val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
         while (true) {
-            val handler0 = ConsoleHandler()
+            val handler = ConsoleHandler()
             ConsoleHandler.logger = logger
-            handler0.handle(terminal)
+            handler.handle(terminal)
         }
     }
 }

@@ -47,7 +47,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
 public class ConsoleHandler {
-    private static CommandDispatcher<CommandSourceStack> dispatcher;
+    private static CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
     public static Logger logger;
     public static HashMap<String, PluginCommand> pluginCommandHashMap;
     private static ArrayList<String> literalSimplePluginCommands = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ConsoleHandler {
     }
 
 
-    public void init() {
+    public static void init() {
         dispatcher = new CommandDispatcher<>();
         pluginCommandHashMap = new HashMap<>();
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
@@ -177,9 +177,11 @@ public class ConsoleHandler {
                         Objects.requireNonNull(RuntimeConstants.INSTANCE.getReciever()).interrupt();
                         Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).setStopped(true);
                         Objects.requireNonNull(RuntimeConstants.INSTANCE.getSocketServer()).interrupt();
-                        logger.info("Releasing lock.");
-                        Util.releaseLock(RuntimeConstants.INSTANCE.getLock());
-                        Files.delete(Path.of(Util.LOCK_NAME));
+                        if (!RuntimeConstants.INSTANCE.getNoLock()){
+                            logger.info("Releasing lock.");
+                            Util.releaseLock(RuntimeConstants.INSTANCE.getLock());
+                            Files.delete(Path.of(Util.LOCK_NAME));
+                        }
                         logger.info("Bye");
                         System.exit(0);
                     } catch (Exception e) {
@@ -367,7 +369,7 @@ public class ConsoleHandler {
 
     }
 
-    private String makeChangesString(PermissionChange permissionChange) {
+    private static String makeChangesString(PermissionChange permissionChange) {
         var ref = new Object() {
             String affection = "";
         };
