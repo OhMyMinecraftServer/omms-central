@@ -336,22 +336,35 @@ public class ConsoleHandler {
                                                 .executes(x -> {
                                                     int code = IntegerArgumentType.getInteger(x, "code");
                                                     String permissionName = StringArgumentType.getString(x, "permission_name");
-                                                    var permissions = getPermissionsFromString(permissionName);
-                                                    ArrayList<Permission> checkedPermissions = new ArrayList<>();
-                                                    var p = PermissionManager.INSTANCE.getPermission(code);
-                                                    if (p == null) {
-                                                        logger.warn("Permission code %d does not exist.".formatted(code));
-                                                        return -1;
+                                                    var p_ = getPermissionsFromString(permissionName);
+                                                    if (p_ != null){
+                                                        if (!p_.isEmpty()){
+                                                            ArrayList<Permission> permissions = new ArrayList<>(p_);
+                                                            ArrayList<Permission> checkedPermissions = new ArrayList<>();
+                                                            var p = PermissionManager.INSTANCE.getPermission(code);
+                                                            if (p == null) {
+                                                                logger.warn("Permission code %d does not exist.".formatted(code));
+                                                                return -1;
+                                                            }
+                                                            permissions.forEach(permission -> {
+                                                                if (p.contains(permission)){
+                                                                    logger.warn("Code %d already got permission %s".formatted(code, permissionName));
+                                                                }
+                                                                else {
+                                                                    checkedPermissions.add(permission);
+                                                                }
+                                                            });
+                                                            permissions.clear();
+                                                            checkedPermissions.forEach(permission -> {
+                                                                if (!checkedPermissions.contains(permission))checkedPermissions.add(permission);
+                                                            });
+                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, permissions));
+
+                                                        }
                                                     }
-                                                    permissions.forEach(permission -> {
-                                                        if (p.contains(permission)){
-                                                            logger.warn("Code %d already got permission %s".formatted(code, permissionName));
-                                                        }
-                                                        else {
-                                                            checkedPermissions.add(permission);
-                                                        }
-                                                    });
-                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, checkedPermissions));
+
+
+
 
                                                     return 0;
                                                 })
