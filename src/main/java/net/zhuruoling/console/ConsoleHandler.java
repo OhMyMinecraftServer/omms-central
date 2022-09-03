@@ -30,14 +30,14 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -235,14 +235,6 @@ public class ConsoleHandler {
                     logger.info("Java VM Arguments:");
                     runtime.getInputArguments().forEach(x -> logger.info("\t%s".formatted(x)));
 
-                    logger.info("Listing working dir.");
-                    try {
-                        Files.walk(Path.of(Util.getWorkingDir()), 64, FileVisitOption.FOLLOW_LINKS).forEach(x -> {
-                            logger.info("\t %s".formatted(x));
-                        });
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     return 0;
                 })
         );
@@ -340,7 +332,7 @@ public class ConsoleHandler {
                 ).then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("grant")
                                 .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
-                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", string())
+                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", greedyString())
                                                 .executes(x -> {
                                                     int code = IntegerArgumentType.getInteger(x, "code");
                                                     String permissionName = StringArgumentType.getString(x, "permission_name");
