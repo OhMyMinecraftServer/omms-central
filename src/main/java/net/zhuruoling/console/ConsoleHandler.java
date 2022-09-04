@@ -46,10 +46,9 @@ import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
 public class ConsoleHandler {
-    public static Logger logger;
-    public static HashMap<String, PluginCommand> pluginCommandHashMap;
+    private static Logger logger;
+    private static HashMap<String, PluginCommand> pluginCommandHashMap = new HashMap<>();
     private static CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
-    private static ArrayList<String> literalSimplePluginCommands = new ArrayList<>();
 
     public ConsoleHandler() {
         init();
@@ -59,13 +58,14 @@ public class ConsoleHandler {
         return dispatcher;
     }
 
-    public static ArrayList<String> getLiteralSimplePluginCommands() {
-        return literalSimplePluginCommands;
+    public static HashMap<String, PluginCommand> getPluginCommandHashMap() {
+        return pluginCommandHashMap;
     }
 
     public static void init() {
-        dispatcher = new CommandDispatcher<>();
-        pluginCommandHashMap = new HashMap<>();
+        //dispatcher = new CommandDispatcher<>();
+        //pluginCommandHashMap = new HashMap<>();
+        pluginCommandHashMap.forEach((s, pluginCommand) -> dispatcher.register(pluginCommand.getCommandNode()));
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -192,10 +192,13 @@ public class ConsoleHandler {
 
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
+                    dispatcher = new CommandDispatcher<>();
+                    pluginCommandHashMap = new HashMap<>();
                     PluginManager.INSTANCE.unloadAll();
                     PluginManager.INSTANCE.init();
                     PluginManager.INSTANCE.loadAll();
                     PermissionManager.INSTANCE.init();
+                    init();
                     return 0;
                 })
 
@@ -302,10 +305,9 @@ public class ConsoleHandler {
                                                         return -1;
                                                     }
                                                     permissions.forEach(permission -> {
-                                                        if (p.contains(permission)){
+                                                        if (p.contains(permission)) {
                                                             logger.warn("Code %d already got permission %s".formatted(code, permissionName));
-                                                        }
-                                                        else {
+                                                        } else {
                                                             checkedPermissions.add(permission);
                                                         }
                                                     });
@@ -337,8 +339,8 @@ public class ConsoleHandler {
                                                     int code = IntegerArgumentType.getInteger(x, "code");
                                                     String permissionName = StringArgumentType.getString(x, "permission_name");
                                                     var p_ = getPermissionsFromString(permissionName);
-                                                    if (p_ != null){
-                                                        if (!p_.isEmpty()){
+                                                    if (p_ != null) {
+                                                        if (!p_.isEmpty()) {
                                                             ArrayList<Permission> permissions = new ArrayList<>(p_);
                                                             ArrayList<Permission> checkedPermissions = new ArrayList<>();
                                                             var p = PermissionManager.INSTANCE.getPermission(code);
@@ -347,25 +349,21 @@ public class ConsoleHandler {
                                                                 return -1;
                                                             }
                                                             permissions.forEach(permission -> {
-                                                                if (p.contains(permission)){
+                                                                if (p.contains(permission)) {
                                                                     logger.warn("Code %d already got permission %s".formatted(code, permissionName));
-                                                                }
-                                                                else {
+                                                                } else {
                                                                     checkedPermissions.add(permission);
                                                                 }
                                                             });
                                                             permissions.clear();
                                                             checkedPermissions.forEach(permission -> {
-                                                                if (!checkedPermissions.contains(permission))checkedPermissions.add(permission);
+                                                                if (!checkedPermissions.contains(permission))
+                                                                    checkedPermissions.add(permission);
                                                             });
                                                             PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, permissions));
 
                                                         }
                                                     }
-
-
-
-
                                                     return 0;
                                                 })
                                 ))
@@ -415,6 +413,10 @@ public class ConsoleHandler {
             }
         });
         return ref.affection;
+    }
+
+    public static void setLogger(Logger logger) {
+        ConsoleHandler.logger = logger;
     }
 
 

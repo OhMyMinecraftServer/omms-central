@@ -17,7 +17,7 @@ class PluginMain {
         PluginLogger logger = serverInterface.getLogger()
         logger.info("Registering Command test!")
         logger.info("Test Plugin loaded!")
-        serverInterface.registerCommand("test", {
+        serverInterface.registerCommand("fuck", {
             logger.info("Executed command test with params $it")
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")

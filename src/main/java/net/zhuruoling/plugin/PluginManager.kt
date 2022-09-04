@@ -14,10 +14,10 @@ import java.nio.file.Path
 
 object PluginManager {
     val logger: Logger = LoggerFactory.getLogger("PluginManger")
-    var pluginFileList = ArrayList<String>()
-    var pluginTable = HashMap<String, GroovyPluginInstance>()
+    private var pluginFileList = ArrayList<String>()
+    private var pluginTable = HashMap<String, GroovyPluginInstance>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
-    var pluginCommandTable: HashMap<String,ArrayList<String>> = java.util.HashMap()
+    private var pluginCommandTable: HashMap<String,ArrayList<String>> = java.util.HashMap()
     fun init() {
         if (RuntimeConstants.noPlugins){
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
@@ -112,7 +112,6 @@ object PluginManager {
     fun unload(pluginName: String, ignorePluginStatus: Boolean) {
         logger.info("Unloading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
-        val commands = pluginCommandTable[pluginName]
         val initServerInterface = LifecycleServerInterface(pluginName)
         if (pluginInstance != null) {
             if (!ignorePluginStatus){
@@ -122,14 +121,10 @@ object PluginManager {
             }
             try {
                 pluginInstance.invokeMethod("onUnload", initServerInterface)
+                RequestManager.unRegisterPluginRequest(pluginName)
             }
             catch (e: Exception){
                 e.printStackTrace()
-            }
-            if (!commands.isNullOrEmpty()){
-                commands.forEach {
-                    RequestManager.unregisterCommand(it)
-                }
             }
 
             pluginInstance.pluginStatus = PluginStatus.UNLOADED

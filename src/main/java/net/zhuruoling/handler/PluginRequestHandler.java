@@ -18,7 +18,7 @@ public class PluginRequestHandler extends RequestHandler {
     private final BiConsumer<RequestServerInterface, Request> consumer;
 
     public PluginRequestHandler(String pluginName, String code, String funcName) {
-        super("PLUGIN%s".formatted(pluginName));
+        super("PLUGIN %s".formatted(pluginName));
         this.pluginName = pluginName;
         this.code = code;
         this.funcName = funcName;
@@ -26,7 +26,7 @@ public class PluginRequestHandler extends RequestHandler {
     }
 
     public PluginRequestHandler(String pluginName, String code, BiConsumer<RequestServerInterface, Request> consumer) {
-        super("PLUGIN%s".formatted(pluginName));
+        super("PLUGIN %s".formatted(pluginName));
         this.pluginName = pluginName;
         this.code = code;
         this.funcName = "";

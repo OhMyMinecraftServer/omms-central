@@ -83,7 +83,7 @@ object MainKt {
             val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
             while (true) {
                 val handler0 = ConsoleHandler()
-                ConsoleHandler.logger = logger
+                ConsoleHandler.setLogger(logger)
                 handler0.handle(terminal)
             }
 
@@ -179,7 +179,7 @@ object MainKt {
         val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
         while (true) {
             val handler = ConsoleHandler()
-            ConsoleHandler.logger = logger
+            ConsoleHandler.setLogger(logger)
             handler.handle(terminal)
         }
     }
