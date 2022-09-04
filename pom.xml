@@ -6,7 +6,7 @@
 
     <groupId>org.zhuruoling</groupId>
     <artifactId>omms-central</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.5</version>
     <repositories>
         <repository>
             <id>minecraft-libraries</id>
@@ -148,6 +148,11 @@
             <groupId>com.flowpowered</groupId>
             <artifactId>flow-nbt</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>semver</artifactId>
+            <version>7.3.5</version>
         </dependency>
 
     </dependencies>

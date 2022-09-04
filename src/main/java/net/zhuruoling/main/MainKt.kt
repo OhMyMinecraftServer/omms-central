@@ -58,7 +58,7 @@ object MainKt {
             if (argList.contains("--noplugin")) {
                 noPlugins = true
             }
-            if (argList.contains("--nolock")){
+            if (argList.contains("--nolock")) {
                 RuntimeConstants.noLock = true
             }
         }
@@ -79,7 +79,6 @@ object MainKt {
             } catch (e: RuntimeException) {
                 logger.error("An error occurred.", e)
             }
-            val scanner = Scanner(System.`in`)
             val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
             while (true) {
                 val handler0 = ConsoleHandler()
@@ -125,7 +124,7 @@ object MainKt {
         }
 
 
-        if (!noLock){
+        if (!noLock) {
             val randomAccessFile = RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME), "rw")
             val lock: FileLock?
             try {
