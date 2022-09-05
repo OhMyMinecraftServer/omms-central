@@ -488,6 +488,10 @@ public class ConsoleHandler {
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
+                        new StringsCompleter("reload"),
+                        NullCompleter.INSTANCE
+                ),
+                new ArgumentCompleter(
                         new PluginCommandCompleter(),
                         NullCompleter.INSTANCE
                 )
