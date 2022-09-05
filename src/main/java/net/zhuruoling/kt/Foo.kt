@@ -4,8 +4,8 @@ import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 
-object TryKotlin {
-    fun printOS(){
+object Foo {
+    fun bar(){
         val logger = LoggerFactory.getLogger("YEE")
         val os = ManagementFactory.getOperatingSystemMXBean()
         val runtime = ManagementFactory.getRuntimeMXBean()

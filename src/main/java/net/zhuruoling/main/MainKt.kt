@@ -7,7 +7,7 @@ import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.controller.ControllerManager
 import net.zhuruoling.handler.RequestHandlerImpl
-import net.zhuruoling.kt.TryKotlin.printOS
+import net.zhuruoling.kt.Foo.bar
 import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.test
@@ -43,8 +43,10 @@ object MainKt {
     @JvmStatic
     fun main(args: Array<String>) {
         val timeStart = System.currentTimeMillis()
-        RuntimeConstants.launchTime = timeStart;
-        printOS()
+        RuntimeConstants.launchTime = timeStart
+        bar()
+
+
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             if (argList.contains("--generateExample")) {
@@ -59,7 +61,7 @@ object MainKt {
                 noPlugins = true
             }
             if (argList.contains("--nolock")) {
-                RuntimeConstants.noLock = true
+                noLock = true
             }
         }
 
@@ -77,9 +79,11 @@ object MainKt {
             try {
                 throw RuntimeException("Test!")
             } catch (e: RuntimeException) {
-                logger.error("An error occurred.", e)
+                logger.error("An error occurred.")
+                e.printStackTrace()
             }
             val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
+
             while (true) {
                 val handler0 = ConsoleHandler()
                 ConsoleHandler.setLogger(logger)
@@ -91,6 +95,8 @@ object MainKt {
 
         logger.info("Hello World!")
 
+
+        logger.info("Loading files.")
         if (!Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")) {
             isInit = true
             Util.createConfig(logger)
@@ -142,11 +148,12 @@ object MainKt {
             }
         }
 
-
+        logger.info("Setting up managers.")
         Util.listAll(logger)
         try {
             PluginManager.init()
             PermissionManager.init()
+            ControllerManager.init()
             for (command in Util.BUILTIN_COMMANDS.clone()) {
                 logger.info("Registering built-in command %s".formatted(command))
                 registerRequest(command!!, RequestHandlerImpl())
@@ -156,9 +163,8 @@ object MainKt {
             e.printStackTrace()
             exitProcess(2)
         }
-        Integer.MIN_VALUE
 
-
+        logger.info("Setting up services.")
         val socketServer = SessionInitialServer()
         val receiver = UdpBroadcastReceiver()
         val httpServer = launchHttpServerAsync(args)

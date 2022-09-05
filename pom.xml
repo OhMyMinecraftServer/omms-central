@@ -26,6 +26,11 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>uk.org.lidalia</groupId>
+            <artifactId>sysout-over-slf4j</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
             <version>3.21.0</version>
@@ -170,7 +175,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>net.zhuruoling.main.MainKt</mainClass>
+                                    <mainClass>net.zhuruoling.main.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

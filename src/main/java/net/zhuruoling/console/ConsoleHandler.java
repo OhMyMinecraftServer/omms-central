@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.zhuruoling.broadcast.Broadcast;
-import net.zhuruoling.kt.TryKotlin;
+import net.zhuruoling.kt.Foo;
 import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.permission.IllegalPermissionNameException;
 import net.zhuruoling.permission.Permission;
@@ -30,14 +30,11 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -204,7 +201,7 @@ public class ConsoleHandler {
 
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(context -> {
-                    TryKotlin.INSTANCE.printOS();
+                    Foo.INSTANCE.bar();
                     RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
                     logger.info("Java VM Info: %s %s %s".formatted(runtime.getVmVendor(), runtime.getVmName(), runtime.getVmVersion()));
                     logger.info("Java VM Spec Info: %s %s %s".formatted(runtime.getSpecVendor(), runtime.getSpecName(), runtime.getSpecVersion()));
