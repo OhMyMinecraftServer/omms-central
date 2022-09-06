@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.broadcast.Broadcast;
 import net.zhuruoling.kt.Foo;
 import net.zhuruoling.main.RuntimeConstants;
@@ -19,6 +20,7 @@ import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.WhitelistManager;
 import net.zhuruoling.whitelist.WhitelistReader;
 import net.zhuruoling.whitelist.WhitelistResult;
+import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -416,6 +418,18 @@ public class ConsoleHandler {
         ConsoleHandler.logger = logger;
     }
 
+    Completers.TreeCompleter walkCommandTree(CommandNode<CommandSourceStack> node){
+        var completer = new Completers.TreeCompleter();
+        Completers.TreeCompleter.node();
+        if (node.getChildren().isEmpty()){
+            node.getName();
+        }
+        else {
+            node.getName();
+            node.getChildren().forEach(this::walkCommandTree);
+        }
+        return completer;
+    }
 
     public void dispatchCommand(String command) {
         try {
