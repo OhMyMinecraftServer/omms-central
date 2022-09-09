@@ -7,7 +7,7 @@ import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.controller.ControllerManager
 import net.zhuruoling.handler.RequestHandlerImpl
-import net.zhuruoling.kt.Foo.bar
+import net.zhuruoling.foo.Foo.bar
 import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.test

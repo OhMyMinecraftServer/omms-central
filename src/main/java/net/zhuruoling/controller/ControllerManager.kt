@@ -11,11 +11,12 @@ import java.io.FileReader
 import java.io.FilenameFilter
 
 object ControllerManager {
-    private val controllers = mutableMapOf<String,ControllerInstance>()
+    val controllers = mutableMapOf<String,ControllerInstance>()
     val logger:Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().serializeNulls().create()
 
     fun init(){
+        controllers.clear()
         val path = File(Util.joinFilePaths("controllers"))
         val files = path.list(FilenameFilter { _, name -> return@FilenameFilter name.split(".")[name.split(".").size - 1] == "json" })
         if (files != null) {
@@ -36,14 +37,13 @@ object ControllerManager {
                     }
                         //controllers[controller.name] = controller
                 }
-
-                logger.debug(controllers.toString())
             }
         }
         else{
             logger.warn("No Controller added to this server.")
             return
         }
+        logger.info(controllers.toString())
     }
 
     fun sendInstruction(controllerName: String, command: String){
@@ -52,9 +52,10 @@ object ControllerManager {
 
     fun sendInstruction(instance: ControllerInstance, command: String){
         val instruction = Instruction(instance.controllerType,instance.controller.name, command)
+        logger.info(Instruction.asJsonString(instruction))
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(instruction))
     }
-
+//controller execute survival give @a dirt
     fun getControllerByName(name: String): ControllerInstance? {
         return controllers[name]
     }

@@ -9,7 +9,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.broadcast.Broadcast;
-import net.zhuruoling.kt.Foo;
+import net.zhuruoling.controller.ControllerManager;
+import net.zhuruoling.foo.Foo;
 import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.permission.IllegalPermissionNameException;
 import net.zhuruoling.permission.Permission;
@@ -197,6 +198,7 @@ public class ConsoleHandler {
                     PluginManager.INSTANCE.init();
                     PluginManager.INSTANCE.loadAll();
                     PermissionManager.INSTANCE.init();
+                    ControllerManager.INSTANCE.init();
                     init();
                     return 0;
                 })
@@ -374,6 +376,36 @@ public class ConsoleHandler {
                 )
         );
 
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("controller")
+                .then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("execute").then(
+                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", word()).then(
+                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("command", greedyString()).executes(commandContext -> {
+                                            var controllerName = StringArgumentType.getString(commandContext, "controller");
+                                            var controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
+                                            var command = StringArgumentType.getString(commandContext, "command");
+                                            if (controllerName.equals("all")){
+                                                ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+                                                    logger.info("Sending command %s to %s.".formatted(command, s));
+                                                    ControllerManager.INSTANCE.sendInstruction(controllerInstance, command);
+                                                });
+                                                return 0;
+                                            }
+                                            if (controller != null) {
+                                                logger.info("Sending command %s to %s.".formatted(command, controllerName));
+                                                ControllerManager.INSTANCE.sendInstruction(controller, command);
+                                            }
+                                            if (controller == null){
+                                                logger.error("Specified controller %s does not exist.".formatted(controllerName));
+                                                return -1;
+                                            }
+                                            return 0;
+                                        })
+                                )
+                        )
+                )
+        );
+
     }
 
     private static List<Permission> getPermissionsFromString(String string) {
@@ -418,13 +450,12 @@ public class ConsoleHandler {
         ConsoleHandler.logger = logger;
     }
 
-    Completers.TreeCompleter walkCommandTree(CommandNode<CommandSourceStack> node){
+    Completers.TreeCompleter walkCommandTree(CommandNode<CommandSourceStack> node) {
         var completer = new Completers.TreeCompleter();
         Completers.TreeCompleter.node();
-        if (node.getChildren().isEmpty()){
+        if (node.getChildren().isEmpty()) {
             node.getName();
-        }
-        else {
+        } else {
             node.getName();
             node.getChildren().forEach(this::walkCommandTree);
         }
@@ -503,6 +534,12 @@ public class ConsoleHandler {
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("reload"),
+                        NullCompleter.INSTANCE
+                ),
+                new ArgumentCompleter(
+                        new StringsCompleter("controller"),
+                        new StringsCompleter("execute"),
+                        new ControllerCompleter(),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(

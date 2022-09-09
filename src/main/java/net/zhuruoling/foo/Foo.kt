@@ -1,4 +1,4 @@
-package net.zhuruoling.kt
+package net.zhuruoling.foo
 
 import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
