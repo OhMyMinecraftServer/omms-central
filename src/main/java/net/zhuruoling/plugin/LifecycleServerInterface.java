@@ -8,7 +8,7 @@ import net.zhuruoling.console.ConsoleHandler;
 import net.zhuruoling.console.PluginCommand;
 import net.zhuruoling.request.Request;
 import net.zhuruoling.request.RequestManager;
-import net.zhuruoling.handler.PluginRequestHandler;
+import net.zhuruoling.network.session.handler.PluginRequestHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

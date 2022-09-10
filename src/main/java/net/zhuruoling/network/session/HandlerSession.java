@@ -1,4 +1,4 @@
-package net.zhuruoling.session;
+package net.zhuruoling.network.session;
 
 import net.zhuruoling.network.EncryptedConnector;
 import net.zhuruoling.permission.Permission;

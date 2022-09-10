@@ -394,12 +394,10 @@ public class ConsoleHandler {
                                             if (controller != null) {
                                                 logger.info("Sending command %s to %s.".formatted(command, controllerName));
                                                 ControllerManager.INSTANCE.sendInstruction(controller, command);
+                                                return 0;
                                             }
-                                            if (controller == null){
-                                                logger.error("Specified controller %s does not exist.".formatted(controllerName));
-                                                return -1;
-                                            }
-                                            return 0;
+                                            logger.error("Specified controller %s does not exist.".formatted(controllerName));
+                                            return -1;
                                         })
                                 )
                         )

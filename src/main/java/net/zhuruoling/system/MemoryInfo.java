@@ -1,5 +1,6 @@
 package net.zhuruoling.system;
 
+
 public class MemoryInfo {
     private long memoryTotal;
     private long memoryUsed;

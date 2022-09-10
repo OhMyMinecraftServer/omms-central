@@ -4,7 +4,7 @@ import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.network.UdpBroadcastReceiver
 import net.zhuruoling.network.UdpBroadcastSender
 import net.zhuruoling.permission.Permission
-import net.zhuruoling.session.SessionInitialServer
+import net.zhuruoling.network.session.server.SessionInitialServer
 import java.nio.channels.FileLock
 
 object RuntimeConstants {

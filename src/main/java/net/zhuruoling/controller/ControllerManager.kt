@@ -35,7 +35,6 @@ object ControllerManager {
                     catch (e: IllegalArgumentException){
                         logger.error("Cannot resolve controller type symbol: %s".format(controller.type), IllegalControllerTypeException("Cannot resolve controller type symbol: %s".format(controller.type), e))
                     }
-                        //controllers[controller.name] = controller
                 }
             }
         }

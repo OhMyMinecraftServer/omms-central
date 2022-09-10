@@ -1,4 +1,4 @@
-package net.zhuruoling.handler;
+package net.zhuruoling.network.session.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,7 +6,7 @@ import net.zhuruoling.request.Request;
 import net.zhuruoling.message.Message;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.permission.Permission;
-import net.zhuruoling.session.HandlerSession;
+import net.zhuruoling.network.session.HandlerSession;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.Whitelist;

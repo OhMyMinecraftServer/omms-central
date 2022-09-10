@@ -1,10 +1,9 @@
 package net.zhuruoling.request
 
-import net.zhuruoling.handler.RequestHandler
+import net.zhuruoling.network.session.handler.RequestHandler
 import net.zhuruoling.util.StringPair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.Collections
 import java.util.Hashtable
 
 object RequestManager {

@@ -1,4 +1,4 @@
-package net.zhuruoling.session;
+package net.zhuruoling.network.session;
 
 import java.net.Socket;
 

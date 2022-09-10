@@ -1,6 +1,8 @@
-package net.zhuruoling.session;
+package net.zhuruoling.network.session.server;
 
 import net.zhuruoling.network.EncryptedConnector;
+import net.zhuruoling.network.session.HandlerSession;
+import net.zhuruoling.network.session.Session;
 import net.zhuruoling.request.RequestBuilderKt;
 import net.zhuruoling.request.RequestManager;
 import net.zhuruoling.permission.Permission;
@@ -25,18 +27,18 @@ public class SessionServer extends Thread {
     public SessionServer(Session session, List<Permission> permissions){
         this.session = session;
         this.permissions = permissions;
-        var socket = this.session.socket;
+        var socket = this.session.getSocket();
         this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress(), socket.getPort()));
         try {
             this.encryptedConnector = new EncryptedConnector(
                     new BufferedReader(
-                            new InputStreamReader(this.session.socket.getInputStream())
+                            new InputStreamReader(this.session.getSocket().getInputStream())
                     ),
                     new PrintWriter(
-                            new OutputStreamWriter(this.session.socket.getOutputStream())
+                            new OutputStreamWriter(this.session.getSocket().getOutputStream())
                     ),
                     new String(
-                            this.session.key
+                            this.session.getKey()
                     )
             );
         } catch (IOException e) {

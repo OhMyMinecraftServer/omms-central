@@ -1,6 +1,6 @@
 package net.zhuruoling.plugin;
 
-import net.zhuruoling.session.HandlerSession;
+import net.zhuruoling.network.session.HandlerSession;
 public abstract class ServerInterface {
     private final HandlerSession session;
     private final PluginLogger logger;

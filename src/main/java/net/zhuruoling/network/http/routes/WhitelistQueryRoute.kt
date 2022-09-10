@@ -1,4 +1,4 @@
-package net.zhuruoling.network.server.routes
+package net.zhuruoling.network.http.routes
 
 import io.ktor.http.*
 import io.ktor.server.application.*

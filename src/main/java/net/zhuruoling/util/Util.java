@@ -47,8 +47,9 @@ public class Util {
             "PERMISSION_MODIFY",
             "PERMISSION_REMOVE",
             "PERMISSION_LIST",
-            "RUN_MCDR_COMMAND",
-            "RUN_MINECRAFT_COMMAND",
+            "CONTROLLER_LIST",
+            "CONTROLLER_EXECUTE",
+            "CONTROLLER_GET",
     };
 
     public static boolean fileExists(String fileName) {

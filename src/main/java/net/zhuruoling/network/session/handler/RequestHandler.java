@@ -1,7 +1,7 @@
-package net.zhuruoling.handler;
+package net.zhuruoling.network.session.handler;
 
 import net.zhuruoling.request.Request;
-import net.zhuruoling.session.HandlerSession;
+import net.zhuruoling.network.session.HandlerSession;
 
 public abstract class RequestHandler {
 

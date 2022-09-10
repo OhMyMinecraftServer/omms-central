@@ -1,11 +1,11 @@
-package net.zhuruoling.handler;
+package net.zhuruoling.network.session.handler;
 
 import net.zhuruoling.request.Request;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.plugin.PluginManager;
 import net.zhuruoling.plugin.RequestServerInterface;
-import net.zhuruoling.session.HandlerSession;
+import net.zhuruoling.network.session.HandlerSession;
 import net.zhuruoling.util.Result;
 
 import java.util.Objects;

@@ -1,6 +1,7 @@
-package net.zhuruoling.session;
+package net.zhuruoling.network.session.server;
 
 import net.zhuruoling.main.RuntimeConstants;
+import net.zhuruoling.network.session.InitSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

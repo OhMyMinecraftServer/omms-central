@@ -1,7 +1,8 @@
-package net.zhuruoling.session;
+package net.zhuruoling.network.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.network.session.server.SessionServer;
 import net.zhuruoling.request.RequestBuilderKt;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.network.EncryptedConnector;

@@ -98,10 +98,10 @@ object PermissionManager {
                 }
 
                 5 -> {
-                    p = Permission.RUN_MCDR_COMMAND
+                    p = Permission.CONTROLLER_GET
                 }
                 6 -> {
-                    p = Permission.RUN_MINECRAFT_COMMAND
+                    p = Permission.CONTROLLER_EXECUTE
                 }
                 7 -> {
                     p = Permission.START_SERVER
@@ -207,10 +207,10 @@ higher bits
                     code += 1 shl 3
                 }
 
-                Permission.RUN_MCDR_COMMAND -> {
+                Permission.CONTROLLER_GET -> {
                     code += 1 shl 4
                 }
-                Permission.RUN_MINECRAFT_COMMAND -> {
+                Permission.CONTROLLER_EXECUTE -> {
                     code += 1 shl 5
                 }
                 Permission.START_SERVER -> {

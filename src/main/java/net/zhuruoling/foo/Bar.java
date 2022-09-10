@@ -5,6 +5,7 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleHandler;
+import net.zhuruoling.system.SystemUtil;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -16,7 +17,6 @@ public class Bar {
         ConsoleHandler.init();
         ConsoleHandler.setLogger(logger);
         new ConsoleHandler().dispatchCommand("help");
-        //rec(ConsoleHandler.getDispatcher().getRoot());
     }
 
     static List<String> suggest(CommandNode<CommandSourceStack> node) {
