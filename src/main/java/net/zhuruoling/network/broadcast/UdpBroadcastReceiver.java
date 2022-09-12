@@ -1,6 +1,6 @@
-package net.zhuruoling.network;
+package net.zhuruoling.network.broadcast;
 
-import net.zhuruoling.broadcast.BroadcastBuilderKt;
+import net.zhuruoling.network.broadcast.BroadcastBuilderKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

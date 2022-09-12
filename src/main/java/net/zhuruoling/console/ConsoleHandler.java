@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import net.zhuruoling.broadcast.Broadcast;
+import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
 import net.zhuruoling.main.RuntimeConstants;

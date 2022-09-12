@@ -3,8 +3,12 @@ package net.zhuruoling.permission;
 public enum Permission {
     SERVER_OS_CONTROL,
     CENTRAL_SERVER_CONFIG,
+
+
     PERMISSION_LIST,
     PERMISSION_MODIFY,
+
+
     CONTROLLER_GET,
     CONTROLLER_EXECUTE,
     START_SERVER,

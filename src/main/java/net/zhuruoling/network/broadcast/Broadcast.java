@@ -1,4 +1,4 @@
-package net.zhuruoling.broadcast;
+package net.zhuruoling.network.broadcast;
 
 public class Broadcast {
     public String channel;

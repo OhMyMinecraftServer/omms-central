@@ -1,6 +1,7 @@
 package net.zhuruoling.permission;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PermissionChange {
     private Operation operation;
@@ -38,5 +39,17 @@ public class PermissionChange {
 
     public enum Operation {
         ADD, REMOVE, DELETE, CREATE
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(operation, code, changes);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PermissionChange that)) return false;
+        return code == that.code && operation == that.operation && Objects.equals(changes, that.changes);
     }
 }

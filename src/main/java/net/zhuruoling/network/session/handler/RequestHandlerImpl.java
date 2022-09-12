@@ -2,7 +2,9 @@ package net.zhuruoling.network.session.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.request.Request;
+import net.zhuruoling.permission.PermissionChange;
+import net.zhuruoling.permission.PermissionManager;
+import net.zhuruoling.network.session.request.Request;
 import net.zhuruoling.message.Message;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.permission.Permission;
@@ -27,7 +29,6 @@ public class RequestHandlerImpl extends RequestHandler {
     public RequestHandlerImpl() {
         super("BUILTIN");
     }
-
     @Override
     public void handle(Request command, HandlerSession session) {
         var encryptedConnector = session.getEncryptedConnector();
@@ -37,6 +38,7 @@ public class RequestHandlerImpl extends RequestHandler {
             var load = command.getLoad();
 
             switch (command.getRequest()) {
+
                 case "WHITELIST_CREATE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_CREATE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     var name = command.getLoad()[0];
@@ -110,12 +112,6 @@ public class RequestHandlerImpl extends RequestHandler {
                     }
                     encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.removeFromWhiteList(whiteName, player)));
                 }
-                case "END" -> {
-                    encryptedConnector.println(MessageBuilderKt.build(Result.OK));
-                    session.getSession().getSocket().close();
-                }
-                case "PING" -> encryptedConnector.println(MessageBuilderKt.build("PONG",new String[]{}));
-                default -> throw new OperationNotSupportedException();
                 case "WHITELIST_DELETE" -> {
                     String name = command.getLoad()[0];
                     var file = new File(Util.joinFilePaths("whitelists",name + ".json"));
@@ -128,6 +124,77 @@ public class RequestHandlerImpl extends RequestHandler {
                         encryptedConnector.println(MessageBuilderKt.build(Result.FAIL));
                     }
                 }
+
+
+                case "PERMISSION_CREATE" -> {
+                    if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+                    try {
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.CREATE, Integer.parseInt(command.getLoad()[0]), null));
+                    }
+                    catch (Exception e){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
+                    }
+                }
+                case "PERMISSION_DELETE" -> {
+                    if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+                    try {
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DELETE, Integer.parseInt(command.getLoad()[0]), null));
+                    }
+                    catch (Exception e){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
+                    }
+                }
+                case "PERMISSION_ADD" -> {
+                    if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+                    try {
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, Integer.parseInt(command.getLoad()[0]), null));
+                    }
+                    catch (Exception e){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
+                    }
+                }
+                case "PERMISSION_REMOVE" -> {
+                    if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+                    try {
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, Integer.parseInt(command.getLoad()[0]), null));
+                    }
+                    catch (Exception e){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
+                    }
+                }
+                case "PERMISSION_LIST" -> {
+                    if (!session.getPermissions().contains(Permission.PERMISSION_LIST))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
+                }
+
+
+                case "CONTROLLER_LIST" -> {
+                    if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
+                }
+                case "CONTROLLER_EXECUTE" -> {
+                    if (!session.getPermissions().contains(Permission.CONTROLLER_EXECUTE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
+                }
+                case "CONTROLLER_GET" -> {
+                    if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
+                }
+                case "SYSINFO_GET" -> {
+                    if (!session.getPermissions().contains(Permission.SERVER_OS_CONTROL))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
+
+                }
+                case "END" -> {
+                    encryptedConnector.println(MessageBuilderKt.build(Result.OK));
+                    session.getSession().getSocket().close();
+                }
+
+
+
+
+
+                default -> throw new OperationNotSupportedException();
+
             }
 
         } catch (Exception e) {

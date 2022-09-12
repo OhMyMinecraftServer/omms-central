@@ -1,4 +1,4 @@
-package net.zhuruoling.request
+package net.zhuruoling.network.session.request
 
 import net.zhuruoling.network.session.handler.RequestHandler
 import net.zhuruoling.util.StringPair

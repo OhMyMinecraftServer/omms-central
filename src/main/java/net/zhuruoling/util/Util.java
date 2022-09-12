@@ -3,12 +3,10 @@ package net.zhuruoling.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.configuration.Configuration;
-import net.zhuruoling.network.UdpBroadcastSender;
-import net.zhuruoling.scontrol.SControlClient;
+import net.zhuruoling.network.broadcast.Target;
 import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistReader;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -26,8 +24,8 @@ public class Util {
     public static final String PRODUCT_NAME_SHORT = "OMMS Central";
     public static final String LOCK_NAME = "omms.lck";
 
-    public static final UdpBroadcastSender.Target TARGET_CHAT = new UdpBroadcastSender.Target("224.114.51.4", 10086);
-    public static final UdpBroadcastSender.Target TARGET_CONTROL = new UdpBroadcastSender.Target("224.114.51.4", 10087);
+    public static final Target TARGET_CHAT = new Target("224.114.51.4", 10086);
+    public static final Target TARGET_CONTROL = new Target("224.114.51.4", 10087);
     public static final String[] DATA_FOLDERS = {
             "controllers",
             "broadcasts",
@@ -42,14 +40,19 @@ public class Util {
             "WHITELIST_ADD",
             "WHITELIST_REMOVE",
             "WHITELIST_DELETE",
+
+            "PERMISSION_CREATE",// TODO: 2022/9/12
+            "PERMISSION_DELETE",// TODO: 2022/9/12
+            "PERMISSION_ADD",// TODO: 2022/9/12
+            "PERMISSION_REMOVE",// TODO: 2022/9/12
+            "PERMISSION_LIST",// TODO: 2022/9/12
+
+            "CONTROLLER_LIST",// TODO: 2022/9/12
+            "CONTROLLER_EXECUTE",// TODO: 2022/9/12
+            "CONTROLLER_GET",// TODO: 2022/9/12
+            "SYSINFO_GET",// TODO: 2022/9/12
+
             "END",
-            "PERMISSION_CREATE",
-            "PERMISSION_MODIFY",
-            "PERMISSION_REMOVE",
-            "PERMISSION_LIST",
-            "CONTROLLER_LIST",
-            "CONTROLLER_EXECUTE",
-            "CONTROLLER_GET",
     };
 
     public static boolean fileExists(String fileName) {
@@ -108,20 +111,7 @@ public class Util {
     }
 
     public static void generateExample() {
-        try {
-            final Logger logger = LoggerFactory.getLogger("Util");
-            logger.info("Generating Client Example.");
-            Gson gson = new GsonBuilder().serializeNulls().create();
-            String cont = gson.toJson(new SControlClient("mcdreforged", Util.randomStringGen(8), 50010, "127.0.0.1", Util.randomStringGen(6), "", ""));
-            File fp = new File(Util.getWorkingDir() + File.separator + "clients" + File.separator + "example.json");
-            FileOutputStream stream = new FileOutputStream(fp);
-            OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
-            writer.append(cont);
-            writer.close();
-            stream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     public static void createFolder(String path, Logger logger) {

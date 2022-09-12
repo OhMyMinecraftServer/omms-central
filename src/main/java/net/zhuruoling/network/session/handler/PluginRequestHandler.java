@@ -1,6 +1,6 @@
 package net.zhuruoling.network.session.handler;
 
-import net.zhuruoling.request.Request;
+import net.zhuruoling.network.session.request.Request;
 import net.zhuruoling.message.MessageBuilderKt;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.plugin.PluginManager;

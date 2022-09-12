@@ -1,4 +1,4 @@
-import net.zhuruoling.request.Request
+import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.RequestServerInterface
@@ -16,9 +16,9 @@ class PluginMain {
 
     }
 
-    def readFile(RequestServerInterface serverInterface, Request command) {
-        serverInterface.logger.info(command.toString())
-        String fileName = command.load[1]
+    def readFile(RequestServerInterface serverInterface, Request request) {
+        serverInterface.logger.info(request.toString())
+        String fileName = request.load[1]
         if (Files.exists(Path.of(fileName))){
             String[] lines = Files.readAllLines(Path.of(fileName))
             serverInterface.sendBack("OK", lines)

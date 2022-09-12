@@ -2,8 +2,8 @@ package net.zhuruoling.plugin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.request.Request
-import net.zhuruoling.request.RequestManager
+import net.zhuruoling.network.session.request.Request
+import net.zhuruoling.network.session.request.RequestManager
 import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.util.Util
 import org.slf4j.Logger

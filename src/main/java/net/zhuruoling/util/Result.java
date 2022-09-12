@@ -1,5 +1,5 @@
 package net.zhuruoling.util;
 
 public enum Result {
-    FAIL, OK, PERMISSION_DENIED
+    FAIL, OK, PERMISSION_DENIED, OPERATION_ALREADY_EXISTS
 }

@@ -263,7 +263,9 @@ higher bits
             }
         }
         val perm: Perm = Perm(list)
-
+        changesTable.removeIf {
+            changesTable.contains(it)
+        }
     }
 
 
@@ -277,6 +279,9 @@ higher bits
 
 
     fun submitPermissionChanges(permissionChange: PermissionChange){
+        if (changesTable.contains(permissionChange)){
+            throw RuntimeException("This change operation in permissions already exists!")
+        }
         changesTable.add(permissionChange)
     }
 

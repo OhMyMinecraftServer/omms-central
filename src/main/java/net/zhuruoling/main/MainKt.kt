@@ -1,7 +1,7 @@
 package net.zhuruoling.main
 
 import com.google.gson.Gson
-import net.zhuruoling.request.RequestManager.registerRequest
+import net.zhuruoling.network.session.request.RequestManager.registerRequest
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
@@ -11,8 +11,8 @@ import net.zhuruoling.foo.Foo.bar
 import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.test
-import net.zhuruoling.network.UdpBroadcastReceiver
-import net.zhuruoling.network.UdpBroadcastSender
+import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
+import net.zhuruoling.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.network.http.launchHttpServerAsync
 import net.zhuruoling.permission.PermissionManager
 import net.zhuruoling.permission.PermissionManager.calcPermission
@@ -166,9 +166,9 @@ object MainKt {
 
         logger.info("Setting up services.")
         val socketServer = SessionInitialServer()
-        val receiver = UdpBroadcastReceiver()
+        val receiver = net.zhuruoling.network.broadcast.UdpBroadcastReceiver()
         val httpServer = launchHttpServerAsync(args)
-        val sender = UdpBroadcastSender()
+        val sender = net.zhuruoling.network.broadcast.UdpBroadcastSender()
         socketServer.start()
         receiver.start()
         sender.start()

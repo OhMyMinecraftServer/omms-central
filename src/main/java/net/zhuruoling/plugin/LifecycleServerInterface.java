@@ -6,8 +6,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleHandler;
 import net.zhuruoling.console.PluginCommand;
-import net.zhuruoling.request.Request;
-import net.zhuruoling.request.RequestManager;
+import net.zhuruoling.network.session.request.Request;
+import net.zhuruoling.network.session.request.RequestManager;
 import net.zhuruoling.network.session.handler.PluginRequestHandler;
 import org.jetbrains.annotations.NotNull;
 

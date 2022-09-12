@@ -1,4 +1,4 @@
-package net.zhuruoling.request;
+package net.zhuruoling.network.session.request;
 
 import com.google.gson.annotations.SerializedName;
 

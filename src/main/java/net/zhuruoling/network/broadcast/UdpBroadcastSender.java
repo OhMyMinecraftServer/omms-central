@@ -1,4 +1,4 @@
-package net.zhuruoling.network;
+package net.zhuruoling.network.broadcast;
 
 
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import net.zhuruoling.network.broadcast.*;
 
 public class UdpBroadcastSender extends Thread {
 
@@ -72,22 +73,6 @@ public class UdpBroadcastSender extends Thread {
             logger.error("Cannot send UDP Broadcast.\n\tTarget=%s\n\tContent=%s"
                             .formatted(target.toString(), Arrays.toString(content))
                     , e);
-        }
-    }
-
-    public record Target(String address, int port) {
-
-        @Override
-        public int hashCode() {
-            return (address + port).hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "Target{" +
-                    "address='" + address + '\'' +
-                    ", port=" + port +
-                    '}';
         }
     }
 

@@ -2,7 +2,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.zhuruoling.console.CommandSourceStack
-import net.zhuruoling.request.Request
+import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.RequestServerInterface
