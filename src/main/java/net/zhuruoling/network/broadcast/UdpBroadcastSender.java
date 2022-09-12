@@ -39,6 +39,14 @@ public class UdpBroadcastSender extends Thread {
             if (!queue.isEmpty()) {
                 queue.forEach(this::addToQueue);
             }
+            else {
+                try {
+                    sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                //Thread.yield();
+            }
         }
         logger.info("Stopped!");
     }

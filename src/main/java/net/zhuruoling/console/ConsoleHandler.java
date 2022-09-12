@@ -252,6 +252,14 @@ public class ConsoleHandler {
             return 0;
         }));
 
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("?").executes(x -> {
+            var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(CommandSourceStack.Source.INTERNAL), false);
+            for (String usage : usages) {
+                logger.info(usage);
+            }
+            return 0;
+        }));
+
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("permission").then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
                             var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
