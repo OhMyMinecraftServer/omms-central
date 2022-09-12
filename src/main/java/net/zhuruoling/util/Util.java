@@ -114,6 +114,7 @@ public class Util {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void createFolder(String path, Logger logger) {
         File file = new File(path);
         if (!file.exists()) {

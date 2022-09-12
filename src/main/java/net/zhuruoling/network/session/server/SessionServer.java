@@ -22,8 +22,8 @@ import java.util.Objects;
 public class SessionServer extends Thread {
     private final Session session;
     private EncryptedConnector encryptedConnector = null;
-    Logger logger = LoggerFactory.getLogger("SessionServer");
-    List<Permission> permissions = new ArrayList<>();
+    final Logger logger = LoggerFactory.getLogger("SessionServer");
+    List<Permission> permissions;
     public SessionServer(Session session, List<Permission> permissions){
         this.session = session;
         this.permissions = permissions;

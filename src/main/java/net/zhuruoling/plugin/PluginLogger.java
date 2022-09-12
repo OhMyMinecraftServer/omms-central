@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PluginLogger {
-    Logger logger = LoggerFactory.getLogger("InitServerInterface");
-    String pluginName;
+    final Logger logger = LoggerFactory.getLogger("InitServerInterface");
+    final String pluginName;
     public PluginLogger(String name){
         this.pluginName = name;
     }

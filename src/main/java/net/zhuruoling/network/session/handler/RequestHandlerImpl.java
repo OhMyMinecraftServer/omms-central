@@ -22,9 +22,11 @@ import javax.naming.OperationNotSupportedException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 
+@SuppressWarnings("DuplicatedCode")
 public class RequestHandlerImpl extends RequestHandler {
-    Logger logger = LoggerFactory.getLogger("InternalCommandHandler");
+    final Logger logger = LoggerFactory.getLogger("InternalCommandHandler");
 
     public RequestHandlerImpl() {
         super("BUILTIN");
@@ -72,7 +74,7 @@ public class RequestHandlerImpl extends RequestHandler {
                         encryptedConnector.println(MessageBuilderKt.build(WhitelistResult.NO_WHITELIST));
 
                     }
-                    String[] whitelistNames = new String[whitelists.size()];
+                    String[] whitelistNames = new String[Objects.requireNonNull(whitelists).size()];
                     for (int i = 0; i < whitelistNames.length; i++) {
                         whitelistNames[i] = whitelists.get(i).getName();
                     }

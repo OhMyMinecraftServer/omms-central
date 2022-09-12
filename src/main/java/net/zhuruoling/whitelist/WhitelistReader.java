@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WhitelistReader {
-    List<Whitelist> whitelists = new ArrayList<>();
-    Logger logger = LoggerFactory.getLogger("SControlClientFileReader");
+    final List<Whitelist> whitelists = new ArrayList<>();
+    final Logger logger = LoggerFactory.getLogger("SControlClientFileReader");
     boolean fail = false;
     boolean noWhitelist = false;
     public WhitelistReader(){
@@ -29,7 +29,7 @@ public class WhitelistReader {
                 return;
             }
             for (File file:v1) {
-                BufferedReader reader = null;
+                BufferedReader reader;
                 try {
                     reader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
                 } catch (FileNotFoundException e) {

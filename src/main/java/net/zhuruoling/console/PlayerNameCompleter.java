@@ -1,6 +1,5 @@
 package net.zhuruoling.console;
 
-import net.zhuruoling.whitelist.WhitelistManager;
 import net.zhuruoling.whitelist.WhitelistReader;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;

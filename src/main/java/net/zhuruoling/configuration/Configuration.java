@@ -1,7 +1,7 @@
 package net.zhuruoling.configuration;
 
 import com.google.gson.annotations.SerializedName;
-import net.zhuruoling.util.Util;
+
 public class Configuration {
     public Configuration(int port,String serverName, int httpPort){
         this.port = port;

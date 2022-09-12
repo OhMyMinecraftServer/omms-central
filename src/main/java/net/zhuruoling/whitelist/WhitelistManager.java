@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@SuppressWarnings("DuplicatedCode")
 public class WhitelistManager {
     
     public WhitelistManager(){
@@ -45,7 +46,7 @@ public class WhitelistManager {
         Whitelist whitelist = new WhitelistReader().read(whitelistName);
         var before = whitelist.getPlayers();
         String[] after = new String[before.length + 1];
-        var beforeList1 = new ArrayList<String>(Arrays.stream(before).toList());
+        var beforeList1 = new ArrayList<>(Arrays.stream(before).toList());
         if (beforeList1.contains(value)) {
             return WhitelistResult.PLAYER_ALREADY_EXISTS;
         }
@@ -55,7 +56,7 @@ public class WhitelistManager {
         Gson gson1 = new GsonBuilder().serializeNulls().create();
         String cont = gson1.toJson(newWhitelist);
         File fp = new File(Util.getWorkingDir() + File.separator + "whitelists" + File.separator + whitelistName + ".json");
-        FileOutputStream stream = null;
+        FileOutputStream stream;
         try {
             stream = new FileOutputStream(fp);
             OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
@@ -75,7 +76,7 @@ public class WhitelistManager {
         Whitelist whitelist1 = new WhitelistReader().read(whitelistName);
         String[] before1 = whitelist1.getPlayers();
         String[] after1 = new String[before1.length - 1];
-        var beforeList = new ArrayList<String>(Arrays.stream(before1).toList());
+        var beforeList = new ArrayList<>(Arrays.stream(before1).toList());
         if (!beforeList.contains(value)) {
             return WhitelistResult.NO_SUCH_PLAYER;
         }

@@ -12,14 +12,12 @@ import java.util.List;
 
 
 public class WhitelistCompleter implements Completer {
-    Completer completer;
+    final Completer completer;
 
     public WhitelistCompleter(){
         var whitelists = new WhitelistReader().getWhitelists();
         ArrayList<String> list = new ArrayList<>();
-        whitelists.forEach(x -> {
-            list.add(x.getName());
-        });
+        whitelists.forEach(x -> list.add(x.getName()));
         completer = new StringsCompleter(list);
     }
 

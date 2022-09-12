@@ -2,8 +2,8 @@ package net.zhuruoling.network.broadcast;
 
 public class Target {
 
-    String address;
-    int port;
+    final String address;
+    final int port;
 
     public Target(String address, int port) {
         this.address = address;

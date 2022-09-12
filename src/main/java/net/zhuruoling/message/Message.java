@@ -10,7 +10,7 @@ public class Message {
         this.load = load;
     }
     @SerializedName("msg")
-    String msg = "";
+    String msg;
     @SerializedName("load")
     String[] load;
 

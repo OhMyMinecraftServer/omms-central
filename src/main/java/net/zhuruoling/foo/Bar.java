@@ -5,7 +5,6 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleHandler;
-import net.zhuruoling.system.SystemUtil;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -27,6 +26,7 @@ public class Bar {
         if (node.getChildren().isEmpty()) {
             print(node.getName());
         } else {
+            //noinspection StatementWithEmptyBody
             if(node instanceof ArgumentCommandNode<?,?>){
 
             }

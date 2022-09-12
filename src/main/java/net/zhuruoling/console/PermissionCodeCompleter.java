@@ -16,9 +16,7 @@ public class PermissionCodeCompleter implements Completer {
     @Override
     public void complete(LineReader lineReader, ParsedLine parsedLine, List<Candidate> list) {
         ArrayList<String> strings = new ArrayList<>();
-        PermissionManager.INSTANCE.getPermissionTable().forEach((integer, ignored) -> {
-            strings.add(Integer.toString(integer));
-        });
+        PermissionManager.INSTANCE.getPermissionTable().forEach((integer, ignored) -> strings.add(Integer.toString(integer)));
         new StringsCompleter(strings).complete(lineReader, parsedLine, list);
     }
 }

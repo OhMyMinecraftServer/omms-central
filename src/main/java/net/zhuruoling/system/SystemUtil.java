@@ -10,6 +10,7 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class SystemUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
@@ -24,7 +25,7 @@ public class SystemUtil {
             var files = file.listFiles();
             HashSet<String> fileSet = new HashSet<>();
             HashSet<String> folderSet = new HashSet<>();
-            for (File f : files) {
+            for (File f : Objects.requireNonNull(files)) {
                 if (f.isFile()){
                     fileSet.add(f.getName());
                     continue;
@@ -73,9 +74,7 @@ public class SystemUtil {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         StorageInfo storageInfo = new StorageInfo();
-        hardwareAbstractionLayer.getDiskStores().forEach(hwDiskStore -> {
-            storageInfo.getStorageList().add(storageInfo.new Storage(hwDiskStore.getName(), hwDiskStore.getModel(), hwDiskStore.getSize()));
-        });
+        hardwareAbstractionLayer.getDiskStores().forEach(hwDiskStore -> storageInfo.getStorageList().add(storageInfo.new Storage(hwDiskStore.getName(), hwDiskStore.getModel(), hwDiskStore.getSize())));
         //没有静态(static)的类中类不能使用外部类进行.操作,必须用实例来进行实例化类中类.
         return storageInfo;
     }
@@ -83,9 +82,7 @@ public class SystemUtil {
     public static FileSystemInfo getFileSystemInfo(){
         SystemInfo systemInfo = new SystemInfo();
         FileSystemInfo fileSystemInfo = new FileSystemInfo();
-        systemInfo.getOperatingSystem().getFileSystem().getFileStores().forEach(osFileStore -> {
-            fileSystemInfo.fileSystemList.add(new FileSystemInfo.FileSystem(osFileStore.getFreeSpace(), osFileStore.getTotalSpace(), osFileStore.getVolume(), osFileStore.getMount(), osFileStore.getType()));
-        });
+        systemInfo.getOperatingSystem().getFileSystem().getFileStores().forEach(osFileStore -> fileSystemInfo.fileSystemList.add(new FileSystemInfo.FileSystem(osFileStore.getFreeSpace(), osFileStore.getTotalSpace(), osFileStore.getVolume(), osFileStore.getMount(), osFileStore.getType())));
         return fileSystemInfo;
     }
 
@@ -95,9 +92,7 @@ public class SystemUtil {
         var networkParams = systemInfo.getOperatingSystem().getNetworkParams();
 
         var networkInfo = new NetworkInfo(networkParams.getHostName(), networkParams.getDomainName(), networkParams.getDnsServers(), networkParams.getIpv4DefaultGateway(), networkParams.getIpv6DefaultGateway());
-        hardwareAbstractionLayer.getNetworkIFs().forEach(networkIF -> {
-            networkInfo.getNetworkInterfaceList().add(new NetworkInfo.NetworkInterface(networkIF.getName(), networkIF.getDisplayName(), networkIF.getMacaddr(), networkIF.getMTU(), networkIF.getSpeed(), networkIF.getIPv4addr(), networkIF.getIPv6addr()));
-        });
+        hardwareAbstractionLayer.getNetworkIFs().forEach(networkIF -> networkInfo.getNetworkInterfaceList().add(new NetworkInfo.NetworkInterface(networkIF.getName(), networkIF.getDisplayName(), networkIF.getMacaddr(), networkIF.getMTU(), networkIF.getSpeed(), networkIF.getIPv4addr(), networkIF.getIPv6addr())));
         return networkInfo;
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 public class FileSystemInfo { // TODO: 2022/9/10
 
     @SerializedName("filesystems")
+    final
     List<FileSystem> fileSystemList = new ArrayList<>();
     record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType){
 

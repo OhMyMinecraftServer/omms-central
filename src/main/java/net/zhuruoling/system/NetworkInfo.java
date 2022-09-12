@@ -2,7 +2,6 @@ package net.zhuruoling.system;
 
 import com.google.gson.GsonBuilder;
 
-import java.lang.reflect.GenericSignatureFormatError;
 import java.util.ArrayList;
 import java.util.List;
 

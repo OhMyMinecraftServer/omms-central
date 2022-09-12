@@ -1,7 +1,6 @@
 package net.zhuruoling.foo;
 
 import net.zhuruoling.util.Util;
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 public class Rua {
     public static void main(String[] args) {

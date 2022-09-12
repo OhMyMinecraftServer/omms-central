@@ -10,9 +10,9 @@ public class StorageInfo { // TODO: 2022/9/10
     @SerializedName("storages")
     List<Storage> storageList = new ArrayList<>();
     public class Storage{
-        String name;
-        String model;
-        long size;
+        final String name;
+        final String model;
+        final long size;
         public Storage(String name, String model, long size) {
             this.name = name;
             this.model = model;

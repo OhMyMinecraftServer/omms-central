@@ -1,8 +1,8 @@
 package net.zhuruoling.util;
 
 public class StringPair {
-    String a;
-    String b;
+    final String a;
+    final String b;
 
     public StringPair(String a, String b){
         this.a = a;

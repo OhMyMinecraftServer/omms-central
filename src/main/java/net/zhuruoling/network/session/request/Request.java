@@ -10,7 +10,7 @@ public class Request {
         this.load = load;
     }
     @SerializedName("cmd")
-    String request = "";
+    String request;
     @SerializedName("load")
     String[] load;
 

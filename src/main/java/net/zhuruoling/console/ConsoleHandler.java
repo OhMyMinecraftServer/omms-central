@@ -45,6 +45,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
+@SuppressWarnings("DuplicatedCode")
 public class ConsoleHandler {
     private static Logger logger;
     private static HashMap<String, PluginCommand> pluginCommandHashMap = new HashMap<>();
@@ -257,26 +258,16 @@ public class ConsoleHandler {
                             logger.info("Listing permissions:");
                             permissionMap.forEach((i, p) -> {
                                 logger.info("\tcode %d has got those permissions:".formatted(i));
-                                p.forEach(permission -> {
-                                    logger.info("\t\t- %s".formatted(permission.name()));
-                                });
+                                p.forEach(permission -> logger.info("\t\t- %s".formatted(permission.name())));
                             });
                             if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
                                 logger.info("Changes listed below will be applied to permission files.");
                                 var changes = PermissionManager.INSTANCE.getChangesTable();
                                 changes.forEach(permissionChange -> {
                                     switch (permissionChange.getOperation()) {
-                                        case ADD -> {
-
-
-                                            logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
-                                        }
-                                        case CREATE -> {
-                                            logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
-                                        }
-                                        case DELETE -> {
-                                            logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
-                                        }
+                                        case ADD -> logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
+                                        case CREATE -> logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                        case DELETE -> logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
                                         case REMOVE -> {
                                             makeChangesString(permissionChange);
                                             logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
@@ -305,7 +296,7 @@ public class ConsoleHandler {
                                                         logger.warn("Permission code %d does not exist.".formatted(code));
                                                         return -1;
                                                     }
-                                                    permissions.forEach(permission -> {
+                                                    Objects.requireNonNull(permissions).forEach(permission -> {
                                                         if (p.contains(permission)) {
                                                             logger.warn("Code %d already got permission %s".formatted(code, permissionName));
                                                         } else {

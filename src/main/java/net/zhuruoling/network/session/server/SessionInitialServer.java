@@ -10,7 +10,7 @@ import java.net.ServerSocket;
 import java.util.Objects;
 
 public class SessionInitialServer extends Thread {
-    Logger logger = LoggerFactory.getLogger("SessionInitialServer");
+    final Logger logger = LoggerFactory.getLogger("SessionInitialServer");
 
     public SessionInitialServer() {
         this.setName("SessionInitialServer#" + this.getId());

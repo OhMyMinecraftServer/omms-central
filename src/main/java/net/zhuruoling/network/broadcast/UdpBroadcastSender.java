@@ -16,8 +16,8 @@ public class UdpBroadcastSender extends Thread {
 
     private final Logger logger = LoggerFactory.getLogger("UdpBroadcastSender");
     boolean stopped = false;
-    private ConcurrentHashMap<Target, byte[]> queue = new ConcurrentHashMap<>();
-    private HashMap<Target, MulticastSocket> multicastSocketCache = new HashMap<>();
+    private final ConcurrentHashMap<Target, byte[]> queue = new ConcurrentHashMap<>();
+    private final HashMap<Target, MulticastSocket> multicastSocketCache = new HashMap<>();
 
     public UdpBroadcastSender() {
         this.setName("UdpBroadcastSender#" + this.getId());
@@ -57,7 +57,7 @@ public class UdpBroadcastSender extends Thread {
 
 
     private void addToQueue(Target target, byte[] content) {
-        MulticastSocket socket = null;
+        MulticastSocket socket;
 
         try {
             if (multicastSocketCache.containsKey(target)) {
