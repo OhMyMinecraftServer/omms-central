@@ -8,8 +8,8 @@ import java.util.Hashtable
 
 object RequestManager {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
-    var requestTable: Hashtable<String, RequestHandler> = Hashtable()
-    val pluginRequestTable: MutableList<StringPair> = mutableListOf()
+    private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
+    private val pluginRequestTable: MutableList<StringPair> = mutableListOf()
     fun registerRequest(command: String, handler: RequestHandler) {
         if (requestTable.containsKey(command)) {
             throw RequestAlreadyExistsException("Command $command already registered by ${requestTable[command]?.register}")

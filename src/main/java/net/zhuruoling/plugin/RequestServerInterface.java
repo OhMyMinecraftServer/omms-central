@@ -1,6 +1,6 @@
 package net.zhuruoling.plugin;
 
-import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.network.session.message.MessageBuilderKt;
 import net.zhuruoling.network.session.HandlerSession;
 
 import javax.crypto.BadPaddingException;

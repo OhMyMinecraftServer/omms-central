@@ -48,7 +48,7 @@ import static java.lang.System.getProperty;
 @SuppressWarnings("DuplicatedCode")
 public class ConsoleHandler {
     private static Logger logger;
-    private static HashMap<String, PluginCommand> pluginCommandHashMap = new HashMap<>();
+    private static ArrayList<PluginCommand> pluginCommandHashMap = new ArrayList<>();
     private static CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
 
     public ConsoleHandler() {
@@ -59,14 +59,14 @@ public class ConsoleHandler {
         return dispatcher;
     }
 
-    public static HashMap<String, PluginCommand> getPluginCommandHashMap() {
+    public static ArrayList<PluginCommand> getPluginCommandHashMap() {
         return pluginCommandHashMap;
     }
 
     public static void init() {
         //dispatcher = new CommandDispatcher<>();
         //pluginCommandHashMap = new HashMap<>();
-        pluginCommandHashMap.forEach((s, pluginCommand) -> dispatcher.register(pluginCommand.getCommandNode()));
+        pluginCommandHashMap.forEach( pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -194,7 +194,7 @@ public class ConsoleHandler {
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
                     dispatcher = new CommandDispatcher<>();
-                    pluginCommandHashMap = new HashMap<>();
+                    pluginCommandHashMap = new ArrayList<>();
                     PluginManager.INSTANCE.unloadAll();
                     PluginManager.INSTANCE.init();
                     PluginManager.INSTANCE.loadAll();

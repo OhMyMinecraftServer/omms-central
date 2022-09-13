@@ -19,6 +19,7 @@ object RuntimeConstants {
     var reciever: net.zhuruoling.network.broadcast.UdpBroadcastReceiver? = null
     val permissionNames: MutableList<String> = mutableListOf()
     var config: Configuration? = null
+    var something: String = ""
 
     init {
         Permission.values().forEach {

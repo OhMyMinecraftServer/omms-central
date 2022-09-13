@@ -1,6 +1,5 @@
 package net.zhuruoling.plugin;
 
-import com.google.gson.Gson;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -28,6 +27,13 @@ public class GroovyPluginInstance {
         this.pluginStatus = pluginStatus;
     }
 
+    public PluginMetadata getMetadata() {
+        return metadata;
+    }
+
+
+    private PluginMetadata metadata = null;
+
     public GroovyPluginInstance(String pluginFilePath) {
         this.pluginFilePath = pluginFilePath;
         CompilerConfiguration config = new CompilerConfiguration();
@@ -35,15 +41,14 @@ public class GroovyPluginInstance {
         groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader(), config);
     }
 
-    public PluginMetadata initPlugin(){
+    public void initPlugin(){
         if (!Files.exists(Path.of(pluginFilePath))){
             throw new PluginNotExistException("The specified plugin file %s does not exist.".formatted(pluginFilePath));
         }
         try {
             Class<?> groovyClass = groovyClassLoader.parseClass(new File(pluginFilePath));
             object = (GroovyObject) groovyClass.getDeclaredConstructor().newInstance();
-            String metadataString = (String) object.getProperty("metadata");
-            return new Gson().fromJson(metadataString, PluginMetadata.class);
+            this.metadata = (PluginMetadata) object.invokeMethod("getPluginMetadata", null);
         }
         catch (Exception e){
             throw new RuntimeException(e);

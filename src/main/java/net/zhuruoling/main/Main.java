@@ -7,8 +7,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        System.out.println("Starting net.zhuruoling.main.Main");
+        System.out.println("Starting net.zhuruoling.main.MainKt");
         MainKt.main(args);
-
     }
 }

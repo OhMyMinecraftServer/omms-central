@@ -1,4 +1,4 @@
-package net.zhuruoling.message;
+package net.zhuruoling.network.session.message;
 
 import com.google.gson.annotations.SerializedName;
 import kotlinx.serialization.Serializable;

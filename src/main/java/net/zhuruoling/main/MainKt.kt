@@ -120,11 +120,7 @@ object MainKt {
         RuntimeConstants.config = config
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
-            logger.info(
-                "HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(
-                    Util.LOCK_NAME
-                )
-            )
+            logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")
             logger.info("Stopping.")
             exitProcess(1)
         }
@@ -138,11 +134,7 @@ object MainKt {
                 RuntimeConstants.lock = lock
             } catch (e: Exception) {
                 logger.error("Failed to acquire lock.Might another server instance are running?")
-                logger.info(
-                    "HINT:If you are sure there are no server instance running in this path,you can remove the \"%s\" file. ".formatted(
-                        Util.LOCK_NAME
-                    )
-                )
+                logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")
                 logger.info("Stopping.")
                 exitProcess(3)
             }
@@ -155,7 +147,7 @@ object MainKt {
             PermissionManager.init()
             ControllerManager.init()
             for (command in Util.BUILTIN_COMMANDS.clone()) {
-                logger.info("Registering built-in command %s".formatted(command))
+                logger.info("Registering built-in command $command")
                 registerRequest(command!!, RequestHandlerImpl())
             }
             loadAll()
@@ -166,9 +158,9 @@ object MainKt {
 
         logger.info("Setting up services.")
         val socketServer = SessionInitialServer()
-        val receiver = net.zhuruoling.network.broadcast.UdpBroadcastReceiver()
+        val receiver = UdpBroadcastReceiver()
         val httpServer = launchHttpServerAsync(args)
-        val sender = net.zhuruoling.network.broadcast.UdpBroadcastSender()
+        val sender = UdpBroadcastSender()
         socketServer.start()
         receiver.start()
         sender.start()
@@ -178,7 +170,7 @@ object MainKt {
         RuntimeConstants.udpBroadcastSender = sender
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
-        logger.info("Done(%.3fs)! For help, type \"help\" or \"?\"".formatted(timeUsed))
+        logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")
         RuntimeConstants.udpBroadcastSender = sender
 
         val terminal = TerminalBuilder.builder().system(true).dumb(true).build()

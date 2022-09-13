@@ -44,12 +44,12 @@ public class LifecycleServerInterface extends ServerInterface {
                 })
         );
         ConsoleHandler.getDispatcher().register(node);
-        ConsoleHandler.getPluginCommandHashMap().put(this.getPluginName(), new PluginCommand(this.getPluginName(), node));
+        ConsoleHandler.getPluginCommandHashMap().add(new PluginCommand(this.getPluginName(), node));
     }
 
     public void registerCommand(@NotNull LiteralArgumentBuilder<CommandSourceStack> commandSourceStackLiteralArgumentBuilder) {
         ConsoleHandler.getDispatcher().register(commandSourceStackLiteralArgumentBuilder);
-        ConsoleHandler.getPluginCommandHashMap().put(this.getPluginName(), new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
+        ConsoleHandler.getPluginCommandHashMap().add(new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
     }
 
 }

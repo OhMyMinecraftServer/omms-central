@@ -5,12 +5,15 @@ import net.zhuruoling.console.CommandSourceStack
 import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
+import net.zhuruoling.plugin.PluginMain
+import net.zhuruoling.plugin.PluginMetadata
 import net.zhuruoling.plugin.RequestServerInterface
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
-class PluginMain {
-    public static String metadata = "{\"id\":\"test_plugin\",\"version\":\"0.0.1\",\"author\":\"ZhuRuoLing\"}"
+class TestPlugin extends PluginMain {
+   // public static String metadata = "{\"id\":\"test_plugin\",\"version\":\"0.0.1\",\"author\":\"ZhuRuoLing\"}"
 
+    @Override
     void onLoad(LifecycleServerInterface serverInterface) {
         serverInterface.registerRequestCode("TEST", "test")
         serverInterface.registerRequestCode("HELLO","hello")
@@ -43,9 +46,14 @@ class PluginMain {
         serverInterface.sendBack("OK",new String[]{"o/"})
     }
 
-    def onUnload(LifecycleServerInterface serverInterface) {
+    @Override
+    void onUnload(LifecycleServerInterface serverInterface) {
         serverInterface.getLogger().info("Test Plugin unloaded!")
     }
 
+    @Override
+    PluginMetadata getPluginMetadata() {
+        return new PluginMetadata("test", "0.0.1", "ZhuRuoLing")
+    }
 }
 

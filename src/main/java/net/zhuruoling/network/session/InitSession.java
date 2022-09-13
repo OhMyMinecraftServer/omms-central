@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.zhuruoling.network.session.server.SessionServer;
 import net.zhuruoling.network.session.request.RequestBuilderKt;
-import net.zhuruoling.message.MessageBuilderKt;
+import net.zhuruoling.network.session.message.MessageBuilderKt;
 import net.zhuruoling.network.EncryptedConnector;
 import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.util.Result;
