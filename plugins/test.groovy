@@ -16,11 +16,12 @@ class TestPlugin extends PluginMain {
     @Override
     void onLoad(LifecycleServerInterface serverInterface) {
         serverInterface.registerRequestCode("TEST", "test")
-        serverInterface.registerRequestCode("HELLO","hello")
+        serverInterface.registerRequestCode("PING", {RequestServerInterface requestServerInterface, Request command ->
+            requestServerInterface.logger.info("PING COMMAND TRIGGERED")
+            requestServerInterface.sendBack("OK",new String[]{"PONG"})
+        })
         PluginLogger logger = serverInterface.getLogger()
-        logger.info("Registering Command test!")
-        logger.info("Test Plugin loaded!")
-        serverInterface.registerCommand("fuck", {
+        serverInterface.registerCommand("shit" , {
             logger.info("Executed command test with params $it")
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")
@@ -34,16 +35,12 @@ class TestPlugin extends PluginMain {
                     return 0
                 })
         )
+        logger.info("Test Plugin loaded!")
     }
 
     def test(RequestServerInterface serverInterface, Request command) {
         serverInterface.logger.info(command.toString())
         serverInterface.sendBack("OK", new String[]{"wdnmd"})
-    }
-
-    def hello(RequestServerInterface serverInterface, Request command){
-        serverInterface.logger.info("HELLO COMMAND TRIGGERED")
-        serverInterface.sendBack("OK",new String[]{"o/"})
     }
 
     @Override
