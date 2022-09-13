@@ -46,7 +46,6 @@ object MainKt {
         RuntimeConstants.launchTime = timeStart
         bar()
 
-
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             if (argList.contains("--generateExample")) {

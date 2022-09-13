@@ -172,6 +172,7 @@ public class ConsoleHandler {
                     if (RuntimeConstants.INSTANCE.getTest()) System.exit(0);
                     try {
                         logger.info("Stopping!");
+                        RuntimeConstants.INSTANCE.setNormalShutdown(true);
                         PluginManager.INSTANCE.unloadAll();
                         Objects.requireNonNull(RuntimeConstants.INSTANCE.getHttpServer()).interrupt();
                         Objects.requireNonNull(RuntimeConstants.INSTANCE.getReciever()).interrupt();
@@ -183,7 +184,9 @@ public class ConsoleHandler {
                             Files.delete(Path.of(Util.LOCK_NAME));
                         }
                         logger.info("Bye");
-                        System.exit(0);
+                        if (RuntimeConstants.INSTANCE.getNormalShutdown()){
+                            System.exit(0);
+                        }
                     } catch (Exception e) {
                         logger.error("Cannot stop server.", e);
                     }

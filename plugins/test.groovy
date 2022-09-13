@@ -11,7 +11,6 @@ import net.zhuruoling.plugin.RequestServerInterface
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
 class TestPlugin extends PluginMain {
-   // public static String metadata = "{\"id\":\"test_plugin\",\"version\":\"0.0.1\",\"author\":\"ZhuRuoLing\"}"
 
     @Override
     void onLoad(LifecycleServerInterface serverInterface) {
