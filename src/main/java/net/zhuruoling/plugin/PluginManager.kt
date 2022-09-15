@@ -2,7 +2,6 @@ package net.zhuruoling.plugin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.ktor.server.application.*
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.console.PluginCommand
 import net.zhuruoling.network.session.request.Request
@@ -104,7 +103,8 @@ object PluginManager {
             if (pluginInstance.pluginStatus == PluginStatus.LOADED) {
                 throw PluginAlreadyLoadedException("Plugin $pluginName already loaded.")
             }
-            pluginInstance.invokeMethod("onLoad", initServerInterface)
+            pluginInstance.onLoad(initServerInterface)
+            //pluginInstance.invokeMethod("onLoad", initServerInterface)
             pluginInstance.pluginStatus = PluginStatus.LOADED
         } else {
             throw PluginNotExistException("Plugin $pluginName not exist.")
@@ -114,7 +114,7 @@ object PluginManager {
     fun unload(pluginName: String, ignorePluginStatus: Boolean) {
         logger.info("Unloading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
-        val initServerInterface = LifecycleServerInterface(pluginName)
+        val lifecycleServerInterface = LifecycleServerInterface(pluginName)
         if (pluginInstance != null) {
             if (!ignorePluginStatus) {
                 if (pluginInstance.pluginStatus != PluginStatus.LOADED) {
@@ -122,7 +122,8 @@ object PluginManager {
                 }
             }
             try {
-                pluginInstance.invokeMethod("onUnload", initServerInterface)
+                pluginInstance.onUnload(lifecycleServerInterface)
+                //pluginInstance.invokeMethod("onUnload", initServerInterface)
                 RequestManager.unRegisterPluginRequest(pluginName)
                 val pluginCommandHahMap = ConsoleHandler.getPluginCommandHashMap()
                 val removed = mutableListOf<PluginCommand>()

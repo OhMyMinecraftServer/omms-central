@@ -5,24 +5,22 @@ import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 public class GroovyPluginInstance {
     private final String pluginFilePath;
     private final GroovyClassLoader groovyClassLoader;
-    private GroovyObject object = null;
-
+    private PluginMain instance = null;
     private PluginStatus pluginStatus = PluginStatus.NONE;
-
     public String getPluginFilePath() {
         return pluginFilePath;
     }
-
     public PluginStatus getPluginStatus() {
         return pluginStatus;
     }
-
     public void setPluginStatus(PluginStatus pluginStatus) {
         this.pluginStatus = pluginStatus;
     }
@@ -47,8 +45,9 @@ public class GroovyPluginInstance {
         }
         try {
             Class<?> groovyClass = groovyClassLoader.parseClass(new File(pluginFilePath));
-            object = (GroovyObject) groovyClass.getDeclaredConstructor().newInstance();
-            this.metadata = (PluginMetadata) object.invokeMethod("getPluginMetadata", null);
+            instance = (PluginMain) groovyClass.getDeclaredConstructor().newInstance();
+            //System.out.println(something.getPluginMetadata().toString());
+            this.metadata = instance.getPluginMetadata();
         }
         catch (Exception e){
             throw new RuntimeException(e);
@@ -56,6 +55,29 @@ public class GroovyPluginInstance {
     }
 
     public Object invokeMethod(String methodName, Object... params){
-        return object.invokeMethod(methodName, params);
+        var clazz = instance.getClass();
+        ArrayList<Class<?>> paramTypes = new ArrayList<>();
+        for (Object param : params) {
+            paramTypes.add(param.getClass());
+        }
+        try {
+            var method = clazz.getMethod(methodName, paramTypes.toArray(new  Class<?>[]{}));
+            method.setAccessible(true);
+            return method.invoke(instance,params);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+        //return object.invokeMethod(methodName, params);
     }
+
+    public void onLoad(LifecycleServerInterface lifecycleServerInterface){
+        instance.onLoad(lifecycleServerInterface);
+    }
+
+    public void onUnload(LifecycleServerInterface lifecycleServerInterface){
+        instance.onUnload(lifecycleServerInterface);
+    }
+
+
 }
