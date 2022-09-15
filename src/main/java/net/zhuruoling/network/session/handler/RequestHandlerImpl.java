@@ -21,29 +21,30 @@ import org.slf4j.LoggerFactory;
 import javax.naming.OperationNotSupportedException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 @SuppressWarnings("DuplicatedCode")
 public class RequestHandlerImpl extends RequestHandler {
-    final Logger logger = LoggerFactory.getLogger("InternalCommandHandler");
+    final Logger logger = LoggerFactory.getLogger("InternalRequestHandler");
 
     public RequestHandlerImpl() {
         super("BUILTIN");
     }
     @Override
-    public void handle(Request command, HandlerSession session) {
+    public void handle(Request request, HandlerSession session) {
         var encryptedConnector = session.getEncryptedConnector();
         try {
             Gson gson = new Gson();
-            logger.info("Received command:" + command.getRequest() + " with load:" + Arrays.toString(command.getLoad()));
-            var load = command.getLoad();
+            logger.info("Received request:" + request.getRequest() + " with load:" + Arrays.toString(request.getLoad()));
+            var load = request.getLoad();
 
-            switch (command.getRequest()) {
+            switch (request.getRequest()) {
 
                 case "WHITELIST_CREATE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_CREATE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-                    var name = command.getLoad()[0];
+                    var name = request.getLoad()[0];
                     if (!(new WhitelistReader().isFail()) && (new WhitelistReader().read(name) != null)) {
                         encryptedConnector.println(gson.toJson(new Message("WHITELIST_EXISTS", new String[]{}), Message.class));
                         break;
@@ -82,7 +83,7 @@ public class RequestHandlerImpl extends RequestHandler {
                 }
 
                 case "WHITELIST_GET" -> {
-                    var wlName = command.getLoad()[0];
+                    var wlName = request.getLoad()[0];
                     Whitelist wl = new WhitelistReader().read(wlName);
                     if (wl == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
@@ -94,8 +95,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "WHITELIST_ADD" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
-                    String whiteName = command.getLoad()[0];
-                    String player = command.getLoad()[1];
+                    String whiteName = request.getLoad()[0];
+                    String player = request.getLoad()[1];
 
                     if (new WhitelistReader().read(whiteName) == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
@@ -106,8 +107,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "WHITELIST_REMOVE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_REMOVE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
-                    String whiteName = command.getLoad()[0];
-                    String player = command.getLoad()[1];
+                    String whiteName = request.getLoad()[0];
+                    String player = request.getLoad()[1];
                     if (new WhitelistReader().read(whiteName) == null) {
                         encryptedConnector.println(gson.toJson(new Message(WhitelistResult.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
@@ -115,7 +116,7 @@ public class RequestHandlerImpl extends RequestHandler {
                     encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.removeFromWhiteList(whiteName, player)));
                 }
                 case "WHITELIST_DELETE" -> {
-                    String name = command.getLoad()[0];
+                    String name = request.getLoad()[0];
                     var file = new File(Util.joinFilePaths("whitelists",name + ".json"));
                     if (file.exists()){
                         boolean result = file.delete();
@@ -131,7 +132,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "PERMISSION_CREATE" -> {
                     if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     try {
-                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.CREATE, Integer.parseInt(command.getLoad()[0]), null));
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.CREATE, Integer.parseInt(request.getLoad()[0]), null));
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     }
                     catch (Exception e){
                         encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
@@ -140,7 +142,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "PERMISSION_DELETE" -> {
                     if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     try {
-                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DELETE, Integer.parseInt(command.getLoad()[0]), null));
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DELETE, Integer.parseInt(request.getLoad()[0]), null));
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     }
                     catch (Exception e){
                         encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
@@ -149,7 +152,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "PERMISSION_ADD" -> {
                     if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     try {
-                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, Integer.parseInt(command.getLoad()[0]), null));
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, Integer.parseInt(request.getLoad()[0]), null));
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     }
                     catch (Exception e){
                         encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
@@ -158,7 +162,8 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "PERMISSION_REMOVE" -> {
                     if (!session.getPermissions().contains(Permission.PERMISSION_MODIFY))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
                     try {
-                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, Integer.parseInt(command.getLoad()[0]), null));
+                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, Integer.parseInt(request.getLoad()[0]), null));
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     }
                     catch (Exception e){
                         encryptedConnector.println(MessageBuilderKt.build(Result.OPERATION_ALREADY_EXISTS));
@@ -166,7 +171,10 @@ public class RequestHandlerImpl extends RequestHandler {
                 }
                 case "PERMISSION_LIST" -> {
                     if (!session.getPermissions().contains(Permission.PERMISSION_LIST))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-
+                    var codes = PermissionManager.INSTANCE.getPermissionTable().keySet();
+                    var codeStrings = new  ArrayList<String>();
+                    codes.forEach(integer -> codeStrings.add(Integer.toString(integer)));
+                    encryptedConnector.println(MessageBuilderKt.build(Result.OK, codeStrings));
                 }
 
 

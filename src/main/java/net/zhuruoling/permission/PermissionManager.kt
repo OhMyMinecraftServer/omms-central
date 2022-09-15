@@ -23,6 +23,7 @@ object PermissionManager {
     )
 
     fun init(): Unit {
+        permissionTable.clear()
         if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) {
             logger.warn("Permission File does not exist!")
             Files.createFile(
