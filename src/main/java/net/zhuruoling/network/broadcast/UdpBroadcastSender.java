@@ -1,6 +1,5 @@
 package net.zhuruoling.network.broadcast;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +9,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import net.zhuruoling.network.broadcast.*;
 
 public class UdpBroadcastSender extends Thread {
 
     private final Logger logger = LoggerFactory.getLogger("UdpBroadcastSender");
     boolean stopped = false;
-    private final ConcurrentHashMap<Target, byte[]> queue = new ConcurrentHashMap<>();
-    private final HashMap<Target, MulticastSocket> multicastSocketCache = new HashMap<>();
+    private ConcurrentHashMap<Target, byte[]> queue = new ConcurrentHashMap<>();
+    private HashMap<Target, MulticastSocket> multicastSocketCache = new HashMap<>();
 
     public UdpBroadcastSender() {
         this.setName("UdpBroadcastSender#" + this.getId());
@@ -30,6 +28,7 @@ public class UdpBroadcastSender extends Thread {
         socket = new MulticastSocket(port);
         socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
         return socket;
+
     }
 
     @Override
@@ -37,15 +36,7 @@ public class UdpBroadcastSender extends Thread {
         logger.info("Starting UdpBroadcastSender.");
         while (!stopped) {
             if (!queue.isEmpty()) {
-                queue.forEach(this::addToQueue);
-            }
-            else {
-                try {
-                    sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                //Thread.yield();
+                queue.forEach(this::send);
             }
         }
         logger.info("Stopped!");
@@ -59,12 +50,13 @@ public class UdpBroadcastSender extends Thread {
         this.stopped = stopped;
     }
 
-    public void addToQueue(Target target, String content){
-        queue.put(target,content.getBytes(StandardCharsets.UTF_8));
+    public void addToQueue(Target target, String content) {
+        queue.put(target, content.getBytes(StandardCharsets.UTF_8));
     }
 
 
-    private void addToQueue(Target target, byte[] content) {
+    private void send(Target target, byte[] content) {
+        queue.remove(target,content);
         MulticastSocket socket;
 
         try {
@@ -75,13 +67,15 @@ public class UdpBroadcastSender extends Thread {
                 multicastSocketCache.put(target,socket);
             }
             DatagramPacket packet = new DatagramPacket(content, content.length, new InetSocketAddress(target.address, target.port).getAddress(), target.port);
+
             socket.send(packet);
-            queue.remove(target,content);
         } catch (Exception e) {
             logger.error("Cannot send UDP Broadcast.\n\tTarget=%s\n\tContent=%s"
                             .formatted(target.toString(), Arrays.toString(content))
                     , e);
         }
     }
+
+
 
 }
