@@ -6,6 +6,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleHandler;
 import org.slf4j.LoggerFactory;
+import sun.misc.Unsafe;
 
 import java.util.List;
 
@@ -16,8 +17,10 @@ public class Bar {
         ConsoleHandler.init();
         ConsoleHandler.setLogger(logger);
         new ConsoleHandler().dispatchCommand("help");
+
     }
 
+    Unsafe unsafe = Unsafe.getUnsafe();
     static List<String> suggest(CommandNode<CommandSourceStack> node) {
         return null;
     }

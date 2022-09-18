@@ -31,6 +31,12 @@ fun  build(result: Result, load: List<String>): String? {
     return gson.toJson(Message(result.name, load.toTypedArray()))
 }
 
+@NotNull
+fun  build(result: Result, load: Set<String>): String? {
+    val gson = GsonBuilder().serializeNulls().create()
+    return gson.toJson(Message(result.name, load.toTypedArray()))
+}
+
 fun build(code: String, load: Array<String>): String {
     val gson = GsonBuilder().serializeNulls().create()
     return gson.toJson(Message(code, load))

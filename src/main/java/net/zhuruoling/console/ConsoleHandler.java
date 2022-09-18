@@ -8,6 +8,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
+import kotlin.Pair;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
@@ -18,6 +20,7 @@ import net.zhuruoling.permission.PermissionChange;
 import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.plugin.PluginManager;
 import net.zhuruoling.util.Util;
+import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
 import net.zhuruoling.whitelist.WhitelistReader;
 import net.zhuruoling.whitelist.WhitelistResult;
@@ -66,7 +69,7 @@ public class ConsoleHandler {
     public static void init() {
         //dispatcher = new CommandDispatcher<>();
         //pluginCommandHashMap = new HashMap<>();
-        pluginCommandHashMap.forEach( pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
+        pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -184,7 +187,7 @@ public class ConsoleHandler {
                             Files.delete(Path.of(Util.LOCK_NAME));
                         }
                         logger.info("Bye");
-                        if (RuntimeConstants.INSTANCE.getNormalShutdown()){
+                        if (RuntimeConstants.INSTANCE.getNormalShutdown()) {
                             System.exit(0);
                         }
                     } catch (Exception e) {
@@ -276,9 +279,12 @@ public class ConsoleHandler {
                                 var changes = PermissionManager.INSTANCE.getChangesTable();
                                 changes.forEach(permissionChange -> {
                                     switch (permissionChange.getOperation()) {
-                                        case ADD -> logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
-                                        case CREATE -> logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
-                                        case DELETE -> logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
+                                        case ADD ->
+                                                logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
+                                        case CREATE ->
+                                                logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                        case DELETE ->
+                                                logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
                                         case REMOVE -> {
                                             makeChangesString(permissionChange);
                                             logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
@@ -386,7 +392,7 @@ public class ConsoleHandler {
                                             var controllerName = StringArgumentType.getString(commandContext, "controller");
                                             var controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
                                             var command = StringArgumentType.getString(commandContext, "command");
-                                            if (controllerName.equals("all")){
+                                            if (controllerName.equals("all")) {
                                                 ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
                                                     logger.info("Sending command %s to %s.".formatted(command, s));
                                                     ControllerManager.INSTANCE.sendInstruction(controllerInstance, command);
@@ -406,6 +412,61 @@ public class ConsoleHandler {
                 )
         );
 
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("search")
+                .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word())
+                        .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word())
+                                .executes(commandContext -> {
+                                    var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
+                                    var player = StringArgumentType.getString(commandContext, "player");
+                                    var resultList = new ArrayList<Pair<String, Integer>>();
+                                    if (Objects.equals(whitelistName, "all")) {
+                                        var whitelists = new WhitelistReader().getWhitelists();
+
+                                        for (Whitelist whitelist : whitelists) {
+                                            logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
+                                            for (String whitelistPlayer : whitelist.getPlayers()) {
+                                                int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
+                                                if (ratio >= 70) {
+                                                    logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
+                                                    resultList.add(new Pair<>(whitelistPlayer, ratio));
+                                                }
+                                            }
+                                            if (!resultList.isEmpty()) {
+                                                resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
+                                                Collections.reverse(resultList);
+                                                resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                            }
+                                            resultList.clear();
+                                        }
+                                        return 0;
+                                    }
+                                    var whitelist = new WhitelistReader().read(whitelistName);
+
+                                    if (whitelist == null) {
+                                        logger.error("Specified whitelist %s does not exist".formatted(whitelistName));
+                                        return -1;
+                                    }
+                                    logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
+                                    for (String whitelistPlayer : whitelist.getPlayers()) {
+                                        int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
+                                        if (ratio >= 70) {
+                                            //logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
+                                            resultList.add(new Pair<>(whitelistPlayer, ratio));
+                                        }
+
+                                    }
+                                    if (!resultList.isEmpty()) {
+                                        resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
+                                        Collections.reverse(resultList);
+                                        resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                    }
+                                    resultList.clear();
+                                    return 0;
+                                })
+                        )
+                )
+
+        );
     }
 
     private static List<Permission> getPermissionsFromString(String string) {

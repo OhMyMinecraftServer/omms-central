@@ -2,6 +2,7 @@ package net.zhuruoling.network.session.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.permission.PermissionChange;
 import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.network.session.request.Request;
@@ -9,6 +10,8 @@ import net.zhuruoling.network.session.message.Message;
 import net.zhuruoling.network.session.message.MessageBuilderKt;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.network.session.HandlerSession;
+import net.zhuruoling.system.SystemInfo;
+import net.zhuruoling.system.SystemUtil;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.Whitelist;
@@ -23,6 +26,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 @SuppressWarnings("DuplicatedCode")
@@ -68,7 +72,6 @@ public class RequestHandlerImpl extends RequestHandler {
 
                     }
                 }
-
                 case "WHITELIST_LIST" -> {
                     var whitelists = new WhitelistReader().getWhitelists();
                     if (whitelists == null){
@@ -81,7 +84,6 @@ public class RequestHandlerImpl extends RequestHandler {
                     }
                     encryptedConnector.println(MessageBuilderKt.build(Result.OK, whitelistNames));
                 }
-
                 case "WHITELIST_GET" -> {
                     var wlName = request.getLoad()[0];
                     Whitelist wl = new WhitelistReader().read(wlName);
@@ -91,7 +93,6 @@ public class RequestHandlerImpl extends RequestHandler {
                     }
                     encryptedConnector.println(gson.toJson(new Message("OK", new WhitelistReader().read(wlName).getPlayers())));
                 }
-
                 case "WHITELIST_ADD" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
 
@@ -180,27 +181,44 @@ public class RequestHandlerImpl extends RequestHandler {
 
                 case "CONTROLLER_LIST" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-
+                    var controllerNames = ControllerManager.INSTANCE.getControllers().keySet();
+                    encryptedConnector.println(MessageBuilderKt.build(Result.OK, controllerNames));
                 }
                 case "CONTROLLER_EXECUTE" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_EXECUTE))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-
+                    var name = request.getLoad()[0];
+                    var controller = ControllerManager.INSTANCE.getControllerByName(name);
+                    if (controller == null){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.CONTROLLER_NOT_EXIST));
+                    }
+                    else{
+                        var command = request.getLoad()[1];
+                        ControllerManager.INSTANCE.sendInstruction(controller, command);
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK));
+                    }
                 }
                 case "CONTROLLER_GET" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-
+                    var name = request.getLoad()[0];
+                    var controller = ControllerManager.INSTANCE.getControllerByName(name);
+                    if (controller == null){
+                        encryptedConnector.println(MessageBuilderKt.build(Result.CONTROLLER_NOT_EXIST));
+                    }
+                    else{
+                        encryptedConnector.println(MessageBuilderKt.build(Result.OK, new String[]{gson.toJson(controller)}));
+                    }
                 }
                 case "SYSINFO_GET" -> {
                     if (!session.getPermissions().contains(Permission.SERVER_OS_CONTROL))encryptedConnector.println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-
+                    SystemInfo info = new SystemInfo(SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
+                    encryptedConnector.println(MessageBuilderKt.build(Result.OK, Collections.singleton(gson.toJson(info))));
                 }
+
+
                 case "END" -> {
                     encryptedConnector.println(MessageBuilderKt.build(Result.OK));
                     session.getSession().getSocket().close();
                 }
-
-
-
 
 
                 default -> throw new OperationNotSupportedException();

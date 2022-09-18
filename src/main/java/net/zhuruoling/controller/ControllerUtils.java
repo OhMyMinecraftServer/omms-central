@@ -7,5 +7,6 @@ public class ControllerUtils {
 
     public static ControllerTypes resloveTypeFromString(String type){
         return ControllerTypes.valueOf(type.toUpperCase());
+
     }
 }

@@ -159,6 +159,11 @@
             <artifactId>semver</artifactId>
             <version>7.3.5</version>
         </dependency>
+        <dependency>
+            <groupId>me.xdrop</groupId>
+            <artifactId>fuzzywuzzy</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 
     </dependencies>
     <build>

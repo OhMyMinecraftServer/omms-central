@@ -4,10 +4,14 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.zhuruoling.console.CommandSourceStack
 import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.plugin.LifecycleServerInterface
+import net.zhuruoling.plugin.PluginDependency
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.PluginMain
 import net.zhuruoling.plugin.PluginMetadata
 import net.zhuruoling.plugin.RequestServerInterface
+
+import java.lang.module.ModuleDescriptor
+
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
 class TestPlugin extends PluginMain {
@@ -21,7 +25,7 @@ class TestPlugin extends PluginMain {
         })
         PluginLogger logger = serverInterface.getLogger()
         serverInterface.registerCommand("shit" , {
-            logger.info("Executed command test with params $it")
+            logger.info("Executed command s**t with params $it")
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")
                 .then(RequiredArgumentBuilder<CommandSourceStack, String>.argument("some_string", greedyString()).executes({
@@ -49,7 +53,27 @@ class TestPlugin extends PluginMain {
 
     @Override
     PluginMetadata getPluginMetadata() {
-        return new PluginMetadata("test", "0.0.1", "ZhuRuoLing")
+        ArrayList<PluginDependency.Dependency> dependencies = new ArrayList<>()
+        dependencies.add(new PluginDependency.Dependency() {
+            @Override
+            String getId() {
+                return "omms-central"
+            }
+
+            @Override
+            PluginDependency.Operator getOperator() {
+                return PluginDependency.Operator.GREATER
+            }
+
+            @Override
+            ModuleDescriptor.Version getVersion() {
+                return ModuleDescriptor.Version.parse("0.5.4")
+            }
+        })
+        dependencies.add(PluginDependency.Dependency.of("another-dependency", PluginDependency.Operator.GREATER, "0.0.1"))
+
+        PluginDependency dependency = new PluginDependency(dependencies)
+        return new PluginMetadata("test", "0.0.1", "ZhuRuoLing", dependency)
     }
 }
 

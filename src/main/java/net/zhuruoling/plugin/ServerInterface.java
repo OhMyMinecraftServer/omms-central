@@ -1,6 +1,7 @@
 package net.zhuruoling.plugin;
 
 import net.zhuruoling.network.session.HandlerSession;
+
 public abstract class ServerInterface {
     private final HandlerSession session;
     private final PluginLogger logger;
@@ -9,6 +10,7 @@ public abstract class ServerInterface {
         this.session = handlerSession;
         this.pluginName = name;
         this.logger = new PluginLogger(this.pluginName);
+
     }
 
     public PluginLogger getLogger() {

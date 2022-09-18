@@ -1,12 +1,13 @@
 package net.zhuruoling.foo;
 
-import net.zhuruoling.util.Util;
+import com.google.gson.GsonBuilder;
+import net.zhuruoling.system.SystemInfo;
+import net.zhuruoling.system.SystemUtil;
 
 public class Rua {
     public static void main(String[] args) {
         //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        for (String builtinCommand : Util.BUILTIN_COMMANDS) {
-            System.out.printf("case \"%s\" -> {}%n", builtinCommand);
-        }
+        SystemInfo info = new SystemInfo(SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
+        System.out.println(new GsonBuilder().serializeNulls().create().toJson(info));
     }
 }

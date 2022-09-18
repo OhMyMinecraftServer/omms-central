@@ -41,19 +41,26 @@ public class Util {
             "WHITELIST_REMOVE",
             "WHITELIST_DELETE",
 
-            "PERMISSION_CREATE",// TODO: 2022/9/12
-            "PERMISSION_DELETE",// TODO: 2022/9/12
-            "PERMISSION_ADD",// TODO: 2022/9/12
-            "PERMISSION_REMOVE",// TODO: 2022/9/12
-            "PERMISSION_LIST",// TODO: 2022/9/12
+            "PERMISSION_CREATE",
+            "PERMISSION_DELETE",
+            "PERMISSION_ADD",
+            "PERMISSION_REMOVE",
+            "PERMISSION_LIST",
 
-            "CONTROLLER_LIST",// TODO: 2022/9/12
-            "CONTROLLER_EXECUTE",// TODO: 2022/9/12
-            "CONTROLLER_GET",// TODO: 2022/9/12
-            "SYSINFO_GET",// TODO: 2022/9/12
+            "CONTROLLER_LIST",
+            "CONTROLLER_EXECUTE",
+            "CONTROLLER_GET",
+            "SYSINFO_GET",
 
             "END",
     };
+
+    public static boolean fuzzySearch(String a, String b){
+        boolean result = false;
+
+        return false;
+    }
+
 
     public static boolean fileExists(String fileName) {
         try {
