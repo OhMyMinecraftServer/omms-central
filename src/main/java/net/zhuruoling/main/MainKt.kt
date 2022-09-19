@@ -1,26 +1,33 @@
 package net.zhuruoling.main
 
 import com.google.gson.Gson
-import net.zhuruoling.network.session.request.RequestManager.registerRequest
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.controller.ControllerManager
-import net.zhuruoling.network.session.handler.RequestHandlerImpl
 import net.zhuruoling.foo.Foo.bar
+import net.zhuruoling.main.RuntimeConstants.httpServer
+import net.zhuruoling.main.RuntimeConstants.lock
 import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
+import net.zhuruoling.main.RuntimeConstants.normalShutdown
+import net.zhuruoling.main.RuntimeConstants.reciever
+import net.zhuruoling.main.RuntimeConstants.socketServer
 import net.zhuruoling.main.RuntimeConstants.test
+import net.zhuruoling.main.RuntimeConstants.udpBroadcastSender
 import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.network.http.launchHttpServerAsync
+import net.zhuruoling.network.session.handler.RequestHandlerImpl
+import net.zhuruoling.network.session.request.RequestManager.registerRequest
+import net.zhuruoling.network.session.server.SessionInitialServer
 import net.zhuruoling.permission.PermissionManager
 import net.zhuruoling.permission.PermissionManager.calcPermission
 import net.zhuruoling.permission.PermissionManager.getPermission
 import net.zhuruoling.permission.PermissionManager.permissionTable
 import net.zhuruoling.plugin.PluginManager
 import net.zhuruoling.plugin.PluginManager.loadAll
-import net.zhuruoling.network.session.server.SessionInitialServer
+import net.zhuruoling.plugin.PluginManager.unloadAll
 import net.zhuruoling.util.Util
 import org.jline.terminal.TerminalBuilder
 import org.slf4j.Logger
@@ -30,6 +37,7 @@ import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileLock
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess
@@ -178,5 +186,30 @@ object MainKt {
             ConsoleHandler.setLogger(logger)
             handler.handle(terminal)
         }
+    }
+    @JvmStatic
+    fun stop() {
+        if (test) exitProcess(0)
+        try {
+            logger.info("Stopping!")
+            normalShutdown = true
+            unloadAll()
+            Objects.requireNonNull(httpServer)?.interrupt()
+            Objects.requireNonNull(reciever)?.interrupt()
+            Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
+            Objects.requireNonNull(socketServer)?.interrupt()
+            if (!noLock) {
+                logger.info("Releasing lock.")
+                Util.releaseLock(lock)
+                Files.delete(Path.of(Util.LOCK_NAME))
+            }
+            logger.info("Bye")
+            if (normalShutdown) {
+                exitProcess(0)
+            }
+        } catch (e: java.lang.Exception) {
+            logger.error("Cannot stop server.", e)
+        }
+
     }
 }

@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Pair;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import net.zhuruoling.main.MainKt;
 import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
@@ -75,15 +76,13 @@ public class ConsoleHandler {
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word()).executes(c -> {
                                             String name = getString(c, "whitelist");
-                                            var list = new WhitelistReader().getWhitelists();
-                                            AtomicBoolean succeed = new AtomicBoolean(false);
-                                            list.forEach(x -> {
-                                                if (x.getName().equals(name) && !succeed.get()) {
-                                                    logger.info(x.toString());
-                                                    succeed.set(true);
-                                                }
-                                            });
-                                            if (!succeed.get()) logger.error("Whitelist %s does not exist.".formatted(name));
+                                            var whitelist = new WhitelistReader().read(name);
+                                            if (whitelist == null) {
+                                                logger.error("Whitelist %s does not exist.".formatted(name));
+                                            } else {
+                                                logger.info("Whitelist %s :".formatted(whitelist.getName()));
+                                                Arrays.stream(whitelist.getPlayers()).toList().forEach(x -> logger.info("\t-%s".formatted(x)));
+                                            }
                                             return 1;
                                         }
                                 )
@@ -172,28 +171,7 @@ public class ConsoleHandler {
                 )
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("stop").executes(context -> {
-                    if (RuntimeConstants.INSTANCE.getTest()) System.exit(0);
-                    try {
-                        logger.info("Stopping!");
-                        RuntimeConstants.INSTANCE.setNormalShutdown(true);
-                        PluginManager.INSTANCE.unloadAll();
-                        Objects.requireNonNull(RuntimeConstants.INSTANCE.getHttpServer()).interrupt();
-                        Objects.requireNonNull(RuntimeConstants.INSTANCE.getReciever()).interrupt();
-                        Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).setStopped(true);
-                        Objects.requireNonNull(RuntimeConstants.INSTANCE.getSocketServer()).interrupt();
-                        if (!RuntimeConstants.INSTANCE.getNoLock()) {
-                            logger.info("Releasing lock.");
-                            Util.releaseLock(RuntimeConstants.INSTANCE.getLock());
-                            Files.delete(Path.of(Util.LOCK_NAME));
-                        }
-                        logger.info("Bye");
-                        if (RuntimeConstants.INSTANCE.getNormalShutdown()) {
-                            System.exit(0);
-                        }
-                    } catch (Exception e) {
-                        logger.error("Cannot stop server.", e);
-                    }
-
+                    MainKt.stop();
                     return 0;
                 })
 
@@ -601,6 +579,11 @@ public class ConsoleHandler {
                         new StringsCompleter("controller"),
                         new StringsCompleter("execute"),
                         new ControllerCompleter(),
+                        NullCompleter.INSTANCE
+                ),
+                new ArgumentCompleter(
+                        new StringsCompleter("search"),
+                        new StringsCompleter("whitelist"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(

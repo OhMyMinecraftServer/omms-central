@@ -17,10 +17,8 @@ public class Bar {
         ConsoleHandler.init();
         ConsoleHandler.setLogger(logger);
         new ConsoleHandler().dispatchCommand("help");
-
     }
 
-    Unsafe unsafe = Unsafe.getUnsafe();
     static List<String> suggest(CommandNode<CommandSourceStack> node) {
         return null;
     }

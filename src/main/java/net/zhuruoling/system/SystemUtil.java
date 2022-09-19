@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
+import sun.misc.Unsafe;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -37,7 +38,6 @@ public class SystemUtil {
         }
         return info;
     }
-
 
 
     public static ProcessorInfo getProcessorInfo(){
@@ -90,7 +90,6 @@ public class SystemUtil {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         var networkParams = systemInfo.getOperatingSystem().getNetworkParams();
-
         var networkInfo = new NetworkInfo(networkParams.getHostName(), networkParams.getDomainName(), networkParams.getDnsServers(), networkParams.getIpv4DefaultGateway(), networkParams.getIpv6DefaultGateway());
         hardwareAbstractionLayer.getNetworkIFs().forEach(networkIF -> networkInfo.getNetworkInterfaceList().add(new NetworkInfo.NetworkInterface(networkIF.getName(), networkIF.getDisplayName(), networkIF.getMacaddr(), networkIF.getMTU(), networkIF.getSpeed(), networkIF.getIPv4addr(), networkIF.getIPv6addr())));
         return networkInfo;
