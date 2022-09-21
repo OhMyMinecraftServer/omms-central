@@ -10,21 +10,21 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Pair;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
-import net.zhuruoling.main.MainKt;
-import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
+import net.zhuruoling.main.MainKt;
 import net.zhuruoling.main.RuntimeConstants;
+import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.permission.IllegalPermissionNameException;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.permission.PermissionChange;
 import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.plugin.PluginManager;
+import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
 import net.zhuruoling.whitelist.WhitelistReader;
-import net.zhuruoling.whitelist.WhitelistResult;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -41,9 +41,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
-import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
@@ -122,7 +120,7 @@ public class ConsoleHandler {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
                                                     var result = WhitelistManager.addToWhiteList(whitelist, player);
-                                                    if (result.equals(WhitelistResult.OK)) {
+                                                    if (result.equals(Result.OK)) {
                                                         logger.info("Successfully added %s to %s".formatted(player, whitelist));
                                                         return 0;
                                                     }
@@ -140,7 +138,7 @@ public class ConsoleHandler {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
                                                     var result = WhitelistManager.removeFromWhiteList(whitelist, player);
-                                                    if (result.equals(WhitelistResult.OK)) {
+                                                    if (result.equals(Result.OK)) {
                                                         logger.info("Successfully removed %s from %s".formatted(player, whitelist));
                                                         return 0;
                                                     }
@@ -151,6 +149,61 @@ public class ConsoleHandler {
                                 )
                         )
 
+                )
+                .then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("search")
+                                .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word())
+                                        .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word())
+                                                .executes(commandContext -> {
+                                                    var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
+                                                    var player = StringArgumentType.getString(commandContext, "player");
+                                                    var resultList = new ArrayList<Pair<String, Integer>>();
+                                                    if (Objects.equals(whitelistName, "all")) {
+                                                        var whitelists = new WhitelistReader().getWhitelists();
+
+                                                        for (Whitelist whitelist : whitelists) {
+                                                            logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
+                                                            for (String whitelistPlayer : whitelist.getPlayers()) {
+                                                                int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
+                                                                if (ratio >= 70) {
+                                                                    logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
+                                                                    resultList.add(new Pair<>(whitelistPlayer, ratio));
+                                                                }
+                                                            }
+                                                            if (!resultList.isEmpty()) {
+                                                                resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
+                                                                Collections.reverse(resultList);
+                                                                resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                                            }
+                                                            resultList.clear();
+                                                        }
+                                                        return 0;
+                                                    }
+                                                    var whitelist = new WhitelistReader().read(whitelistName);
+
+                                                    if (whitelist == null) {
+                                                        logger.error("Specified whitelist %s does not exist".formatted(whitelistName));
+                                                        return -1;
+                                                    }
+                                                    logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
+                                                    for (String whitelistPlayer : whitelist.getPlayers()) {
+                                                        int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
+                                                        if (ratio >= 70) {
+                                                            //logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
+                                                            resultList.add(new Pair<>(whitelistPlayer, ratio));
+                                                        }
+
+                                                    }
+                                                    if (!resultList.isEmpty()) {
+                                                        resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
+                                                        Collections.reverse(resultList);
+                                                        resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                                    }
+                                                    resultList.clear();
+                                                    return 0;
+                                                })
+                                        )
+                                )
                 )
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("broadcast")
@@ -245,122 +298,124 @@ public class ConsoleHandler {
         }));
 
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("permission").then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
-                            var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
-                            logger.info("Listing permissions:");
-                            permissionMap.forEach((i, p) -> {
-                                logger.info("\tcode %d has got those permissions:".formatted(i));
-                                p.forEach(permission -> logger.info("\t\t- %s".formatted(permission.name())));
-                            });
-                            if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
-                                logger.info("Changes listed below will be applied to permission files.");
-                                var changes = PermissionManager.INSTANCE.getChangesTable();
-                                changes.forEach(permissionChange -> {
-                                    switch (permissionChange.getOperation()) {
-                                        case ADD ->
-                                                logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
-                                        case CREATE ->
-                                                logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
-                                        case DELETE ->
-                                                logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
-                                        case REMOVE -> {
-                                            makeChangesString(permissionChange);
-                                            logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
+                                LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
+                                    var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
+                                    logger.info("Listing permissions:");
+                                    permissionMap.forEach((i, p) -> {
+                                        logger.info("\tcode %d has got those permissions:".formatted(i));
+                                        p.forEach(permission -> logger.info("\t\t- %s".formatted(permission.name())));
+                                    });
+                                    if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
+                                        logger.info("Changes listed below will be applied to permission files.");
+                                        var changes = PermissionManager.INSTANCE.getChangesTable();
+                                        changes.forEach(permissionChange -> {
+                                            switch (permissionChange.getOperation()) {
+                                                case ADD ->
+                                                        logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
+                                                case CREATE ->
+                                                        logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                                case DELETE ->
+                                                        logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
+                                                case REMOVE -> {
+                                                    makeChangesString(permissionChange);
+                                                    logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
 
-                                        }
-                                        default -> {
+                                                }
+                                                default -> {
 
-                                        }
-                                    }
-
-                                });
-                            }
-                            return 0;
-                        })
-                ).then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("remove")
-                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
-                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", greedyString())
-                                                .executes(x -> {
-                                                    int code = IntegerArgumentType.getInteger(x, "code");
-                                                    String permissionName = StringArgumentType.getString(x, "permission_name");
-                                                    var permissions = getPermissionsFromString(permissionName);
-                                                    ArrayList<Permission> checkedPermissions = new ArrayList<>();
-                                                    var p = PermissionManager.INSTANCE.getPermission(code);
-                                                    if (p == null) {
-                                                        logger.warn("Permission code %d does not exist.".formatted(code));
-                                                        return -1;
-                                                    }
-                                                    Objects.requireNonNull(permissions).forEach(permission -> {
-                                                        if (p.contains(permission)) {
-                                                            logger.warn("Code %d already got permission %s".formatted(code, permissionName));
-                                                        } else {
-                                                            checkedPermissions.add(permission);
-                                                        }
-                                                    });
-                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, code, checkedPermissions));
-
-                                                    return 0;
-                                                })
-                                ))
-                ).then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("get")
-                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0))
-                                        .executes(x -> {
-                                            int code = IntegerArgumentType.getInteger(x, "code");
-                                            List<Permission> permissions = PermissionManager.INSTANCE.getPermission(code);
-                                            if (permissions == null) {
-                                                logger.warn("Permission code %d does not exist.".formatted(code));
-                                                return -1;
+                                                }
                                             }
-                                            logger.info("Permission code %d has got those permissions:");
-                                            permissions.forEach(permission -> logger.info("\t- " + permission));
-                                            return 0;
-                                        })
-                                )
-                ).then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("grant")
-                                .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
-                                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", greedyString())
-                                                .executes(x -> {
-                                                    int code = IntegerArgumentType.getInteger(x, "code");
-                                                    String permissionName = StringArgumentType.getString(x, "permission_name");
-                                                    var p_ = getPermissionsFromString(permissionName);
-                                                    if (p_ != null) {
-                                                        if (!p_.isEmpty()) {
-                                                            ArrayList<Permission> permissions = new ArrayList<>(p_);
+
+                                        });
+                                    }
+                                    return 0;
+                                })
+                        ).then(
+                                LiteralArgumentBuilder.<CommandSourceStack>literal("remove")
+                                        .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
+                                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", greedyString())
+                                                        .executes(x -> {
+                                                            int code = IntegerArgumentType.getInteger(x, "code");
+                                                            String permissionName = StringArgumentType.getString(x, "permission_name");
+                                                            var permissions = getPermissionsFromString(permissionName);
                                                             ArrayList<Permission> checkedPermissions = new ArrayList<>();
                                                             var p = PermissionManager.INSTANCE.getPermission(code);
                                                             if (p == null) {
                                                                 logger.warn("Permission code %d does not exist.".formatted(code));
                                                                 return -1;
                                                             }
-                                                            permissions.forEach(permission -> {
+                                                            Objects.requireNonNull(permissions).forEach(permission -> {
                                                                 if (p.contains(permission)) {
                                                                     logger.warn("Code %d already got permission %s".formatted(code, permissionName));
                                                                 } else {
                                                                     checkedPermissions.add(permission);
                                                                 }
                                                             });
-                                                            permissions.clear();
-                                                            checkedPermissions.forEach(permission -> {
-                                                                if (!checkedPermissions.contains(permission))
-                                                                    checkedPermissions.add(permission);
-                                                            });
-                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, permissions));
+                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, code, checkedPermissions));
 
-                                                        }
+                                                            return 0;
+                                                        })
+                                        ))
+                        ).then(
+                                LiteralArgumentBuilder.<CommandSourceStack>literal("get")
+                                        .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0))
+                                                .executes(x -> {
+                                                    int code = IntegerArgumentType.getInteger(x, "code");
+                                                    List<Permission> permissions = PermissionManager.INSTANCE.getPermission(code);
+                                                    if (permissions == null) {
+                                                        logger.warn("Permission code %d does not exist.".formatted(code));
+                                                        return -1;
                                                     }
+                                                    logger.info("Permission code %d has got those permissions:");
+                                                    permissions.forEach(permission -> logger.info("\t- " + permission));
                                                     return 0;
                                                 })
-                                ))
-                ).then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("save").executes(x -> {
-                            PermissionManager.INSTANCE.savePermissionFile();
-                            return 0;
-                        })
-                )
+                                        )
+                        ).then(
+                                LiteralArgumentBuilder.<CommandSourceStack>literal("grant")
+                                        .then(RequiredArgumentBuilder.<CommandSourceStack, Integer>argument("code", integer(0)).then(
+                                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("permission_name", greedyString())
+                                                        .executes(x -> {
+                                                            int code = IntegerArgumentType.getInteger(x, "code");
+                                                            String permissionName = StringArgumentType.getString(x, "permission_name");
+                                                            var p_ = getPermissionsFromString(permissionName);
+                                                            if (p_ != null) {
+                                                                if (!p_.isEmpty()) {
+                                                                    ArrayList<Permission> permissions = new ArrayList<>(p_);
+                                                                    ArrayList<Permission> checkedPermissions = new ArrayList<>();
+                                                                    var p = PermissionManager.INSTANCE.getPermission(code);
+                                                                    if (p == null) {
+                                                                        logger.warn("Permission code %d does not exist.".formatted(code));
+                                                                        return -1;
+                                                                    }
+                                                                    permissions.forEach(permission -> {
+                                                                        if (p.contains(permission)) {
+                                                                            logger.warn("Code %d already got permission %s".formatted(code, permissionName));
+                                                                        } else {
+                                                                            checkedPermissions.add(permission);
+                                                                        }
+                                                                    });
+                                                                    permissions.clear();
+                                                                    checkedPermissions.forEach(permission -> {
+                                                                        if (!checkedPermissions.contains(permission))
+                                                                            checkedPermissions.add(permission);
+                                                                    });
+                                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, permissions));
+
+                                                                }
+                                                            }
+                                                            return 0;
+                                                        })
+                                        ))
+                        )
+                        .then(
+                                LiteralArgumentBuilder.<CommandSourceStack>literal("save").executes(x -> {
+                                    PermissionManager.INSTANCE.savePermissionFile();
+                                    return 0;
+                                })
+                        )
         );
+
 
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("controller")
                 .then(
@@ -388,62 +443,6 @@ public class ConsoleHandler {
                                 )
                         )
                 )
-        );
-
-        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("search")
-                .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word())
-                        .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word())
-                                .executes(commandContext -> {
-                                    var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
-                                    var player = StringArgumentType.getString(commandContext, "player");
-                                    var resultList = new ArrayList<Pair<String, Integer>>();
-                                    if (Objects.equals(whitelistName, "all")) {
-                                        var whitelists = new WhitelistReader().getWhitelists();
-
-                                        for (Whitelist whitelist : whitelists) {
-                                            logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
-                                            for (String whitelistPlayer : whitelist.getPlayers()) {
-                                                int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
-                                                if (ratio >= 70) {
-                                                    logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
-                                                    resultList.add(new Pair<>(whitelistPlayer, ratio));
-                                                }
-                                            }
-                                            if (!resultList.isEmpty()) {
-                                                resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
-                                                Collections.reverse(resultList);
-                                                resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
-                                            }
-                                            resultList.clear();
-                                        }
-                                        return 0;
-                                    }
-                                    var whitelist = new WhitelistReader().read(whitelistName);
-
-                                    if (whitelist == null) {
-                                        logger.error("Specified whitelist %s does not exist".formatted(whitelistName));
-                                        return -1;
-                                    }
-                                    logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
-                                    for (String whitelistPlayer : whitelist.getPlayers()) {
-                                        int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
-                                        if (ratio >= 70) {
-                                            //logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
-                                            resultList.add(new Pair<>(whitelistPlayer, ratio));
-                                        }
-
-                                    }
-                                    if (!resultList.isEmpty()) {
-                                        resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
-                                        Collections.reverse(resultList);
-                                        resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
-                                    }
-                                    resultList.clear();
-                                    return 0;
-                                })
-                        )
-                )
-
         );
     }
 
@@ -523,7 +522,7 @@ public class ConsoleHandler {
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("whitelist"),
-                        new StringsCompleter("get", "add"),
+                        new StringsCompleter("get", "add", "search"),
                         whitelistCompleter,
                         NullCompleter.INSTANCE
                 ),
@@ -579,11 +578,6 @@ public class ConsoleHandler {
                         new StringsCompleter("controller"),
                         new StringsCompleter("execute"),
                         new ControllerCompleter(),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("search"),
-                        new StringsCompleter("whitelist"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(

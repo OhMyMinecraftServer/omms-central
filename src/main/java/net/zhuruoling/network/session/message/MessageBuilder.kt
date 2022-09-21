@@ -1,16 +1,9 @@
 package net.zhuruoling.network.session.message
 
 import com.google.gson.GsonBuilder
-import net.zhuruoling.util.Result
-import net.zhuruoling.whitelist.WhitelistResult
 import org.jetbrains.annotations.NotNull
+import net.zhuruoling.util.Result
 
-@NotNull
-fun build(result: WhitelistResult): String? {
-    val gson = GsonBuilder().serializeNulls().create()
-    val message = Message(result.name, arrayOf())
-    return gson.toJson(message)
-}
 
 @NotNull
 fun build(result: Result): String? {

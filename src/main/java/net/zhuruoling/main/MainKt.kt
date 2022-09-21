@@ -43,7 +43,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 object MainKt {
-    val logger: Logger = LoggerFactory.getLogger("Main")
+    private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
     private var isInit = false
 

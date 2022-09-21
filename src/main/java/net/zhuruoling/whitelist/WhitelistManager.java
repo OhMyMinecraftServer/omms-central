@@ -2,6 +2,7 @@ package net.zhuruoling.whitelist;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 
 import java.io.File;
@@ -25,30 +26,30 @@ public class WhitelistManager {
     public void checkAndFix(){
 
     }
-    public static WhitelistResult queryWhitelist(String whitelistName, String value){
+    public static Result queryWhitelist(String whitelistName, String value){
         boolean returnValue = false;
         WhitelistReader whitelistReader = new WhitelistReader();
         if (whitelistReader.isNoWhitelist()) {
-            return WhitelistResult.NO_WHITELIST;
+            return Result.NO_WHITELIST;
         }
         var whitelist = whitelistReader.read(whitelistName);
         if (whitelist == null) {
-           return WhitelistResult.WHITELIST_NOT_EXIST;
+           return Result.WHITELIST_NOT_EXIST;
         }
         else {
             if (whitelist.containsPlayer(value))
-                return WhitelistResult.OK;
-            return WhitelistResult.NO_SUCH_PLAYER;
+                return Result.OK;
+            return Result.NO_SUCH_PLAYER;
         }
     }
 
-    public static WhitelistResult addToWhiteList(String whitelistName, String value){
+    public static Result addToWhiteList(String whitelistName, String value){
         Whitelist whitelist = new WhitelistReader().read(whitelistName);
         var before = whitelist.getPlayers();
         String[] after = new String[before.length + 1];
         var beforeList1 = new ArrayList<>(Arrays.stream(before).toList());
         if (beforeList1.contains(value)) {
-            return WhitelistResult.PLAYER_ALREADY_EXISTS;
+            return Result.PLAYER_ALREADY_EXISTS;
         }
         beforeList1.add(value);
         after = beforeList1.toArray(after);
@@ -65,20 +66,20 @@ public class WhitelistManager {
             stream.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return WhitelistResult.FAIL;
+            return Result.FAIL;
         }
 
-        return WhitelistResult.OK;
+        return Result.OK;
     }
 
-    public static WhitelistResult removeFromWhiteList(String whitelistName, String value){
+    public static Result removeFromWhiteList(String whitelistName, String value){
 
         Whitelist whitelist1 = new WhitelistReader().read(whitelistName);
         String[] before1 = whitelist1.getPlayers();
         String[] after1 = new String[before1.length - 1];
         var beforeList = new ArrayList<>(Arrays.stream(before1).toList());
         if (!beforeList.contains(value)) {
-            return WhitelistResult.NO_SUCH_PLAYER;
+            return Result.NO_SUCH_PLAYER;
         }
         beforeList.remove(value);
         after1 = beforeList.toArray(after1);
@@ -92,11 +93,11 @@ public class WhitelistManager {
             outputStreamWriter.append(s);
             outputStreamWriter.close();
             fileOutputStream.close();
-            return WhitelistResult.OK;
+            return Result.OK;
         }
         catch (Exception e){
             e.printStackTrace();
-            return WhitelistResult.FAIL;
+            return Result.FAIL;
         }
     }
 

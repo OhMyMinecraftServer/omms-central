@@ -1,12 +1,12 @@
 package net.zhuruoling.network.http.routes
 
+import net.zhuruoling.util.Result
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.whitelist.WhitelistManager
 import net.zhuruoling.whitelist.WhitelistReader
-import net.zhuruoling.whitelist.WhitelistResult
 import org.slf4j.LoggerFactory
 
 fun Route.whitelistQueryRouting() {
@@ -49,7 +49,7 @@ fun Route.whitelistQueryRouting() {
             )
             logger.info("Querying player $playerName in $name.")
             val result = WhitelistManager.queryWhitelist(name, playerName)
-            if (result == WhitelistResult.OK) {
+            if (result == Result.OK) {
                 call.respondText("", status = HttpStatusCode.OK)
             } else {
                 call.respondText("", status = HttpStatusCode.NotFound)
@@ -71,7 +71,7 @@ fun Route.whitelistQueryRouting() {
             }
             val succeed = mutableListOf<String>()
             whitelistNames.forEach {
-                if (WhitelistManager.queryWhitelist(it, playerName) == WhitelistResult.OK) {
+                if (WhitelistManager.queryWhitelist(it, playerName) == Result.OK) {
                     if (it != null) {
                         succeed.add(it)
                     }
