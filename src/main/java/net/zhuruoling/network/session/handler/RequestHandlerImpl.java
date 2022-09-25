@@ -178,12 +178,12 @@ public class RequestHandlerImpl extends RequestHandler {
                 }
 
 
-                case "CONTROLLER_LIST" -> {
+                case "CONTROLLERS_LIST" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
                     var controllerNames = ControllerManager.INSTANCE.getControllers().keySet();
                     encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK, controllerNames));
                 }
-                case "CONTROLLER_EXECUTE" -> {
+                case "CONTROLLERS_EXECUTE" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_EXECUTE))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
                     var name = request.getLoad()[0];
                     var controller = ControllerManager.INSTANCE.getControllerByName(name);
@@ -196,10 +196,10 @@ public class RequestHandlerImpl extends RequestHandler {
                         encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK));
                     }
                 }
-                case "CONTROLLER_GET" -> {
+                case "CONTROLLERS_GET" -> {
                     if (!session.getPermissions().contains(Permission.CONTROLLER_GET))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
                     var name = request.getLoad()[0];
-                    var controller = ControllerManager.INSTANCE.getControllerByName(name);
+                    var controller = ControllerManager.INSTANCE.getControllerByName(name).controller();
                     if (controller == null){
                         encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.CONTROLLER_NOT_EXIST));
                     }
@@ -209,7 +209,7 @@ public class RequestHandlerImpl extends RequestHandler {
                 }
                 case "SYSINFO_GET" -> {
                     if (!session.getPermissions().contains(Permission.SERVER_OS_CONTROL))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
-                    SystemInfo info = new SystemInfo(SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
+                    SystemInfo info = new SystemInfo(SystemUtil.getSystemName(),SystemUtil.getSystemVersion(), SystemUtil.getSystemArch(),SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
                     encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK, Collections.singleton(gson.toJson(info))));
                 }
 

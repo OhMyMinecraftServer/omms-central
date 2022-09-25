@@ -15,7 +15,18 @@ import java.util.Objects;
 
 public class SystemUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
+    private static OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+    public static String getSystemVersion(){
+        return os.getVersion();
+    }
 
+    public static String getSystemName(){
+        return os.getName();
+    }
+
+    public static String getSystemArch(){
+        return os.getArch();
+    }
     public static DirectoryInfo listDir(String path){
         DirectoryInfo info = new DirectoryInfo();
         File file = new File(path);

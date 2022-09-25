@@ -47,9 +47,9 @@ public class Util {
             "PERMISSION_REMOVE",
             "PERMISSION_LIST",
 
-            "CONTROLLER_LIST",
-            "CONTROLLER_EXECUTE",
-            "CONTROLLER_GET",
+            "CONTROLLERS_LIST",
+            "CONTROLLERS_EXECUTE",
+            "CONTROLLERS_GET",
             "SYSINFO_GET",
 
             "END",
