@@ -10,8 +10,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Pair;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import net.zhuruoling.announcement.Announcement;
+import net.zhuruoling.announcement.AnnouncementManager;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
+import net.zhuruoling.gui.GuiMain;
 import net.zhuruoling.main.MainKt;
 import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.network.broadcast.Broadcast;
@@ -237,6 +240,7 @@ public class ConsoleHandler {
                     PluginManager.INSTANCE.loadAll();
                     PermissionManager.INSTANCE.init();
                     ControllerManager.INSTANCE.init();
+                    AnnouncementManager.INSTANCE.init();
                     init();
                     return 0;
                 })
@@ -442,6 +446,40 @@ public class ConsoleHandler {
                                         })
                                 )
                         )
+                )
+
+        );
+
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("announcement")
+                .then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(commandContext -> {
+                            return 0;
+                        })
+                )
+                .then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("create").executes(commandContext -> {
+                            Scanner scanner = new Scanner(System.in);
+                            logger.info("Input announcement title:");
+                            String title = scanner.nextLine();
+                            logger.info("Input announcement content, double return to end:");
+                            ArrayList<String> lines = new ArrayList<>();
+                            while (true){
+                                String line = scanner.nextLine();
+                                if (!lines.isEmpty()){
+                                    if (lines.get(lines.size() - 1).isEmpty() && line.isEmpty()){
+                                        break;
+                                    }
+                                }
+                                lines.add(line);
+                            }
+                            lines.remove(lines.size() - 1);
+                            logger.debug(title);
+                            lines.forEach(logger::debug);
+                            Announcement announcement = new Announcement(title, lines.toArray(new String[]{}));
+                            logger.info(announcement.toString());
+                            AnnouncementManager.INSTANCE.create(announcement);
+                            return 0;
+                        })
                 )
         );
     }

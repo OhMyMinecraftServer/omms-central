@@ -12,10 +12,8 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Util {
 
@@ -28,7 +26,7 @@ public class Util {
     public static final Target TARGET_CONTROL = new Target("224.114.51.4", 10087);
     public static final String[] DATA_FOLDERS = {
             "controllers",
-            "broadcasts",
+            "announcements",
             "whitelists",
             "plugins",
     };
@@ -59,6 +57,40 @@ public class Util {
         boolean result = false;
 
         return false;
+    }
+
+
+    public static int calculateTokenByDate(int password) {
+        Date date = new Date();
+        int i = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(date));
+        int j = Integer.parseInt(new SimpleDateFormat("hhmm").format(date));
+        int k = new SimpleDateFormat("yyyyMMddhhmm").format(date).hashCode();
+        return calculateToken(password, i, j, k);
+    }
+
+    public static boolean resloveTokenByDate(int token, int password) {
+        Date date = new Date();
+        int i = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(date));
+        int j = Integer.parseInt(new SimpleDateFormat("hhmm").format(date));
+        int k = new SimpleDateFormat("yyyyMMddhhmm").format(date).hashCode();
+        return resloveToken(token, password, i, j, k);
+    }
+
+
+    public static int calculateToken(int password, int i, int j, int k) {
+        int token = 114514;
+        token += i;
+        token += (j - k);
+        token = password ^ token;
+        return token;
+    }
+
+    public static boolean resloveToken(int token, int password, int i, int j, int k) {
+        int t = token;
+        int var1 = t ^ password;
+
+        var1 = var1 - i - (j - k);
+        return var1 == 114514;
     }
 
 

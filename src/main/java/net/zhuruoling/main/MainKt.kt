@@ -1,6 +1,7 @@
 package net.zhuruoling.main
 
 import com.google.gson.Gson
+import net.zhuruoling.announcement.AnnouncementManager
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
@@ -153,6 +154,7 @@ object MainKt {
             PluginManager.init()
             PermissionManager.init()
             ControllerManager.init()
+            AnnouncementManager.init()
             for (command in Util.BUILTIN_COMMANDS.clone()) {
                 logger.info("Registering built-in command $command")
                 registerRequest(command!!, RequestHandlerImpl())

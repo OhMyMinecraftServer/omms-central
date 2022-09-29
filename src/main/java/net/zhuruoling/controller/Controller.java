@@ -11,6 +11,10 @@ public class Controller {
 
     private String workingDir;
 
+    private int password;
+
+    private int rmiPort;
+
     public Controller() {
     }
 
@@ -71,5 +75,21 @@ public class Controller {
 
     public void setWorkingDir(String workingDir) {
         this.workingDir = workingDir;
+    }
+
+    public int getPassword() {
+        return password;
+    }
+
+    public void setPassword(int password) {
+        this.password = password;
+    }
+
+    public int getRmiPort() {
+        return rmiPort;
+    }
+
+    public void setRmiPort(int rmiPort) {
+        this.rmiPort = rmiPort;
     }
 }

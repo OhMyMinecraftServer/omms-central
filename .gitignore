@@ -2,8 +2,8 @@
 /target/
 /logs/
 /clients/
-/config.json
+/config.json/
 /whitelists/
-/broadcasts/
+/announcements/
 /controllers/
 /permissions.json
