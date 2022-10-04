@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.whitelist.WhitelistManager
-import net.zhuruoling.whitelist.WhitelistReader
 import org.slf4j.LoggerFactory
 
 fun Route.whitelistQueryRouting() {
@@ -14,13 +13,9 @@ fun Route.whitelistQueryRouting() {
     route("/whitelist") {
         get {
             logger.info("Querying whitelist names.")
-            val whitelists = WhitelistReader().whitelists
-            if (whitelists == null) {
+            val whitelistNames = WhitelistManager.getWhitelistNames()
+            if (whitelistNames.isEmpty()) {
                 call.respondText("No Whitelists found.", status = HttpStatusCode.OK)
-            }
-            val whitelistNames = arrayOfNulls<String>(whitelists!!.size)
-            for (i in whitelistNames.indices) {
-                whitelistNames[i] = whitelists[i].name
             }
             call.respond(whitelistNames)
         }
@@ -31,7 +26,7 @@ fun Route.whitelistQueryRouting() {
             )
 
             logger.info("Querying whitelist $name content.")
-            val content = WhitelistReader().read(name)
+            val content = WhitelistManager.getWhitelist(name)
             if (content == null) {
                 call.respondText("", status = HttpStatusCode.NotFound)
                 return@get
@@ -61,26 +56,14 @@ fun Route.whitelistQueryRouting() {
                 status = HttpStatusCode.BadRequest
             )
             logger.info("Querying player $playerName in all whitelists.")
-            val whitelists = WhitelistReader().whitelists
-            if (whitelists == null) {
+            if (WhitelistManager.isNoWhitelist()) {
                 call.respondText("No Whitelists found.", status = HttpStatusCode.OK)
             }
-            val whitelistNames = arrayOfNulls<String>(whitelists!!.size)
-            for (i in whitelistNames.indices) {
-                whitelistNames[i] = whitelists[i].name
-            }
-            val succeed = mutableListOf<String>()
-            whitelistNames.forEach {
-                if (WhitelistManager.queryWhitelist(it, playerName) == Result.OK) {
-                    if (it != null) {
-                        succeed.add(it)
-                    }
-                }
-            }
-            if (succeed.isEmpty()) {
+            val result = WhitelistManager.queryInAllWhitelist(playerName)
+            if (result.isEmpty()) {
                 call.respondText("", status = HttpStatusCode.NotFound)
             } else {
-                call.respond(succeed)
+                call.respond(result)
             }
         }
     }

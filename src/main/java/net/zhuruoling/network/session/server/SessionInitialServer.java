@@ -10,17 +10,17 @@ import java.net.ServerSocket;
 import java.util.Objects;
 
 public class SessionInitialServer extends Thread {
-    final Logger logger = LoggerFactory.getLogger("SessionInitialServer");
+    final Logger logger = LoggerFactory.getLogger("ExperimentalSessionInitialServer");
 
     public SessionInitialServer() {
-        this.setName("SessionInitialServer#" + this.getId());
+        this.setName("ExperimentalSessionInitialServer#" + this.getId());
     }
 
     @Override
     public void run() {
         try (ServerSocket server = new ServerSocket(Objects.requireNonNull(RuntimeConstants.INSTANCE.getConfig()).getPort())) {
             while (true) {
-                logger.info("Started SessionInitialServer.");
+                logger.info("Started ExperimentalSessionInitialServer.");
                 var socket = server.accept();
                 logger.debug(String.valueOf(socket.getKeepAlive()));
                 socket.setKeepAlive(true);

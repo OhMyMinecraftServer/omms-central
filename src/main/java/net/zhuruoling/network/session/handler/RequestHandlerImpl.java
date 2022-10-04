@@ -16,7 +16,6 @@ import net.zhuruoling.util.Util;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
-import net.zhuruoling.whitelist.WhitelistReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,84 +47,41 @@ public class RequestHandlerImpl extends RequestHandler {
                 case "WHITELIST_CREATE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_CREATE))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
                     var name = request.getLoad()[0];
-                    if (!(new WhitelistReader().isFail()) && (new WhitelistReader().read(name) != null)) {
-                        encryptedConnector.println(gson.toJson(new Message("WHITELIST_EXISTS", new String[]{}), Message.class));
-                        break;
-                    }
-                    try {
-                        logger.info("Generating Whitelist " + name);
-                        Gson gson1 = new GsonBuilder().serializeNulls().create();
-                        String[] players = {};
-                        String cont = gson1.toJson(new Whitelist(players, name));
-                        File fp = new File(Util.getWorkingDir() + File.separator + "whitelists" + File.separator + name + ".json");
-                        FileOutputStream stream = new FileOutputStream(fp);
-                        OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
-                        writer.append(cont);
-                        writer.close();
-                        stream.close();
-                        encryptedConnector.println(gson.toJson(new Message("OK", new String[]{}), Message.class));
-                    } catch (Exception e) {
-                        logger.error("An exception occurred:" + e.getMessage());
-                        e.printStackTrace();
-                        encryptedConnector.println("{\"msg\":\"INTERNAL_EXCEPTION\",\"load\":[]}");
-
-                    }
+                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.INSTANCE.createWhitelist(name)));
                 }
                 case "WHITELIST_LIST" -> {
-                    var whitelists = new WhitelistReader().getWhitelists();
-                    if (whitelists == null){
+                    if (WhitelistManager.INSTANCE.isNoWhitelist()){
                         encryptedConnector.println(MessageBuilderKt.build(Result.NO_WHITELIST));
+                    }
 
-                    }
-                    String[] whitelistNames = new String[Objects.requireNonNull(whitelists).size()];
-                    for (int i = 0; i < whitelistNames.length; i++) {
-                        whitelistNames[i] = whitelists.get(i).getName();
-                    }
-                    encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK, whitelistNames));
+                    encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK, WhitelistManager.INSTANCE.getWhitelistNames()));
                 }
                 case "WHITELIST_GET" -> {
                     var wlName = request.getLoad()[0];
-                    Whitelist wl = new WhitelistReader().read(wlName);
+                    Whitelist wl = WhitelistManager.INSTANCE.getWhitelist(wlName);
                     if (wl == null) {
                         encryptedConnector.println(gson.toJson(new Message(Result.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
                         break;
                     }
-                    encryptedConnector.println(gson.toJson(new Message("OK", new WhitelistReader().read(wlName).getPlayers())));
+                    encryptedConnector.println(gson.toJson(new Message("OK", wl.getPlayers())));
                 }
                 case "WHITELIST_ADD" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_ADD))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
-
                     String whiteName = request.getLoad()[0];
                     String player = request.getLoad()[1];
-
-                    if (new WhitelistReader().read(whiteName) == null) {
-                        encryptedConnector.println(gson.toJson(new Message(Result.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
-                        break;
-                    }
-                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.addToWhiteList(whiteName, player)));
+                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.INSTANCE.addToWhiteList(whiteName, player)));
                 }
                 case "WHITELIST_REMOVE" -> {
                     if (!session.getPermissions().contains(Permission.WHITELIST_REMOVE))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
 
                     String whiteName = request.getLoad()[0];
                     String player = request.getLoad()[1];
-                    if (new WhitelistReader().read(whiteName) == null) {
-                        encryptedConnector.println(gson.toJson(new Message(Result.WHITELIST_NOT_EXIST.name(), new String[]{}), Message.class));
-                        break;
-                    }
-                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.removeFromWhiteList(whiteName, player)));
+                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.INSTANCE.removeFromWhiteList(whiteName, player)));
                 }
                 case "WHITELIST_DELETE" -> {
+                    if (!session.getPermissions().contains(Permission.WHITELIST_DELETE))encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.PERMISSION_DENIED));
                     String name = request.getLoad()[0];
-                    var file = new File(Util.joinFilePaths("whitelists",name + ".json"));
-                    if (file.exists()){
-                        boolean result = file.delete();
-                        if (result){
-                            encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.OK));
-                            return;
-                        }
-                        encryptedConnector.println(MessageBuilderKt.build(net.zhuruoling.util.Result.FAIL));
-                    }
+                    encryptedConnector.println(MessageBuilderKt.build(WhitelistManager.INSTANCE.deleteWhiteList(name)));
                 }
 
 

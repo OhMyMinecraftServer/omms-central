@@ -2,10 +2,12 @@ package net.zhuruoling.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import kotlin.Unit;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.network.broadcast.Target;
 import net.zhuruoling.whitelist.Whitelist;
-import net.zhuruoling.whitelist.WhitelistReader;
+import net.zhuruoling.whitelist.WhitelistManager;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -191,17 +193,15 @@ public class Util {
 
     public static void listAll(Logger logger) {
         logger.info("Listing controllers");
-
+        ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+            logger.info("\t-%s".formatted(controllerInstance.controller().toString()));
+        });
         logger.info("Listing Whitelist contents:");
-        WhitelistReader reader_ = new WhitelistReader();
-        if (reader_.isFail()) {
-            logger.error("Failed to read Whitelists.");
-            System.exit(1);
-        }
-
-        if (!reader_.isNoWhitelist()) {
-            List<Whitelist> whitelists = reader_.getWhitelists();
-            whitelists.forEach(client -> logger.info("  -" + client.toString()));
+        if (!WhitelistManager.INSTANCE.isNoWhitelist()) {
+            WhitelistManager.INSTANCE.forEach(stringEntry -> {
+                logger.info("\t-%s".formatted(stringEntry.getValue().toString()));
+                return Unit.INSTANCE;
+            });
         } else {
             logger.warn("No Whitelist added.");
         }

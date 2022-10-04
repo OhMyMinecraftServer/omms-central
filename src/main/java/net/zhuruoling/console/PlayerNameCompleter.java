@@ -1,6 +1,6 @@
 package net.zhuruoling.console;
 
-import net.zhuruoling.whitelist.WhitelistReader;
+import net.zhuruoling.whitelist.WhitelistManager;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -27,7 +27,7 @@ public class PlayerNameCompleter implements Completer {
         }
 
         var whitelistName = words.get(index - 1);
-        var whitelist = new WhitelistReader().read(whitelistName);
+        var whitelist = WhitelistManager.INSTANCE.getWhitelist(whitelistName);
         if (Objects.isNull(whitelist)){
             completer = NullCompleter.INSTANCE;
             completer.complete(lineReader, parsedLine, list);

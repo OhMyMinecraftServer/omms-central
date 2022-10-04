@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.announcement.AnnouncementManager
+import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
@@ -12,8 +13,9 @@ fun Route.announcementQueryRouting() {
     val logger = LoggerFactory.getLogger("WhitelistQueryRouting")
     route("/announcement") {
         get("latest") {
-            val announcement = AnnouncementManager.getLatest() ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT");
-            call.respond(HttpStatusCode.OK, announcement.toJson())
+            val announcement =
+                AnnouncementManager.getLatest() ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT");
+            call.respond(HttpStatusCode.OK, Util.base64Encode(announcement.toJson()))
         }
         get("get/{id?}") {
             val name = call.parameters["id"] ?: return@get call.respondText(
@@ -21,7 +23,7 @@ fun Route.announcementQueryRouting() {
                 status = HttpStatusCode.BadRequest
             )
             val announcement = AnnouncementManager.get(name) ?: return@get call.respond(HttpStatusCode.NotFound, "")
-            call.respond(HttpStatusCode.OK, announcement.toJson())
+            call.respond(HttpStatusCode.OK, Util.base64Encode(announcement.toJson()))
         }
         get("list") {
             call.respond(HttpStatusCode.OK, AnnouncementManager.announcementMap.keys)

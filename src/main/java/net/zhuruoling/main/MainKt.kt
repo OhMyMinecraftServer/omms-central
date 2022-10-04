@@ -5,8 +5,10 @@ import net.zhuruoling.announcement.AnnouncementManager
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
 import net.zhuruoling.console.ConsoleHandler
+import net.zhuruoling.console.WhitelistCompleter
 import net.zhuruoling.controller.ControllerManager
 import net.zhuruoling.foo.Foo.bar
+import net.zhuruoling.main.RuntimeConstants.experimental
 import net.zhuruoling.main.RuntimeConstants.httpServer
 import net.zhuruoling.main.RuntimeConstants.lock
 import net.zhuruoling.main.RuntimeConstants.noLock
@@ -30,6 +32,7 @@ import net.zhuruoling.plugin.PluginManager
 import net.zhuruoling.plugin.PluginManager.loadAll
 import net.zhuruoling.plugin.PluginManager.unloadAll
 import net.zhuruoling.util.Util
+import net.zhuruoling.whitelist.WhitelistManager
 import org.jline.terminal.TerminalBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -62,15 +65,10 @@ object MainKt {
                 Util.generateExample()
                 exitProcess(0)
             }
-            if (argList.contains("--test")) {
-                test = true
-            }
-            if (argList.contains("--noplugin")) {
-                noPlugins = true
-            }
-            if (argList.contains("--nolock")) {
-                noLock = true
-            }
+            test = argList.contains("--test")
+            noPlugins = argList.contains("--noplugin")
+            noLock = argList.contains("--nolock")
+            experimental = argList.contains("--experimental")
         }
 
 
@@ -149,12 +147,12 @@ object MainKt {
         }
 
         logger.info("Setting up managers.")
-        Util.listAll(logger)
         try {
             PluginManager.init()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
+            WhitelistManager.init()
             for (command in Util.BUILTIN_COMMANDS.clone()) {
                 logger.info("Registering built-in command $command")
                 registerRequest(command!!, RequestHandlerImpl())
@@ -164,7 +162,7 @@ object MainKt {
             e.printStackTrace()
             exitProcess(2)
         }
-
+        Util.listAll(logger)
         logger.info("Setting up services.")
         val socketServer = SessionInitialServer()
         val receiver = UdpBroadcastReceiver()
@@ -189,6 +187,7 @@ object MainKt {
             handler.handle(terminal)
         }
     }
+
     @JvmStatic
     fun stop() {
         if (test) exitProcess(0)

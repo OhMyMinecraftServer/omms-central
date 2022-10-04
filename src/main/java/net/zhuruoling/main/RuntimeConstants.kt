@@ -20,6 +20,7 @@ object RuntimeConstants {
     val permissionNames: MutableList<String> = mutableListOf()
     var config: Configuration? = null
     var normalShutdown: Boolean = false
+    var experimental: Boolean = false
 
     init {
         Permission.values().forEach {

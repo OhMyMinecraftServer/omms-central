@@ -8,13 +8,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import kotlin.Pair;
-import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.zhuruoling.announcement.Announcement;
 import net.zhuruoling.announcement.AnnouncementManager;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
-import net.zhuruoling.gui.GuiMain;
 import net.zhuruoling.main.MainKt;
 import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.network.broadcast.Broadcast;
@@ -25,9 +22,7 @@ import net.zhuruoling.permission.PermissionManager;
 import net.zhuruoling.plugin.PluginManager;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
-import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
-import net.zhuruoling.whitelist.WhitelistReader;
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -77,7 +72,7 @@ public class ConsoleHandler {
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word()).executes(c -> {
                                             String name = getString(c, "whitelist");
-                                            var whitelist = new WhitelistReader().read(name);
+                                            var whitelist = WhitelistManager.INSTANCE.getWhitelist(name);
                                             if (whitelist == null) {
                                                 logger.error("Whitelist %s does not exist.".formatted(name));
                                             } else {
@@ -91,10 +86,8 @@ public class ConsoleHandler {
                 )
 
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(context -> {
-                            var list = new WhitelistReader().getWhitelists();
-                            ArrayList<String> arrayList = new ArrayList<>();
-                            list.forEach(x -> arrayList.add(x.getName()));
-                            logger.info("%d whitelists(%s) added to this server.".formatted(arrayList.size(), arrayList));
+                            var names = WhitelistManager.INSTANCE.getWhitelistNames();
+                            logger.info("%d whitelists(%s) added to this server.".formatted(names.size(), names));
                             return 1;
                         })
                 )
@@ -102,13 +95,7 @@ public class ConsoleHandler {
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("query").then(
                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                             String player = getString(commandContext, "player");
-                            var whitelists = new WhitelistReader().getWhitelists();
-                            ArrayList<String> names = new ArrayList<>();
-                            whitelists.forEach(x -> {
-                                if (x.containsPlayer(player)) {
-                                    names.add(x.getName());
-                                }
-                            });
+                            List<String> names = WhitelistManager.INSTANCE.queryInAllWhitelist(player);
                             if (names.isEmpty()) {
                                 logger.info("Player %s does not exist in any whitelists.".formatted(player));
                                 return 1;
@@ -122,7 +109,7 @@ public class ConsoleHandler {
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
-                                                    var result = WhitelistManager.addToWhiteList(whitelist, player);
+                                                    var result = WhitelistManager.INSTANCE.addToWhiteList(whitelist,player);
                                                     if (result.equals(Result.OK)) {
                                                         logger.info("Successfully added %s to %s".formatted(player, whitelist));
                                                         return 0;
@@ -140,7 +127,7 @@ public class ConsoleHandler {
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
-                                                    var result = WhitelistManager.removeFromWhiteList(whitelist, player);
+                                                    var result = WhitelistManager.INSTANCE.removeFromWhiteList(whitelist, player);
                                                     if (result.equals(Result.OK)) {
                                                         logger.info("Successfully removed %s from %s".formatted(player, whitelist));
                                                         return 0;
@@ -160,49 +147,30 @@ public class ConsoleHandler {
                                                 .executes(commandContext -> {
                                                     var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
                                                     var player = StringArgumentType.getString(commandContext, "player");
-                                                    var resultList = new ArrayList<Pair<String, Integer>>();
                                                     if (Objects.equals(whitelistName, "all")) {
-                                                        var whitelists = new WhitelistReader().getWhitelists();
-
-                                                        for (Whitelist whitelist : whitelists) {
-                                                            logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
-                                                            for (String whitelistPlayer : whitelist.getPlayers()) {
-                                                                int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
-                                                                if (ratio >= 70) {
-                                                                    logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
-                                                                    resultList.add(new Pair<>(whitelistPlayer, ratio));
-                                                                }
+                                                        WhitelistManager.INSTANCE.getWhitelistNames().forEach(s -> {
+                                                            var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
+                                                            if (result == null){
+                                                                logger.info("No valid results in whitelist %s.".formatted(s));
                                                             }
-                                                            if (!resultList.isEmpty()) {
-                                                                resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
-                                                                Collections.reverse(resultList);
-                                                                resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                                            else {
+                                                                logger.info("Search result in whitelist %s:".formatted(s));
+                                                                result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
                                                             }
-                                                            resultList.clear();
-                                                        }
+                                                        });
                                                         return 0;
                                                     }
-                                                    var whitelist = new WhitelistReader().read(whitelistName);
-
-                                                    if (whitelist == null) {
-                                                        logger.error("Specified whitelist %s does not exist".formatted(whitelistName));
-                                                        return -1;
+                                                    if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)){
+                                                        logger.error("Specified whitelist does not exist.");
                                                     }
-                                                    logger.info("Searching %s in whitelist %s".formatted(player, whitelist.getName()));
-                                                    for (String whitelistPlayer : whitelist.getPlayers()) {
-                                                        int ratio = FuzzySearch.tokenSortPartialRatio(whitelistPlayer, player);
-                                                        if (ratio >= 70) {
-                                                            //logger.info("%s\t@ %d".formatted(whitelistPlayer, ratio));
-                                                            resultList.add(new Pair<>(whitelistPlayer, ratio));
-                                                        }
-
+                                                    var result = WhitelistManager.INSTANCE.searchInWhitelist(whitelistName, player);
+                                                    if (result == null){
+                                                        logger.info("No valid results in whitelist %s.".formatted(whitelistName));
                                                     }
-                                                    if (!resultList.isEmpty()) {
-                                                        resultList.sort(Comparator.comparingInt(Pair<String, Integer>::getSecond));
-                                                        Collections.reverse(resultList);
-                                                        resultList.forEach(stringIntegerPair -> logger.info("%s -> %d".formatted(stringIntegerPair.getFirst(), stringIntegerPair.getSecond())));
+                                                    else {
+                                                        logger.info("Search result in whitelist %s:".formatted(whitelistName));
+                                                        result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
                                                     }
-                                                    resultList.clear();
                                                     return 0;
                                                 })
                                         )
