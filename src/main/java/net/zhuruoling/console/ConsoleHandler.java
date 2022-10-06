@@ -109,7 +109,7 @@ public class ConsoleHandler {
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
-                                                    var result = WhitelistManager.INSTANCE.addToWhiteList(whitelist,player);
+                                                    var result = WhitelistManager.INSTANCE.addToWhiteList(whitelist, player);
                                                     if (result.equals(Result.OK)) {
                                                         logger.info("Successfully added %s to %s".formatted(player, whitelist));
                                                         return 0;
@@ -150,24 +150,22 @@ public class ConsoleHandler {
                                                     if (Objects.equals(whitelistName, "all")) {
                                                         WhitelistManager.INSTANCE.getWhitelistNames().forEach(s -> {
                                                             var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
-                                                            if (result == null){
+                                                            if (result == null) {
                                                                 logger.info("No valid results in whitelist %s.".formatted(s));
-                                                            }
-                                                            else {
+                                                            } else {
                                                                 logger.info("Search result in whitelist %s:".formatted(s));
                                                                 result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
                                                             }
                                                         });
                                                         return 0;
                                                     }
-                                                    if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)){
+                                                    if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)) {
                                                         logger.error("Specified whitelist does not exist.");
                                                     }
                                                     var result = WhitelistManager.INSTANCE.searchInWhitelist(whitelistName, player);
-                                                    if (result == null){
+                                                    if (result == null) {
                                                         logger.info("No valid results in whitelist %s.".formatted(whitelistName));
-                                                    }
-                                                    else {
+                                                    } else {
                                                         logger.info("Search result in whitelist %s:".formatted(whitelistName));
                                                         result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
                                                     }
@@ -282,13 +280,13 @@ public class ConsoleHandler {
                                         var changes = PermissionManager.INSTANCE.getChangesTable();
                                         changes.forEach(permissionChange -> {
                                             switch (permissionChange.getOperation()) {
-                                                case ADD ->
+                                                case GRANT ->
                                                         logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
                                                 case CREATE ->
                                                         logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
                                                 case DELETE ->
                                                         logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
-                                                case REMOVE -> {
+                                                case DENY -> {
                                                     makeChangesString(permissionChange);
                                                     logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), makeChangesString(permissionChange)));
 
@@ -323,7 +321,7 @@ public class ConsoleHandler {
                                                                     checkedPermissions.add(permission);
                                                                 }
                                                             });
-                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.REMOVE, code, checkedPermissions));
+                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DENY, code, checkedPermissions));
 
                                                             return 0;
                                                         })
@@ -372,7 +370,7 @@ public class ConsoleHandler {
                                                                         if (!checkedPermissions.contains(permission))
                                                                             checkedPermissions.add(permission);
                                                                     });
-                                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.ADD, code, permissions));
+                                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.GRANT, code, permissions));
 
                                                                 }
                                                             }
@@ -431,10 +429,10 @@ public class ConsoleHandler {
                             String title = scanner.nextLine();
                             logger.info("Input announcement content, double return to end:");
                             ArrayList<String> lines = new ArrayList<>();
-                            while (true){
+                            while (true) {
                                 String line = scanner.nextLine();
-                                if (!lines.isEmpty()){
-                                    if (lines.get(lines.size() - 1).isEmpty() && line.isEmpty()){
+                                if (!lines.isEmpty()) {
+                                    if (lines.get(lines.size() - 1).isEmpty() && line.isEmpty()) {
                                         break;
                                     }
                                 }
@@ -510,7 +508,9 @@ public class ConsoleHandler {
         try {
             logger.info("CONSOLE issued a command: %s".formatted(command));
             ConsoleHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
-        } catch (CommandSyntaxException | NullPointerException exception) {
+        } catch (CommandSyntaxException e) {
+            logger.error("Invalid Command Syntax: " + e.getLocalizedMessage());
+        } catch (Throwable exception) {
             logger.error("An error occurred while dispatching command.", new RuntimeException(exception));
         }
     }

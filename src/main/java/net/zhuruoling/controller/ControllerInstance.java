@@ -1,5 +1,7 @@
 package net.zhuruoling.controller;
 
+import net.zhuruoling.util.Util;
+
 public record ControllerInstance(Controller controller, ControllerTypes controllerType) {
     @Override
     public String toString() {
@@ -7,5 +9,9 @@ public record ControllerInstance(Controller controller, ControllerTypes controll
                 "controller=" + controller.toString() +
                 ", controllerTypes=" + controllerType.name() +
                 '}';
+    }
+
+    public String toJson(){
+        return Util.gson.toJson(this);
     }
 }

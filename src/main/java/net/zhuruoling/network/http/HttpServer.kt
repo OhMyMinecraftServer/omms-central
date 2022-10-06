@@ -6,6 +6,8 @@ import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.network.http.plugins.configureRouting
 import net.zhuruoling.network.http.plugins.configureSerialization
 
+fun httpServerMain(args: Array<String>) = EngineMain.main(args)
+
 fun launchHttpServerAsync(args: Array<String>): Thread {
     val arguments = args + "-port=${RuntimeConstants.config?.httpPort}"
     val thread = Thread {
@@ -18,7 +20,6 @@ fun launchHttpServerAsync(args: Array<String>): Thread {
     return thread
 }
 
-fun httpServerMain(args: Array<String>) = EngineMain.main(args)
 
 
 fun Application.module() {

@@ -21,8 +21,8 @@ import net.zhuruoling.main.RuntimeConstants.udpBroadcastSender
 import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.network.http.launchHttpServerAsync
-import net.zhuruoling.network.session.handler.RequestHandlerImpl
-import net.zhuruoling.network.session.request.RequestManager.registerRequest
+import net.zhuruoling.network.session.handler.builtin.registerBuiltinRequestHandlers
+
 import net.zhuruoling.network.session.server.SessionInitialServer
 import net.zhuruoling.permission.PermissionManager
 import net.zhuruoling.permission.PermissionManager.calcPermission
@@ -153,10 +153,7 @@ object MainKt {
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
-            for (command in Util.BUILTIN_COMMANDS.clone()) {
-                logger.info("Registering built-in command $command")
-                registerRequest(command!!, RequestHandlerImpl())
-            }
+            registerBuiltinRequestHandlers()
             loadAll()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -172,13 +169,13 @@ object MainKt {
         receiver.start()
         sender.start()
         RuntimeConstants.socketServer = socketServer
-        RuntimeConstants.reciever = receiver
+        reciever = receiver
         RuntimeConstants.httpServer = httpServer
-        RuntimeConstants.udpBroadcastSender = sender
+        udpBroadcastSender = sender
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")
-        RuntimeConstants.udpBroadcastSender = sender
+        udpBroadcastSender = sender
 
         val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
         while (true) {

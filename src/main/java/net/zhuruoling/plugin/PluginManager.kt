@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.Objects
 
 object PluginManager {
     val logger: Logger = LoggerFactory.getLogger("PluginManger")
@@ -84,13 +85,13 @@ object PluginManager {
         }
     }
 
-    fun execute(pluginName: String, functionName: String, command: Request, serverInterface: RequestServerInterface) {
+    fun execute(pluginName: String, functionName: String, command: Request, serverInterface: RequestServerInterface): Any {
         val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
             "Plugin $pluginName does not exist."
         )
         if (pluginInstance.pluginStatus == PluginStatus.UNLOADED)
             throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
-        pluginInstance.invokeMethod(functionName, serverInterface, command)
+        return pluginInstance.invokeMethod(functionName, serverInterface, command)
 
     }
 

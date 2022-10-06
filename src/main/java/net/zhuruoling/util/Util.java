@@ -33,6 +33,10 @@ public class Util {
             "plugins",
     };
 
+    public static final Gson gson = new GsonBuilder().serializeNulls().create();
+
+
+
     public static final String[] BUILTIN_COMMANDS = {
             "WHITELIST_CREATE",
             "WHITELIST_LIST",
@@ -43,8 +47,8 @@ public class Util {
 
             "PERMISSION_CREATE",
             "PERMISSION_DELETE",
-            "PERMISSION_ADD",
-            "PERMISSION_REMOVE",
+            "PERMISSION_GRANT",
+            "PERMISSION_DENY",
             "PERMISSION_LIST",
 
             "CONTROLLERS_LIST",

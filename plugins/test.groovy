@@ -3,25 +3,27 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.zhuruoling.console.CommandSourceStack
 import net.zhuruoling.network.session.request.Request
+import net.zhuruoling.network.session.response.Response
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginDependency
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.PluginMain
 import net.zhuruoling.plugin.PluginMetadata
 import net.zhuruoling.plugin.RequestServerInterface
+import net.zhuruoling.util.Result
 
 import java.lang.module.ModuleDescriptor
 
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
 class TestPlugin extends PluginMain {
-
     @Override
     void onLoad(LifecycleServerInterface serverInterface) {
         serverInterface.registerRequestCode("TEST", "test")
-        serverInterface.registerRequestCode("PING", {RequestServerInterface requestServerInterface, Request command ->
+        serverInterface.registerRequestCode("PING", {
+            RequestServerInterface requestServerInterface, Request command ->
             requestServerInterface.logger.info("PING COMMAND TRIGGERED")
-            requestServerInterface.sendBack("OK",new String[]{"PONG"})
+            return new Response().withResponseCode(Result.OK).withContentPair("message", "pong")
         })
         PluginLogger logger = serverInterface.getLogger()
         serverInterface.registerCommand("shit" , {
@@ -41,9 +43,10 @@ class TestPlugin extends PluginMain {
         logger.info("Test Plugin loaded!")
     }
 
-    def test(RequestServerInterface serverInterface, Request command) {
+    Response test(RequestServerInterface serverInterface, Request command) {
         serverInterface.logger.info(command.toString())
-        serverInterface.sendBack("OK", new String[]{"wdnmd"})
+        //serverInterface.sendBack("OK", new String[]{"wdnmd"})
+        return new Response().withResponseCode(Result.OK).withContentPair("message","wdnmd")
     }
 
     @Override

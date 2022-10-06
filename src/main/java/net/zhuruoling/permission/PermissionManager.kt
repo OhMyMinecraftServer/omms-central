@@ -134,7 +134,7 @@ object PermissionManager {
                     p = Permission.ANNOUNCEMENT_EDIT
                 }
                 16 -> {
-                    p = Permission.EXECUTE_PLUGIN_COMMAND
+                    p = Permission.EXECUTE_PLUGIN_REQUEST
                 }
             }
             if (x == 0){
@@ -243,7 +243,7 @@ higher bits
                 Permission.ANNOUNCEMENT_EDIT -> {
                     code += 1 shl 14
                 }
-                Permission.EXECUTE_PLUGIN_COMMAND -> {
+                Permission.EXECUTE_PLUGIN_REQUEST -> {
                     code += 1 shl 15
                 }
             }

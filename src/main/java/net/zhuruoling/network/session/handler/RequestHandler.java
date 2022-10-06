@@ -2,6 +2,8 @@ package net.zhuruoling.network.session.handler;
 
 import net.zhuruoling.network.session.request.Request;
 import net.zhuruoling.network.session.HandlerSession;
+import net.zhuruoling.network.session.response.Response;
+import net.zhuruoling.permission.Permission;
 
 public abstract class RequestHandler {
 
@@ -18,6 +20,10 @@ public abstract class RequestHandler {
     }
 
     private String register;
-    abstract public void handle(Request command, HandlerSession session);
+    abstract public Response handle(Request request, HandlerSession session);
+
+    abstract public Permission requiresPermission();
+
+
 
 }

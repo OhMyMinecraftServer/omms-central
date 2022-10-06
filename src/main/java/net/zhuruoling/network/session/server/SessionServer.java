@@ -5,7 +5,10 @@ import net.zhuruoling.network.session.HandlerSession;
 import net.zhuruoling.network.session.Session;
 import net.zhuruoling.network.session.request.RequestBuilderKt;
 import net.zhuruoling.network.session.request.RequestManager;
+import net.zhuruoling.network.session.response.Response;
 import net.zhuruoling.permission.Permission;
+import net.zhuruoling.util.Result;
+import org.apache.tools.ant.types.selectors.ReadableSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +63,28 @@ public class SessionServer extends Thread {
                 try {
                     if (session.getSocket().isClosed())
                         break;
-                    var command = RequestBuilderKt.buildFromJson(line);
-                    logger.info("Received " + command);
-                    Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(command).getRequest())).handle(command,new HandlerSession(encryptedConnector,session,this.permissions));
+                    var request = RequestBuilderKt.buildFromJson(line);
+                    logger.info("Received " + request);
+                    var handler = Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(request).getRequest()));
+                    var permission = handler.requiresPermission();
+                    if (permission != null && !permissions.contains(permission)) {
+                        String response = Response.serialize(new Response().withResponseCode(Result.PERMISSION_DENIED));
+                        encryptedConnector.println(response);
+                    }
+                    Response response;
+                    try {
+                        response = handler.handle(request, new HandlerSession(encryptedConnector, session, this.permissions));
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                        response = new Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString());
+                    }
+                    if (response == null){
+                        logger.info("Disconnecting.");
+                        session.getSocket().close();
+                        break;
+                    }
+                    var content = Response.serialize(response);
+                    encryptedConnector.println(content);
                     if (session.getSocket().isClosed())
                         break;
                     line = encryptedConnector.readLine();

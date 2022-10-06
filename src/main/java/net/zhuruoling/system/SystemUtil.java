@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
-import sun.misc.Unsafe;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;

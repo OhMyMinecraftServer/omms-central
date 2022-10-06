@@ -11,11 +11,12 @@ object RequestManager {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
     private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
     private val pluginRequestTable: MutableList<StringPair> = mutableListOf()
-    fun registerRequest(command: String, handler: RequestHandler) {
-        if (requestTable.containsKey(command)) {
-            throw RequestAlreadyExistsException("Command $command already registered by ${requestTable[command]?.register}")
+    fun registerRequest(requestName: String, handler: RequestHandler) {
+        println("Registering $requestName with ${handler.javaClass.name}")
+        if (requestTable.containsKey(requestName)) {
+            throw RequestAlreadyExistsException("Command $requestName already registered by ${requestTable[requestName]?.register}")
         }
-        requestTable[command] = handler
+        requestTable[requestName] = handler
     }
 
     fun getRequestHandler(request: String): RequestHandler? {
@@ -24,13 +25,13 @@ object RequestManager {
         return requestTable[request]
     }
 
-    fun unregisterCommand(command: String) {
-        logger.info("Unregistering command $command")
-        if (requestTable.containsKey(command)) {
-            requestTable.remove(command)
+    fun unregisterRequest(requestName: String) {
+        logger.info("Unregistering command $requestName")
+        if (requestTable.containsKey(requestName)) {
+            requestTable.remove(requestName)
             return
         }
-        throw CanNotFindThatFuckingRequestException("Command $command does not exist.")
+        throw NoSuchElementException("Command $requestName does not exist.")
     }
 
     fun registerPluginRequest(request: String, pluginId: String, handler: RequestHandler, override: Boolean = false) {

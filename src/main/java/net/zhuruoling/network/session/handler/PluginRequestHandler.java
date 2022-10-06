@@ -1,37 +1,40 @@
 package net.zhuruoling.network.session.handler;
 
-import net.zhuruoling.network.session.request.Request;
+import net.zhuruoling.network.session.HandlerSession;
 import net.zhuruoling.network.session.message.MessageBuilderKt;
+import net.zhuruoling.network.session.request.Request;
+import net.zhuruoling.network.session.response.Response;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.plugin.PluginManager;
 import net.zhuruoling.plugin.RequestServerInterface;
-import net.zhuruoling.network.session.HandlerSession;
 import net.zhuruoling.util.Result;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class PluginRequestHandler extends RequestHandler {
     private final String pluginName;
     private final String code;
     private final String funcName;
-    private final BiConsumer<RequestServerInterface, Request> consumer;
+    private final BiFunction<RequestServerInterface, Request, Response> function;
 
     public PluginRequestHandler(String pluginName, String code, String funcName) {
         super("PLUGIN %s".formatted(pluginName));
         this.pluginName = pluginName;
         this.code = code;
         this.funcName = funcName;
-        consumer = null;
+        function = null;
     }
 
-    public PluginRequestHandler(String pluginName, String code, BiConsumer<RequestServerInterface, Request> consumer) {
+    public PluginRequestHandler(String pluginName, String code, BiFunction<RequestServerInterface, Request, Response> function) {
         super("PLUGIN %s".formatted(pluginName));
         this.pluginName = pluginName;
         this.code = code;
         this.funcName = "";
-        this.consumer = consumer;
+        this.function = function;
     }
+
+
 
     public String getPluginName() {
         return pluginName;
@@ -46,8 +49,8 @@ public class PluginRequestHandler extends RequestHandler {
     }
 
     @Override
-    public void handle(Request request, HandlerSession session) {
-        if (!session.getPermissions().contains(Permission.EXECUTE_PLUGIN_COMMAND)) {
+    public Response handle(Request request, HandlerSession session) {
+        if (!session.getPermissions().contains(Permission.EXECUTE_PLUGIN_REQUEST)) {
             try {
                 session.getEncryptedConnector().println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
             } catch (Exception e) {
@@ -57,11 +60,15 @@ public class PluginRequestHandler extends RequestHandler {
         if (!Objects.equals(request.getRequest(), code)) {
             throw new UnsupportedOperationException("The operation code defined in this class does not align with requested operation code.");
         }
-        if (consumer != null) {
-            consumer.accept(new RequestServerInterface(session, pluginName), request);
+        if (function != null) {
+            return function.apply(new RequestServerInterface(session, pluginName), request);
         } else {
-            PluginManager.INSTANCE.execute(pluginName, funcName, request, new RequestServerInterface(session, pluginName));
+            return (Response) PluginManager.INSTANCE.execute(pluginName, funcName, request, new RequestServerInterface(session, pluginName));
         }
+    }
 
+    @Override
+    public Permission requiresPermission() {
+        return Permission.EXECUTE_PLUGIN_REQUEST;
     }
 }

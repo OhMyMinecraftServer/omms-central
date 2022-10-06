@@ -2,6 +2,7 @@ package net.zhuruoling.network.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.network.session.response.Response;
 import net.zhuruoling.network.session.server.SessionServer;
 import net.zhuruoling.network.session.request.RequestBuilderKt;
 import net.zhuruoling.network.session.message.MessageBuilderKt;
@@ -19,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -55,7 +57,8 @@ public class InitSession extends Thread {
                 var request = RequestBuilderKt.buildFromJson(line);
                 logger.info(String.valueOf(request));
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
-                    var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(request.getLoad()[0])));
+                    String stringToken = request.getContent("token");
+                    var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));
                     //202205290840#114514
                     var date = Long.parseLong(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
                     var key = Long.parseLong(authKey);
@@ -68,10 +71,7 @@ public class InitSession extends Thread {
                     if (isCodeExist) {
                         var randomKey = Util.randomStringGen(32);
                         encryptedConnector.send(
-                                MessageBuilderKt.build(
-                                        Result.OK,
-                                        new String[]{randomKey}
-                                )
+                                Response.serialize(new Response().withResponseCode(Result.OK).withContentPair("key",randomKey))
                         );
                         logger.info(String.format("Starting Session for #%s:%d", socket.getInetAddress(), socket.getPort()));
                         logger.info(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
@@ -80,7 +80,7 @@ public class InitSession extends Thread {
                         break;
                     }
                     encryptedConnector.send(
-                            MessageBuilderKt.build(Result.FAIL)
+                            Response.serialize(new Response().withResponseCode(Result.FAIL))
                     );
                     break;
                 }

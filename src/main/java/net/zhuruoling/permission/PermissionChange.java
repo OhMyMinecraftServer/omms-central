@@ -38,7 +38,7 @@ public class PermissionChange {
     }
 
     public enum Operation {
-        ADD, REMOVE, DELETE, CREATE
+        GRANT, DENY, DELETE, CREATE
     }
 
     @Override
