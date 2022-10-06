@@ -602,7 +602,7 @@ public class ConsoleHandler {
             }
             dispatchCommand(line);
         } catch (UserInterruptException | EndOfFileException ignored) {
-            //DO NOTHING
+            dispatchCommand("stop");
         }
     }
 
