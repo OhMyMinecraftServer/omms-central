@@ -9,7 +9,9 @@ import net.zhuruoling.network.http.plugins.configureSerialization
 fun launchHttpServerAsync(args: Array<String>): Thread {
     val arguments = args + "-port=${RuntimeConstants.config?.httpPort}"
     val thread = Thread {
-        httpServerMain(arguments)
+        try {
+            httpServerMain(arguments)
+        } catch (ignored: InterruptedException) { }
     }
     thread.name = "HttpServer"
     thread.start()

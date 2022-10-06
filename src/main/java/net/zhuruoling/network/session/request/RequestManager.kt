@@ -5,6 +5,7 @@ import net.zhuruoling.util.StringPair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.Hashtable
+import java.util.NoSuchElementException
 
 object RequestManager {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
@@ -19,7 +20,7 @@ object RequestManager {
 
     fun getRequestHandler(request: String): RequestHandler? {
         if (!requestTable.containsKey(request))
-            throw CanNotFindThatFuckingRequestException("Command $request does not exist.")
+            throw NoSuchElementException("Command $request does not exist.")
         return requestTable[request]
     }
 

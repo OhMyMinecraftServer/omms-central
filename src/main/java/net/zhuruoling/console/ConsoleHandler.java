@@ -508,7 +508,7 @@ public class ConsoleHandler {
 
     public void dispatchCommand(String command) {
         try {
-            logger.info("CONSOLE issued a command:%s".formatted(command));
+            logger.info("CONSOLE issued a command: %s".formatted(command));
             ConsoleHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         } catch (CommandSyntaxException | NullPointerException exception) {
             logger.error("An error occurred while dispatching command.", new RuntimeException(exception));
