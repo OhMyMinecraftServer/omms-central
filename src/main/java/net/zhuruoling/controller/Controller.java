@@ -1,5 +1,7 @@
 package net.zhuruoling.controller;
 
+import net.zhuruoling.util.Util;
+
 public class Controller {
     private String name;
 
@@ -91,5 +93,9 @@ public class Controller {
 
     public void setRmiPort(int rmiPort) {
         this.rmiPort = rmiPort;
+    }
+
+    public String toJson() {
+        return Util.gson.toJson(this);
     }
 }

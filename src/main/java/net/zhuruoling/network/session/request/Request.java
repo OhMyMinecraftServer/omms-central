@@ -8,7 +8,7 @@ public class Request {
     public Request(String req){
         this.request = req;
     }
-    @SerializedName("cmd")
+    @SerializedName("request")
     String request;
 
     @SerializedName("content")
@@ -40,6 +40,7 @@ public class Request {
     public String toString() {
         return "Request{" +
                 "request='" + request + '\'' +
+                ", content=" + content +
                 '}';
     }
 }

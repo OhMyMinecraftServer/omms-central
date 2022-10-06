@@ -55,7 +55,7 @@ public class InitSession extends Thread {
             logger.debug("recv:" + line);
             while (true){
                 var request = RequestBuilderKt.buildFromJson(line);
-                logger.info(String.valueOf(request));
+                logger.info("Got request:" + request);
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
                     String stringToken = request.getContent("token");
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));
