@@ -74,15 +74,17 @@ public class SessionServer extends Thread {
                     Response response;
                     try {
                         response = handler.handle(request, new HandlerSession(encryptedConnector, session, this.permissions));
+                        if (response == null){
+                            encryptedConnector.println(Response.serialize(new Response()));
+                            logger.info("Disconnecting.");
+                            session.getSocket().close();
+                            break;
+                        }
                     } catch (Throwable t) {
                         t.printStackTrace();
                         response = new Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString());
                     }
-                    if (response == null){
-                        logger.info("Disconnecting.");
-                        session.getSocket().close();
-                        break;
-                    }
+
                     var content = Response.serialize(response);
                     encryptedConnector.println(content);
                     if (session.getSocket().isClosed())
@@ -93,8 +95,8 @@ public class SessionServer extends Thread {
                     break;
                 }
             }
-        } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            new RuntimeException(e).printStackTrace();
         }
     }
 

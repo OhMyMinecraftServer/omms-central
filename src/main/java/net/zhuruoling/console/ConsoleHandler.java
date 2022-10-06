@@ -592,7 +592,7 @@ public class ConsoleHandler {
                 )
 
         );
-
+//console complete may not working in idea
         try {
             LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer).build();
             String line = lineReader.readLine();
