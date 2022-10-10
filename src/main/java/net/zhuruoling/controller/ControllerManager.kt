@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
-import java.lang.Exception
 
 object ControllerManager {
     val controllers = mutableMapOf<String, ControllerInstance>()

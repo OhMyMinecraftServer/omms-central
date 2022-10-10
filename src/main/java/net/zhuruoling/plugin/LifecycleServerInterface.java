@@ -4,8 +4,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.zhuruoling.console.CommandSourceStack;
-import net.zhuruoling.console.ConsoleHandler;
+import net.zhuruoling.console.ConsoleCommandHandler;
 import net.zhuruoling.console.PluginCommand;
+import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.network.session.request.Request;
 import net.zhuruoling.network.session.request.RequestManager;
 import net.zhuruoling.network.session.handler.PluginRequestHandler;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -45,13 +45,13 @@ public class LifecycleServerInterface extends ServerInterface {
                     return 0;
                 })
         );
-        ConsoleHandler.getDispatcher().register(node);
-        ConsoleHandler.getPluginCommandHashMap().add(new PluginCommand(this.getPluginName(), node));
+        ConsoleCommandHandler.getDispatcher().register(node);
+        RuntimeConstants.pluginCommandHashMap.add(new PluginCommand(this.getPluginName(), node));
     }
 
     public void registerCommand(@NotNull LiteralArgumentBuilder<CommandSourceStack> commandSourceStackLiteralArgumentBuilder) {
-        ConsoleHandler.getDispatcher().register(commandSourceStackLiteralArgumentBuilder);
-        ConsoleHandler.getPluginCommandHashMap().add(new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
+        ConsoleCommandHandler.getDispatcher().register(commandSourceStackLiteralArgumentBuilder);
+        RuntimeConstants.pluginCommandHashMap.add(new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
     }
 
 }

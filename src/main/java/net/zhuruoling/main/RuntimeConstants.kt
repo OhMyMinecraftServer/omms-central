@@ -1,10 +1,11 @@
 package net.zhuruoling.main
 
 import net.zhuruoling.configuration.Configuration
+import net.zhuruoling.console.PluginCommand
 import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.network.broadcast.UdpBroadcastSender
-import net.zhuruoling.permission.Permission
 import net.zhuruoling.network.session.server.SessionInitialServer
+import net.zhuruoling.permission.Permission
 import java.nio.channels.FileLock
 
 object RuntimeConstants {
@@ -21,7 +22,8 @@ object RuntimeConstants {
     var config: Configuration? = null
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
-
+    @JvmField
+    var pluginCommandHashMap = ArrayList<PluginCommand>()
     init {
         Permission.values().forEach {
             permissionNames.add(it.name)
