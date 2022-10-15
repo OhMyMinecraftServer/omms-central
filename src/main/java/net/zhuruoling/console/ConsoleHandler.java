@@ -14,6 +14,7 @@ import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.foo.Foo;
 import net.zhuruoling.main.MainKt;
 import net.zhuruoling.main.RuntimeConstants;
+import net.zhuruoling.network.TestKt;
 import net.zhuruoling.network.broadcast.Broadcast;
 import net.zhuruoling.permission.IllegalPermissionNameException;
 import net.zhuruoling.permission.Permission;
@@ -256,6 +257,11 @@ public class ConsoleHandler {
             for (String usage : usages) {
                 logger.info(usage);
             }
+            return 0;
+        }));
+
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("rua").executes(x -> {
+            TestKt.testAuth("OMOGUS", "whitelist list");
             return 0;
         }));
 

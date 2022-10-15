@@ -15,6 +15,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Util {
@@ -65,6 +67,9 @@ public class Util {
         return false;
     }
 
+    public static String getTimeCode(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
+    }
 
     public static int calculateTokenByDate(int password) {
         Date date = new Date();

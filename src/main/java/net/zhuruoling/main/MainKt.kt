@@ -102,7 +102,7 @@ object MainKt {
         logger.info("Hello World!")
 
 
-        logger.info("Loading files.")
+        logger.info("Loading Config.")
         if (!Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")) {
             isInit = true
             Util.createConfig(logger)
@@ -124,6 +124,7 @@ object MainKt {
             exitProcess(1)
         }
         RuntimeConstants.config = config
+        println(config.toString())
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
             logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")

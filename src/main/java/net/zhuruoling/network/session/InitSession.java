@@ -60,7 +60,7 @@ public class InitSession extends Thread {
                     String stringToken = request.getContent("token");
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));
                     //202205290840#114514
-                    var date = Long.parseLong(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm")));
+                    var date = Long.parseLong(Util.getTimeCode());
                     var key = Long.parseLong(authKey);
                     long permCode = key ^ date;
                     logger.debug("Got permission code %d".formatted(permCode));

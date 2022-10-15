@@ -2,6 +2,8 @@ package net.zhuruoling.configuration;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Configuration {
     public Configuration(int port,String serverName, int httpPort){
         this.port = port;
@@ -21,7 +23,16 @@ public class Configuration {
     @SerializedName("server_name")
     String serverName;
 
+    @SerializedName("authorised_controller")
+    String[] authorisedController = new String[]{};
 
+    public String[] getAuthorisedController() {
+        return authorisedController;
+    }
+
+    public void setAuthorisedController(String[] authorisedController) {
+        this.authorisedController = authorisedController;
+    }
 
     public int getHttpPort() {
         return httpPort;
@@ -47,4 +58,13 @@ public class Configuration {
         this.serverName = serverName;
     }
 
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "port=" + port +
+                ", httpPort=" + httpPort +
+                ", serverName='" + serverName + '\'' +
+                ", authorisedController=" + authorisedController +
+                '}';
+    }
 }
