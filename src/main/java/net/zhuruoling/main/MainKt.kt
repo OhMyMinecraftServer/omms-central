@@ -174,12 +174,9 @@ object MainKt {
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")
         udpBroadcastSender = sender
-
-        val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
         while (true) {
-            val handler = ConsoleHandler()
-            ConsoleHandler.setLogger(logger)
-            handler.handle(terminal)
+            val handler = ConsoleInputHandler.INSTANCE
+            handler.handle()
         }
     }
 
