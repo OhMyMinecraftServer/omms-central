@@ -2,7 +2,6 @@ package net.zhuruoling.plugin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.console.PluginCommand
 import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.network.session.request.Request
@@ -125,7 +124,7 @@ object PluginManager {
                 pluginInstance.onUnload(lifecycleServerInterface)
                 //pluginInstance.invokeMethod("onUnload", initServerInterface)
                 RequestManager.unRegisterPluginRequest(pluginName)
-                val pluginCommandHahMap = ConsoleHandler.getPluginCommandHashMap()
+                val pluginCommandHahMap = RuntimeConstants.pluginCommandHashMap
                 val removed = mutableListOf<PluginCommand>()
                 pluginCommandHahMap.forEach{
                     if (it.pluginId == pluginInstance.metadata.id){

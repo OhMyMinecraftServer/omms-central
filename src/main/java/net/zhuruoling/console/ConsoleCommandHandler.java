@@ -50,7 +50,6 @@ public class ConsoleCommandHandler {
         return dispatcher;
     }
 
-
     public static void init() {
         RuntimeConstants.pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
@@ -246,6 +245,21 @@ public class ConsoleCommandHandler {
             return 0;
         }));
 
+        dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("ban").then(
+                RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(x -> {
+                    String player = StringArgumentType.getString(x, "player");
+                    WhitelistManager.INSTANCE.forEach(stringEntry -> {
+                        WhitelistManager.INSTANCE.removeFromWhiteList(stringEntry.getKey(), player);
+                        return null;
+                    });
+                    ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+                        ControllerManager.INSTANCE.sendInstruction(s, "kick " + player);
+                    });
+                    return 0;
+                })
+        ));
+
+
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("permission").then(
                                 LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
                                     var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
@@ -438,8 +452,6 @@ public class ConsoleCommandHandler {
             result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
         }
     }
-
-
 
 
     private static String makeChangesString(PermissionChange permissionChange) {

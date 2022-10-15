@@ -10,6 +10,8 @@ import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -17,6 +19,7 @@ public class ConsoleInputHandler {
 
 
     private static final Terminal terminal;
+    private final Logger logger = LoggerFactory.getLogger("ConsoleInputHandler");
 
     static {
         try {
@@ -116,7 +119,10 @@ public class ConsoleInputHandler {
             if (line.isEmpty()) {
                 return;
             }
-
+            ConsoleCommandHandler.init();
+            var handler = new ConsoleCommandHandler();
+            handler.setLogger(logger);
+            handler.dispatchCommand(line);
         } catch (UserInterruptException | EndOfFileException ignored) {
 
         }

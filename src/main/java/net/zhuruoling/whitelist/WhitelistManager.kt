@@ -8,7 +8,9 @@ import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
+import java.io.FileWriter
 import java.nio.file.Files
+import java.nio.file.OpenOption
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -23,7 +25,7 @@ object WhitelistManager {
         val files = mutableListOf<Path>()
         val gson = GsonBuilder().serializeNulls().create()
         Files.list(folder.toPath()).forEach {
-            if (!it.toFile().isFile)return@forEach
+            if (!it.toFile().isFile) return@forEach
             val file = it.toFile()
             if (file.extension == "json") {
                 files.add(it)
@@ -60,17 +62,17 @@ object WhitelistManager {
         return Result.NO_SUCH_PLAYER
     }
 
-    fun queryInAllWhitelist(player: String): MutableList<String>{
+    fun queryInAllWhitelist(player: String): MutableList<String> {
         val list = mutableListOf<String>()
-        whitelistTable.forEach{
-            if (it.value.getPlayers().contains(player)){
+        whitelistTable.forEach {
+            if (it.value.getPlayers().contains(player)) {
                 list.add(it.key)
             }
         }
         return list
     }
 
-    fun getWhitelist(whitelistName: String): Whitelist?{
+    fun getWhitelist(whitelistName: String): Whitelist? {
         return whitelistTable[whitelistName]
     }
 
@@ -82,27 +84,27 @@ object WhitelistManager {
         return whitelistTable.isEmpty()
     }
 
-    fun hasWhitelist(whitelistName: String): Boolean{
+    fun hasWhitelist(whitelistName: String): Boolean {
         return whitelistTable.containsKey(whitelistName)
     }
 
-    fun forEach(action: (Map.Entry<String, Whitelist>) -> Unit){
-        whitelistTable.forEach{
+    fun forEach(action: (Map.Entry<String, Whitelist>) -> Unit) {
+        whitelistTable.forEach {
             action.invoke(it)
         }
     }
 
     @Synchronized
-    fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult>?{
+    fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult>? {
         val whitelist = whitelistTable[whitelistName] ?: return null
         val result = mutableListOf<SearchResult>()
         whitelist.players.forEach {
-            val ratio = FuzzySearch.tokenSortPartialRatio(it, playerName);
-            if (ratio >= 70){
-                result.add(SearchResult(ratio, playerName))
+            val ratio = FuzzySearch.tokenSortPartialRatio(it, playerName)
+            if (ratio >= 70) {
+                result.add(SearchResult(ratio, it))
             }
         }
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
             return null
         }
         result.sortBy {
@@ -111,7 +113,7 @@ object WhitelistManager {
         return result
     }
 
-    fun getWhitelistNames(): MutableSet<String>{
+    fun getWhitelistNames(): MutableSet<String> {
         return whitelistTable.keys
     }
 
@@ -149,9 +151,11 @@ object WhitelistManager {
         val path = Path(Util.joinFilePaths("whitelists", "${whitelistName}.json"))
         try {
             if (Files.exists(path)) {
-                Files.delete(path)
+                val writer = FileWriter(path.toFile())
+                writer.write(json)
+                writer.flush()
+                writer.close()
             }
-            Files.write(path, json.encodeToByteArray())
         } catch (e: Throwable) {
             e.printStackTrace()
             init()
@@ -159,6 +163,7 @@ object WhitelistManager {
         }
         init()
         return Result.OK
+
 
     }
 

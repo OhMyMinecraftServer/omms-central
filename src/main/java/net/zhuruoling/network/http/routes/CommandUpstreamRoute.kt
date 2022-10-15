@@ -5,7 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.*
+import net.zhuruoling.console.ConsoleCommandHandler
+import net.zhuruoling.main.RuntimeConstants.publicLogger
 
+@OptIn(DelicateCoroutinesApi::class)
 fun Route.commandUpstreamRouting(){
     route("/command"){
         post ("run"){
@@ -14,7 +18,15 @@ fun Route.commandUpstreamRouting(){
                return@post
             }
             val command = call.receiveText()
-            println(command)
+            println("Got upstream command: $command")
+            GlobalScope.launch(Dispatchers.Default) {
+                ensureActive()
+                ConsoleCommandHandler.init()
+                ConsoleCommandHandler().apply {
+                    setLogger(publicLogger)
+                    dispatchCommand(command)
+                }
+            }
             this.context.respond(HttpStatusCode.OK)
         }
     }
