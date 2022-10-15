@@ -9,14 +9,29 @@ import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+
+import java.io.IOException;
 
 public class ConsoleInputHandler {
+
+
+    private static final Terminal terminal;
+
+    static {
+        try {
+            terminal = TerminalBuilder.builder().system(true).dumb(true).build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     ConsoleInputHandler(){
 
     }
     public static ConsoleInputHandler INSTANCE = new ConsoleInputHandler();
 
-    public void handle(Terminal terminal) {
+    public void handle() {
         WhitelistCompleter whitelistCompleter = new WhitelistCompleter();
         PlayerNameCompleter playerNameCompleter = new PlayerNameCompleter();
         PermissionCodeCompleter permissionCodeCompleter = new PermissionCodeCompleter();

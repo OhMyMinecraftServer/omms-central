@@ -17,7 +17,7 @@ object RuntimeConstants {
     var launchTime: Long = 0L
     var socketServer: SessionInitialServer? = null
     var httpServer: Thread? = null
-    var reciever: UdpBroadcastReceiver? = null
+    var receiver: UdpBroadcastReceiver? = null
     val permissionNames: MutableList<String> = mutableListOf()
     var config: Configuration? = null
     var normalShutdown: Boolean = false

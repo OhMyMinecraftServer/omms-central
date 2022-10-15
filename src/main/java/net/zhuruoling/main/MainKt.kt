@@ -4,8 +4,7 @@ import com.google.gson.Gson
 import net.zhuruoling.announcement.AnnouncementManager
 import net.zhuruoling.configuration.ConfigReader
 import net.zhuruoling.configuration.Configuration
-import net.zhuruoling.console.ConsoleHandler
-import net.zhuruoling.console.WhitelistCompleter
+import net.zhuruoling.console.ConsoleInputHandler
 import net.zhuruoling.controller.ControllerManager
 import net.zhuruoling.foo.Foo.bar
 import net.zhuruoling.main.RuntimeConstants.experimental
@@ -14,7 +13,7 @@ import net.zhuruoling.main.RuntimeConstants.lock
 import net.zhuruoling.main.RuntimeConstants.noLock
 import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.normalShutdown
-import net.zhuruoling.main.RuntimeConstants.reciever
+import net.zhuruoling.main.RuntimeConstants.receiver
 import net.zhuruoling.main.RuntimeConstants.socketServer
 import net.zhuruoling.main.RuntimeConstants.test
 import net.zhuruoling.main.RuntimeConstants.udpBroadcastSender
@@ -88,12 +87,11 @@ object MainKt {
                 logger.error("An error occurred.")
                 e.printStackTrace()
             }
-            val terminal = TerminalBuilder.builder().system(true).dumb(true).build()
+
 
             while (true) {
-                val handler0 = ConsoleHandler()
-                ConsoleHandler.setLogger(logger)
-                handler0.handle(terminal)
+                val handler0 = ConsoleInputHandler.INSTANCE
+                handler0.handle()
             }
 
         }
@@ -169,7 +167,7 @@ object MainKt {
         receiver.start()
         sender.start()
         RuntimeConstants.socketServer = socketServer
-        reciever = receiver
+        RuntimeConstants.receiver = receiver
         RuntimeConstants.httpServer = httpServer
         udpBroadcastSender = sender
         val timeComplete = System.currentTimeMillis()
@@ -193,7 +191,7 @@ object MainKt {
             normalShutdown = true
             unloadAll()
             Objects.requireNonNull(httpServer)?.interrupt()
-            Objects.requireNonNull(reciever)?.interrupt()
+            Objects.requireNonNull(receiver)?.interrupt()
             Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
             Objects.requireNonNull(socketServer)?.interrupt()
             if (!noLock) {
