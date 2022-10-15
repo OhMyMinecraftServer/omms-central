@@ -248,11 +248,13 @@ public class ConsoleCommandHandler {
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("ban").then(
                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(x -> {
                     String player = StringArgumentType.getString(x, "player");
-                    WhitelistManager.INSTANCE.forEach(stringEntry -> {
-                        WhitelistManager.INSTANCE.removeFromWhiteList(stringEntry.getKey(), player);
-                        return null;
+                    var list = WhitelistManager.INSTANCE.getWhitelistNames();
+                    var whitelistNames = new ArrayList<>(list);
+                    whitelistNames.forEach(s -> {
+                        logger.info("Removing player from whitelist " + s + " -> " + WhitelistManager.INSTANCE.removeFromWhiteList(s, player));
                     });
                     ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+                        logger.info("kicking player %s from %s".formatted(player, s));
                         ControllerManager.INSTANCE.sendInstruction(s, "kick " + player);
                     });
                     return 0;

@@ -58,7 +58,6 @@ object ControllerManager {
 
     fun sendInstruction(instance: ControllerInstance, command: String) {
         val instruction = Instruction(instance.controllerType, instance.controller.name, command)
-        logger.info(Instruction.asJsonString(instruction))
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(instruction))
     }
 
