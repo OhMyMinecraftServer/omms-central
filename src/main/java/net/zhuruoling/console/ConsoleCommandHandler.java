@@ -25,15 +25,6 @@ import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 import net.zhuruoling.whitelist.WhitelistManager;
 import org.jline.builtins.Completers;
-import org.jline.reader.EndOfFileException;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.completer.AggregateCompleter;
-import org.jline.reader.impl.completer.ArgumentCompleter;
-import org.jline.reader.impl.completer.NullCompleter;
-import org.jline.reader.impl.completer.StringsCompleter;
-import org.jline.terminal.Terminal;
 import org.slf4j.Logger;
 
 import java.lang.management.ManagementFactory;
@@ -46,13 +37,12 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
-@SuppressWarnings("DuplicatedCode")
-public class ConsoleHandler {
+public class ConsoleCommandHandler {
     private static Logger logger;
-    private static ArrayList<PluginCommand> pluginCommandHashMap = new ArrayList<>();
+
     private static CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
 
-    public ConsoleHandler() {
+    public ConsoleCommandHandler() {
         init();
     }
 
@@ -60,14 +50,9 @@ public class ConsoleHandler {
         return dispatcher;
     }
 
-    public static ArrayList<PluginCommand> getPluginCommandHashMap() {
-        return pluginCommandHashMap;
-    }
 
     public static void init() {
-        //dispatcher = new CommandDispatcher<>();
-        //pluginCommandHashMap = new HashMap<>();
-        pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
+        RuntimeConstants.pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -150,26 +135,14 @@ public class ConsoleHandler {
                                                     var player = StringArgumentType.getString(commandContext, "player");
                                                     if (Objects.equals(whitelistName, "all")) {
                                                         WhitelistManager.INSTANCE.getWhitelistNames().forEach(s -> {
-                                                            var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
-                                                            if (result == null) {
-                                                                logger.info("No valid results in whitelist %s.".formatted(s));
-                                                            } else {
-                                                                logger.info("Search result in whitelist %s:".formatted(s));
-                                                                result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
-                                                            }
+                                                            searchWhitelist(player, s);
                                                         });
                                                         return 0;
                                                     }
                                                     if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)) {
                                                         logger.error("Specified whitelist does not exist.");
                                                     }
-                                                    var result = WhitelistManager.INSTANCE.searchInWhitelist(whitelistName, player);
-                                                    if (result == null) {
-                                                        logger.info("No valid results in whitelist %s.".formatted(whitelistName));
-                                                    } else {
-                                                        logger.info("Search result in whitelist %s:".formatted(whitelistName));
-                                                        result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
-                                                    }
+                                                    searchWhitelist(player, whitelistName);
                                                     return 0;
                                                 })
                                         )
@@ -201,7 +174,7 @@ public class ConsoleHandler {
         );
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
                     dispatcher = new CommandDispatcher<>();
-                    pluginCommandHashMap = new ArrayList<>();
+                    RuntimeConstants.pluginCommandHashMap = new ArrayList<>();
                     PluginManager.INSTANCE.unloadAll();
                     PluginManager.INSTANCE.init();
                     PluginManager.INSTANCE.loadAll();
@@ -313,7 +286,7 @@ public class ConsoleHandler {
                                                         .executes(x -> {
                                                             int code = IntegerArgumentType.getInteger(x, "code");
                                                             String permissionName = StringArgumentType.getString(x, "permission_name");
-                                                            var permissions = getPermissionsFromString(permissionName);
+                                                            var permissions = PermissionManager.getPermissionsFromString(permissionName);
                                                             ArrayList<Permission> checkedPermissions = new ArrayList<>();
                                                             var p = PermissionManager.INSTANCE.getPermission(code);
                                                             if (p == null) {
@@ -354,7 +327,7 @@ public class ConsoleHandler {
                                                         .executes(x -> {
                                                             int code = IntegerArgumentType.getInteger(x, "code");
                                                             String permissionName = StringArgumentType.getString(x, "permission_name");
-                                                            var p_ = getPermissionsFromString(permissionName);
+                                                            var p_ = PermissionManager.getPermissionsFromString(permissionName);
                                                             if (p_ != null) {
                                                                 if (!p_.isEmpty()) {
                                                                     ArrayList<Permission> permissions = new ArrayList<>(p_);
@@ -456,29 +429,17 @@ public class ConsoleHandler {
         );
     }
 
-    private static List<Permission> getPermissionsFromString(String string) {
-        if (string.contains(" ")) {
-            var permissionNames = Arrays.stream(string.split(" ")).toList();
-            ArrayList<Permission> arrayList = new ArrayList<>();
-            permissionNames.forEach(x -> {
-                try {
-                    Permission permission = Permission.valueOf(x);
-                    arrayList.add(permission);
-                } catch (IllegalArgumentException e) {
-                    logger.error("%s is not a valid permission name".formatted(x), new IllegalPermissionNameException(x, e));
-                }
-
-            });
-            return arrayList;
+    private static void searchWhitelist(String player, String s) {
+        var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
+        if (result == null) {
+            logger.info("No valid results in whitelist %s.".formatted(s));
         } else {
-            try {
-                Permission permission = Permission.valueOf(string);
-                return List.of(permission);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
+            logger.info("Search result in whitelist %s:".formatted(s));
+            result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
         }
     }
+
+
 
 
     private static String makeChangesString(PermissionChange permissionChange) {
@@ -494,8 +455,8 @@ public class ConsoleHandler {
         return ref.affection;
     }
 
-    public static void setLogger(Logger logger) {
-        ConsoleHandler.logger = logger;
+    public void setLogger(Logger logger) {
+        ConsoleCommandHandler.logger = logger;
     }
 
     Completers.TreeCompleter walkCommandTree(CommandNode<CommandSourceStack> node) {
@@ -513,102 +474,11 @@ public class ConsoleHandler {
     public void dispatchCommand(String command) {
         try {
             logger.info("CONSOLE issued a command: %s".formatted(command));
-            ConsoleHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
+            ConsoleCommandHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         } catch (CommandSyntaxException e) {
             logger.error("Invalid Command Syntax: " + e.getLocalizedMessage());
         } catch (Throwable exception) {
             logger.error("An error occurred while dispatching command.", new RuntimeException(exception));
-        }
-    }
-
-    public void handle(Terminal terminal) {
-        WhitelistCompleter whitelistCompleter = new WhitelistCompleter();
-        PlayerNameCompleter playerNameCompleter = new PlayerNameCompleter();
-        PermissionCodeCompleter permissionCodeCompleter = new PermissionCodeCompleter();
-        PermissionNameCompleter permissionNameCompleter = new PermissionNameCompleter();
-        var completer = new AggregateCompleter(
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("list", "query"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("get", "add", "search"),
-                        whitelistCompleter,
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("remove"),
-                        whitelistCompleter,
-                        playerNameCompleter,
-                        NullCompleter.INSTANCE
-                ),
-
-
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("grant", "remove"),
-                        permissionCodeCompleter,
-                        permissionNameCompleter
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("list", "create", "save"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("get", "delete"),
-                        permissionCodeCompleter,
-                        NullCompleter.INSTANCE
-                ),
-
-
-                new ArgumentCompleter(
-                        new StringsCompleter("stop"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("broadcast"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("status"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("help"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("reload"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("controller"),
-                        new StringsCompleter("execute"),
-                        new ControllerCompleter(),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new PluginCommandCompleter(),
-                        NullCompleter.INSTANCE
-                )
-
-        );
-//console complete may not working in idea
-        try {
-            LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer).build();
-            String line = lineReader.readLine();
-            line = line.strip().stripIndent().stripLeading().stripTrailing();
-            if (line.isEmpty()) {
-                return;
-            }
-            dispatchCommand(line);
-        } catch (UserInterruptException | EndOfFileException ignored) {
-            dispatchCommand("stop");
         }
     }
 

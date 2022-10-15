@@ -1,10 +1,11 @@
 package net.zhuruoling.main
 
 import net.zhuruoling.configuration.Configuration
+import net.zhuruoling.console.PluginCommand
 import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.network.broadcast.UdpBroadcastSender
-import net.zhuruoling.permission.Permission
 import net.zhuruoling.network.session.server.SessionInitialServer
+import net.zhuruoling.permission.Permission
 import java.nio.channels.FileLock
 import java.util.StringJoiner
 
@@ -17,12 +18,13 @@ object RuntimeConstants {
     var launchTime: Long = 0L
     var socketServer: SessionInitialServer? = null
     var httpServer: Thread? = null
-    var reciever: UdpBroadcastReceiver? = null
+    var receiver: UdpBroadcastReceiver? = null
     val permissionNames: MutableList<String> = mutableListOf()
     var config: Configuration? = null
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
-
+    @JvmField
+    var pluginCommandHashMap = ArrayList<PluginCommand>()
     init {
         Permission.values().forEach {
             permissionNames.add(it.name)

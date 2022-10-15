@@ -19,7 +19,7 @@ public class Main {
                     System.out.println("Stopping!");
                     PluginManager.INSTANCE.unloadAll();
                     Objects.requireNonNull(RuntimeConstants.INSTANCE.getHttpServer()).interrupt();
-                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getReciever()).interrupt();
+                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getReceiver()).interrupt();
                     Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).setStopped(true);
                     Objects.requireNonNull(RuntimeConstants.INSTANCE.getSocketServer()).interrupt();
                     if (!RuntimeConstants.INSTANCE.getNoLock()) {

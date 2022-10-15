@@ -4,16 +4,15 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.console.ConsoleHandler
 import net.zhuruoling.console.PluginCommand
+import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.network.session.request.RequestManager
-import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Objects
 
 object PluginManager {
     val logger: Logger = LoggerFactory.getLogger("PluginManger")
