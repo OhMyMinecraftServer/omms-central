@@ -229,6 +229,7 @@ public class ConsoleCommandHandler {
             for (String usage : usages) {
                 logger.info(usage);
             }
+
             return 0;
         }));
 
@@ -238,10 +239,8 @@ public class ConsoleCommandHandler {
         }));
 
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("?").executes(x -> {
-            var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(CommandSourceStack.Source.INTERNAL), false);
-            for (String usage : usages) {
-                logger.info(usage);
-            }
+            var tree = Util.genCommandTree();
+            tree.forEach(logger::info);
             return 0;
         }));
 

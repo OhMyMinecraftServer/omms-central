@@ -26,6 +26,11 @@ public class SystemUtil {
     public static String getSystemArch(){
         return os.getArch();
     }
+
+    public static net.zhuruoling.system.SystemInfo getSystemInfo(){
+        return new net.zhuruoling.system.SystemInfo(SystemUtil.getSystemName(),SystemUtil.getSystemVersion(), SystemUtil.getSystemArch(),SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
+    }
+
     public static DirectoryInfo listDir(String path){
         DirectoryInfo info = new DirectoryInfo();
         File file = new File(path);
@@ -84,7 +89,7 @@ public class SystemUtil {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         StorageInfo storageInfo = new StorageInfo();
-        hardwareAbstractionLayer.getDiskStores().forEach(hwDiskStore -> storageInfo.getStorageList().add(storageInfo.new Storage(hwDiskStore.getName(), hwDiskStore.getModel(), hwDiskStore.getSize())));
+        hardwareAbstractionLayer.getDiskStores().forEach(hwDiskStore -> storageInfo.getStorageList().add(new StorageInfo.Storage(hwDiskStore.getName(), hwDiskStore.getModel(), hwDiskStore.getSize())));
         //没有静态(static)的类中类不能使用外部类进行.操作,必须用实例来进行实例化类中类.
         return storageInfo;
     }

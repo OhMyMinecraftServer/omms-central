@@ -14,7 +14,7 @@ fun Route.announcementQueryRouting() {
     route("/announcement") {
         get("latest") {
             val announcement =
-                AnnouncementManager.getLatest() ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT");
+                AnnouncementManager.getLatest() ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT")
             call.respond(HttpStatusCode.OK, Util.base64Encode(announcement.toJson()))
         }
         get("get/{id?}") {
@@ -22,7 +22,7 @@ fun Route.announcementQueryRouting() {
                 "Missing id",
                 status = HttpStatusCode.BadRequest
             )
-            val announcement = AnnouncementManager.get(name) ?: return@get call.respond(HttpStatusCode.NotFound, "")
+            val announcement = AnnouncementManager.get(name) ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT")
             call.respond(HttpStatusCode.OK, Util.base64Encode(announcement.toJson()))
         }
         get("list") {

@@ -11,8 +11,12 @@ public class FileSystemInfo { // TODO: 2022/9/10
     @SerializedName("filesystems")
     final
     List<FileSystem> fileSystemList = new ArrayList<>();
-    record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType){
+    public record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType){
 
+    }
+
+    public List<FileSystem> getFileSystemList() {
+        return fileSystemList;
     }
 
     public static String asJsonString(FileSystemInfo fileSystemInfo){

@@ -2,12 +2,16 @@ package net.zhuruoling.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
 import net.zhuruoling.configuration.Configuration;
+import net.zhuruoling.console.CommandSourceStack;
+import net.zhuruoling.console.ConsoleCommandHandler;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.network.broadcast.Target;
 import net.zhuruoling.whitelist.Whitelist;
 import net.zhuruoling.whitelist.WhitelistManager;
+import org.jline.builtins.Completers;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -18,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Util {
 
@@ -36,7 +41,6 @@ public class Util {
     };
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
-
 
 
     public static final String[] BUILTIN_COMMANDS = {
@@ -61,13 +65,13 @@ public class Util {
             "END",
     };
 
-    public static boolean fuzzySearch(String a, String b){
+    public static boolean fuzzySearch(String a, String b) {
         boolean result = false;
 
         return false;
     }
 
-    public static String getTimeCode(){
+    public static String getTimeCode() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
     }
 
@@ -213,6 +217,24 @@ public class Util {
             });
         } else {
             logger.warn("No Whitelist added.");
+        }
+    }
+
+    public static ArrayList<String> genCommandTree() {
+        var root = ConsoleCommandHandler.getDispatcher().getRoot();
+        ArrayList<String> lines = new ArrayList<>();
+        walkCommandTree(root, 0, lines);
+        return lines;
+    }
+
+    private static void walkCommandTree(CommandNode<CommandSourceStack> node, int depth, ArrayList<String> lines) {
+        if (node.getChildren().isEmpty()) {
+            lines.add("  ".repeat(depth) + "-" + node.toString());
+        } else {
+            lines.add("  ".repeat(depth) + "+" + node.toString());
+            node.getChildren().forEach(node1 -> {
+                walkCommandTree(node1, depth + 1, lines);
+            });
         }
     }
 
