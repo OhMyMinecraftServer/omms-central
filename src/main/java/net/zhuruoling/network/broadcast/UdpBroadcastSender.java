@@ -21,6 +21,18 @@ public class UdpBroadcastSender extends Thread {
         this.setName("UdpBroadcastSender#" + this.getId());
     }
 
+    public void createMulticastSocketCache(Target target) {
+        try {
+            multicastSocketCache.put(target, createMulticastSocket(target.address,target.port));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void clearMulticastSocketCache(){
+        multicastSocketCache.clear();
+    }
+
     private static MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
         MulticastSocket socket;
         InetAddress inetAddress;

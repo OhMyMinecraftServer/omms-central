@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
+import net.zhuruoling.announcement.AnnouncementManager;
 import net.zhuruoling.configuration.Configuration;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleCommandHandler;
@@ -240,6 +241,10 @@ public class Util {
 
     public boolean createFile(String filePath) throws IOException {
         return new File(filePath).createNewFile();
+    }
+
+    public static String toJson(Object obj){
+        return gson.toJson(obj, obj.getClass());
     }
 
 

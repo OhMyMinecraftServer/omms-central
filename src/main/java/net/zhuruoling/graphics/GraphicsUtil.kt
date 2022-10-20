@@ -1,15 +1,12 @@
 package net.zhuruoling.graphics
 
 import io.ktor.util.*
-import net.zhuruoling.console.ConsoleCommandHandler
 import net.zhuruoling.system.SystemUtil
 import net.zhuruoling.util.Util
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
-import java.awt.FontMetrics
 import java.awt.Graphics2D
-import java.awt.Toolkit
 import java.awt.image.BufferedImage
 import java.lang.management.ManagementFactory
 import java.nio.file.Path

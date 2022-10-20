@@ -1,5 +1,6 @@
 package net.zhuruoling.controller;
 
+import net.zhuruoling.network.broadcast.Target;
 import net.zhuruoling.util.Util;
 
 public record ControllerInstance(Controller controller, ControllerTypes controllerType) {

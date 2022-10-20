@@ -154,6 +154,7 @@ object MainKt {
             WhitelistManager.init()
             registerBuiltinRequestHandlers()
             loadAll()
+
         } catch (e: Exception) {
             e.printStackTrace()
             exitProcess(2)
@@ -171,6 +172,8 @@ object MainKt {
         RuntimeConstants.receiver = receiver
         RuntimeConstants.httpServer = httpServer
         udpBroadcastSender = sender
+        udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CONTROL)
+        udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")

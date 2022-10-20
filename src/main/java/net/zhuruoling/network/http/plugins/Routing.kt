@@ -5,6 +5,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import net.zhuruoling.network.http.routes.announcementQueryRouting
 import net.zhuruoling.network.http.routes.commandUpstreamRouting
+import net.zhuruoling.network.http.routes.statusQueryRouting
 import net.zhuruoling.network.http.routes.whitelistQueryRouting
 
 fun Application.configureRouting() {
@@ -13,6 +14,7 @@ fun Application.configureRouting() {
         announcementQueryRouting()
         authenticate("omms-auth") {
             commandUpstreamRouting()
+            statusQueryRouting()
         }
 
     }

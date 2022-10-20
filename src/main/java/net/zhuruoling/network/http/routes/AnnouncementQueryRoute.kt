@@ -7,6 +7,8 @@ import io.ktor.server.routing.*
 import net.zhuruoling.announcement.AnnouncementManager
 import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
+import java.lang.StringBuilder
+import java.util.Arrays
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 fun Route.announcementQueryRouting() {
@@ -26,7 +28,7 @@ fun Route.announcementQueryRouting() {
             call.respond(HttpStatusCode.OK, Util.base64Encode(announcement.toJson()))
         }
         get("list") {
-            call.respond(HttpStatusCode.OK, AnnouncementManager.announcementMap.keys)
+            call.respond(AnnouncementManager.announcementMap.keys)
         }
         get {
             val map = mutableMapOf<String, String>()
