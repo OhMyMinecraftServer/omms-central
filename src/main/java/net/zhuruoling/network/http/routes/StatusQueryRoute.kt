@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 fun Route.statusQueryRouting() {
     val logger = LoggerFactory.getLogger("StatusQueryRouting")
     route("/status"){
-        get {
+        get{
             this.context.respondText(Util.toJson(SystemUtil.getSystemInfo()))
         }
     }
