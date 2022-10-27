@@ -4,15 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
-import net.zhuruoling.announcement.AnnouncementManager;
 import net.zhuruoling.configuration.Configuration;
 import net.zhuruoling.console.CommandSourceStack;
 import net.zhuruoling.console.ConsoleCommandHandler;
 import net.zhuruoling.controller.ControllerManager;
 import net.zhuruoling.network.broadcast.Target;
-import net.zhuruoling.whitelist.Whitelist;
+import net.zhuruoling.network.session.request.InitRequest;
 import net.zhuruoling.whitelist.WhitelistManager;
-import org.jline.builtins.Completers;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -23,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Util {
 
@@ -40,6 +37,8 @@ public class Util {
             "whitelists",
             "plugins",
     };
+    
+    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x1;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
 

@@ -16,6 +16,7 @@ class MyPlugin extends PluginMain {
 
     @Override
     void onUnload(LifecycleServerInterface serverInterface) {
+        logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
     }
 

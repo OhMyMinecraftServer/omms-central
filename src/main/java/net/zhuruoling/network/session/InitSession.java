@@ -2,6 +2,7 @@ package net.zhuruoling.network.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.network.session.request.InitRequest;
 import net.zhuruoling.network.session.response.Response;
 import net.zhuruoling.network.session.server.SessionServer;
 import net.zhuruoling.network.session.request.RequestBuilderKt;
@@ -54,9 +55,15 @@ public class InitSession extends Thread {
             String line = encryptedConnector.readLine();
             logger.debug("recv:" + line);
             while (true){
-                var request = RequestBuilderKt.buildFromJson(line);
+                var request = gson.fromJson(line, InitRequest.class);
                 logger.info("Got request:" + request);
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
+                    //lets match versions.
+                    if (request.getVersion() != Util.PROTOCOL_VERSION){
+                        encryptedConnector.send(
+                                Response.serialize(new Response().withResponseCode(Result.VERSION_NOT_MATCH))
+                        );
+                    }
                     String stringToken = request.getContent("token");
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));
                     //202205290840#114514

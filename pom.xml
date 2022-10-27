@@ -6,7 +6,7 @@
 
     <groupId>org.zhuruoling</groupId>
     <artifactId>omms-central</artifactId>
-    <version>0.6.10</version>
+    <version>0.6.11</version>
     <repositories>
         <repository>
             <id>minecraft-libraries</id>
@@ -92,13 +92,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
         </dependency>
-        <!-- 添加logback-classic依赖 -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.11</version>
         </dependency>
-        <!-- 添加logback-core依赖 -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
@@ -158,16 +156,6 @@
             <artifactId>groovy-all</artifactId>
             <version>3.0.12</version>
             <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>com.flowpowered</groupId>
-            <artifactId>flow-nbt</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>semver</artifactId>
-            <version>7.3.5</version>
         </dependency>
         <dependency>
             <groupId>me.xdrop</groupId>

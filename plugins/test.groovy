@@ -25,6 +25,7 @@ class TestPlugin extends PluginMain {
             requestServerInterface.logger.info("PING COMMAND TRIGGERED")
             return new Response().withResponseCode(Result.OK).withContentPair("message", "pong")
         })
+
         PluginLogger logger = serverInterface.getLogger()
         serverInterface.registerCommand("shit" , {
             logger.info("Executed command s**t with params $it")
@@ -41,6 +42,7 @@ class TestPlugin extends PluginMain {
                 })
         )
         logger.info("Test Plugin loaded!")
+
     }
 
     Response test(RequestServerInterface serverInterface, Request command) {

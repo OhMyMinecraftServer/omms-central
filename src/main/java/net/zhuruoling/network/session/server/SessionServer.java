@@ -25,13 +25,13 @@ import java.util.Objects;
 public class SessionServer extends Thread {
     private final Session session;
     private EncryptedConnector encryptedConnector = null;
-    final Logger logger = LoggerFactory.getLogger("ExperimentalSessionServer");
+    final Logger logger = LoggerFactory.getLogger("SessionServer");
     List<Permission> permissions;
     public SessionServer(Session session, List<Permission> permissions){
         this.session = session;
         this.permissions = permissions;
         var socket = this.session.getSocket();
-        this.setName(String.format("ExperimentalSessionServer#%s:%d",socket.getInetAddress(), socket.getPort()));
+        this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress().getHostAddress(), socket.getPort()));
         try {
             this.encryptedConnector = new EncryptedConnector(
                     new BufferedReader(
@@ -90,11 +90,17 @@ public class SessionServer extends Thread {
                     if (session.getSocket().isClosed())
                         break;
                     line = encryptedConnector.readLine();
-                } catch (Exception e) {
+                }
+                catch (NullPointerException e){
+                    break;
+                }
+                catch (Exception e) {
+
                     e.printStackTrace();
                     break;
                 }
             }
+            logger.info("Disconnecting.");
         } catch (Throwable e) {
             new RuntimeException(e).printStackTrace();
         }

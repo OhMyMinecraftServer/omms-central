@@ -5,11 +5,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
 
 public class Request {
+
+    public Request() {
+    }
+
     public Request(String req){
         this.request = req;
     }
     @SerializedName("request")
-    String request;
+    String request = "";
 
     @SerializedName("content")
     HashMap<String, String> content = new HashMap<>();
