@@ -35,6 +35,7 @@ object RequestManager {
     }
 
     fun registerPluginRequest(request: String, pluginId: String, handler: RequestHandler, override: Boolean = false) {
+        println("[$pluginId] Registering $request with ${handler.javaClass.name}")
         if (!override && requestTable.containsKey(request)) {
             throw RequestAlreadyExistsException("Command $request already registered by ${requestTable[request]?.register}")
         }
@@ -67,7 +68,7 @@ object RequestManager {
     }
 
 
-    fun pairOf(a: String, b: String) = StringPair(a, b)
+    private fun pairOf(a: String, b: String) = StringPair(a, b)
 
 
 }

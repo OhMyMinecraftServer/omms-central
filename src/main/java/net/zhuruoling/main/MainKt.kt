@@ -15,6 +15,7 @@ import net.zhuruoling.main.RuntimeConstants.noPlugins
 import net.zhuruoling.main.RuntimeConstants.normalShutdown
 import net.zhuruoling.main.RuntimeConstants.receiver
 import net.zhuruoling.main.RuntimeConstants.socketServer
+import net.zhuruoling.main.RuntimeConstants.startupLock
 import net.zhuruoling.main.RuntimeConstants.test
 import net.zhuruoling.main.RuntimeConstants.udpBroadcastSender
 import net.zhuruoling.network.broadcast.UdpBroadcastReceiver
@@ -95,11 +96,7 @@ object MainKt {
             }
 
         }
-
-
         logger.info("Hello World!")
-
-
         logger.info("Loading Config.")
         if (!Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")) {
             isInit = true
@@ -122,7 +119,12 @@ object MainKt {
             exitProcess(1)
         }
         RuntimeConstants.config = config
-        println(config.toString())
+        println("\tConfig:")
+        println("\tServerName: ${config?.serverName}")
+        println("\tSocketPort: ${config?.port}")
+        println("\tHttpPort: ${config?.httpPort}")
+        println("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
+
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
             logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")

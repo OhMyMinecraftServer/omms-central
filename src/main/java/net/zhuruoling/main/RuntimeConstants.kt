@@ -8,6 +8,7 @@ import net.zhuruoling.network.session.server.SessionInitialServer
 import net.zhuruoling.permission.Permission
 import org.slf4j.LoggerFactory
 import java.nio.channels.FileLock
+import java.util.Objects
 import java.util.StringJoiner
 import java.util.logging.Logger
 
@@ -25,6 +26,7 @@ object RuntimeConstants {
     var config: Configuration? = null
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
+    val startupLock = Object()
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")
     @JvmField

@@ -28,12 +28,12 @@ public class LifecycleServerInterface extends ServerInterface {
     }
 
     public void registerRequestCode(@NotNull String code, @NotNull String functionName) {
-        this.getLogger().info("Registering %s -> %s".formatted(code, functionName));
+        //this.getLogger().info("Registering %s -> %s".formatted(code, functionName));
         RequestManager.INSTANCE.registerPluginRequest(code, this.getPluginName(), new PluginRequestHandler(this.getPluginName(), code, functionName), false);
     }
 
     public void registerRequestCode(@NotNull String code, @NotNull BiFunction<RequestServerInterface, Request, Response> consumer) {
-        this.getLogger().info("Registering %s".formatted(code));
+        //this.getLogger().info("Registering %s".formatted(code));
         RequestManager.INSTANCE.registerPluginRequest(code, this.getPluginName(), new PluginRequestHandler(this.getPluginName(), code, consumer), false);
     }
 
