@@ -7,6 +7,7 @@ import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.network.session.request.RequestManager
 import net.zhuruoling.util.Util
+import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.Exception
@@ -46,9 +47,15 @@ object PluginManager {
                 }
                 pluginInstance.pluginStatus = PluginStatus.UNLOADED
                 pluginTable[metadata.id] = pluginInstance
-            } catch (e: Exception) {
+            }catch (e: MultipleCompilationErrorsException) {
+                logger.error("An error occurred while loading plugin $it")
+                logger.error(e.message)
+            }
+
+            catch (e: Exception) {
                 logger.error("An error occurred while loading plugin $it", e)
             }
+
         }
     }
 

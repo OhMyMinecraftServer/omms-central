@@ -2,6 +2,11 @@ package net.zhuruoling.network.session.handler.builtin
 
 import io.ktor.util.*
 import net.zhuruoling.network.session.handler.RequestHandler
+import net.zhuruoling.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler
+import net.zhuruoling.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
+import net.zhuruoling.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
+import net.zhuruoling.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
+import net.zhuruoling.network.session.handler.builtin.controller.CreateControllerRequestHandler
 import net.zhuruoling.network.session.handler.builtin.controller.ExecuteControllersCommandRequestHandler
 import net.zhuruoling.network.session.handler.builtin.controller.GetControllersRequestHandler
 import net.zhuruoling.network.session.handler.builtin.controller.ListControllersRequestHandler
@@ -28,6 +33,8 @@ fun registerBuiltinRequestHandlers() {
     RequestManager.registerRequest("PERMISSION_DENY", DenyPermissionRequestHandler())
     RequestManager.registerRequest("PERMISSION_LIST", ListPermissionRequestHandler())
     RequestManager.registerRequest("CONTROLLERS_LIST", ListControllersRequestHandler())
+    RequestManager.registerRequest("CONTROLLERS_CREATE", CreateControllerRequestHandler())
+
     RequestManager.registerRequest(
         "CONTROLLERS_EXECUTE",
         ExecuteControllersCommandRequestHandler()
@@ -36,6 +43,10 @@ fun registerBuiltinRequestHandlers() {
         "CONTROLLERS_GET",
         GetControllersRequestHandler()
     )
+    RequestManager.registerRequest("ANNOUNCEMENT_GET", GetAnnouncementRequestHandler())
+    RequestManager.registerRequest("ANNOUNCEMENT_CREATE", CreateAnnouncementRequestHandler())
+    RequestManager.registerRequest("ANNOUNCEMENT_DELETE", DeleteAnnouncementRequestHandler())
+    RequestManager.registerRequest("ANNOUNCEMENT_LIST", ListAnnouncementRequestHandler())
     RequestManager.registerRequest(
         "SYSINFO_GET",
         GetSysinfoRequestHandler()

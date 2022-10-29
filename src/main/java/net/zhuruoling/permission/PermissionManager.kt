@@ -1,14 +1,12 @@
 package net.zhuruoling.permission
 
 import com.google.gson.GsonBuilder
-import net.zhuruoling.console.ConsoleCommandHandler
 import net.zhuruoling.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import java.util.function.Consumer
 import kotlin.random.Random
 
 object PermissionManager {
@@ -94,7 +92,7 @@ object PermissionManager {
                 }
 
                 2 -> {
-                    p = Permission.CENTRAL_SERVER_CONFIG
+                    p = Permission.CENTRAL_SERVER_CONTROL
                 }
 
                 3 -> {
@@ -114,27 +112,27 @@ object PermissionManager {
                 }
 
                 7 -> {
-                    p = Permission.START_SERVER
+                    p = Permission.CONTROLLER_MODIFY
                 }
 
                 8 -> {
-                    p = Permission.STOP_SERVER
-                }
-
-                9 -> {
                     p = Permission.WHITELIST_ADD
                 }
 
-                10 -> {
+                9 -> {
                     p = Permission.WHITELIST_REMOVE
                 }
 
-                11 -> {
+                10 -> {
                     p = Permission.WHITELIST_CREATE
                 }
 
-                12 -> {
+                11 -> {
                     p = Permission.WHITELIST_DELETE
+                }
+
+                12 -> {
+                    p = Permission.ANNOUNCEMENT_READ
                 }
 
                 13 -> {
@@ -146,7 +144,7 @@ object PermissionManager {
                 }
 
                 15 -> {
-                    p = Permission.ANNOUNCEMENT_EDIT
+                    p = Permission.ANNOUNCEMENT_MODIFY
                 }
 
                 16 -> {
@@ -214,7 +212,7 @@ object PermissionManager {
                     code += 1 shl 0
                 }
 
-                Permission.CENTRAL_SERVER_CONFIG -> {
+                Permission.CENTRAL_SERVER_CONTROL -> {
                     code += 1 shl 1
                 }
 
@@ -234,27 +232,27 @@ object PermissionManager {
                     code += 1 shl 5
                 }
 
-                Permission.START_SERVER -> {
+                Permission.CONTROLLER_MODIFY -> {
                     code += 1 shl 6
                 }
 
-                Permission.STOP_SERVER -> {
+                Permission.WHITELIST_ADD -> {
                     code += 1 shl 7
                 }
 
-                Permission.WHITELIST_ADD -> {
+                Permission.WHITELIST_REMOVE -> {
                     code += 1 shl 8
                 }
 
-                Permission.WHITELIST_REMOVE -> {
+                Permission.WHITELIST_CREATE -> {
                     code += 1 shl 9
                 }
 
-                Permission.WHITELIST_CREATE -> {
+                Permission.WHITELIST_DELETE -> {
                     code += 1 shl 10
                 }
 
-                Permission.WHITELIST_DELETE -> {
+                Permission.ANNOUNCEMENT_READ -> {
                     code += 1 shl 11
                 }
 
@@ -266,7 +264,7 @@ object PermissionManager {
                     code += 1 shl 13
                 }
 
-                Permission.ANNOUNCEMENT_EDIT -> {
+                Permission.ANNOUNCEMENT_MODIFY -> {
                     code += 1 shl 14
                 }
 

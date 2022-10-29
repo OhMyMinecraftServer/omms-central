@@ -3,8 +3,10 @@ package net.zhuruoling.plugin;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +51,9 @@ public class GroovyPluginInstance {
             //System.out.println(something.getPluginMetadata().toString());
             this.metadata = instance.getPluginMetadata();
         }
-        catch (Exception e){
+        catch (MultipleCompilationErrorsException e){
+            throw e;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

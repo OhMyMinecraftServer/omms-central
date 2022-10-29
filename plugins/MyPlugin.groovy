@@ -9,7 +9,7 @@ class MyPlugin extends PluginMain {
     PluginLogger logger = null
 
     @Override
-    void onLoad(LifecycleServerInterface serverInterface) {
+    void onLoad(LifecycleServerInterface serverInterface){
         logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
     }

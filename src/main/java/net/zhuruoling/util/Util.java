@@ -238,6 +238,10 @@ public class Util {
         }
     }
 
+    public static <WDNMD> WDNMD fromJson(String content, Class<WDNMD> clazz) {
+        return gson.fromJson(content, clazz);
+    }
+
     public boolean createFile(String filePath) throws IOException {
         return new File(filePath).createNewFile();
     }
