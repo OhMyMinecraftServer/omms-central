@@ -85,14 +85,16 @@ object ControllerManager {
         val receiver = StatusReceiver(target)
         receiver.start()
         this.controllers.forEach {
-            this.sendInstruction(
-                Instruction(
-                    it.value.controllerType,
-                    it.key,
-                    Util.toJson(target),
-                    InstructionType.UPLOAD_STATUS
+            if (it.value.controller.isStatusQueryable) {
+                this.sendInstruction(
+                    Instruction(
+                        it.value.controllerType,
+                        it.key,
+                        Util.toJson(target),
+                        InstructionType.UPLOAD_STATUS
+                    )
                 )
-            )
+            }
         }
         Thread.sleep(1500)
         receiver.interrupt()

@@ -13,9 +13,15 @@ public class Controller {
 
     private String workingDir;
 
-    private int password;
+    private boolean statusQueryable;
 
-    private int rmiPort;
+    public boolean isStatusQueryable() {
+        return statusQueryable;
+    }
+
+    public void setStatusQueryable(boolean statusQueryable) {
+        this.statusQueryable = statusQueryable;
+    }
 
     public Controller() {
     }
@@ -79,21 +85,6 @@ public class Controller {
         this.workingDir = workingDir;
     }
 
-    public int getPassword() {
-        return password;
-    }
-
-    public void setPassword(int password) {
-        this.password = password;
-    }
-
-    public int getRmiPort() {
-        return rmiPort;
-    }
-
-    public void setRmiPort(int rmiPort) {
-        this.rmiPort = rmiPort;
-    }
 
     public String toJson() {
         return Util.gson.toJson(this);
