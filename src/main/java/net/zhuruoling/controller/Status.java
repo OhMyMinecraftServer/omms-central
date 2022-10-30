@@ -6,7 +6,7 @@ import java.util.List;
 public class Status {
     boolean isAlive = false;
 
-    boolean isQueryAble = false;
+    boolean isQueryable = false;
     String name;
     ControllerTypes type = ControllerTypes.FABRIC;
     int playerCount = 0;
@@ -17,12 +17,12 @@ public class Status {
     public Status() {
     }
 
-    public boolean isQueryAble() {
-        return isQueryAble;
+    public boolean isQueryable() {
+        return isQueryable;
     }
 
-    public void setQueryAble(boolean queryAble) {
-        isQueryAble = queryAble;
+    public void setQueryable(boolean queryable) {
+        isQueryable = queryable;
     }
 
     public void setAlive(boolean alive) {

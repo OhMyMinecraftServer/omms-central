@@ -41,8 +41,9 @@ public class StatusReceiver extends Thread{
                             packet.getLength(), StandardCharsets.UTF_8);
                     var status = Util.fromJson(msg, Status.class);
                     status.setAlive(true);
-                    status.setQueryAble(true);
-                    System.out.println(msg);
+                    status.setQueryable(true);
+                    //System.out.println(msg);
+                    System.out.println("Got status info from " + status.getName());
                     statusHashMap.put(status.getName(), status);
                 }
                 catch (Exception e){
