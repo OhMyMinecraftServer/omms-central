@@ -41,12 +41,13 @@ public class StatusReceiver extends Thread{
                             packet.getLength(), StandardCharsets.UTF_8);
                     var status = Util.fromJson(msg, Status.class);
                     status.setAlive(true);
+                    status.setQueryAble(true);
                     System.out.println(msg);
                     statusHashMap.put(status.getName(), status);
                 }
-                catch (Exception ignored){
-                    if (!(ignored instanceof InterruptedException)){
-                        ignored.printStackTrace();
+                catch (Exception e){
+                    if (!(e instanceof InterruptedException)){
+                        e.printStackTrace();
                     }
                 }
             }

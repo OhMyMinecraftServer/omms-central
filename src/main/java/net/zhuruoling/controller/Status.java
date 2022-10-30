@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Status {
     boolean isAlive = false;
+
+    boolean isQueryAble = false;
     String name;
     ControllerTypes type = ControllerTypes.FABRIC;
     int playerCount = 0;
@@ -15,6 +17,13 @@ public class Status {
     public Status() {
     }
 
+    public boolean isQueryAble() {
+        return isQueryAble;
+    }
+
+    public void setQueryAble(boolean queryAble) {
+        isQueryAble = queryAble;
+    }
 
     public void setAlive(boolean alive) {
         isAlive = alive;
