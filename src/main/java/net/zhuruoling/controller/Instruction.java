@@ -7,6 +7,15 @@ public class Instruction {
     ControllerTypes controllerType;
     String targetControllerName;
     String commandString;
+    InstructionType type;
+
+    public InstructionType getType() {
+        return type;
+    }
+
+    public void setType(InstructionType type) {
+        this.type = type;
+    }
 
     public boolean matches(ControllerTypes types, String targetControllerName){
         return this.controllerType.equals(types) && this.targetControllerName.equals(targetControllerName);
@@ -16,6 +25,13 @@ public class Instruction {
         controllerType = ControllerTypes.MCDR;
         targetControllerName = "";
         commandString = "";
+    }
+
+    public Instruction(ControllerTypes controllerType, String targetControllerName, String commandString, InstructionType type) {
+        this.controllerType = controllerType;
+        this.targetControllerName = targetControllerName;
+        this.commandString = commandString;
+        this.type = type;
     }
 
     public Instruction(ControllerTypes controllerType, String targetControllerName, String commandString) {
@@ -55,5 +71,6 @@ public class Instruction {
     public void setCommandString(String commandString) {
         this.commandString = commandString;
     }
+
 
 }

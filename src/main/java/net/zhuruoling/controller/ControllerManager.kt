@@ -3,7 +3,9 @@ package net.zhuruoling.controller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.main.RuntimeConstants
+import net.zhuruoling.network.broadcast.StatusReceiver
 import net.zhuruoling.util.Util
+import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -61,6 +63,9 @@ object ControllerManager {
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(instruction))
     }
 
+    private fun sendInstruction(command: Instruction) {
+        RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(command))
+    }
 
 
     //controller execute survival give @a dirt
@@ -71,4 +76,32 @@ object ControllerManager {
         }
         return null
     }
+
+    @NotNull
+    fun getControllerStatuses(): MutableMap<String, Status> {
+        val map = mutableMapOf<String, Status>()
+        println("Fetching controller statuses.")
+        val target = Util.generateRandomTarget()
+        val receiver = StatusReceiver(target)
+        receiver.start()
+        this.controllers.forEach {
+            this.sendInstruction(
+                Instruction(
+                    it.value.controllerType,
+                    it.key,
+                    Util.toJson(target),
+                    InstructionType.UPLOAD_STATUS
+                )
+            )
+        }
+        Thread.sleep(1500)
+        receiver.interrupt()
+        val list = receiver.statusHashMap
+        this.controllers.forEach {
+            map[it.key] = if (list.containsKey(it.key)) list.getValue(it.key) else Status()
+        }
+        return map
+    }
+
+
 }

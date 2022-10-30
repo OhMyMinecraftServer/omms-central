@@ -37,7 +37,7 @@ public class Util {
             "whitelists",
             "plugins",
     };
-    
+
     public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x1;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
@@ -242,12 +242,21 @@ public class Util {
         return gson.fromJson(content, clazz);
     }
 
-    public boolean createFile(String filePath) throws IOException {
-        return new File(filePath).createNewFile();
+    public static String toJson(Object obj) {
+        return gson.toJson(obj, obj.getClass());
     }
 
-    public static String toJson(Object obj){
-        return gson.toJson(obj, obj.getClass());
+    public static Target generateRandomTarget() {
+        return new Target(
+                "224.114.%d.%d".formatted(
+                        new Random(System.nanoTime()).nextInt(0, 250),
+                        new Random(System.nanoTime()).nextInt(0, 250)
+                ), new Random(System.nanoTime()).nextInt(8080, 25565)
+        );
+    }
+
+    public boolean createFile(String filePath) throws IOException {
+        return new File(filePath).createNewFile();
     }
 
 

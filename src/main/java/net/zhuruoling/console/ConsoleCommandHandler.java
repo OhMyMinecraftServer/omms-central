@@ -32,6 +32,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.util.*;
+import java.util.zip.DeflaterInputStream;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
@@ -52,6 +53,7 @@ public class ConsoleCommandHandler {
 
     public static void init() {
         RuntimeConstants.pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
+
         dispatcher.register(LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -406,6 +408,10 @@ public class ConsoleCommandHandler {
                                         })
                                 )
                         )
+                ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(commandContext -> {
+                            ControllerManager.INSTANCE.getControllerStatuses().forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
+                            return 0;
+                        })
                 )
 
         );

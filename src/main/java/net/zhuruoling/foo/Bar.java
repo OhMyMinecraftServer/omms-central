@@ -17,6 +17,7 @@ public class Bar {
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         System.out.println(Util.toJson(new InitRequest(new Request("WDNMD").withContentKeyPair("a", "b"), InitRequest.VERSION_BASE + 0xffffL)));
         AnnouncementManager.INSTANCE.init();
+        System.out.println(Util.toJson(Util.generateRandomTarget()));
         System.out.println(Util.toJson(new Response().withResponseCode(Result.OK).withContentPair("announcements", Util.toJson(AnnouncementManager.INSTANCE.getAnnouncementMap().keySet()))));
     }
 

@@ -9,7 +9,6 @@ import net.zhuruoling.permission.Permission;
 import net.zhuruoling.util.Result;
 import net.zhuruoling.util.Util;
 
-import java.util.Locale;
 import java.util.Objects;
 
 public class GetAnnouncementRequestHandler extends BuiltinRequestHandler {
