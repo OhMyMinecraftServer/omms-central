@@ -1,10 +1,26 @@
 package net.zhuruoling.network.broadcast;
 
+import net.zhuruoling.util.Util;
+
+import java.util.UUID;
+
 public class Broadcast {
     public String channel;
     public String server;
     public String player;
     public String content;
+    public String id;
+    public Broadcast(){
+        this.id = Util.randomStringGen(16);
+    }
+
+    public Broadcast(String channel, String server, String player, String content) {
+        this.channel = channel;
+        this.server = server;
+        this.player = player;
+        this.content = content;
+        this.id = Util.randomStringGen(16);
+    }
 
     @Override
     public String toString() {
@@ -14,6 +30,14 @@ public class Broadcast {
                 ", player='" + player + '\'' +
                 ", content='" + content + '\'' +
                 '}';
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getChannel() {
