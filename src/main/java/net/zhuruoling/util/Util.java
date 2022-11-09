@@ -38,6 +38,10 @@ public class Util {
             "plugins",
     };
 
+    public static final String[] PERMISSION_OPERATIONS = {
+            "accept","deny","create","delete"
+    };
+
     public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x1;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();

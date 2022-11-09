@@ -24,7 +24,7 @@ object PermissionManager {
         val permission: Int
     )
 
-    fun init(): Unit {
+    fun init() {
         permissionTable.clear()
         if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) {
             logger.warn("Permission File does not exist!")
