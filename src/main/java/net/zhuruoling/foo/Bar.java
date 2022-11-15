@@ -1,24 +1,51 @@
 package net.zhuruoling.foo;
 
 
-import net.zhuruoling.announcement.AnnouncementManager;
-import net.zhuruoling.graphics.GraphicsUtilKt;
-import net.zhuruoling.network.session.request.InitRequest;
-import net.zhuruoling.network.session.request.Request;
-import net.zhuruoling.network.session.response.Response;
-import net.zhuruoling.util.Result;
-import net.zhuruoling.util.Util;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
-
-import java.util.Scanner;
 
 public class Bar {
     public static void main(String[] args) {
+
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        System.out.println(Util.toJson(new InitRequest(new Request("WDNMD").withContentKeyPair("a", "b"), InitRequest.VERSION_BASE + 0xffffL)));
-        AnnouncementManager.INSTANCE.init();
-        System.out.println(Util.toJson(Util.generateRandomTarget()));
-        System.out.println(Util.toJson(new Response().withResponseCode(Result.OK).withContentPair("announcements", Util.toJson(AnnouncementManager.INSTANCE.getAnnouncementMap().keySet()))));
+        long total = 0;
+        for (int j = 0; j < 100 ; j++){
+            Thread thread1 = new Thread(() -> {
+                for (int i = 0; i < 10000; i++) {
+                    System.out.println(i);
+                }
+            });
+            Thread thread2 = new Thread(() -> {
+                for (int i = 0; i < 10000; i++) {
+                    System.out.println(i);
+                }
+            });
+            Thread thread3 = new Thread(() -> {
+                for (int i = 0; i < 10000; i++) {
+                    System.out.println(i);
+                }
+            });
+
+            Thread thread4 = new Thread(() -> {
+                for (int i = 0; i < 10000; i++) {
+                    System.out.println(i);
+                }
+            });
+            long beginTimeMillis = System.currentTimeMillis();
+            System.out.printf("begin at :%d%n", beginTimeMillis);
+            thread1.start();
+            thread2.start();
+            thread3.start();
+            thread4.start();
+            while (thread1.isAlive() || thread2.isAlive() || thread3.isAlive() || thread4.isAlive()) {
+
+            }
+            long endTimeMillis = System.currentTimeMillis();
+            System.out.printf("end at: %d%n", endTimeMillis);
+            System.out.printf("time elapsed: %d%n", endTimeMillis - beginTimeMillis);
+            total += endTimeMillis - beginTimeMillis;
+        }
+        System.out.printf("avg: %f%n", total / 100.0);
+
     }
 
 

@@ -1,7 +1,10 @@
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
+import net.zhuruoling.announcement.AnnouncementManager
 import net.zhuruoling.console.CommandSourceStack
+import net.zhuruoling.controller.ControllerManager
+import net.zhuruoling.network.broadcast.Broadcast
 import net.zhuruoling.network.session.request.Request
 import net.zhuruoling.network.session.response.Response
 import net.zhuruoling.plugin.LifecycleServerInterface
@@ -10,7 +13,12 @@ import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.PluginMain
 import net.zhuruoling.plugin.PluginMetadata
 import net.zhuruoling.plugin.RequestServerInterface
+import net.zhuruoling.system.SystemInfo
+import net.zhuruoling.system.SystemUtil
 import net.zhuruoling.util.Result
+import net.zhuruoling.util.Util
+import net.zhuruoling.whitelist.WhitelistManager
+import net.zhuruoling.network.session.request.InitRequest;
 
 import java.lang.module.ModuleDescriptor
 
@@ -28,7 +36,11 @@ class TestPlugin extends PluginMain {
 
         PluginLogger logger = serverInterface.getLogger()
         serverInterface.registerCommand("shit" , {
-            logger.info("Executed command s**t with params $it")
+            logger.info(Util.toJson(ControllerManager.INSTANCE.controllers.get("creative")))
+            logger.info(Util.toJson(AnnouncementManager.INSTANCE.announcementMap.get("LxNHS17krC1ajqBL")))
+            logger.info(Util.toJson(WhitelistManager.INSTANCE.whitelists[0]))
+            logger.info(Util.toJson(SystemUtil.getSystemInfo()))
+            logger.info(Util.toJson(new InitRequest("PING", Util.PROTOCOL_VERSION).withContentKeyPair("token", "connCode")))
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")
                 .then(RequiredArgumentBuilder<CommandSourceStack, String>.argument("some_string", greedyString()).executes({

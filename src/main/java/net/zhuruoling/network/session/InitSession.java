@@ -63,6 +63,7 @@ public class InitSession extends Thread {
                         encryptedConnector.send(
                                 Response.serialize(new Response().withResponseCode(Result.VERSION_NOT_MATCH))
                         );
+                        break;
                     }
                     String stringToken = request.getContent("token");
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));

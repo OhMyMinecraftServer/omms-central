@@ -1,7 +1,5 @@
 package net.zhuruoling.network.session.request;
 
-import com.sun.jna.platform.win32.WinNT;
-
 public class InitRequest extends Request{
     long version = VERSION_BASE + 0xffffL;
 
@@ -24,5 +22,14 @@ public class InitRequest extends Request{
 
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "InitRequest{" +
+                "version=" + version +
+                ", request='" + request + '\'' +
+                ", content=" + content +
+                '}';
     }
 }

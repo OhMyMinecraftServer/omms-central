@@ -10,7 +10,6 @@ import net.zhuruoling.util.Util
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -90,6 +89,14 @@ object PluginManager {
         }
     }
 
+    fun getPluginInstance(id: String): GroovyPluginInstance{
+        val instance = pluginTable[id] ?: throw PluginNotExistException("Specified plugin $id not exist.")
+        if (instance.pluginStatus != PluginStatus.LOADED){
+            throw PluginNotLoadedException(id)
+        }
+        return instance
+    }
+
     fun execute(pluginName: String, functionName: String, command: Request, serverInterface: RequestServerInterface): Any {
         val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
             "Plugin $pluginName does not exist."
@@ -109,9 +116,14 @@ object PluginManager {
             if (pluginInstance.pluginStatus == PluginStatus.LOADED) {
                 throw PluginAlreadyLoadedException("Plugin $pluginName already loaded.")
             }
-            pluginInstance.onLoad(initServerInterface)
+            try{
+                pluginInstance.onLoad(initServerInterface)
+                pluginInstance.pluginStatus = PluginStatus.LOADED
+            }catch (e: Exception){
+                logger.error("While loading plugin $pluginName ,an error occurred.",e)
+            }
             //pluginInstance.invokeMethod("onLoad", initServerInterface)
-            pluginInstance.pluginStatus = PluginStatus.LOADED
+
         } else {
             throw PluginNotExistException("Plugin $pluginName not exist.")
         }

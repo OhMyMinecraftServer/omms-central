@@ -1,12 +1,10 @@
 package net.zhuruoling.plugin;
 
 import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,9 +44,8 @@ public class GroovyPluginInstance {
             throw new PluginNotExistException("The specified plugin file %s does not exist.".formatted(pluginFilePath));
         }
         try {
-            Class<?> groovyClass = groovyClassLoader.parseClass(new File(pluginFilePath));
-            instance = (PluginMain) groovyClass.getDeclaredConstructor().newInstance();
-            //System.out.println(something.getPluginMetadata().toString());
+            Class<?> clazz = groovyClassLoader.parseClass(new File(pluginFilePath));
+            instance = (PluginMain) clazz.getDeclaredConstructor().newInstance();
             this.metadata = instance.getPluginMetadata();
         }
         catch (MultipleCompilationErrorsException e){
@@ -59,7 +56,7 @@ public class GroovyPluginInstance {
     }
 
     public Object invokeMethod(String methodName, Object... params){
-        var clazz = instance.getClass();
+        Class<? extends PluginMain> clazz = instance.getClass();
         ArrayList<Class<?>> paramTypes = new ArrayList<>();
         for (Object param : params) {
             paramTypes.add(param.getClass());
@@ -84,4 +81,7 @@ public class GroovyPluginInstance {
     }
 
 
+    public PluginMain getInstance() {
+        return instance;
+    }
 }

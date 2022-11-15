@@ -1,7 +1,9 @@
 package net.zhuruoling.announcement
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.util.Util
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.FileReader
 import java.io.FileWriter
@@ -12,8 +14,8 @@ import kotlin.io.path.Path
 object AnnouncementManager {
 
     val announcementMap = mutableMapOf<String, Announcement>()
-    val gson = GsonBuilder().serializeNulls().create()
-    val logger = LoggerFactory.getLogger("AM")
+    val gson: Gson = GsonBuilder().serializeNulls().create()
+    val logger: Logger = LoggerFactory.getLogger("AM")
     fun init() {
         announcementMap.clear()
         val files = Files.list(Path(Util.joinFilePaths("announcements")))
@@ -67,7 +69,7 @@ object AnnouncementManager {
         return announcementMap[id]
     }
 
-    fun searchForTitle(keyWord: String): List<Announcement>? {
+    fun searchForTitle(keyWord: String): List<Announcement>? {// TODO: (
         val result = mutableListOf<Announcement>()
 
         return if (result.isEmpty()) {

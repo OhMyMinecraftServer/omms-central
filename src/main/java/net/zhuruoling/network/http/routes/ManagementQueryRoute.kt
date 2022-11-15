@@ -1,7 +1,10 @@
 package net.zhuruoling.network.http.routes
 
+import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.DelicateCoroutinesApi
+import net.zhuruoling.whitelist.WhitelistManager
 
 @OptIn(DelicateCoroutinesApi::class)
 fun Route.managementQueryRouting() {
@@ -13,6 +16,7 @@ fun Route.managementQueryRouting() {
         }
         route("/whitelist") {
             post("add") {
+                val json = call.receiveText()
 
             }
             post("remove") {
