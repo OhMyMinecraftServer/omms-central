@@ -23,7 +23,7 @@ class NotEnougnUtil extends PluginMain {
 
     @Override
     PluginMetadata getPluginMetadata() {
-        return new PluginMetadata("not_enougn_util", ModuleDescriptor.Version.parse("0.0.1"), "ZhuRuoLing")
+        return new PluginMetadata("not_enough_util", ModuleDescriptor.Version.parse("0.0.1"), "ZhuRuoLing")
     }
 
     class Util{

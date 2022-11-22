@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.io.IOException
+import java.lang.IllegalArgumentException
 import java.nio.file.Files
 import java.nio.file.OpenOption
 import java.nio.file.Path
+import java.util.IllegalFormatException
 import kotlin.io.path.Path
 
 object WhitelistManager {
@@ -35,21 +38,16 @@ object WhitelistManager {
             try {
                 val whitelist = gson.fromJson(FileReader(it.toFile()), Whitelist::class.java)
                 if (it.toFile().name != "${whitelist.name}.json") {
-                    logger.warn("Whitelist name(${whitelist.name}) does not match with file name(${it.toFile().name}),fixing.")
-                    Files.delete(it)
-                    Files.write(
-                        Path(Util.joinFilePaths("whitelists", "${whitelist.name}.json")),
-                        gson.toJson(whitelist, Whitelist::class.java).encodeToByteArray()
-                    )
+                    logger.warn("Whitelist name(${whitelist.name}) does not match with file name(${it.toFile().name}).")
                 }
                 if (whitelistTable.containsKey(whitelist.getName())) {
                     throw RuntimeException("Duplicated whitelist name(${whitelist.name}).")
                 }
                 whitelistTable[whitelist.getName()] = whitelist
             } catch (e: JsonParseException) {
-                throw java.lang.RuntimeException("Illegal file format.", e)
+                throw e
             } catch (e: Exception) {
-                throw java.lang.RuntimeException("Cannot load whitelist file(${it.toFile().absolutePath}).", e)
+                throw IOException("Cannot load whitelist file(${it.toFile().absolutePath}).", e)
             }
         }
     }
@@ -147,6 +145,7 @@ object WhitelistManager {
                 players.remove(value)
             }
         }
+        players.sort()
         val json = gson.toJson(Whitelist(players.toTypedArray(), whitelistName))
         val path = Path(Util.joinFilePaths("whitelists", "${whitelistName}.json"))
         try {
@@ -163,8 +162,6 @@ object WhitelistManager {
         }
         init()
         return Result.OK
-
-
     }
 
     fun createWhitelist(name: String): Result {

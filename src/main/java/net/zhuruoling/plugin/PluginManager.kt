@@ -46,12 +46,10 @@ object PluginManager {
                 }
                 pluginInstance.pluginStatus = PluginStatus.UNLOADED
                 pluginTable[metadata.id] = pluginInstance
-            }catch (e: MultipleCompilationErrorsException) {
+            } catch (e: MultipleCompilationErrorsException) {
                 logger.error("An error occurred while loading plugin $it")
                 logger.error(e.message)
-            }
-
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 logger.error("An error occurred while loading plugin $it", e)
             }
 
@@ -74,8 +72,16 @@ object PluginManager {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
+        val dependencies = mutableListOf<PluginDependency>()
         pluginTable.forEach {
-            load(it.key)
+            dependencies.add(it.value.metadata.pluginDependencies)
+        }
+        val order = PluginUtils.calculateLoadOrderByPluginDependencies(dependencies)
+        logger.info("Plugin Load order: $order")
+        order.forEach {
+            if (!it.equals("omms-central")) {
+                load(it)
+            }
         }
     }
 
@@ -89,15 +95,20 @@ object PluginManager {
         }
     }
 
-    fun getPluginInstance(id: String): GroovyPluginInstance{
+    fun getPluginInstance(id: String): GroovyPluginInstance {
         val instance = pluginTable[id] ?: throw PluginNotExistException("Specified plugin $id not exist.")
-        if (instance.pluginStatus != PluginStatus.LOADED){
+        if (instance.pluginStatus != PluginStatus.LOADED) {
             throw PluginNotLoadedException(id)
         }
         return instance
     }
 
-    fun execute(pluginName: String, functionName: String, command: Request, serverInterface: RequestServerInterface): Any {
+    fun execute(
+        pluginName: String,
+        functionName: String,
+        command: Request,
+        serverInterface: RequestServerInterface
+    ): Any {
         val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
             "Plugin $pluginName does not exist."
         )
@@ -116,14 +127,12 @@ object PluginManager {
             if (pluginInstance.pluginStatus == PluginStatus.LOADED) {
                 throw PluginAlreadyLoadedException("Plugin $pluginName already loaded.")
             }
-            try{
+            try {
                 pluginInstance.onLoad(initServerInterface)
                 pluginInstance.pluginStatus = PluginStatus.LOADED
-            }catch (e: Exception){
-                logger.error("While loading plugin $pluginName ,an error occurred.",e)
+            } catch (e: Exception) {
+                logger.error("While loading plugin $pluginName ,an error occurred.", e)
             }
-            //pluginInstance.invokeMethod("onLoad", initServerInterface)
-
         } else {
             throw PluginNotExistException("Plugin $pluginName not exist.")
         }
@@ -145,8 +154,8 @@ object PluginManager {
                 RequestManager.unRegisterPluginRequest(pluginName)
                 val pluginCommandHahMap = RuntimeConstants.pluginCommandHashMap
                 val removed = mutableListOf<PluginCommand>()
-                pluginCommandHahMap.forEach{
-                    if (it.pluginId == pluginInstance.metadata.id){
+                pluginCommandHahMap.forEach {
+                    if (it.pluginId == pluginInstance.metadata.id) {
                         removed.add(it)
                     }
                 }
