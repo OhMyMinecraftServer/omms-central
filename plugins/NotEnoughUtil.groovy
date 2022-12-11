@@ -1,5 +1,4 @@
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.zhuruoling.console.CommandSourceStack
+import net.zhuruoling.plugin.Api
 import net.zhuruoling.plugin.LifecycleServerInterface
 import net.zhuruoling.plugin.PluginLogger
 import net.zhuruoling.plugin.PluginMain
@@ -26,8 +25,9 @@ class NotEnougnUtil extends PluginMain {
         return new PluginMetadata("not_enough_util", ModuleDescriptor.Version.parse("0.0.1"), "ZhuRuoLing")
     }
 
-    class Util{
-
+    @Api
+    String reverseString(String s){
+        return s.reverse()
     }
 
 }

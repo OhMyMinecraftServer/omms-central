@@ -72,15 +72,9 @@ object PluginManager {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
-        val dependencies = mutableListOf<PluginDependency>()
         pluginTable.forEach {
-            dependencies.add(it.value.metadata.pluginDependencies)
-        }
-        val order = PluginUtils.calculateLoadOrderByPluginDependencies(dependencies)
-        logger.info("Plugin Load order: $order")
-        order.forEach {
             if (!it.equals("omms-central")) {
-                load(it)
+                load(it.key)
             }
         }
     }

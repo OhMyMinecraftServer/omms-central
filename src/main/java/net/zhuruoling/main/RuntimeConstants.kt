@@ -7,6 +7,7 @@ import net.zhuruoling.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.network.session.server.SessionInitialServer
 import net.zhuruoling.permission.Permission
 import org.slf4j.LoggerFactory
+import java.lang.reflect.Method
 import java.nio.channels.FileLock
 import java.util.Objects
 import java.util.StringJoiner
@@ -28,6 +29,7 @@ object RuntimeConstants {
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
     val startupLock = Object()
+    val pluginDeclaredApiMethod = hashMapOf<String,HashMap<String,Method>>()
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")
     @JvmField

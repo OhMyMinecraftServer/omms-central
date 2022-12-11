@@ -1,6 +1,9 @@
 package net.zhuruoling.plugin;
 
+import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.network.session.HandlerSession;
+
+import java.util.ArrayList;
 
 public abstract class ServerInterface {
     private final HandlerSession session;
@@ -11,6 +14,23 @@ public abstract class ServerInterface {
         this.pluginName = name;
         this.logger = new PluginLogger(this.pluginName);
 
+    }
+    public Object invokePluginApiMethod(String apiProviderId, String methodName, Object... args){
+        var map = RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().get(apiProviderId);
+        if (map == null){
+            throw new PluginNotExistException("Plugin %s not exist".formatted(apiProviderId));
+        }
+        var method = map.get(methodName);
+        if (method == null){
+            throw new RuntimeException(new NoSuchMethodException("Method %s not exist".formatted(methodName)));
+        }
+        try {
+            method.setAccessible(true);
+            return method.invoke(PluginManager.INSTANCE.getPluginInstance(apiProviderId).getInstance(), args);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public PluginLogger getLogger() {
