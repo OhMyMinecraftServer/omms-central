@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
+import java.nio.channels.MulticastChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class StatusReceiver extends Thread{
     private final Logger logger = LoggerFactory.getLogger("UdpBroadcastReceiver");
     private final Target target;
+    private MulticastSocket socket;
     private final HashMap<String, Status> statusHashMap = new HashMap<>();
     public StatusReceiver(Target target){
         this.setName("StatusReceiver#" + getId());
@@ -22,12 +24,16 @@ public class StatusReceiver extends Thread{
         return statusHashMap;
     }
 
+    public void halt(){
+        socket.close();
+        this.interrupt();
+    }
+
     @Override
     public void run() {
         try {
             int port = target.port;
             String address = target.address; // 224.114.51.4:10086
-            MulticastSocket socket;
             InetAddress inetAddress = InetAddress.getByName(address);
             socket = new MulticastSocket(target.port);
             logger.info("Started Status Receiver at " + address + ":" + port);
@@ -46,10 +52,11 @@ public class StatusReceiver extends Thread{
                     System.out.println("Got status info from " + status.getName());
                     statusHashMap.put(status.getName(), status);
                 }
+                catch (SocketException ignored){}
                 catch (Exception e){
-                    if (!(e instanceof InterruptedException)){
-                        e.printStackTrace();
-                    }
+                    socket.close();
+                    e.printStackTrace();
+                    return;
                 }
             }
         }

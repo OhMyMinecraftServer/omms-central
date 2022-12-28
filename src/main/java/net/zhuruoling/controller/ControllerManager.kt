@@ -97,7 +97,7 @@ object ControllerManager {
             }
         }
         Thread.sleep(1500)
-        receiver.interrupt()
+        receiver.halt()
         val list = receiver.statusHashMap
         this.controllers.forEach {
             map[it.key] = if (list.containsKey(it.key)) list.getValue(it.key) else Status()
