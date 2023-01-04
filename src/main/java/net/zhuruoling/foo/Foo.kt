@@ -5,7 +5,8 @@ import net.zhuruoling.util.Util
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 
-object Foo {
+object
+Foo {
     fun bar(){
         //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         val logger = LoggerFactory.getLogger("YEE")
@@ -17,3 +18,9 @@ object Foo {
 }
 
 
+object Util{
+    @JvmStatic
+    fun someMethod(){
+
+    }
+}

@@ -6,8 +6,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
+import net.zhuruoling.console.CommandSourceStack
 import net.zhuruoling.console.ConsoleCommandHandler
 import net.zhuruoling.main.RuntimeConstants.publicLogger
+import net.zhuruoling.util.Util
 
 @OptIn(DelicateCoroutinesApi::class)
 fun Route.commandUpstreamRouting(){
@@ -22,12 +24,18 @@ fun Route.commandUpstreamRouting(){
             GlobalScope.launch(Dispatchers.Default) {
                 ensureActive()
                 ConsoleCommandHandler.init()
+                val sourceStack = CommandSourceStack(CommandSourceStack.Source.REMOTE)
                 ConsoleCommandHandler().apply {
                     setLogger(publicLogger)
-                    dispatchCommand(command)
+                    dispatchCommand(command, sourceStack)
+                }
+                this@post.context.respondText(contentType = ContentType.Text.Plain, status = HttpStatusCode.OK){
+                    Util.toJson(object {
+                        val feedback = sourceStack.feedbackLines
+                    })
                 }
             }
-            this.context.respond(HttpStatusCode.OK)
+
         }
     }
 }

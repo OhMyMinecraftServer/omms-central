@@ -11,7 +11,7 @@ fun Route.managementQueryRouting() {
     route("/management") {
         route("/controller") {
             post("run") {
-
+                
             }
         }
         route("/whitelist") {

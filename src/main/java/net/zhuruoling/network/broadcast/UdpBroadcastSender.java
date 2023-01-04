@@ -47,8 +47,13 @@ public class UdpBroadcastSender extends Thread {
     public void run() {
         logger.info("Starting UdpBroadcastSender.");
         while (!stopped) {
-            if (!queue.isEmpty()) {
-                queue.forEach(this::send);
+            try {
+                if (!queue.isEmpty()) {
+                    queue.forEach(this::send);
+                }
+                sleep(10);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         logger.info("Stopped!");

@@ -101,7 +101,7 @@ public class ConsoleInputHandler {
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("controller"),
-                        new StringsCompleter("execute"),
+                        new StringsCompleter("execute", "status"),
                         new ControllerCompleter(),
                         NullCompleter.INSTANCE
                 ),
@@ -122,7 +122,7 @@ public class ConsoleInputHandler {
             ConsoleCommandHandler.init();
             var handler = new ConsoleCommandHandler();
             handler.setLogger(logger);
-            handler.dispatchCommand(line);
+            handler.dispatchCommand(line, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         } catch (UserInterruptException | EndOfFileException ignored) {
 
         }

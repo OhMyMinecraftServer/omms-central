@@ -1,8 +1,15 @@
 package net.zhuruoling.console;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandSourceStack {
-    //pass
+    Logger logger = LoggerFactory.getLogger("CommandSource");
     Source source;
+    List<String> feedbackLines = new ArrayList<>();
 
     public CommandSourceStack(Source source) {
         this.source = source;
@@ -18,5 +25,17 @@ public class CommandSourceStack {
 
     public enum Source{
         CONSOLE, PLUGIN, INTERNAL, REMOTE
+    }
+
+    public void sendFeedback(String feedback){
+        if (source == Source.CONSOLE){
+            logger.info(feedback);
+        }else {
+            feedbackLines.add(feedback);
+        }
+    }
+
+    public List<String> getFeedbackLines() {
+        return feedbackLines;
     }
 }

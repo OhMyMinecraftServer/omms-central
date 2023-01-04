@@ -16,7 +16,6 @@ import net.zhuruoling.main.MainKt;
 import net.zhuruoling.main.RuntimeConstants;
 import net.zhuruoling.network.TestKt;
 import net.zhuruoling.network.broadcast.Broadcast;
-import net.zhuruoling.permission.IllegalPermissionNameException;
 import net.zhuruoling.permission.Permission;
 import net.zhuruoling.permission.PermissionChange;
 import net.zhuruoling.permission.PermissionManager;
@@ -32,7 +31,6 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.util.*;
-import java.util.zip.DeflaterInputStream;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
@@ -490,7 +488,7 @@ public class ConsoleCommandHandler {
         return completer;
     }
 
-    public void dispatchCommand(String command) {
+    public void dispatchCommand(String command, CommandSourceStack commandSourceStack) {
         try {
             logger.info("CONSOLE issued a command: %s".formatted(command));
             ConsoleCommandHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
