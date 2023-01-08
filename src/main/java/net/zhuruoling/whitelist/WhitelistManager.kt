@@ -2,19 +2,18 @@ package net.zhuruoling.whitelist
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
+import io.ktor.server.http.content.*
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import net.zhuruoling.util.Result
 import net.zhuruoling.util.Util
+import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.nio.file.Files
-import java.nio.file.OpenOption
 import java.nio.file.Path
-import java.util.IllegalFormatException
 import kotlin.io.path.Path
 
 object WhitelistManager {
@@ -36,20 +35,33 @@ object WhitelistManager {
         }
         files.forEach {
             try {
-                val whitelist = gson.fromJson(FileReader(it.toFile()), Whitelist::class.java)
+                val reader = FileReader(it.toFile())
+                val whitelist = gson.fromJson(reader, Whitelist::class.java)
                 if (it.toFile().name != "${whitelist.name}.json") {
                     logger.warn("Whitelist name(${whitelist.name}) does not match with file name(${it.toFile().name}).")
+                    logger.warn("Renaming ${it.toFile().name} -> ${whitelist.name}.json")
+                    reader.close()
+                    whitelistNameFix(it)
                 }
                 if (whitelistTable.containsKey(whitelist.getName())) {
                     throw RuntimeException("Duplicated whitelist name(${whitelist.name}).")
                 }
                 whitelistTable[whitelist.getName()] = whitelist
+                reader.close()
             } catch (e: JsonParseException) {
                 throw e
             } catch (e: Exception) {
                 throw IOException("Cannot load whitelist file(${it.toFile().absolutePath}).", e)
             }
         }
+    }
+
+    private fun whitelistNameFix(filePath: Path){
+        val reader = FileReader(filePath.toFile())
+        val whitelist = gson.fromJson(reader, Whitelist::class.javaObjectType)
+        reader.close()
+        val newFileName = whitelist.name + ".json"
+        FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists",newFileName)))
     }
 
     fun queryWhitelist(whitelistName: String?, value: String): Result {

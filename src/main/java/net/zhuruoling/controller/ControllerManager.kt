@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.main.RuntimeConstants
 import net.zhuruoling.network.broadcast.StatusReceiver
+import net.zhuruoling.network.broadcast.Target
 import net.zhuruoling.util.Util
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
@@ -12,6 +13,9 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
+import java.net.*
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.FutureTask
 
 object ControllerManager {
     val controllers = mutableMapOf<String, ControllerInstance>()
@@ -51,7 +55,6 @@ object ControllerManager {
             logger.warn("No Controller added to this server.")
             return
         }
-        logger.info(controllers.toString())
     }
 
     fun sendInstruction(controllerName: String, command: String) {
@@ -97,12 +100,56 @@ object ControllerManager {
             }
         }
         Thread.sleep(1500)
-        receiver.halt()
+        receiver.end()
         val list = receiver.statusHashMap
         this.controllers.forEach {
             map[it.key] = if (list.containsKey(it.key)) list.getValue(it.key) else Status()
         }
         return map
+    }
+
+    fun newStatusReciever(target: Target): FutureTask<MutableMap<String, Status>> {
+        return FutureTask {
+            val map = mutableMapOf<String, Status>()
+            try {
+                val port: Int = target.port
+                val address: String = target.address // 224.114.51.4:10086
+                val socket = MulticastSocket(target.port)
+                logger.info("Started Status Receiver at $address:$port")
+                socket.joinGroup(
+                    InetSocketAddress(InetAddress.getByName(address), port),
+                    NetworkInterface.getByInetAddress(InetAddress.getByName(address))
+                )
+                val packet = DatagramPacket(ByteArray(8192), 8192)
+                while (true) {
+                    try {
+                        socket.receive(packet)
+                        val msg = java.lang.String(
+                            packet.data, packet.offset,
+                            packet.length, StandardCharsets.UTF_8
+                        )
+                        val status = Util.fromJson(
+                            msg.toString(),
+                            Status::class.java
+                        )
+                        status.setAlive(true)
+                        status.setQueryable(true)
+                        println("Got status info from " + status.getName())
+                        map[status.getName()] = status
+                    } catch (ignored: SocketException) {
+                        println("Error occurred while receiving data.$ignored")
+                    } catch (e: Exception) {
+                        socket.close()
+                        e.printStackTrace()
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return@FutureTask map
+        }
+
     }
 
 

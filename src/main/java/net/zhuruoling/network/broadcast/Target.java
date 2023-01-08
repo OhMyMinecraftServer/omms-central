@@ -2,8 +2,8 @@ package net.zhuruoling.network.broadcast;
 
 public class Target {
 
-    String address;
-    int port;
+    private final String address;
+    private final int port;
 
     public Target(String address, int port) {
         this.address = address;
@@ -21,5 +21,13 @@ public class Target {
                 "address='" + address + '\'' +
                 ", port=" + port +
                 '}';
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

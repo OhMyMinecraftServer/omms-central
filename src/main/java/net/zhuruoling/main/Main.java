@@ -15,7 +15,7 @@ public class Main {
         System.out.println("Starting net.zhuruoling.main.MainKt");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                if (!RuntimeConstants.INSTANCE.getNormalShutdown()) {
+                if (!RuntimeConstants.INSTANCE.getNormalShutdown() && MainKt.INSTANCE.getInitialized()) {
                     System.out.println("Stopping!");
                     PluginManager.INSTANCE.unloadAll();
                     Objects.requireNonNull(RuntimeConstants.INSTANCE.getHttpServer()).interrupt();

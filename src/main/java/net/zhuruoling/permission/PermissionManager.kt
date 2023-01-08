@@ -61,6 +61,7 @@ object PermissionManager {
         tableHash = permissionTable.hashCode()
     }
 
+
     fun readPermFromInt(components: PermComponents): List<Permission> {
         /*
         def main():

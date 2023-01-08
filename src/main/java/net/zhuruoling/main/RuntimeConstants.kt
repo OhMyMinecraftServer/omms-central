@@ -29,6 +29,7 @@ object RuntimeConstants {
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
     val startupLock = Object()
+
     val pluginDeclaredApiMethod = hashMapOf<String,HashMap<String,Method>>()
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")

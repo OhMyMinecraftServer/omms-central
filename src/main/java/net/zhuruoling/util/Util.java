@@ -211,12 +211,17 @@ public class Util {
     public static void listAll(Logger logger) {
         logger.info("Listing controllers");
         ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+            for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance.controller()).split("\n")) {
+                logger.info(s1);
+            }
             logger.info("\t-%s".formatted(controllerInstance.controller().toString()));
         });
         logger.info("Listing Whitelist contents:");
         if (!WhitelistManager.INSTANCE.isNoWhitelist()) {
-            WhitelistManager.INSTANCE.forEach(stringEntry -> {
-                logger.info("\t-%s".formatted(stringEntry.getValue().toString()));
+            WhitelistManager.INSTANCE.forEach(entry -> {
+                for (String s : UtilKt.whitelistPrettyPrinting(entry.getValue()).split("\n")) {
+                    logger.info(s);
+                }
                 return Unit.INSTANCE;
             });
         } else {

@@ -23,7 +23,7 @@ public class UdpBroadcastSender extends Thread {
 
     public void createMulticastSocketCache(Target target) {
         try {
-            multicastSocketCache.put(target, createMulticastSocket(target.address,target.port));
+            multicastSocketCache.put(target, createMulticastSocket(target.getAddress(), target.getPort()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -80,10 +80,10 @@ public class UdpBroadcastSender extends Thread {
             if (multicastSocketCache.containsKey(target)) {
                 socket = multicastSocketCache.get(target);
             } else {
-                socket = createMulticastSocket(target.address, target.port);
+                socket = createMulticastSocket(target.getAddress(), target.getPort());
                 multicastSocketCache.put(target,socket);
             }
-            DatagramPacket packet = new DatagramPacket(content, content.length, new InetSocketAddress(target.address, target.port).getAddress(), target.port);
+            DatagramPacket packet = new DatagramPacket(content, content.length, new InetSocketAddress(target.getAddress(), target.getPort()).getAddress(), target.getPort());
 
             socket.send(packet);
         } catch (Exception e) {

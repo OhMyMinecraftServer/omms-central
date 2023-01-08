@@ -50,6 +50,7 @@ object MainKt {
     private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
     private var isInit = false
+    var initialized = false
 
     @Throws(IOException::class)
     @JvmStatic
@@ -96,6 +97,7 @@ object MainKt {
             }
 
         }
+
         logger.info("Hello World!")
         logger.info("Loading Config.")
         if (!Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")) {
@@ -119,7 +121,7 @@ object MainKt {
             exitProcess(1)
         }
         RuntimeConstants.config = config
-        println("\tConfig:")
+        println("Config:")
         println("\tServerName: ${config?.serverName}")
         println("\tSocketPort: ${config?.port}")
         println("\tHttpPort: ${config?.httpPort}")
@@ -180,6 +182,7 @@ object MainKt {
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")
         udpBroadcastSender = sender
+        initialized = true
         while (true) {
             val handler = ConsoleInputHandler.INSTANCE
             handler.handle()

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
-import java.nio.channels.MulticastChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
@@ -24,7 +23,7 @@ public class StatusReceiver extends Thread{
         return statusHashMap;
     }
 
-    public void halt(){
+    public void end(){
         socket.close();
         this.interrupt();
     }
@@ -32,10 +31,9 @@ public class StatusReceiver extends Thread{
     @Override
     public void run() {
         try {
-            int port = target.port;
-            String address = target.address; // 224.114.51.4:10086
-            InetAddress inetAddress = InetAddress.getByName(address);
-            socket = new MulticastSocket(target.port);
+            int port = target.getPort();
+            String address = target.getAddress(); // 224.114.51.4:10086
+            socket = new MulticastSocket(target.getPort());
             logger.info("Started Status Receiver at " + address + ":" + port);
             socket.joinGroup(new InetSocketAddress(InetAddress.getByName(address),port), NetworkInterface.getByInetAddress(InetAddress.getByName(address)));
 
