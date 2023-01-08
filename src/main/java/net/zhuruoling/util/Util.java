@@ -146,8 +146,12 @@ public class Util {
         return directory.getAbsolutePath();
     }
 
-    public static String randomStringGen(int len) {
-        String ch = "abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ0123456789";
+    public static String randomStringGen(int len){
+        return randomStringGen(len, true, true);
+    }
+
+    public static String randomStringGen(int len, boolean hasInteger, boolean hasUpperLetter) {
+        String ch = "abcdefghijklmnopqrstuvwxyz" + (hasUpperLetter ? "ABCDEFGHIGKLMNOPQRSTUVWXYZ" : "") + (hasInteger ? "0123456789" : "");
         StringBuilder stringBuffer = new StringBuilder();
         for (int i = 0; i < len; i++) {
             Random random = new Random(System.nanoTime());
