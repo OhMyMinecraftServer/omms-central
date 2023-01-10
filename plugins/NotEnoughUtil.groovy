@@ -1,8 +1,8 @@
-import net.zhuruoling.plugin.Api
-import net.zhuruoling.plugin.LifecycleServerInterface
-import net.zhuruoling.plugin.PluginLogger
-import net.zhuruoling.plugin.PluginMain
-import net.zhuruoling.plugin.PluginMetadata
+import net.zhuruoling.omms.central.plugin.Api
+import net.zhuruoling.omms.central.plugin.LifecycleServerInterface
+import net.zhuruoling.omms.central.plugin.PluginLogger
+import net.zhuruoling.omms.central.plugin.PluginMain
+import net.zhuruoling.omms.central.plugin.PluginMetadata
 
 import java.lang.module.ModuleDescriptor
 

@@ -1,10 +1,10 @@
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.zhuruoling.console.CommandSourceStack
-import net.zhuruoling.plugin.LifecycleServerInterface
-import net.zhuruoling.plugin.PluginDependency
-import net.zhuruoling.plugin.PluginLogger
-import net.zhuruoling.plugin.PluginMain
-import net.zhuruoling.plugin.PluginMetadata
+import net.zhuruoling.omms.central.console.CommandSourceStack
+import net.zhuruoling.omms.central.plugin.LifecycleServerInterface
+import net.zhuruoling.omms.central.plugin.PluginDependency
+import net.zhuruoling.omms.central.plugin.PluginLogger
+import net.zhuruoling.omms.central.plugin.PluginMain
+import net.zhuruoling.omms.central.plugin.PluginMetadata
 
 import java.lang.module.ModuleDescriptor
 

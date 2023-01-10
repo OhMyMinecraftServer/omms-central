@@ -1,0 +1,42 @@
+package net.zhuruoling.omms.central.main
+
+import net.zhuruoling.omms.central.configuration.Configuration
+import net.zhuruoling.omms.central.console.PluginCommand
+import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
+import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
+import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
+import net.zhuruoling.omms.central.permission.Permission
+import org.slf4j.LoggerFactory
+import java.lang.reflect.Method
+import java.nio.channels.FileLock
+
+
+object RuntimeConstants {
+    var noLock:Boolean  = false
+    var lock: FileLock? = null
+    var noPlugins: Boolean = false
+    var test: Boolean = false
+    var udpBroadcastSender: UdpBroadcastSender? = null
+    var launchTime: Long = 0L
+    var socketServer: SessionInitialServer? = null
+    var httpServer: Thread? = null
+    var receiver: UdpBroadcastReceiver? = null
+    val permissionNames: MutableList<String> = mutableListOf()
+    var config: Configuration? = null
+    var normalShutdown: Boolean = false
+    var experimental: Boolean = false
+    val startupLock = Object()
+
+    val pluginDeclaredApiMethod = hashMapOf<String,HashMap<String,Method>>()
+    @JvmField
+    val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")
+    @JvmField
+    var pluginCommandHashMap = ArrayList<PluginCommand>()
+    init {
+        Permission.values().forEach {
+            permissionNames.add(it.name)
+        }
+    }
+
+
+}

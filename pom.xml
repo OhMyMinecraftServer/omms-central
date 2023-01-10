@@ -214,7 +214,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>net.zhuruoling.main.Main</mainClass>
+                                    <mainClass>net.zhuruoling.omms.central.main.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
