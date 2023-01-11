@@ -63,6 +63,7 @@ public class SessionServer extends Thread {
                     if (permission != null && !permissions.contains(permission)) {
                         String response = Response.serialize(new Response().withResponseCode(Result.PERMISSION_DENIED));
                         encryptedConnector.println(response);
+                        continue;
                     }
                     Response response;
                     try {
