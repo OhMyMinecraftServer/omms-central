@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class SystemUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
-    private static OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+    private static final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
     public static String getSystemVersion(){
         return os.getVersion();
     }
@@ -97,7 +97,19 @@ public class SystemUtil {
     public static FileSystemInfo getFileSystemInfo(){
         SystemInfo systemInfo = new SystemInfo();
         FileSystemInfo fileSystemInfo = new FileSystemInfo();
-        systemInfo.getOperatingSystem().getFileSystem().getFileStores().forEach(osFileStore -> fileSystemInfo.fileSystemList.add(new FileSystemInfo.FileSystem(osFileStore.getFreeSpace(), osFileStore.getTotalSpace(), osFileStore.getVolume(), osFileStore.getMount(), osFileStore.getType())));
+        systemInfo.getOperatingSystem()
+                .getFileSystem()
+                .getFileStores()
+                .forEach(osFileStore ->
+                        fileSystemInfo.fileSystemList.add(
+                                new FileSystemInfo.FileSystem(
+                                        osFileStore.getFreeSpace(),
+                                        osFileStore.getTotalSpace(),
+                                        osFileStore.getVolume(),
+                                        osFileStore.getMount(),
+                                        osFileStore.getType()
+                                ))
+                );
         return fileSystemInfo;
     }
 

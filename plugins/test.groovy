@@ -15,7 +15,7 @@ import net.zhuruoling.omms.central.plugin.PluginMetadata
 import net.zhuruoling.omms.central.plugin.RequestServerInterface
 import net.zhuruoling.omms.central.system.SystemInfo
 import net.zhuruoling.omms.central.system.SystemUtil
-import net.zhuruoling.omms.central.util.Result
+import net.zhuruoling.omms.central.network.session.response.Result
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
 import net.zhuruoling.omms.central.network.session.request.InitRequest;
@@ -40,7 +40,7 @@ class TestPlugin extends PluginMain {
             logger.info(Util.toJson(AnnouncementManager.INSTANCE.announcementMap.get("LxNHS17krC1ajqBL")))
             logger.info(Util.toJson(WhitelistManager.INSTANCE.whitelists[0]))
             logger.info(Util.toJson(SystemUtil.getSystemInfo()))
-            logger.info(Util.toJson(new InitRequest("PING", Util.PROTOCOL_VERSION).withContentKeyPair("token", "connCode")))
+            logger.info(Util.toJson(new InitRequest(Util.PROTOCOL_VERSION).withContentKeyPair("token", "connCode")))
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")
                 .then(RequiredArgumentBuilder<CommandSourceStack, String>.argument("some_string", greedyString()).executes({

@@ -7,10 +7,9 @@ import net.zhuruoling.omms.central.permission.Permission;
 
 public class EndRequestHandler extends BuiltinRequestHandler {
 
-
     @Override
     public Response handle(Request request, HandlerSession session) {
-        return null;
+        return null;//do nothing
     }
 
     @Override

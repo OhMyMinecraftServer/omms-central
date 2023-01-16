@@ -6,9 +6,9 @@ import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinReques
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
-import net.zhuruoling.omms.central.util.Result;
+import net.zhuruoling.omms.central.network.session.response.Result;
 
-public class ExecuteControllersCommandRequestHandler extends BuiltinRequestHandler {
+public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(Request request, HandlerSession session) {
         Response response = new Response();

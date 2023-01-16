@@ -22,29 +22,5 @@ object Foo {
     }
 }
 
-class Invokable(private val func: () -> Unit) {
-    operator fun invoke() {
-        func()
-    }
-}
-
-fun run() {
-    val func = Invokable {
-        println("wdnmd")
-    }
-
-    func()
-
-
-    val anotherFunc = {
-        println("wdnmd too")
-    }
-
-    anotherFunc()
-
-    println("hello")
-}
-
-
 
 

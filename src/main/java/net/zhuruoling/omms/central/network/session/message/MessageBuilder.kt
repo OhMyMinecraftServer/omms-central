@@ -2,7 +2,7 @@ package net.zhuruoling.omms.central.network.session.message
 
 import com.google.gson.GsonBuilder
 import org.jetbrains.annotations.NotNull
-import net.zhuruoling.omms.central.util.Result
+import net.zhuruoling.omms.central.network.session.response.Result
 
 
 @NotNull

@@ -3,8 +3,6 @@ package net.zhuruoling.omms.central.controller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.main.RuntimeConstants
-import net.zhuruoling.omms.central.network.broadcast.StatusReceiver
-import net.zhuruoling.omms.central.network.broadcast.Target
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
@@ -13,14 +11,15 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
-import java.net.*
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.FutureTask
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 object ControllerManager {
     val controllers = mutableMapOf<String, ControllerInstance>()
     val logger: Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().serializeNulls().create()
+    private val statusCache = mutableMapOf<String, Status>()
 
     fun init() {
         controllers.clear()
@@ -70,6 +69,20 @@ object ControllerManager {
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(command))
     }
 
+    fun putStatusCache(status: Status) {
+        synchronized(statusCache) {
+            this.statusCache[status.name] = status
+        }
+    }
+
+    private fun clearStatusCache() {
+        synchronized(statusCache){
+            statusCache.clear()
+        }
+    }
+
+    fun getStatusCache() = statusCache
+
 
     //controller execute survival give @a dirt
     @Nullable
@@ -81,75 +94,58 @@ object ControllerManager {
     }
 
     @NotNull
-    fun getControllerStatuses(): MutableMap<String, Status> {
-        val map = mutableMapOf<String, Status>()
-        println("Fetching controller statuses.")
-        val target = Util.generateRandomTarget()
-        val receiver = StatusReceiver(target)
-        receiver.start()
-        this.controllers.forEach {
-            if (it.value.controller.isStatusQueryable) {
-                this.sendInstruction(
-                    Instruction(
-                        it.value.controllerType,
-                        it.key,
-                        Util.toJson(target),
-                        InstructionType.UPLOAD_STATUS
-                    )
-                )
-            }
-        }
-        Thread.sleep(1500)
-        receiver.end()
-        val list = receiver.statusHashMap
-        this.controllers.forEach {
-            map[it.key] = if (list.containsKey(it.key)) list.getValue(it.key) else Status()
-        }
-        return map
-    }
-
-    fun newStatusReciever(target: Target): FutureTask<MutableMap<String, Status>> {
-        return FutureTask {
+    fun getControllerStatus(controllerList: MutableList<String>): MutableMap<String, Status> {
+        synchronized(statusCache){
             val map = mutableMapOf<String, Status>()
-            try {
-                val port: Int = target.port
-                val address: String = target.address // 224.114.51.4:10086
-                val socket = MulticastSocket(target.port)
-                logger.info("Started Status Receiver at $address:$port")
-                socket.joinGroup(
-                    InetSocketAddress(InetAddress.getByName(address), port),
-                    NetworkInterface.getByInetAddress(InetAddress.getByName(address))
-                )
-                val packet = DatagramPacket(ByteArray(8192), 8192)
-                while (true) {
-                    try {
-                        socket.receive(packet)
-                        val msg = java.lang.String(
-                            packet.data, packet.offset,
-                            packet.length, StandardCharsets.UTF_8
-                        )
-                        val status = Util.fromJson(
-                            msg.toString(),
-                            Status::class.java
-                        )
-                        status.setAlive(true)
-                        status.setQueryable(true)
-                        println("Got status info from " + status.getName())
-                        map[status.getName()] = status
-                    } catch (ignored: SocketException) {
-                        println("Error occurred while receiving data.$ignored")
-                    } catch (e: Exception) {
-                        socket.close()
-                        e.printStackTrace()
-                        break
-                    }
+            println("Fetching controller statuses.")
+            val target = Util.generateRandomTarget()
+            clearStatusCache()
+            controllerList.forEach {
+                if (!controllers.containsKey(it)) {
+                    throw java.lang.IllegalArgumentException("Controller not exist")
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-            return@FutureTask map
+            for (s in controllerList) {
+                val c = controllers[s]!!
+                if (c.controller.isStatusQueryable) {
+                    this.sendInstruction(
+                        Instruction(
+                            c.controllerType,
+                            c.controller.name,
+                            Util.toJson(target),
+                            InstructionType.UPLOAD_STATUS
+                        )
+                    )
+                }
+            }
+            val task = FutureTask {
+                var end = false
+                while (!end){
+                    var canEnd = true
+                    statusCache.forEach {
+                        if (!controllerList.contains(it.key)){
+                            canEnd = false
+                        }
+                    }
+                    end = canEnd
+                }
+                return@FutureTask
+            }
+            task.run()
+            try {
+                var result = task[5000, TimeUnit.MILLISECONDS]
+            }catch (ignored: TimeoutException){ }
+            controllerList.forEach {
+                if (statusCache.containsKey(it)){
+                    map[it] = statusCache[it]!!
+                }else{
+                    val status = Status()
+                    status.setQueryable(this.controllers[it]!!.controller.isStatusQueryable)
+                    map[it] = status
+                }
+            }
+            return map
         }
-
     }
 
 

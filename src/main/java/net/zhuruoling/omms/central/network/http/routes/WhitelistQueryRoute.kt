@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.http.routes
 
-import net.zhuruoling.omms.central.util.Result
+import net.zhuruoling.omms.central.network.session.response.Result
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

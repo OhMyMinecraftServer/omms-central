@@ -7,7 +7,7 @@ import net.zhuruoling.omms.central.network.session.request.RequestBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
-import net.zhuruoling.omms.central.util.Result;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

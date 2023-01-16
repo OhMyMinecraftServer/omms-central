@@ -20,7 +20,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
 import net.zhuruoling.omms.central.plugin.PluginManager;
-import net.zhuruoling.omms.central.util.Result;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jline.builtins.Completers;
@@ -389,10 +389,13 @@ public class ConsoleCommandHandler {
                                         })
                                 )
                         )
-                ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(commandContext -> {
-                            ControllerManager.INSTANCE.getControllerStatuses().forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
+                ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("status").then(
+                        RequiredArgumentBuilder.<CommandSourceStack,String>argument("controller", StringArgumentType.greedyString()).executes(commandContext -> {
+                            ControllerManager.INSTANCE
+                                    .getControllerStatus(ConsoleUtil.parseControllerArgument(StringArgumentType.getString(commandContext, "controller")))
+                                    .forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
                             return 0;
-                        })
+                        }))
                 );
 
         LiteralArgumentBuilder<CommandSourceStack> announcementCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("announcement")

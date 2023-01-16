@@ -3,9 +3,9 @@ package net.zhuruoling.omms.central.network.session.request;
 public class InitRequest extends Request{
     long version = VERSION_BASE + 0xffffL;
 
-    public static final long VERSION_BASE = 0xc000_0000L;
-    public InitRequest(String req, long version) {
-        super(req);
+    public static final long VERSION_BASE = 0xc0000000L;
+    public InitRequest(long version) {
+        super("PING");
         this.version = version;
     }
 

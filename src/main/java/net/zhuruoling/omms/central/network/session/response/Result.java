@@ -1,16 +1,19 @@
-package net.zhuruoling.omms.central.util;
+package net.zhuruoling.omms.central.network.session.response;
 
 public enum Result {
     FAIL,
+
     OK,
     PERMISSION_DENIED,
     OPERATION_ALREADY_EXISTS,
     CONTROLLER_NOT_EXIST,
+    CONTROLLER_NO_STATUS,
     NO_WHITELIST,
-    WHITELIST_NOT_EXIST,
+    WHITELIST_NOT_EXIST,RUNNER_NOT_EXIST,
     NO_SUCH_PLAYER,
     PLAYER_ALREADY_EXISTS,
     VERSION_NOT_MATCH,
     ANNOUNCEMENT_NOT_EXIST,
-    INVALID_ARGUMENTS, UNDEFINED
+    INVALID_ARGUMENTS,
+    NO_RUNNER, UNDEFINED
 }

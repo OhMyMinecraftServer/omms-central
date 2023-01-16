@@ -1,16 +1,11 @@
 package net.zhuruoling.omms.central.network.session.response;
 
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.omms.central.util.Result;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
 public class Response {
-//no god plz no
-    //这坨是给Gson看的(
-    // gson can handle enums
-    //allright(逃
     @NotNull
     private Result code;
     private HashMap<String, String> content = new HashMap<>();

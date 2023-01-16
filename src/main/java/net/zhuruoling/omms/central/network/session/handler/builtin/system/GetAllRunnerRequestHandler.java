@@ -1,25 +1,23 @@
-package net.zhuruoling.omms.central.network.session.handler.builtin.whitelist;
+package net.zhuruoling.omms.central.network.session.handler.builtin.system;
 
 import net.zhuruoling.omms.central.network.session.HandlerSession;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
-import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
+import net.zhuruoling.omms.central.permission.Permission;
+import net.zhuruoling.omms.central.system.runner.RunnerManager;
 import net.zhuruoling.omms.central.util.Util;
-import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 
-public class ListWhitelistRequestHandler extends BuiltinRequestHandler {
+public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 add to register 
 
     @Override
     public Response handle(Request request, HandlerSession session) {
-        return new Response().withResponseCode(Result.OK)
-                .withContentPair(
-                        "whitelists",
-                        Util.gson.toJson(
-                                WhitelistManager.INSTANCE.getWhitelistNames()
-                        )
-                );
+        var list = RunnerManager.INSTANCE.getAllRunnerInfo();
+        if (list.isEmpty()) {
+            return new Response().withResponseCode(Result.NO_RUNNER);
+        }
+        return new Response().withResponseCode(Result.OK).withContentPair("info", Util.toJson(list));
     }
 
     @Override

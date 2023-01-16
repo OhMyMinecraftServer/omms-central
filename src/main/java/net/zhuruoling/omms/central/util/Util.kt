@@ -24,3 +24,7 @@ fun controllerPrettyPrinting(controller: Controller): String{
 fun toTypedArray(list: MutableList<Int>): Array<Int>{
     return list.toTypedArray()
 }
+
+fun <T> mutableListOf(vararg elements:T): MutableList<T>{
+    return kotlin.collections.mutableListOf(*elements)
+}

@@ -11,6 +11,9 @@ object RequestManager {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
     private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
     private val pluginRequestTable: MutableList<StringPair> = mutableListOf()
+
+    fun getAllRegisteredRequest() = requestTable
+
     fun registerRequest(requestName: String, handler: RequestHandler) {
         println("Registering $requestName with ${handler.javaClass.name}")
         if (requestTable.containsKey(requestName)) {

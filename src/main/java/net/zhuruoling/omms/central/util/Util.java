@@ -42,32 +42,9 @@ public class Util {
             "accept","deny","create","delete"
     };
 
-    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x1;
+    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x02;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
-
-
-    public static final String[] BUILTIN_COMMANDS = {
-            "WHITELIST_CREATE",
-            "WHITELIST_LIST",
-            "WHITELIST_GET",
-            "WHITELIST_ADD",
-            "WHITELIST_REMOVE",
-            "WHITELIST_DELETE",
-
-            "PERMISSION_CREATE",
-            "PERMISSION_DELETE",
-            "PERMISSION_GRANT",
-            "PERMISSION_DENY",
-            "PERMISSION_LIST",
-
-            "CONTROLLERS_LIST",
-            "CONTROLLERS_EXECUTE",
-            "CONTROLLERS_GET",
-            "SYSINFO_GET",
-
-            "END",
-    };
 
     public static boolean fuzzySearch(String a, String b) {
         boolean result = false;

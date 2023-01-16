@@ -36,7 +36,6 @@ public class StatusReceiver extends Thread{
             socket = new MulticastSocket(target.getPort());
             logger.info("Started Status Receiver at " + address + ":" + port);
             socket.joinGroup(new InetSocketAddress(InetAddress.getByName(address),port), NetworkInterface.getByInetAddress(InetAddress.getByName(address)));
-
             DatagramPacket packet = new DatagramPacket(new byte[8192], 8192);
             while (true){
                 try {

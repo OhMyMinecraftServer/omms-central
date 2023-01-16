@@ -4,10 +4,10 @@ import net.zhuruoling.omms.central.network.session.HandlerSession;
 import net.zhuruoling.omms.central.network.session.message.MessageBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.plugin.RequestServerInterface;
-import net.zhuruoling.omms.central.util.Result;
 
 import java.util.Objects;
 import java.util.function.BiFunction;

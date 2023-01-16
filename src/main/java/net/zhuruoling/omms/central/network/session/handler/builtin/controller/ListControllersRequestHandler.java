@@ -6,7 +6,7 @@ import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinReques
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
-import net.zhuruoling.omms.central.util.Result;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 
 public class ListControllersRequestHandler extends BuiltinRequestHandler {
