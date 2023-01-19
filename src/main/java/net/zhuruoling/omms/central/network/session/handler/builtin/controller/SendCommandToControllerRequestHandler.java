@@ -18,8 +18,8 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
         if (controller == null){
             return response.withResponseCode(Result.CONTROLLER_NOT_EXIST);
         }
-        ControllerManager.INSTANCE.sendCommand(controller,command);
-        response.withResponseCode(Result.OK);
+        var result = ControllerManager.INSTANCE.sendCommand(controller,command);
+        response.withResponseCode(Result.OK).withContentPair("output", result == null ? "" : result);
         return response;
     }
 
