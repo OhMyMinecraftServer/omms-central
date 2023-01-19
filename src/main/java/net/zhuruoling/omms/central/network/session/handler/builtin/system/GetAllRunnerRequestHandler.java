@@ -9,7 +9,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.system.runner.RunnerManager;
 import net.zhuruoling.omms.central.util.Util;
 
-public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 add to register 
+public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {
 
     @Override
     public Response handle(Request request, HandlerSession session) {

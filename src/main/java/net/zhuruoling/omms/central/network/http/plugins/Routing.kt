@@ -18,9 +18,10 @@ fun Application.configureRouting() {
         whitelistQueryRouting()
         announcementQueryRouting()
         controllerPairQueryRoute()
+        controllerQueryRouting()
         authenticate("omms-auth") {
             commandUpstreamRouting()
-            statusQueryRouting()
+            controllerStatusQueryRouting()
             managementQueryRouting()
         }
 

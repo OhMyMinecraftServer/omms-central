@@ -9,7 +9,7 @@ import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.util.Util;
 
-public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 add to  register 
+public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(Request request, HandlerSession session) {
         var controllerId = request.getContent("id");

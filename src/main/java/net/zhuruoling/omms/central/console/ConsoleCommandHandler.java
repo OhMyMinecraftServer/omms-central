@@ -240,7 +240,7 @@ public class ConsoleCommandHandler {
                     });
                     ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
                         logger.info("kicking player %s from %s".formatted(player, s));
-                        ControllerManager.INSTANCE.sendInstruction(s, "kick " + player);
+                        ControllerManager.INSTANCE.sendCommand(s, "kick " + player);
                     });
                     return 0;
                 })
@@ -369,19 +369,31 @@ public class ConsoleCommandHandler {
                         LiteralArgumentBuilder.<CommandSourceStack>literal("execute").then(
                                 RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", word()).then(
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("command", greedyString()).executes(commandContext -> {
-                                            var controllerName = StringArgumentType.getString(commandContext, "controller");
+                                            var controllerName = getString(commandContext, "controller");
                                             var controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
-                                            var command = StringArgumentType.getString(commandContext, "command");
+                                            var command = getString(commandContext, "command");
                                             if (controllerName.equals("all")) {
-                                                ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
-                                                    logger.info("Sending command %s to %s.".formatted(command, s));
-                                                    ControllerManager.INSTANCE.sendInstruction(controllerInstance, command);
+                                                ControllerManager.INSTANCE.getControllers().forEach((controllerId, controllerInstance) -> {
+                                                    commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerId));
+                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance, command);
+                                                    if (output == null) {
+                                                        return;
+                                                    }
+                                                    for (String line : output.split("\n")) {
+                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId,line));
+                                                    }
                                                 });
                                                 return 0;
                                             }
                                             if (controller != null) {
-                                                logger.info("Sending command %s to %s.".formatted(command, controllerName));
-                                                ControllerManager.INSTANCE.sendInstruction(controller, command);
+                                                commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerName));
+                                                var out = ControllerManager.INSTANCE.sendCommand(controller, command);
+                                                if (out == null) {
+                                                    return 1;
+                                                }
+                                                for (String line : out.split("\n")) {
+                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName,line));
+                                                }
                                                 return 0;
                                             }
                                             logger.error("Specified controller %s does not exist.".formatted(controllerName));
@@ -390,7 +402,7 @@ public class ConsoleCommandHandler {
                                 )
                         )
                 ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("status").then(
-                        RequiredArgumentBuilder.<CommandSourceStack,String>argument("controller", StringArgumentType.greedyString()).executes(commandContext -> {
+                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString()).executes(commandContext -> {
                             ControllerManager.INSTANCE
                                     .getControllerStatus(ConsoleUtil.parseControllerArgument(StringArgumentType.getString(commandContext, "controller")))
                                     .forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
@@ -449,6 +461,7 @@ public class ConsoleCommandHandler {
         dispatcher.register(controllerCommand);
         dispatcher.register(announcementCommand);
         dispatcher.register(pairCommand);
+        //
     }
 
     private static void searchWhitelist(String player, String s) {

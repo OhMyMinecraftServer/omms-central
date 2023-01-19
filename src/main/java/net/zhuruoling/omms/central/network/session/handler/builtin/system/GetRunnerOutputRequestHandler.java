@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 register 
+public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
 
     @Override
     public Response handle(Request request, HandlerSession session) {

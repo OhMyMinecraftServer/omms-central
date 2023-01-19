@@ -12,14 +12,16 @@ import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
 import java.util.concurrent.FutureTask
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+
+data class CommandOutputData(val controllerId:String, val command:String, val output:String)
+
 
 object ControllerManager {
     val controllers = mutableMapOf<String, ControllerInstance>()
     val logger: Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().serializeNulls().create()
     private val statusCache = mutableMapOf<String, Status>()
+    private val commandOutputCache = mutableMapOf<String, MutableMap<String, String>>()
 
     fun init() {
         controllers.clear()
@@ -39,6 +41,7 @@ object ControllerManager {
                     try {
                         controllers[controller.name] =
                             ControllerInstance(controller, ControllerUtils.resloveTypeFromString(controller.type))
+                        commandOutputCache[controller.name] = mutableMapOf()
                     } catch (e: IllegalArgumentException) {
                         logger.error(
                             "Cannot resolve controller type symbol: %s".format(controller.type),
@@ -56,27 +59,39 @@ object ControllerManager {
         }
     }
 
-    fun sendInstruction(controllerName: String, command: String) {
-        getControllerByName(controllerName)?.let { this.sendInstruction(it, command) }
+    fun sendCommand(controllerName: String, command: String) {
+        getControllerByName(controllerName)?.let { this.sendCommand(it, command) }
     }
 
-    fun sendInstruction(instance: ControllerInstance, command: String) {
+    fun sendCommand(instance: ControllerInstance, command: String):String? {
         val instruction = Instruction(instance.controllerType, instance.controller.name, command)
-        RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(instruction))
+        instruction.setType(InstructionType.RUN_COMMAND)
+        logger.info("Sending command $command to controller ${instance.controller.name}")
+        val json = Instruction.asJsonString(instruction)
+        RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, json)
+        commandOutputCache[instance.controller.name] = mutableMapOf()
+        var countdown = 500
+        while (countdown >= 0){
+            if(commandOutputCache[instance.controller.name]!!.containsKey(command))
+                break
+            Thread.sleep(10)
+            countdown--
+        }
+        return commandOutputCache[instance.controller.name]!![command]
     }
 
-    private fun sendInstruction(command: Instruction) {
+    private fun sendCommand(command: Instruction) {
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(command))
     }
 
     fun putStatusCache(status: Status) {
-        synchronized(statusCache) {
+
             this.statusCache[status.name] = status
-        }
+
     }
 
     private fun clearStatusCache() {
-        synchronized(statusCache){
+        synchronized(statusCache) {
             statusCache.clear()
         }
     }
@@ -95,57 +110,63 @@ object ControllerManager {
 
     @NotNull
     fun getControllerStatus(controllerList: MutableList<String>): MutableMap<String, Status> {
-        synchronized(statusCache){
-            val map = mutableMapOf<String, Status>()
-            println("Fetching controller statuses.")
-            val target = Util.generateRandomTarget()
-            clearStatusCache()
-            controllerList.forEach {
-                if (!controllers.containsKey(it)) {
-                    throw java.lang.IllegalArgumentException("Controller not exist")
-                }
+
+        val map = mutableMapOf<String, Status>()
+        println("Fetching controller statuses.")
+        val target = Util.generateRandomTarget()
+        clearStatusCache()
+        controllerList.forEach {
+            if (!controllers.containsKey(it)) {
+                throw java.lang.IllegalArgumentException("Controller not exist")
             }
-            for (s in controllerList) {
-                val c = controllers[s]!!
-                if (c.controller.isStatusQueryable) {
-                    this.sendInstruction(
-                        Instruction(
-                            c.controllerType,
-                            c.controller.name,
-                            Util.toJson(target),
-                            InstructionType.UPLOAD_STATUS
-                        )
-                    )
-                }
-            }
-            val task = FutureTask {
-                var end = false
-                while (!end){
-                    var canEnd = true
-                    statusCache.forEach {
-                        if (!controllerList.contains(it.key)){
-                            canEnd = false
-                        }
-                    }
-                    end = canEnd
-                }
-                return@FutureTask
-            }
-            task.run()
-            try {
-                var result = task[5000, TimeUnit.MILLISECONDS]
-            }catch (ignored: TimeoutException){ }
-            controllerList.forEach {
-                if (statusCache.containsKey(it)){
-                    map[it] = statusCache[it]!!
-                }else{
-                    val status = Status()
-                    status.setQueryable(this.controllers[it]!!.controller.isStatusQueryable)
-                    map[it] = status
-                }
-            }
-            return map
         }
+        controllerList.forEach {
+            val c = controllers[it]!!
+            if (c.controller.isStatusQueryable) {
+                this.sendCommand(
+                    Instruction(
+                        c.controllerType,
+                        c.controller.name,
+                        Util.toJson(target),
+                        InstructionType.UPLOAD_STATUS
+                    )
+                )
+            }
+        }
+        var countdown = 500
+        val task = FutureTask {
+            while (true) {
+                Thread.sleep(10)
+                countdown--
+                var allContains = true
+                controllerList.forEach {
+                    if (!statusCache.containsKey(it)) {
+                        allContains = false
+                    }
+                }
+                if (allContains || countdown <= 1) {
+                    break
+                }
+            }
+            return@FutureTask statusCache
+        }
+        task.run()
+
+        controllerList.forEach {
+            if (statusCache.containsKey(it)) {
+                map[it] = statusCache[it]!!
+            } else {
+                val status = Status()
+                status.setName(it)
+                status.setQueryable(this.controllers[it]!!.controller.isStatusQueryable)
+                map[it] = status
+            }
+        }
+        return map
+    }
+
+    fun putCommandCache(commandOutputData: CommandOutputData) {
+        commandOutputCache[commandOutputData.controllerId]!![commandOutputData.command] = commandOutputData.output
     }
 
 

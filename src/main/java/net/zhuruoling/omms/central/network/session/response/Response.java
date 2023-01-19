@@ -7,16 +7,16 @@ import java.util.HashMap;
 
 public class Response {
     @NotNull
-    private Result code;
+    private Result responseCode;
     private HashMap<String, String> content = new HashMap<>();
 
     public Response(@NotNull Result result, HashMap<String, String> content) {
-        this.code = result;
+        this.responseCode = result;
         this.content = content;
     }
 
     public Response() {
-        this.code = Result.OK;
+        this.responseCode = Result.OK;
     }
 
     public static String serialize(Response response) {
@@ -27,12 +27,12 @@ public class Response {
         return new GsonBuilder().serializeNulls().create().fromJson(x, Response.class);
     }
 
-    public @NotNull Result getCode() {
-        return code;
+    public @NotNull Result getResponseCode() {
+        return responseCode;
     }
 
-    public void setCode(@NotNull Result code) {
-        this.code = code;
+    public void setResponseCode(@NotNull Result responseCode) {
+        this.responseCode = responseCode;
     }
 
     public HashMap<String, String> getContent() {
@@ -44,7 +44,7 @@ public class Response {
     }
 
     public Response withResponseCode(Result code){
-        setCode(code);
+        setResponseCode(code);
         return this;
     }
 
@@ -56,7 +56,7 @@ public class Response {
     @Override
     public String toString() {
         return "Response{" +
-                "code='" + code + '\'' +
+                "code='" + responseCode + '\'' +
                 ", content=" + content +
                 '}';
     }
