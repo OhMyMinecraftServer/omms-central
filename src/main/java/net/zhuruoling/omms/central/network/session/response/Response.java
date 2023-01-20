@@ -43,18 +43,18 @@ public class Response {
         this.content = content;
     }
 
-    public Response withResponseCode(Result code){
+    public @NotNull Response withResponseCode(@NotNull Result code){
         setResponseCode(code);
         return this;
     }
 
-    public Response withContentPair(String a, String b) {
+    public @NotNull Response withContentPair(String a, String b) {
         content.put(a, b);
         return this;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Response{" +
                 "code='" + responseCode + '\'' +
                 ", content=" + content +

@@ -8,6 +8,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import org.jetbrains.annotations.Nullable;
 
 public class ListWhitelistRequestHandler extends BuiltinRequestHandler {
 
@@ -23,7 +24,7 @@ public class ListWhitelistRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @Nullable Permission requiresPermission() {
         return null;
     }
 }

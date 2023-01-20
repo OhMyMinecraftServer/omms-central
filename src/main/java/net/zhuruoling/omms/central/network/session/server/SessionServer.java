@@ -8,6 +8,7 @@ import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 public class SessionServer extends Thread {
     private final Session session;
-    private EncryptedSocket encryptedConnector = null;
+    private @Nullable EncryptedSocket encryptedConnector = null;
     final Logger logger = LoggerFactory.getLogger("SessionServer");
     List<Permission> permissions;
     public SessionServer(Session session, List<Permission> permissions){

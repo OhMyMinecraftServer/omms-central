@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.announcement;
 import com.google.gson.GsonBuilder;
 import kotlinx.serialization.Serializable;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -67,7 +68,7 @@ public class Announcement {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Announcement{" +
                 "id='" + id + '\'' +
                 ", timeMillis=" + timeMillis +

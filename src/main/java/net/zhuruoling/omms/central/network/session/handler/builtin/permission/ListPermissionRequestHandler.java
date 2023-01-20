@@ -8,6 +8,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class ListPermissionRequestHandler extends BuiltinRequestHandler {
     @Override
@@ -18,7 +19,7 @@ public class ListPermissionRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.PERMISSION_LIST;
     }
 }

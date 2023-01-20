@@ -23,6 +23,7 @@ import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
 import org.slf4j.Logger;
 
@@ -39,7 +40,7 @@ import static java.lang.System.getProperty;
 public class ConsoleCommandHandler {
     private static Logger logger;
 
-    private static CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
+    private static @NotNull CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
 
     public ConsoleCommandHandler() {
         init();
@@ -464,7 +465,7 @@ public class ConsoleCommandHandler {
         //
     }
 
-    private static void searchWhitelist(String player, String s) {
+    private static void searchWhitelist(@NotNull String player, @NotNull String s) {
         var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
         if (result == null) {
             logger.info("No valid results in whitelist %s.".formatted(s));
@@ -475,9 +476,9 @@ public class ConsoleCommandHandler {
     }
 
 
-    private static String makeChangesString(PermissionChange permissionChange) {
+    private static String makeChangesString(@NotNull PermissionChange permissionChange) {
         var ref = new Object() {
-            String affection = "";
+            @NotNull String affection = "";
         };
         permissionChange.getChanges().forEach(permission -> {
             ref.affection += permission.name();
@@ -492,7 +493,7 @@ public class ConsoleCommandHandler {
         ConsoleCommandHandler.logger = logger;
     }
 
-    Completers.TreeCompleter walkCommandTree(CommandNode<CommandSourceStack> node) {
+    Completers.@NotNull TreeCompleter walkCommandTree(@NotNull CommandNode<CommandSourceStack> node) {
         var completer = new Completers.TreeCompleter();
         Completers.TreeCompleter.node();
         if (node.getChildren().isEmpty()) {

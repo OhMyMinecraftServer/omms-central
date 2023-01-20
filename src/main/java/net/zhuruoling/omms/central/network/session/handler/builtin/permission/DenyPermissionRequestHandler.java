@@ -9,12 +9,13 @@ import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class DenyPermissionRequestHandler extends BuiltinRequestHandler {
     @Override
-    public Response handle(Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, HandlerSession session) {
         var response = new Response();
         try {
             //草 彳亍
@@ -34,7 +35,7 @@ public class DenyPermissionRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.PERMISSION_MODIFY;
     }
 }

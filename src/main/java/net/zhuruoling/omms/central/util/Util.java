@@ -11,6 +11,7 @@ import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.broadcast.Target;
 import net.zhuruoling.omms.central.network.session.request.InitRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -52,7 +53,7 @@ public class Util {
         return false;
     }
 
-    public static String getTimeCode() {
+    public static @NotNull String getTimeCode() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
     }
 
@@ -90,7 +91,7 @@ public class Util {
     }
 
 
-    public static boolean fileExists(String fileName) {
+    public static boolean fileExists(@NotNull String fileName) {
         try {
             new FileReader(fileName);
             return true;
@@ -99,7 +100,7 @@ public class Util {
         }
     }
 
-    public static FileLock acquireLock(RandomAccessFile file) {
+    public static FileLock acquireLock(@NotNull RandomAccessFile file) {
         try {
             FileChannel channel = file.getChannel();
             return channel.tryLock();
@@ -108,7 +109,7 @@ public class Util {
         }
     }
 
-    public static void releaseLock(FileLock lock) {
+    public static void releaseLock(@NotNull FileLock lock) {
         try {
             var ch = lock.acquiredBy();
             lock.release();
@@ -118,16 +119,16 @@ public class Util {
         }
     }
 
-    public static String getWorkingDir() {
+    public static @NotNull String getWorkingDir() {
         File directory = new File("");
         return directory.getAbsolutePath();
     }
 
-    public static String randomStringGen(int len){
+    public static @NotNull String randomStringGen(int len){
         return randomStringGen(len, true, true);
     }
 
-    public static String randomStringGen(int len, boolean hasInteger, boolean hasUpperLetter) {
+    public static @NotNull String randomStringGen(int len, boolean hasInteger, boolean hasUpperLetter) {
         String ch = "abcdefghijklmnopqrstuvwxyz" + (hasUpperLetter ? "ABCDEFGHIGKLMNOPQRSTUVWXYZ" : "") + (hasInteger ? "0123456789" : "");
         StringBuilder stringBuffer = new StringBuilder();
         for (int i = 0; i < len; i++) {
@@ -138,7 +139,7 @@ public class Util {
         return stringBuffer.toString();
     }
 
-    public static String joinFilePaths(String... pathComponent) {
+    public static @NotNull String joinFilePaths(String @NotNull ... pathComponent) {
         var paths = pathComponent.clone();
         var path = new StringBuilder();
         path.append(Util.getWorkingDir());
@@ -154,7 +155,7 @@ public class Util {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void createFolder(String path, Logger logger) {
+    public static void createFolder(@NotNull String path, @NotNull Logger logger) {
         File file = new File(path);
         if (!file.exists()) {
             file.mkdirs();
@@ -163,11 +164,11 @@ public class Util {
 
     }
 
-    public static String base64Encode(String content) {
+    public static String base64Encode(@NotNull String content) {
         return Base64.getEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static void createConfig(Logger logger) {
+    public static void createConfig(@NotNull Logger logger) {
         logger.warn("CONFIG NOT EXIST,creating.");
         try {
             if (!new Util().createFile(Util.getWorkingDir() + File.separator + "config.json")) {
@@ -189,7 +190,7 @@ public class Util {
         }
     }
 
-    public static void listAll(Logger logger) {
+    public static void listAll(@NotNull Logger logger) {
         logger.info("Listing controllers");
         ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
             for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance.controller()).split("\n")) {
@@ -210,14 +211,14 @@ public class Util {
         }
     }
 
-    public static ArrayList<String> genCommandTree() {
+    public static @NotNull ArrayList<String> genCommandTree() {
         var root = ConsoleCommandHandler.getDispatcher().getRoot();
         ArrayList<String> lines = new ArrayList<>();
         walkCommandTree(root, 0, lines);
         return lines;
     }
 
-    private static void walkCommandTree(CommandNode<CommandSourceStack> node, int depth, ArrayList<String> lines) {
+    private static void walkCommandTree(@NotNull CommandNode<CommandSourceStack> node, int depth, @NotNull ArrayList<String> lines) {
         if (node.getChildren().isEmpty()) {
             lines.add("  ".repeat(depth) + "-" + node.toString());
         } else {
@@ -232,11 +233,11 @@ public class Util {
         return gson.fromJson(content, clazz);
     }
 
-    public static String toJson(Object obj) {
+    public static String toJson(@NotNull Object obj) {
         return gson.toJson(obj, obj.getClass());
     }
 
-    public static Target generateRandomTarget() {
+    public static @NotNull Target generateRandomTarget() {
         return new Target(
                 "224.114.%d.%d".formatted(
                         new Random(System.nanoTime()).nextInt(0, 250),
@@ -245,7 +246,7 @@ public class Util {
         );
     }
 
-    public boolean createFile(String filePath) throws IOException {
+    public boolean createFile(@NotNull String filePath) throws IOException {
         return new File(filePath).createNewFile();
     }
 

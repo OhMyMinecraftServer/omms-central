@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.plugin;
 
 import net.zhuruoling.omms.central.network.session.message.MessageBuilderKt;
 import net.zhuruoling.omms.central.network.session.HandlerSession;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -14,7 +15,7 @@ public class RequestServerInterface extends ServerInterface {
         super(session, name);
     }
 
-    public void sendBack(String code, String[] load) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void sendBack(@NotNull String code, String @NotNull [] load) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var message = MessageBuilderKt.build(code,load);
         this.getSession().getEncryptedConnector().println(message);
     }

@@ -1,6 +1,8 @@
 package net.zhuruoling.omms.central.plugin;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.module.ModuleDescriptor;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public record PluginDependency(List<Dependency> dependencies) {
 
         protected abstract ModuleDescriptor.Version getVersion();
 
-        public static Dependency of(String id, Operator operator, ModuleDescriptor.Version version){
+        public static @NotNull Dependency of(@NotNull String id, @NotNull Operator operator, ModuleDescriptor.@NotNull Version version){
             return new Dependency() {
                 @Override
                 protected String getId() {
@@ -36,7 +38,7 @@ public record PluginDependency(List<Dependency> dependencies) {
             };
         }
 
-        public static Dependency of(String id, Operator operator, String version){
+        public static @NotNull Dependency of(@NotNull String id, @NotNull Operator operator, @NotNull String version){
             return new Dependency() {
                 @Override
                 protected String getId() {
@@ -49,7 +51,7 @@ public record PluginDependency(List<Dependency> dependencies) {
                 }
 
                 @Override
-                protected ModuleDescriptor.Version getVersion() {
+                protected ModuleDescriptor.@NotNull Version getVersion() {
                     return ModuleDescriptor.Version.parse(version);
                 }
             };
@@ -62,7 +64,7 @@ public record PluginDependency(List<Dependency> dependencies) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PluginDependency{" +
                 "dependencies=" + dependencies +
                 '}';

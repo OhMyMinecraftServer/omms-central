@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.network.session.request;
 
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -35,7 +36,7 @@ public class Request {
     }
 
 
-    public Request withContentKeyPair(String key, String pair){
+    public @NotNull Request withContentKeyPair(String key, String pair){
         content.put(key,pair);
         return this;
     }

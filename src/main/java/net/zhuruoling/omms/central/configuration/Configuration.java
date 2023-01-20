@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.configuration;
 
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 public class Configuration {
     public Configuration(int port,String serverName, int httpPort){
@@ -57,7 +58,7 @@ public class Configuration {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Configuration{" +
                 "port=" + port +
                 ", httpPort=" + httpPort +

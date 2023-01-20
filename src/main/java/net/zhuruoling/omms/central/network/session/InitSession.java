@@ -9,6 +9,7 @@ import net.zhuruoling.omms.central.network.session.server.SessionServer;
 import net.zhuruoling.omms.central.permission.PermissionManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +30,11 @@ import java.util.Base64;
 import java.util.Objects;
 
 public class InitSession extends Thread {
-    private final EncryptedSocket encryptedConnector;
+    private final @NotNull EncryptedSocket encryptedConnector;
     private final Logger logger = LoggerFactory.getLogger("client-handler");
     private final Gson gson = new GsonBuilder().serializeNulls().create();
-    private final Socket socket;
-    public InitSession(Socket socket) throws IOException {
+    private final @NotNull Socket socket;
+    public InitSession(@NotNull Socket socket) throws IOException {
         super(String.format("InitSession#%s:%d",socket.getInetAddress(), socket.getPort()));
         var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         var out = new PrintWriter(socket.getOutputStream(), true);

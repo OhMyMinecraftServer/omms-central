@@ -2,10 +2,11 @@ package net.zhuruoling.omms.central.plugin;
 
 import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.session.HandlerSession;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ServerInterface {
     private final HandlerSession session;
-    private final PluginLogger logger;
+    private final @NotNull PluginLogger logger;
     private final String pluginName;
     public ServerInterface(HandlerSession handlerSession, String name) {
         this.session = handlerSession;
@@ -13,7 +14,7 @@ public abstract class ServerInterface {
         this.logger = new PluginLogger(this.pluginName);
 
     }
-    public Object invokePluginApiMethod(String apiProviderId, String methodName, Object... args){
+    public Object invokePluginApiMethod(@NotNull String apiProviderId, String methodName, Object... args){
         var map = RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().get(apiProviderId);
         if (map == null){
             throw new PluginNotExistException("Plugin %s not exist".formatted(apiProviderId));
@@ -31,7 +32,7 @@ public abstract class ServerInterface {
         }
     }
 
-    public PluginLogger getLogger() {
+    public @NotNull PluginLogger getLogger() {
         return logger;
     }
 

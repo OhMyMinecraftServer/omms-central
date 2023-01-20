@@ -15,7 +15,7 @@ public class HttpAuthUtil {
         return a && b;
     }
 
-    public static String calculateToken(String name){
+    public static @NotNull String calculateToken(@NotNull String name){
         String tk = name + "O" + Util.getTimeCode();
         return Util.calculateTokenByDate(name.hashCode()) + tk + Util.base64Encode(tk);
     }

@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.network.broadcast;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public class UdpBroadcastSender extends Thread {
         this.setName("UdpBroadcastSender#" + this.getId());
     }
 
-    public void createMulticastSocketCache(Target target) {
+    public void createMulticastSocketCache(@NotNull Target target) {
         try {
             multicastSocketCache.put(target, createMulticastSocket(target.getAddress(), target.getPort()));
         } catch (IOException e) {
@@ -33,7 +34,7 @@ public class UdpBroadcastSender extends Thread {
         multicastSocketCache.clear();
     }
 
-    private static MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
+    private static @NotNull MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
         MulticastSocket socket;
         InetAddress inetAddress;
         inetAddress = InetAddress.getByName(addr);
@@ -67,11 +68,11 @@ public class UdpBroadcastSender extends Thread {
         this.stopped = stopped;
     }
 
-    public void addToQueue(Target target, String content) {
+    public void addToQueue(@NotNull Target target, @NotNull String content) {
         queue.put(target, content.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void send(Target target, byte[] content) {
+    private void send(@NotNull Target target, byte @NotNull [] content) {
         queue.remove(target,content);
         MulticastSocket socket;
         try {

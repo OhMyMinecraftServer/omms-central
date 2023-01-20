@@ -21,7 +21,6 @@ import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
 import net.zhuruoling.omms.central.network.session.handler.builtin.registerBuiltinRequestHandlers
-
 import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
@@ -200,7 +199,7 @@ object MainKt {
             Objects.requireNonNull(socketServer)?.interrupt()
             if (!noLock) {
                 logger.info("Releasing lock.")
-                Util.releaseLock(lock)
+                Util.releaseLock(lock!!)
                 Files.delete(Path.of(Util.LOCK_NAME))
             }
             logger.info("Bye")

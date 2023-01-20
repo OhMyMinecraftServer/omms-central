@@ -7,11 +7,12 @@ import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
+import org.jetbrains.annotations.NotNull;
 
 public class GetControllersRequestHandler extends BuiltinRequestHandler {
 
     @Override
-    public Response handle(Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, HandlerSession session) {
         String name = request.getContent("controller");
         var controller = ControllerManager.INSTANCE.getControllerByName(name);
         if (controller == null){
@@ -21,7 +22,7 @@ public class GetControllersRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.CONTROLLER_GET;
     }
 }

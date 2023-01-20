@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.console;
 
+import org.jetbrains.annotations.NotNull;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -32,7 +33,7 @@ public class ConsoleInputHandler {
     ConsoleInputHandler(){
 
     }
-    public static ConsoleInputHandler INSTANCE = new ConsoleInputHandler();
+    public static @NotNull ConsoleInputHandler INSTANCE = new ConsoleInputHandler();
 
     public void handle() {
         WhitelistCompleter whitelistCompleter = new WhitelistCompleter();

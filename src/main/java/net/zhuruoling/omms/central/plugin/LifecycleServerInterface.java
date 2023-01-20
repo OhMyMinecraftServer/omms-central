@@ -54,7 +54,7 @@ public class LifecycleServerInterface extends ServerInterface {
         RuntimeConstants.pluginCommandHashMap.add(new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
     }
 
-    public PluginMain require(String id) throws PluginNotExistException,PluginNotLoadedException {
+    public PluginMain require(@NotNull String id) throws PluginNotExistException,PluginNotLoadedException {
         return PluginManager.INSTANCE.getPluginInstance(id).getInstance();
     }
 

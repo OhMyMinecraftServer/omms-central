@@ -102,7 +102,7 @@ object PluginManager {
         functionName: String,
         command: Request,
         serverInterface: RequestServerInterface
-    ): Any {
+    ): Any? {
         val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
             "Plugin $pluginName does not exist."
         )

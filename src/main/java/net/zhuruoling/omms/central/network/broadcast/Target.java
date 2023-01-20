@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.network.broadcast;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Target {
 
     private final String address;
@@ -16,7 +18,7 @@ public class Target {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Target{" +
                 "address='" + address + '\'' +
                 ", port=" + port +

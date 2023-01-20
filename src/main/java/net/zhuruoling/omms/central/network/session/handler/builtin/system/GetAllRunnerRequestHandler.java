@@ -8,6 +8,7 @@ import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.system.runner.RunnerManager;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.Nullable;
 
 public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {
 
@@ -21,7 +22,7 @@ public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @Nullable Permission requiresPermission() {
         return null;
     }
 }

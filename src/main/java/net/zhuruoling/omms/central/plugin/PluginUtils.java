@@ -1,22 +1,24 @@
 package net.zhuruoling.omms.central.plugin;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PluginUtils {
 
-    public static String getPluginIdByFileName(String fileName) {
+    public static @NotNull String getPluginIdByFileName(String fileName) {
         var pluginId = "";
 
         return pluginId;
     }
 
-    public static String getPluginFileNameById(String pluginId) {
+    public static @NotNull String getPluginFileNameById(String pluginId) {
         return "";
     }
 
     //SHITTY method
-    public static List<String> calculateLoadOrderByPluginDependencies(List<PluginDependency> pluginDependencies) {
+    public static @NotNull List<String> calculateLoadOrderByPluginDependencies(@NotNull List<PluginDependency> pluginDependencies) {
         HashMap<String, AtomicInteger> loadOrder = new HashMap<>();
 
         pluginDependencies.forEach(pluginDependency -> {

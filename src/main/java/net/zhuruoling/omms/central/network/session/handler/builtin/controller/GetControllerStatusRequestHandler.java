@@ -8,10 +8,11 @@ import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
     @Override
-    public Response handle(Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, HandlerSession session) {
         var controllerId = request.getContent("id");
         if (ControllerManager.INSTANCE.getControllers().containsKey(controllerId)) {
             var status = ControllerManager.INSTANCE.getControllerStatus(kotlin.collections.CollectionsKt.mutableListOf(controllerId));
@@ -26,7 +27,7 @@ public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.CONTROLLER_EXECUTE;
     }
 }

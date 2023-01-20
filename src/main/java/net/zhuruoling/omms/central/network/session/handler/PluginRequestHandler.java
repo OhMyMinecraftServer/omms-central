@@ -8,6 +8,8 @@ import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.plugin.RequestServerInterface;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -16,7 +18,7 @@ public class PluginRequestHandler extends RequestHandler {
     private final String pluginName;
     private final String code;
     private final String funcName;
-    private final BiFunction<RequestServerInterface, Request, Response> function;
+    private final @Nullable BiFunction<RequestServerInterface, Request, Response> function;
 
     public PluginRequestHandler(String pluginName, String code, String funcName) {
         super("PLUGIN %s".formatted(pluginName));
@@ -49,7 +51,7 @@ public class PluginRequestHandler extends RequestHandler {
     }
 
     @Override
-    public Response handle(Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, @NotNull HandlerSession session) {
         if (!session.getPermissions().contains(Permission.EXECUTE_PLUGIN_REQUEST)) {
             try {
                 session.getEncryptedConnector().println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
@@ -68,7 +70,7 @@ public class PluginRequestHandler extends RequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.EXECUTE_PLUGIN_REQUEST;
     }
 }

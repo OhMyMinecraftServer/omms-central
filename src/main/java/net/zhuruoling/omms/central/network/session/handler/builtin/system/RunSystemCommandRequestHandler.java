@@ -7,11 +7,12 @@ import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.system.runner.RunnerManager;
+import org.jetbrains.annotations.NotNull;
 
 public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 add to register
 
     @Override
-    public Response handle(Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, HandlerSession session) {
         var command = request.getContent("command");
         var workingDir = request.getContent("workingDir");
         var runnerDescription = request.getContent("description");
@@ -26,7 +27,7 @@ public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {// TO
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.SERVER_OS_CONTROL;
     }
 }

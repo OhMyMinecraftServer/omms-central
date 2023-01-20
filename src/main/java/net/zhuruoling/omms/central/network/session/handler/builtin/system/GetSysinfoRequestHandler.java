@@ -9,6 +9,7 @@ import net.zhuruoling.omms.central.system.SystemInfo;
 import net.zhuruoling.omms.central.system.SystemUtil;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class GetSysinfoRequestHandler extends BuiltinRequestHandler {
 
@@ -19,7 +20,7 @@ public class GetSysinfoRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.SERVER_OS_CONTROL;
     }
 }

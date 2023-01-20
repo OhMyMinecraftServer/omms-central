@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.main;
 
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String @NotNull [] args) throws IOException {
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         System.out.println("Starting net.zhuruoling.omms.central.main.MainKt");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

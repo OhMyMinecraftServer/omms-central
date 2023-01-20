@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.system;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class FileSystemInfo { // TODO: 2022/9/10
 
     }
 
-    public List<FileSystem> getFileSystemList() {
+    public @NotNull List<FileSystem> getFileSystemList() {
         return fileSystemList;
     }
 

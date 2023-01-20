@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.network.session.request;
 
+import org.jetbrains.annotations.NotNull;
+
 public class InitRequest extends Request{
     long version = VERSION_BASE + 0xffffL;
 
@@ -9,7 +11,7 @@ public class InitRequest extends Request{
         this.version = version;
     }
 
-    public InitRequest(Request request, long version){
+    public InitRequest(@NotNull Request request, long version){
         super();
         this.request = request.getRequest();
         this.content = request.content;
@@ -25,7 +27,7 @@ public class InitRequest extends Request{
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "InitRequest{" +
                 "version=" + version +
                 ", request='" + request + '\'' +

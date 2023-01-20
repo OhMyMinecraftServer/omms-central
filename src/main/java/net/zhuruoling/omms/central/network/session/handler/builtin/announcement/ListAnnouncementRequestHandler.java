@@ -8,6 +8,7 @@ import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class ListAnnouncementRequestHandler extends BuiltinRequestHandler {
     @Override
@@ -22,7 +23,7 @@ public class ListAnnouncementRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public Permission requiresPermission() {
+    public @NotNull Permission requiresPermission() {
         return Permission.ANNOUNCEMENT_READ;
     }
 }

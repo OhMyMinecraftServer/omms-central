@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.console;
 
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import org.jetbrains.annotations.NotNull;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -11,7 +12,7 @@ import java.util.List;
 
 
 public class WhitelistCompleter implements Completer {
-    final Completer completer;
+    final @NotNull Completer completer;
 
     public WhitelistCompleter(){
         completer = new StringsCompleter(WhitelistManager.INSTANCE.getWhitelistNames());

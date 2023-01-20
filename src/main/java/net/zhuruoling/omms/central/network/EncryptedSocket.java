@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.network;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import java.util.Base64;
 public class EncryptedSocket {
     private final BufferedReader in;
     private final PrintWriter out;
-    private final byte[] key;
+    private final byte @NotNull [] key;
     private final Logger logger = LoggerFactory.getLogger("EncryptedSocket");
     @Contract(pure = true)
     public EncryptedSocket(BufferedReader in, PrintWriter out, @NotNull String key){
@@ -59,7 +60,7 @@ public class EncryptedSocket {
         out.flush();
     }
 
-    public String readLine() throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public @Nullable String readLine() throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         String line = in.readLine();
         if (line == null) return null;
         logger.debug("Received:" + line);
@@ -67,14 +68,14 @@ public class EncryptedSocket {
         return new String(data,StandardCharsets.UTF_8);
     }
 
-    private static byte[] encryptECB(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private static byte[] encryptECB(byte @NotNull [] data, byte @NotNull [] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
         var result = cipher.doFinal(data);
         return Base64.getEncoder().encode(result);
     }
 
-    private static byte[] decryptECB(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private static byte[] decryptECB(byte[] data, byte @NotNull [] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
         byte[] base64 = Base64.getDecoder().decode(data);

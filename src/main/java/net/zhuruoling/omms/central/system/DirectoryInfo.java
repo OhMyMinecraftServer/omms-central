@@ -1,14 +1,21 @@
 package net.zhuruoling.omms.central.system;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public class DirectoryInfo {
-    List<String> folders = null;
-    List<String> files = null;
+    @Nullable List<String> folders = null;
+    @Nullable List<String> files = null;
 
     SystemResult result = SystemResult.__NULL;
 
     public DirectoryInfo() {
+    }
+
+    public DirectoryInfo(List<String> folders, List<String> files) {
+        this.folders = folders;
+        this.files = files;
     }
 
     public SystemResult getResult() {
@@ -17,11 +24,6 @@ public class DirectoryInfo {
 
     public void setResult(SystemResult result) {
         this.result = result;
-    }
-
-    public DirectoryInfo(List<String> folders, List<String> files) {
-        this.folders = folders;
-        this.files = files;
     }
 
     public List<String> getFolders() {

@@ -4,6 +4,8 @@ import groovy.lang.GroovyClassLoader;
 import net.zhuruoling.omms.central.main.RuntimeConstants;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -16,10 +18,10 @@ import java.util.HashMap;
 
 public class GroovyPluginInstance {
     private final String pluginFilePath;
-    private final GroovyClassLoader groovyClassLoader;
-    private PluginMain instance = null;
+    private final @NotNull GroovyClassLoader groovyClassLoader;
+    private @Nullable PluginMain instance = null;
     private PluginStatus pluginStatus = PluginStatus.NONE;
-    private PluginMetadata metadata = null;
+    private @Nullable PluginMetadata metadata = null;
 
     public GroovyPluginInstance(String pluginFilePath) {
         this.pluginFilePath = pluginFilePath;
@@ -71,7 +73,7 @@ public class GroovyPluginInstance {
         }
     }
 
-    public Object invokeMethod(String methodName, Object... params) {
+    public @Nullable Object invokeMethod(@NotNull String methodName, Object @NotNull ... params) {
         Class<? extends PluginMain> clazz = instance.getClass();
         ArrayList<Class<?>> paramTypes = new ArrayList<>();
         for (Object param : params) {

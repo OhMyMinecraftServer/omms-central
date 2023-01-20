@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.controller;
 
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class Controller {
     private String name;
@@ -39,7 +40,7 @@ public class Controller {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Controller{" +
                 "name='" + name + '\'' +
                 ", executable='" + executable + '\'' +

@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.whitelist;
 
 import com.google.gson.annotations.SerializedName;
 import kotlinx.serialization.Serializable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 @Serializable
@@ -35,7 +36,7 @@ public class Whitelist {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Whitelist{" +
                 "players=" + Arrays.toString(players) +
                 ", name='" + name + '\'' +

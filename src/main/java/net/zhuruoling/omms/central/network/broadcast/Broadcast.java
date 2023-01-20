@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.network.broadcast;
 
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 public class Broadcast {
     public String channel;
@@ -21,7 +22,7 @@ public class Broadcast {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Broadcast{" +
                 "channel='" + channel + '\'' +
                 ", server='" + server + '\'' +

@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.console;
 
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import org.jetbrains.annotations.NotNull;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -16,7 +17,7 @@ public class PlayerNameCompleter implements Completer {
     Completer completer;
 
     @Override
-    public void complete(LineReader lineReader, ParsedLine parsedLine, List<Candidate> list) {
+    public void complete(LineReader lineReader, @NotNull ParsedLine parsedLine, List<Candidate> list) {
         var word = parsedLine.word();
         var words = parsedLine.words();
         var index = words.indexOf(word);

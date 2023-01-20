@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.console;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class CommandSourceStack {
     Logger logger = LoggerFactory.getLogger("CommandSource");
     Source source;
-    List<String> feedbackLines = new ArrayList<>();
+    @NotNull List<String> feedbackLines = new ArrayList<>();
 
     public CommandSourceStack(Source source) {
         this.source = source;

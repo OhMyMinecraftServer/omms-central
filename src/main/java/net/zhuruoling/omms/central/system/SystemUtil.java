@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.system;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
@@ -27,11 +28,11 @@ public class SystemUtil {
         return os.getArch();
     }
 
-    public static net.zhuruoling.omms.central.system.SystemInfo getSystemInfo(){
+    public static net.zhuruoling.omms.central.system.@NotNull SystemInfo getSystemInfo(){
         return new net.zhuruoling.omms.central.system.SystemInfo(SystemUtil.getSystemName(),SystemUtil.getSystemVersion(), SystemUtil.getSystemArch(),SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
     }
 
-    public static DirectoryInfo listDir(String path){
+    public static @NotNull DirectoryInfo listDir(@NotNull String path){
         DirectoryInfo info = new DirectoryInfo();
         File file = new File(path);
         if (file.isFile()){
@@ -55,13 +56,13 @@ public class SystemUtil {
     }
 
 
-    public static ProcessorInfo getProcessorInfo(){
+    public static @NotNull ProcessorInfo getProcessorInfo(){
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hal = systemInfo.getHardware();
         CentralProcessor processor = hal.getProcessor();
         var processorInfo = new ProcessorInfo();
         OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
-        double cpu = osMxBean.getSystemLoadAverage();
+        double cpu = osMxBean.getSystemLoadAverage();//equals -1 if os == windows (Windows doesn't have loadavg)
         processorInfo.setProcessorId(processor.getProcessorIdentifier().getProcessorID());
         processorInfo.setProcessorName(processor.getProcessorIdentifier().getName());
         processorInfo.setPhysicalCPUCount(processor.getPhysicalPackageCount());
@@ -72,7 +73,7 @@ public class SystemUtil {
         return processorInfo;
     }
 
-    public static MemoryInfo getMemoryInfo(){
+    public static @NotNull MemoryInfo getMemoryInfo(){
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         var memory = hardwareAbstractionLayer.getMemory();
@@ -84,17 +85,16 @@ public class SystemUtil {
         return memoryInfo;
     }
 
-    public static StorageInfo getStorageInfo(){
+    public static @NotNull StorageInfo getStorageInfo(){
 
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         StorageInfo storageInfo = new StorageInfo();
         hardwareAbstractionLayer.getDiskStores().forEach(hwDiskStore -> storageInfo.getStorageList().add(new StorageInfo.Storage(hwDiskStore.getName(), hwDiskStore.getModel(), hwDiskStore.getSize())));
-        //没有静态(static)的类中类不能使用外部类进行.操作,必须用实例来进行实例化类中类.
         return storageInfo;
     }
 
-    public static FileSystemInfo getFileSystemInfo(){
+    public static @NotNull FileSystemInfo getFileSystemInfo(){
         SystemInfo systemInfo = new SystemInfo();
         FileSystemInfo fileSystemInfo = new FileSystemInfo();
         systemInfo.getOperatingSystem()
@@ -113,12 +113,23 @@ public class SystemUtil {
         return fileSystemInfo;
     }
 
-    public static NetworkInfo getNetworkInfo(){
+    public static @NotNull NetworkInfo getNetworkInfo(){
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         var networkParams = systemInfo.getOperatingSystem().getNetworkParams();
         var networkInfo = new NetworkInfo(networkParams.getHostName(), networkParams.getDomainName(), networkParams.getDnsServers(), networkParams.getIpv4DefaultGateway(), networkParams.getIpv6DefaultGateway());
-        hardwareAbstractionLayer.getNetworkIFs().forEach(networkIF -> networkInfo.getNetworkInterfaceList().add(new NetworkInfo.NetworkInterface(networkIF.getName(), networkIF.getDisplayName(), networkIF.getMacaddr(), networkIF.getMTU(), networkIF.getSpeed(), networkIF.getIPv4addr(), networkIF.getIPv6addr())));
+        hardwareAbstractionLayer.getNetworkIFs().forEach(networkIF -> {
+            networkInfo.getNetworkInterfaceList()
+                    .add(new NetworkInfo.NetworkInterface(
+                            networkIF.getName(),
+                            networkIF.getDisplayName(),
+                            networkIF.getMacaddr(),
+                            networkIF.getMTU(),
+                            networkIF.getSpeed(),
+                            networkIF.getIPv4addr(),
+                            networkIF.getIPv6addr()
+                    ));
+        });
         return networkInfo;
     }
 
