@@ -13,7 +13,7 @@ import java.io.FileReader
 import java.io.FilenameFilter
 import java.util.concurrent.FutureTask
 
-data class CommandOutputData(val controllerId:String, val command:String, val output:String)
+data class CommandOutputData(val controllerId: String, val command: String, val output: String)
 
 
 object ControllerManager {
@@ -63,7 +63,7 @@ object ControllerManager {
         getControllerByName(controllerName)?.let { this.sendCommand(it, command) }
     }
 
-    fun sendCommand(instance: ControllerInstance, command: String):String? {
+    fun sendCommand(instance: ControllerInstance, command: String): String? {
         val instruction = Instruction(instance.controllerType, instance.controller.name, command)
         instruction.setType(InstructionType.RUN_COMMAND)
         logger.info("Sending command $command to controller ${instance.controller.name}")
@@ -71,8 +71,8 @@ object ControllerManager {
         RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, json)
         commandOutputCache[instance.controller.name] = mutableMapOf()
         var countdown = 500
-        while (countdown >= 0){
-            if(commandOutputCache[instance.controller.name]!!.containsKey(command))
+        while (countdown >= 0) {
+            if (commandOutputCache[instance.controller.name]!!.containsKey(command))
                 break
             Thread.sleep(10)
             countdown--
@@ -86,7 +86,7 @@ object ControllerManager {
 
     fun putStatusCache(status: Status) {
 
-            this.statusCache[status.name] = status
+        this.statusCache[status.name] = status
 
     }
 
@@ -110,7 +110,6 @@ object ControllerManager {
 
     @NotNull
     fun getControllerStatus(controllerList: MutableList<String>): MutableMap<String, Status> {
-
         val map = mutableMapOf<String, Status>()
         println("Fetching controller statuses.")
         val target = Util.generateRandomTarget()
@@ -120,9 +119,11 @@ object ControllerManager {
                 throw java.lang.IllegalArgumentException("Controller not exist")
             }
         }
+        var allNotQueryable = true
         controllerList.forEach {
             val c = controllers[it]!!
             if (c.controller.isStatusQueryable) {
+                allNotQueryable = false
                 this.sendCommand(
                     Instruction(
                         c.controllerType,
@@ -134,23 +135,20 @@ object ControllerManager {
             }
         }
         var countdown = 500
-        val task = FutureTask {
-            while (true) {
-                Thread.sleep(10)
-                countdown--
-                var allContains = true
-                controllerList.forEach {
-                    if (!statusCache.containsKey(it)) {
-                        allContains = false
-                    }
-                }
-                if (allContains || countdown <= 1) {
-                    break
+        while (true) {
+            if (allNotQueryable) break
+            Thread.sleep(10)
+            countdown--
+            var allContains = true
+            controllerList.forEach {
+                if (!statusCache.containsKey(it)) {
+                    allContains = false
                 }
             }
-            return@FutureTask statusCache
+            if (allContains || countdown <= 1) {
+                break
+            }
         }
-        task.run()
 
         controllerList.forEach {
             if (statusCache.containsKey(it)) {
@@ -159,6 +157,7 @@ object ControllerManager {
                 val status = Status()
                 status.setName(it)
                 status.setQueryable(this.controllers[it]!!.controller.isStatusQueryable)
+                status.setAlive(false)
                 map[it] = status
             }
         }
