@@ -14,6 +14,8 @@ public class Controller {
 
     private String workingDir;
 
+    private String httpQueryAddress;
+
     private boolean statusQueryable;
 
     public boolean isStatusQueryable() {
@@ -89,5 +91,14 @@ public class Controller {
 
     public String toJson() {
         return Util.gson.toJson(this);
+    }
+
+
+    public String getHttpQueryAddress() {
+        return httpQueryAddress;
+    }
+
+    public void setHttpQueryAddress(String httpQueryAddress) {
+        this.httpQueryAddress = httpQueryAddress;
     }
 }

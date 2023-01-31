@@ -1,30 +1,28 @@
 package net.zhuruoling.omms.central.whitelist;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.Arrays;
 import kotlinx.serialization.Serializable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 @Serializable
 public class Whitelist {
     @SerializedName("players")
     String[] players;
     @SerializedName("name")
     String name;
-    public Whitelist(
-            String[] players,
-            String name
-    ){
+
+    public Whitelist(String[] players, String name) {
         this.players = players;
         this.name = name;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String[] getPlayers() {
-        return players;
+        return this.players;
     }
 
     public void setName(String name) {
@@ -35,16 +33,11 @@ public class Whitelist {
         this.players = players;
     }
 
-    @Override
     public @NotNull String toString() {
-        return "Whitelist{" +
-                "players=" + Arrays.toString(players) +
-                ", name='" + name + '\'' +
-                '}';
+        return "Whitelist{players=" + Arrays.toString(this.players) + ", name='" + this.name + "'}";
     }
 
-    public boolean containsPlayer(String player){
-        return Arrays.stream(players).toList().contains(player);
+    public boolean containsPlayer(String player) {
+        return Arrays.stream(this.players).toList().contains(player);
     }
-
 }

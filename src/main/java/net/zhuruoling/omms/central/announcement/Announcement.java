@@ -1,11 +1,11 @@
+
 package net.zhuruoling.omms.central.announcement;
 
 import com.google.gson.GsonBuilder;
+import java.util.Arrays;
 import kotlinx.serialization.Serializable;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 @Serializable
 public class Announcement {
@@ -36,7 +36,7 @@ public class Announcement {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -44,7 +44,7 @@ public class Announcement {
     }
 
     public long getTimeMillis() {
-        return timeMillis;
+        return this.timeMillis;
     }
 
     public void setTimeMillis(long timeMillis) {
@@ -52,7 +52,7 @@ public class Announcement {
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -60,24 +60,18 @@ public class Announcement {
     }
 
     public String[] getContent() {
-        return content;
+        return this.content;
     }
 
     public void setContent(String[] content) {
         this.content = content;
     }
 
-    @Override
     public @NotNull String toString() {
-        return "Announcement{" +
-                "id='" + id + '\'' +
-                ", timeMillis=" + timeMillis +
-                ", title='" + title + '\'' +
-                ", content=" + Arrays.toString(content) +
-                '}';
-    }
-    public String toJson(){
-        return new GsonBuilder().serializeNulls().create().toJson(this);
+        return "Announcement{id='" + this.id + "', timeMillis=" + this.timeMillis + ", title='" + this.title + "', content=" + Arrays.toString(this.content) + "}";
     }
 
+    public String toJson() {
+        return (new GsonBuilder()).serializeNulls().create().toJson(this);
+    }
 }

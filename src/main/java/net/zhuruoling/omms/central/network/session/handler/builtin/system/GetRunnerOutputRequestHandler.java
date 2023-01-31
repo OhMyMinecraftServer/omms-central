@@ -26,7 +26,7 @@ public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
             List<String> list = CollectionsKt.mutableListOf();
             if (runnerDaemon.getStarted()){
                 if (runnerDaemon.getRunning()){
-                   list.addAll(Objects.requireNonNull(runnerDaemon.getReader()).getAllLines());
+                    list.addAll(Objects.requireNonNull(runnerDaemon.getReader()).getAllLines());
                 }else {
                     list.add("An exception occurred while Runner attempt to launch a process.");
                     if (runnerDaemon.getStartFailReason() != null){

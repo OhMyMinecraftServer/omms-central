@@ -23,12 +23,7 @@ object Foo {
 }
 
 fun main() {
-    for (s in arrayOf("String", "Float","Int","Long","Boolean", "StringSet")){
-        println("fun put$s(key: String, value: ${if (s == "StringSet") "MutableSet<String>" else s}): PreferencesStorage{\n" +
-                "        editor.put$s(key, value)\n" +
-                "        return this\n" +
-                "    }")
-    }
+
 }
 
 

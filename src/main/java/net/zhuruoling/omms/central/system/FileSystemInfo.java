@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileSystemInfo { // TODO: 2022/9/10
+public class FileSystemInfo {
 
     @SerializedName("filesystems")
     final

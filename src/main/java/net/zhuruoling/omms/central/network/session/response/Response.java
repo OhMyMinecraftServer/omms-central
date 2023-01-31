@@ -1,34 +1,37 @@
+
 package net.zhuruoling.omms.central.network.session.response;
 
 import com.google.gson.GsonBuilder;
+import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 public class Response {
-    @NotNull
-    private Result responseCode;
-    private HashMap<String, String> content = new HashMap<>();
+    private @NotNull Result responseCode;
+    private HashMap<String, String> content;
 
     public Response(@NotNull Result result, HashMap<String, String> content) {
+        this.content = new HashMap<>();
         this.responseCode = result;
         this.content = content;
     }
 
     public Response() {
+        super();
+        this.content = new HashMap<>();
         this.responseCode = Result.OK;
     }
 
     public static String serialize(Response response) {
-        return new GsonBuilder().serializeNulls().create().toJson(response);
+        return (new GsonBuilder()).serializeNulls().create().toJson(response);
     }
 
     public static Response deserialize(String x) {
-        return new GsonBuilder().serializeNulls().create().fromJson(x, Response.class);
+        return (new GsonBuilder()).serializeNulls().create().fromJson(x, Response.class);
     }
 
     public @NotNull Result getResponseCode() {
-        return responseCode;
+        Result var10000 = this.responseCode;
+        return var10000;
     }
 
     public void setResponseCode(@NotNull Result responseCode) {
@@ -36,28 +39,25 @@ public class Response {
     }
 
     public HashMap<String, String> getContent() {
-        return content;
+        return this.content;
     }
 
     public void setContent(HashMap<String, String> content) {
         this.content = content;
     }
 
-    public @NotNull Response withResponseCode(@NotNull Result code){
-        setResponseCode(code);
+    public @NotNull Response withResponseCode(@NotNull Result code) {
+        this.setResponseCode(code);
         return this;
     }
 
     public @NotNull Response withContentPair(String a, String b) {
-        content.put(a, b);
+        this.content.put(a, b);
         return this;
     }
 
-    @Override
     public @NotNull String toString() {
-        return "Response{" +
-                "code='" + responseCode + '\'' +
-                ", content=" + content +
-                '}';
+
+        return "Response{code='" + this.responseCode + "', content=" + this.content + "}";
     }
 }

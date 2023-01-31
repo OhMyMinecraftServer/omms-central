@@ -24,6 +24,5 @@ fun Application.configureRouting() {
             controllerStatusQueryRouting()
             managementQueryRouting()
         }
-
     }
 }
