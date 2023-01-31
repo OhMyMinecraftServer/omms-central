@@ -52,4 +52,13 @@ public class PermissionChange {
         if (!(o instanceof PermissionChange that)) return false;
         return code == that.code && operation == that.operation && Objects.equals(changes, that.changes);
     }
+
+    @Override
+    public String toString() {
+        return "PermissionChange{" +
+                "operation=" + operation +
+                ", code=" + code +
+                ", changes=" + changes +
+                '}';
+    }
 }

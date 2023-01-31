@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.console;
 
 import com.google.gson.Gson;
+import kotlin.collections.CollectionsKt;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -301,8 +302,11 @@ public class ConsoleCommandHandler {
                                                             checkedPermissions.add(permission);
                                                         }
                                                     });
-                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DENY, code, checkedPermissions));
-
+                                                    if (!checkedPermissions.isEmpty()) {
+                                                        PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DENY, code, checkedPermissions));
+                                                    }else {
+                                                        x.getSource().sendFeedback("No changes will be made.");
+                                                    }
                                                     return 0;
                                                 })
                                 ))
@@ -345,14 +349,16 @@ public class ConsoleCommandHandler {
                                                                     checkedPermissions.add(permission);
                                                                 }
                                                             });
-                                                            permissions.clear();
-                                                            checkedPermissions.forEach(permission -> {
-                                                                if (!checkedPermissions.contains(permission))
-                                                                    checkedPermissions.add(permission);
-                                                            });
-                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.GRANT, code, permissions));
-
+                                                            if (!checkedPermissions.isEmpty()) {
+                                                                PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.GRANT, code, checkedPermissions));
+                                                            }else {
+                                                                x.getSource().sendFeedback("No changes will be made.");
+                                                            }
+                                                        } else {
+                                                            x.getSource().sendFeedback("Permission names contains invalid permission.");
                                                         }
+                                                    } else {
+                                                        x.getSource().sendFeedback("Permission names contains invalid permission.");
                                                     }
                                                     return 0;
                                                 })
@@ -381,7 +387,7 @@ public class ConsoleCommandHandler {
                                                         return;
                                                     }
                                                     for (String line : output.split("\n")) {
-                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId,line));
+                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
                                                     }
                                                 });
                                                 return 0;
@@ -393,7 +399,7 @@ public class ConsoleCommandHandler {
                                                     return 1;
                                                 }
                                                 for (String line : out.split("\n")) {
-                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName,line));
+                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName, line));
                                                 }
                                                 return 0;
                                             }
@@ -477,16 +483,7 @@ public class ConsoleCommandHandler {
 
 
     private static String makeChangesString(@NotNull PermissionChange permissionChange) {
-        var ref = new Object() {
-            @NotNull String affection = "";
-        };
-        permissionChange.getChanges().forEach(permission -> {
-            ref.affection += permission.name();
-            if (permissionChange.getChanges().lastIndexOf(permission) != permissionChange.getChanges().size() - 1) {
-                ref.affection += ", ";
-            }
-        });
-        return ref.affection;
+        return CollectionsKt.joinToString(permissionChange.getChanges(), ", ","","",2147483647, "", null);
     }
 
     public void setLogger(Logger logger) {

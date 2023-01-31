@@ -1,25 +1,28 @@
 package net.zhuruoling.omms.central.permission
 
 import com.google.gson.GsonBuilder
+import io.ktor.utils.io.*
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.FileReader
+import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import kotlin.random.Random
 
 object PermissionManager {
-    var permissionTable: HashMap<Int, List<Permission>> = java.util.HashMap()
+    var permissionTable: HashMap<Int, MutableList<Permission>> = hashMapOf()
     val logger: Logger = LoggerFactory.getLogger("Main")
     var tableHash: Int = 0;
     val changesTable: MutableList<PermissionChange> = mutableListOf()
 
-    data class Perm(
-        val permissions: List<PermComponents>
+    data class PermissionStorage(
+        val permissions: List<PermissionEntry>
     )
 
-    data class PermComponents(
+    data class PermissionEntry(
         val code: Int,
         val permission: Int
     )
@@ -39,17 +42,13 @@ object PermissionManager {
             Files.writeString(Path.of(Util.joinFilePaths("permissions.json")), "{\"permissions\":[]}")
             val code = Random(System.nanoTime()).nextInt(100000, 999999)
             logger.info("Created temporary permission code: $code,this code has got super cow power and it is available to use until the next time omms startup.")
-            permissionTable[code] = Permission.values().toList()
+            permissionTable[code] = Permission.values().toList().toMutableList()
             return
         }
-        val stringMutableList = Files.readAllLines(Path.of(Util.joinFilePaths("permissions.json")))
-        var jsonContent = ""
-        stringMutableList.forEach {
-            jsonContent += it
-        }
+        val reader = FileReader(Path.of(Util.joinFilePaths("permissions.json")).toFile())
         val gson = GsonBuilder().serializeNulls().create()
-        jsonContent = jsonContent.replace(" ", "")
-        val perm = gson.fromJson(jsonContent, Perm::class.javaObjectType)
+        val perm = gson.fromJson(reader, PermissionStorage::class.javaObjectType)
+        reader.close()
         val components = perm.permissions
         components.forEach {
             permissionTable[it.code] = readPermFromInt(it)
@@ -62,24 +61,8 @@ object PermissionManager {
     }
 
 
-    fun readPermFromInt(components: PermComponents): List<Permission> {
-        /*
-        def main():
-        code :int = int(input("code>"))
-        print(code)
-        print(code.bit_count())
-        table = []
-        for i in range(1,code.bit_count()+2,1):
-        m = 1 << i-1A
-        print(f"n={i},m={m}")
-        x = code & m
-        if x == 0:
-            table.append(0)
-        else:
-            table.append(1)
-        table.reverse()
-        print(table)
-         */
+    fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
+
         var code: Int = components.permission
         var list: ArrayList<Permission> = ArrayList()
         //HIGHEST perm : 131071
@@ -277,30 +260,61 @@ object PermissionManager {
         return code
     }
 
-    private fun makePermComponents(code: Int, permissions: List<Permission>): PermComponents {
-        return PermComponents(code, calcPermission(permissions))
+    private fun makePermissionEntry(code: Int, permissions: List<Permission>): PermissionEntry {
+        return PermissionEntry(code, calcPermission(permissions))
     }
 
     fun savePermissionFile() {
         logger.info("Saving modified buffer.")
-        val list: MutableList<PermComponents> = mutableListOf()
-        permissionTable.forEach {
-            list.apply {
-                list.add(makePermComponents(it.key, it.value))
+        synchronized(permissionTable){
+            val perm: PermissionStorage
+            synchronized(changesTable){
+                changesTable.forEach {
+                    applyChangeToMap(it)
+                }
+                val list: MutableList<PermissionEntry> = mutableListOf()
+                permissionTable.forEach {
+                    list.add(makePermissionEntry(it.key, it.value))
+                }
+                perm = PermissionStorage(list)
+                changesTable.clear()
+                logger.info("Permissions saved in memory:")
+                permissionTable.forEach {
+                    logger.info("${it.key} -> ${it.value}")
+                }
             }
+            Files.deleteIfExists(Path.of(Util.joinFilePaths("permission.json")))
+            Files.createFile(Path.of(Util.joinFilePaths("permission.json")))
+            val writer = FileWriter(Util.joinFilePaths("permission.json"))
+            writer.write(Util.toJson(perm))
+            writer.close()
+            reload()
         }
-        val perm: Perm = Perm(list)
-        changesTable.removeIf {
-            changesTable.contains(it)
+    }
+
+    private fun applyChangeToMap(change: PermissionChange){
+        if (change.code in permissionTable.keys){
+            logger.info("Applying change $change")
+            when(change.operation){
+                PermissionChange.Operation.GRANT -> permissionTable[change.code]!!.addAll(change.changes)
+                PermissionChange.Operation.DENY -> permissionTable[change.code]!!.removeIf { it in change.changes }
+                PermissionChange.Operation.DELETE -> permissionTable.remove(change.code)
+                PermissionChange.Operation.CREATE -> permissionTable[change.code] = mutableListOf(*change.changes.toTypedArray())
+                null -> permissionTable//do nothing
+            }
+        }else{
+            throw java.lang.IllegalArgumentException("Permission Code ${change.code} not exist.($change)")
         }
     }
 
 
     fun getPermission(code: Int): List<Permission>? {
-        if (permissionTable.contains(code)) {
-            return permissionTable[code]
+        synchronized(permissionTable){
+            if (permissionTable.contains(code)) {
+                return permissionTable[code]
+            }
+            return null
         }
-        return null
     }
 
 

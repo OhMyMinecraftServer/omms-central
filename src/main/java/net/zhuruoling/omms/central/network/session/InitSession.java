@@ -84,10 +84,12 @@ public class InitSession extends Thread {
                         var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)),permissions);
                         session.start();
                         break;
+                    }else {
+                        encryptedConnector.send(
+                                Response.serialize(new Response().withResponseCode(Result.PERMISSION_DENIED))
+                        );
                     }
-                    encryptedConnector.send(
-                            Response.serialize(new Response().withResponseCode(Result.FAIL))
-                    );
+
                     break;
                 }
                 line = encryptedConnector.readLine();
