@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin;
 
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public class EndRequestHandler extends BuiltinRequestHandler {
 
     @Override
-    public @Nullable Response handle(Request request, HandlerSession session) {
+    public @Nullable Response handle(Request request, SessionContext session) {
         return null;//do nothing
     }
 

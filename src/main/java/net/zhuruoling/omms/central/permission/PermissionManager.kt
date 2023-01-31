@@ -283,9 +283,9 @@ object PermissionManager {
                     logger.info("${it.key} -> ${it.value}")
                 }
             }
-            Files.deleteIfExists(Path.of(Util.joinFilePaths("permission.json")))
-            Files.createFile(Path.of(Util.joinFilePaths("permission.json")))
-            val writer = FileWriter(Util.joinFilePaths("permission.json"))
+            Files.deleteIfExists(Path.of(Util.joinFilePaths("permissions.json")))
+            Files.createFile(Path.of(Util.joinFilePaths("permissions.json")))
+            val writer = FileWriter(Util.joinFilePaths("permissions.json"))
             writer.write(Util.toJson(perm))
             writer.close()
             reload()

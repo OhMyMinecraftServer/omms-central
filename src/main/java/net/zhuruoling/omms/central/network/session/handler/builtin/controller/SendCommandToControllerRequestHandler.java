@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.ControllerManager;
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler {
     @Override
-    public Response handle(@NotNull Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, SessionContext session) {
         Response response = new Response();
         var name = request.getContent("controller");
         var command  = request.getContent("command");

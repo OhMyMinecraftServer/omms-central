@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.permission;
 
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DeletePermissionRequestHandler extends BuiltinRequestHandler {
     @Override
-    public Response handle(@NotNull Request request, HandlerSession session) {
+    public Response handle(@NotNull Request request, SessionContext session) {
         var response = new Response();
         try {
             PermissionManager.INSTANCE.submitPermissionChanges(

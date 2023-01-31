@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.network.session.server;
 
 import net.zhuruoling.omms.central.network.EncryptedSocket;
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.Session;
 import net.zhuruoling.omms.central.network.session.request.RequestBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.RequestManager;
@@ -52,6 +52,7 @@ public class SessionServer extends Thread {
         logger.info("%s started.".formatted(this.getName()));
         String line;
         try {
+            assert encryptedConnector != null;
             line = encryptedConnector.readLine();
             while (true){
                 try {
@@ -68,7 +69,7 @@ public class SessionServer extends Thread {
                     }
                     Response response;
                     try {
-                        response = handler.handle(request, new HandlerSession(encryptedConnector, session, this.permissions));
+                        response = handler.handle(request, new SessionContext(encryptedConnector, session, this.permissions));
                         if (response == null){
                             encryptedConnector.println(Response.serialize(new Response()));
                             logger.info("Disconnecting.");

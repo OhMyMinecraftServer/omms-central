@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.handler;
 
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.message.MessageBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
@@ -51,7 +51,7 @@ public class PluginRequestHandler extends RequestHandler {
     }
 
     @Override
-    public Response handle(@NotNull Request request, @NotNull HandlerSession session) {
+    public Response handle(@NotNull Request request, @NotNull SessionContext session) {
         if (!session.getPermissions().contains(Permission.EXECUTE_PLUGIN_REQUEST)) {
             try {
                 session.getEncryptedConnector().println(MessageBuilderKt.build(Result.PERMISSION_DENIED));

@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.network.session.handler;
 
 import net.zhuruoling.omms.central.network.session.request.Request;
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public abstract class RequestHandler {
     }
 
     private String register;
-    abstract public @Nullable Response handle(Request request, HandlerSession session);
+    abstract public @Nullable Response handle(Request request, SessionContext session);
 
     abstract public @Nullable Permission requiresPermission();
 

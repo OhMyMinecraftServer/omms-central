@@ -1,15 +1,15 @@
 package net.zhuruoling.omms.central.plugin;
 
 import net.zhuruoling.omms.central.main.RuntimeConstants;
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ServerInterface {
-    private final HandlerSession session;
+    private final SessionContext session;
     private final @NotNull PluginLogger logger;
     private final String pluginName;
-    public ServerInterface(HandlerSession handlerSession, String name) {
-        this.session = handlerSession;
+    public ServerInterface(SessionContext sessionContext, String name) {
+        this.session = sessionContext;
         this.pluginName = name;
         this.logger = new PluginLogger(this.pluginName);
 
@@ -36,7 +36,7 @@ public abstract class ServerInterface {
         return logger;
     }
 
-    public HandlerSession getSession() {
+    public SessionContext getSession() {
         return session;
     }
 

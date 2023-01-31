@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.plugin;
 
 import net.zhuruoling.omms.central.network.session.message.MessageBuilderKt;
-import net.zhuruoling.omms.central.network.session.HandlerSession;
+import net.zhuruoling.omms.central.network.session.SessionContext;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.BadPaddingException;
@@ -11,7 +11,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public class RequestServerInterface extends ServerInterface {
-    public RequestServerInterface(HandlerSession session, String name) {
+    public RequestServerInterface(SessionContext session, String name) {
         super(session, name);
     }
 

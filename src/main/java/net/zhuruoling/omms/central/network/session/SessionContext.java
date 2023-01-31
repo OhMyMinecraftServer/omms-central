@@ -5,13 +5,13 @@ import net.zhuruoling.omms.central.permission.Permission;
 
 import java.util.List;
 
-public class HandlerSession {
+public class SessionContext {
     EncryptedSocket encryptedConnector;
     Session session;
 
     List<Permission> permissions;
 
-    public HandlerSession(EncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
+    public SessionContext(EncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
         this.encryptedConnector = encryptedConnector;
         this.session = session;
         this.permissions = permissions;
