@@ -35,6 +35,10 @@ fun clearImage(bufferedImage: BufferedImage, color: Color = Color.WHITE) {
     }
 }
 
+fun main() {
+    info()
+}
+
 fun test(len: Int) {
     println("Creating image")
     val image = createImage(1080, 1720)

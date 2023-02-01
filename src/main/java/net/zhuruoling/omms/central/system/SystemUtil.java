@@ -79,7 +79,7 @@ public class SystemUtil {
         var memory = hardwareAbstractionLayer.getMemory();
         MemoryInfo memoryInfo = new MemoryInfo();
         memoryInfo.setMemoryTotal(memory.getTotal());
-        memoryInfo.setMemoryUsed(memory.getAvailable());
+        memoryInfo.setMemoryUsed(memory.getTotal() - memory.getAvailable());
         memoryInfo.setSwapTotal(memory.getVirtualMemory().getSwapTotal());
         memoryInfo.setSwapUsed(memory.getVirtualMemory().getSwapUsed());
         return memoryInfo;
