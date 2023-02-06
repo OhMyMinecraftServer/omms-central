@@ -15,7 +15,7 @@ object RequestManager {
     fun getAllRegisteredRequest() = requestTable
 
     fun registerRequest(requestName: String, handler: RequestHandler) {
-        println("Registering $requestName with ${handler.javaClass.name}")
+        logger.debug("Registering $requestName with ${handler.javaClass.name}")
         if (requestTable.containsKey(requestName)) {
             throw RequestAlreadyExistsException("Command $requestName already registered by ${requestTable[requestName]?.register}")
         }
@@ -29,7 +29,7 @@ object RequestManager {
     }
 
     fun unregisterRequest(requestName: String) {
-        logger.info("Unregistering command $requestName")
+        logger.debug("Unregistering command $requestName")
         if (requestTable.containsKey(requestName)) {
             requestTable.remove(requestName)
             return
@@ -38,7 +38,7 @@ object RequestManager {
     }
 
     fun registerPluginRequest(request: String, pluginId: String, handler: RequestHandler, override: Boolean = false) {
-        println("[$pluginId] Registering $request with ${handler.javaClass.name}")
+        logger.debug("[$pluginId] Registering $request with ${handler.javaClass.name}")
         if (!override && requestTable.containsKey(request)) {
             throw RequestAlreadyExistsException("Command $request already registered by ${requestTable[request]?.register}")
         }

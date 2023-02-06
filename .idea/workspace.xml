@@ -4,9 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.8.2&#10;我是SB">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.8.2&#10;我是SB +1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/crashreport/CrashReportManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/routes/CrashReportQueryRoute.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/logging/LogbackCustomColor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/graphics/GraphicsUtil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/graphics/GraphicsUtil.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/MyPlugin.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/MyPlugin.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/Status.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Bar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Bar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Foo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Foo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/EncryptedSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/EncryptedSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/Util.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/plugins/Routing.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/plugins/Routing.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/InitSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/InitSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/request/RequestManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/request/RequestManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -27,11 +45,11 @@
         <option value="Interface" />
         <option value="Enum" />
         <option value="AnnotationType" />
-        <option value="Class" />
-        <option value="Kotlin File" />
         <option value="module-info" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
         <option value="Kotlin Object" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -86,8 +104,8 @@
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "dart.analysis.tool.window.visible": "false",
     "extract.method.default.visibility": "private",
-    "ktor.last.update.timestamp": "1675227076952",
-    "last_opened_file_path": "C:/Users/jkl-9/IdeaProjects/omms-controller-fabric",
+    "ktor.last.update.timestamp": "1675595931900",
+    "last_opened_file_path": "C:/Users/jkl-9/IdeaProjects/monitorr-fabric",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -97,7 +115,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
   },
@@ -109,6 +127,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="net.zhuruoling.omms.central.plugin" />
       <recent name="net.zhuruoling.controller" />
       <recent name="net.zhuruoling.socket" />
     </key>
@@ -148,7 +167,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Kotlin.GraphicsUtilKt">
+  <component name="RunManager" selected="Kotlin.FooKt">
     <configuration name="Bar wdnmd" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central" />
@@ -343,14 +362,14 @@
       <item itemvalue="Application.test" />
       <item itemvalue="Application.Demo" />
       <item itemvalue="HTTP Request.generated-requests | #14" />
-      <item itemvalue="Kotlin.GraphicsUtilKt" />
-      <item itemvalue="Kotlin.FooKt" />
       <item itemvalue="Kotlin.AwaKt" />
+      <item itemvalue="Kotlin.FooKt" />
+      <item itemvalue="Kotlin.GraphicsUtilKt" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.GraphicsUtilKt" />
         <item itemvalue="Kotlin.FooKt" />
+        <item itemvalue="Kotlin.GraphicsUtilKt" />
         <item itemvalue="Application.Demo" />
         <item itemvalue="Kotlin.AwaKt" />
         <item itemvalue="HTTP Request.generated-requests | #14" />
@@ -642,14 +661,27 @@
       <workItem from="1675056856323" duration="2023000" />
       <workItem from="1675087491772" duration="1230000" />
       <workItem from="1675135097969" duration="9881000" />
-      <workItem from="1675160656189" duration="6919000" />
-    </task>
-    <task id="LOCAL-00041" summary="ShutdownHook!!!">
-      <created>1663053661960</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1663053661960</updated>
+      <workItem from="1675160656189" duration="9261000" />
+      <workItem from="1675249278780" duration="33000" />
+      <workItem from="1675249914593" duration="17000" />
+      <workItem from="1675257397771" duration="260000" />
+      <workItem from="1675257665962" duration="1000" />
+      <workItem from="1675257676366" duration="39000" />
+      <workItem from="1675262446394" duration="384000" />
+      <workItem from="1675314857434" duration="1801000" />
+      <workItem from="1675327679118" duration="3882000" />
+      <workItem from="1675346500999" duration="1256000" />
+      <workItem from="1675400728401" duration="833000" />
+      <workItem from="1675421770932" duration="3331000" />
+      <workItem from="1675484210539" duration="1041000" />
+      <workItem from="1675485261103" duration="977000" />
+      <workItem from="1675499176724" duration="6954000" />
+      <workItem from="1675512950709" duration="4000000" />
+      <workItem from="1675595886863" duration="1153000" />
+      <workItem from="1675604830671" duration="845000" />
+      <workItem from="1675607360500" duration="68000" />
+      <workItem from="1675607479149" duration="3725000" />
+      <workItem from="1675664753950" duration="3870000" />
     </task>
     <task id="LOCAL-00042" summary="awa">
       <created>1663249217527</created>
@@ -987,7 +1019,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675177028138</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="0.8.2&#10;我是SB +1">
+      <created>1675228989868</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1675228989868</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1051,7 +1090,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.7.0 Announcement and bug making" />
     <MESSAGE value="0.7.1 Ping controller status" />
     <MESSAGE value="0.7.1 status queryable switch" />
     <MESSAGE value="0.7.1 version update" />
@@ -1076,7 +1114,8 @@
     <MESSAGE value="0.8.1&#10;code refactor" />
     <MESSAGE value="0.8.2&#10;attempt to make changes to PermissionManager" />
     <MESSAGE value="0.8.2&#10;我是SB" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.8.2&#10;我是SB" />
+    <MESSAGE value="0.8.2&#10;我是SB +1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.8.2&#10;我是SB +1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1090,11 +1129,23 @@
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
+        <breakpoint type="java-exception">
+          <properties class="java.lang.SecurityException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception" />
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/omms_central$Bar_wdnmd.ic" NAME="Bar wdnmd Coverage Results" MODIFIED="1675330269335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>net.zhuruoling.omms.central.foo.*</FILTER>
+    </SUITE>
   </component>
 </project>

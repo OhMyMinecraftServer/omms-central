@@ -79,4 +79,17 @@ public class Status {
         this.maxPlayerCount = maxPlayerCount;
         this.players = players;
     }
+
+    @Override
+    public String toString() {
+        return "Status{" +
+                "isAlive=" + isAlive +
+                ", isQueryable=" + isQueryable +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", playerCount=" + playerCount +
+                ", maxPlayerCount=" + maxPlayerCount +
+                ", players=" + players +
+                '}';
+    }
 }

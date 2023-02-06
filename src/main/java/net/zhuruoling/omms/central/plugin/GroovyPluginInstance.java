@@ -6,6 +6,8 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -22,6 +24,8 @@ public class GroovyPluginInstance {
     private @Nullable PluginMain instance = null;
     private PluginStatus pluginStatus = PluginStatus.NONE;
     private @Nullable PluginMetadata metadata = null;
+
+    private final Logger logger = LoggerFactory.getLogger("PluginLoader");
 
     public GroovyPluginInstance(String pluginFilePath) {
         this.pluginFilePath = pluginFilePath;
@@ -54,18 +58,21 @@ public class GroovyPluginInstance {
             Class<?> clazz = groovyClassLoader.parseClass(new File(pluginFilePath));
             instance = (PluginMain) clazz.getDeclaredConstructor().newInstance();
             this.metadata = instance.getPluginMetadata();
+            if (this.metadata == null){
+                throw new PluginException("Plugin %s does not provide a plugin metadata.");
+            }
             var map = new HashMap<String, Method>();
             for (Method declaredMethod : clazz.getDeclaredMethods()) {
                 declaredMethod.setAccessible(true);
                 for (Annotation declaredAnnotation : declaredMethod.getDeclaredAnnotations()) {
                     if (declaredAnnotation.annotationType() == Api.class) {
                         String name = declaredMethod.getName();
-                        System.out.printf("Plugin %s got Api Method %s%n", metadata.id, name);
+                        logger.debug("Plugin %s got Api Method %s%n".formatted(metadata.id, name));
                         map.put(name, declaredMethod);
                     }
                 }
             }
-            RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().put(getMetadata().id, map);
+            RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().put(metadata.id, map);
         } catch (MultipleCompilationErrorsException e) {
             throw e;
         } catch (Exception e) {

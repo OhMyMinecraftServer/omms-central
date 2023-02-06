@@ -19,6 +19,7 @@ fun Application.configureRouting() {
         announcementQueryRouting()
         controllerPairQueryRoute()
         controllerQueryRouting()
+        crashReportQueryRoute()
         authenticate("omms-auth") {
             commandUpstreamRouting()
             controllerStatusQueryRouting()

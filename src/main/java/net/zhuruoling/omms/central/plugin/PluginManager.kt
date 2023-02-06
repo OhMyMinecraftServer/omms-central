@@ -38,7 +38,8 @@ object PluginManager {
                 val pluginInstance = GroovyPluginInstance(it)
                 pluginInstance.initPlugin()
                 val metadata = pluginInstance.metadata
-                logger.info("Metadata of plugin $it is $metadata")
+                logger.debug("Metadata of plugin $it is $metadata")
+                logger.info("Initiating plugin $it")
                 if (pluginTable.contains(metadata.id)) {
                     val pluginId = metadata.id
                     logger.error("Plugin $it got a conflicted plugin id with plugin ${pluginTable[pluginId]?.pluginFilePath}")

@@ -55,7 +55,7 @@ public class EncryptedSocket {
 
     public void send(@NotNull String content) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var data = encryptECB(content.getBytes(StandardCharsets.UTF_8),this.key);
-        logger.info("Sending:" + content);
+        logger.debug("Sending:" + content);
         out.println(new String(data,StandardCharsets.UTF_8));
         out.flush();
     }

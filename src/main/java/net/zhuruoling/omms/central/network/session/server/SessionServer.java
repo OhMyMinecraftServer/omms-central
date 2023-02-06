@@ -59,7 +59,7 @@ public class SessionServer extends Thread {
                     if (session.getSocket().isClosed())
                         break;
                     var request = RequestBuilderKt.buildFromJson(line);
-                    logger.info("Received " + request);
+                    logger.debug("Received " + request);
                     var handler = Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(request).getRequest()));
                     var permission = handler.requiresPermission();
                     if (permission != null && !permissions.contains(permission)) {
@@ -72,7 +72,7 @@ public class SessionServer extends Thread {
                         response = handler.handle(request, new SessionContext(encryptedConnector, session, this.permissions));
                         if (response == null){
                             encryptedConnector.println(Response.serialize(new Response()));
-                            logger.info("Disconnecting.");
+                            //logger.info("Disconnecting.");
                             session.getSocket().close();
                             break;
                         }
@@ -91,7 +91,6 @@ public class SessionServer extends Thread {
                     break;
                 }
                 catch (Exception e) {
-
                     e.printStackTrace();
                     break;
                 }

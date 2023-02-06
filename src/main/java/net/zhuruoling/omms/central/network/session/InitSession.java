@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public class InitSession extends Thread {
     private final @NotNull EncryptedSocket encryptedConnector;
-    private final Logger logger = LoggerFactory.getLogger("client-handler");
+    private final Logger logger = LoggerFactory.getLogger("InitSession");
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final @NotNull Socket socket;
     public InitSession(@NotNull Socket socket) throws IOException {
