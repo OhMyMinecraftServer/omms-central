@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.foo
 
+import net.zhuruoling.omms.central.database.DatabaseConnection
 import net.zhuruoling.omms.central.util.Util
 import org.apache.commons.io.FileSystem
 import org.slf4j.LoggerFactory
@@ -26,11 +27,17 @@ object Foo {
 
 
 fun main(args: Array<String>) {
-    //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
     val logger = LoggerFactory.getLogger("TestMain")
-    logger.debug("hello")
-    logger.info("yee")
-    logger.warn("wtf")
-    logger.error("wdnmd")
-
+    DatabaseConnection.init()
+    DatabaseConnection.createPlayer("wdnmd", mutableListOf("out", "in"), mutableListOf("survival", "creative"))
+    DatabaseConnection.createPlayer(
+        Util.randomStringGen(8),
+        mutableListOf("out", "in"),
+        mutableListOf("survival", "creative")
+    )
+    DatabaseConnection.getAllPlayer().forEach {
+        logger.info(it.toString())
+    }
+    DatabaseConnection.deletePlayer("wdnmd")
+    DatabaseConnection.close()
 }
