@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.0&#10;Rate limited connector">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.0&#10;RATE LIMIT IS GOOD">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/configuration/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/configuration/Configuration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleCommandHandler.java" afterDir="false" />
@@ -691,14 +691,7 @@
       <workItem from="1675750630067" duration="1044000" />
       <workItem from="1675762912289" duration="71000" />
       <workItem from="1675764965597" duration="8121000" />
-      <workItem from="1675861237176" duration="8527000" />
-    </task>
-    <task id="LOCAL-00045" summary="RequestHandlerImpl update">
-      <created>1663544152676</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1663544152676</updated>
+      <workItem from="1675861237176" duration="8828000" />
     </task>
     <task id="LOCAL-00046" summary="awa">
       <created>1663630747739</created>
@@ -1036,7 +1029,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675864896999</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="0.9.0&#10;RATE LIMIT IS GOOD">
+      <created>1675873246313</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1675873246313</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1100,7 +1100,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.7.1 cast queryable to http api" />
     <MESSAGE value="0.7.1 BUG EXISTS" />
     <MESSAGE value="0.7.1 fixes reply messages bug" />
     <MESSAGE value="0.7.2b skeleton of ManagementQueryRoutes" />
@@ -1125,7 +1124,8 @@
     <MESSAGE value="0.8.2&#10;RAINBOW" />
     <MESSAGE value="0.9.0a&#10;DatabaseConnection" />
     <MESSAGE value="0.9.0&#10;Rate limited connector" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.9.0&#10;Rate limited connector" />
+    <MESSAGE value="0.9.0&#10;RATE LIMIT IS GOOD" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.9.0&#10;RATE LIMIT IS GOOD" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
