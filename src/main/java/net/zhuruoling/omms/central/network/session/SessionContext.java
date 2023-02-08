@@ -1,27 +1,26 @@
 package net.zhuruoling.omms.central.network.session;
 
-import net.zhuruoling.omms.central.network.EncryptedSocket;
 import net.zhuruoling.omms.central.permission.Permission;
 
 import java.util.List;
 
 public class SessionContext {
-    EncryptedSocket encryptedConnector;
+    RateLimitEncryptedSocket encryptedConnector;
     Session session;
 
     List<Permission> permissions;
 
-    public SessionContext(EncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
+    public SessionContext(RateLimitEncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
         this.encryptedConnector = encryptedConnector;
         this.session = session;
         this.permissions = permissions;
     }
 
-    public EncryptedSocket getEncryptedConnector() {
+    public RateLimitEncryptedSocket getEncryptedConnector() {
         return encryptedConnector;
     }
 
-    public void setEncryptedConnector(EncryptedSocket encryptedConnector) {
+    public void setEncryptedConnector(RateLimitEncryptedSocket encryptedConnector) {
         this.encryptedConnector = encryptedConnector;
     }
 

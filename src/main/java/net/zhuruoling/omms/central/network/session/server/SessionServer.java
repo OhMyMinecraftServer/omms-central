@@ -1,6 +1,9 @@
 package net.zhuruoling.omms.central.network.session.server;
 
+import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.EncryptedSocket;
+import net.zhuruoling.omms.central.network.session.RateExceedException;
+import net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.Session;
 import net.zhuruoling.omms.central.network.session.request.RequestBuilderKt;
@@ -8,7 +11,6 @@ import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,7 @@ import java.util.Objects;
 
 public class SessionServer extends Thread {
     private final Session session;
-    private @Nullable EncryptedSocket encryptedConnector = null;
+    private net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket rateLimitEncryptedSocket;
     final Logger logger = LoggerFactory.getLogger("SessionServer");
     List<Permission> permissions;
     public SessionServer(Session session, List<Permission> permissions){
@@ -27,7 +29,7 @@ public class SessionServer extends Thread {
         var socket = this.session.getSocket();
         this.setName(String.format("SessionServer#%s:%d",socket.getInetAddress().getHostAddress(), socket.getPort()));
         try {
-            this.encryptedConnector = new EncryptedSocket(
+             var encryptedConnector = new EncryptedSocket(
                     new BufferedReader(
                             new InputStreamReader(this.session.getSocket().getInputStream())
                     ),
@@ -38,6 +40,7 @@ public class SessionServer extends Thread {
                             this.session.getKey()
                     )
             );
+            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, RuntimeConstants.INSTANCE.getConfig().getPacketLimit());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,29 +53,25 @@ public class SessionServer extends Thread {
     @Override
     public void run() {
         logger.info("%s started.".formatted(this.getName()));
-        String line;
         try {
-            assert encryptedConnector != null;
-            line = encryptedConnector.readLine();
             while (true){
                 try {
                     if (session.getSocket().isClosed())
                         break;
-                    var request = RequestBuilderKt.buildFromJson(line);
+                    var request = rateLimitEncryptedSocket.receiveRequest();
                     logger.debug("Received " + request);
                     var handler = Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(request).getRequest()));
                     var permission = handler.requiresPermission();
                     if (permission != null && !permissions.contains(permission)) {
-                        String response = Response.serialize(new Response().withResponseCode(Result.PERMISSION_DENIED));
-                        encryptedConnector.println(response);
+                        rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.PERMISSION_DENIED));
                         continue;
                     }
                     Response response;
                     try {
-                        response = handler.handle(request, new SessionContext(encryptedConnector, session, this.permissions));
+                        response = handler.handle(request, new SessionContext(rateLimitEncryptedSocket, session, this.permissions));
                         if (response == null){
-                            encryptedConnector.println(Response.serialize(new Response()));
-                            //logger.info("Disconnecting.");
+                            logger.info("Session terminated.");
+                            rateLimitEncryptedSocket.sendResponse(new Response());
                             session.getSocket().close();
                             break;
                         }
@@ -81,14 +80,16 @@ public class SessionServer extends Thread {
                         response = new Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString());
                     }
 
-                    var content = Response.serialize(response);
-                    encryptedConnector.println(content);
-                    if (session.getSocket().isClosed())
+                    if (session.getSocket().isClosed()){
                         break;
-                    line = encryptedConnector.readLine();
+                    }
+                    rateLimitEncryptedSocket.sendResponse(response);
                 }
                 catch (NullPointerException e){
                     break;
+                }
+                catch (RateExceedException e){
+                    rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED));
                 }
                 catch (Exception e) {
                     e.printStackTrace();

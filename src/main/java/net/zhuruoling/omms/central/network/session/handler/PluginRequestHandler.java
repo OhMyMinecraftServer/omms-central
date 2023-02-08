@@ -52,13 +52,6 @@ public class PluginRequestHandler extends RequestHandler {
 
     @Override
     public Response handle(@NotNull Request request, @NotNull SessionContext session) {
-        if (!session.getPermissions().contains(Permission.EXECUTE_PLUGIN_REQUEST)) {
-            try {
-                session.getEncryptedConnector().println(MessageBuilderKt.build(Result.PERMISSION_DENIED));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
         if (!Objects.equals(request.getRequest(), code)) {
             throw new UnsupportedOperationException("The operation code defined in this class does not align with requested operation code.");
         }

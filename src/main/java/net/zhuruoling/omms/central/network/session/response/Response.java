@@ -30,8 +30,7 @@ public class Response {
     }
 
     public @NotNull Result getResponseCode() {
-        Result var10000 = this.responseCode;
-        return var10000;
+        return this.responseCode;
     }
 
     public void setResponseCode(@NotNull Result responseCode) {

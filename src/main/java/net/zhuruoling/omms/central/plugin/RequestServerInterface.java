@@ -14,10 +14,5 @@ public class RequestServerInterface extends ServerInterface {
     public RequestServerInterface(SessionContext session, String name) {
         super(session, name);
     }
-
-    public void sendBack(@NotNull String code, String @NotNull [] load) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        var message = MessageBuilderKt.build(code,load);
-        this.getSession().getEncryptedConnector().println(message);
-    }
 }
 

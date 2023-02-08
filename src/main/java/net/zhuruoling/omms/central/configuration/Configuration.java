@@ -3,21 +3,24 @@ package net.zhuruoling.omms.central.configuration;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class Configuration {
     public Configuration(int port,String serverName, int httpPort){
         this.port = port;
         this.serverName = serverName;
         this.httpPort = httpPort;
+        packetLimit = 1000;
     }
-    public Configuration(int port,String serverName){
-        this.port = port;
-        this.serverName = serverName;
-    }
+
     @SerializedName("port")
     int port;
 
     @SerializedName("http_port")
     int httpPort;
+
+    @SerializedName("packet_limit")
+    int packetLimit;
 
     @SerializedName("server_name")
     String serverName;
@@ -29,16 +32,9 @@ public class Configuration {
         return authorisedController;
     }
 
-    public void setAuthorisedController(String[] authorisedController) {
-        this.authorisedController = authorisedController;
-    }
 
     public int getHttpPort() {
         return httpPort;
-    }
-
-    public void setHttpPort(int httpPort) {
-        this.httpPort = httpPort;
     }
 
     public int getPort() {
@@ -49,21 +45,18 @@ public class Configuration {
         return serverName;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
+    public int getPacketLimit() {
+        return packetLimit;
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return "Configuration{" +
                 "port=" + port +
                 ", httpPort=" + httpPort +
+                ", packetLimit=" + packetLimit +
                 ", serverName='" + serverName + '\'' +
-                ", authorisedController=" + authorisedController +
+                ", authorisedController=" + Arrays.toString(authorisedController) +
                 '}';
     }
 }

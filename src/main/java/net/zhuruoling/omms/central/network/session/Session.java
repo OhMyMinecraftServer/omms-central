@@ -14,10 +14,6 @@ public class Session {
         return socket;
     }
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
     public byte[] getKey() {
         return key;
     }
