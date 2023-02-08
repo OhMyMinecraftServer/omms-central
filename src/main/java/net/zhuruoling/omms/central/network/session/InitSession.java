@@ -51,10 +51,9 @@ public class InitSession extends Thread {
     public void run() {
         try {
             String line = encryptedConnector.readLine();
-            logger.debug("recv:" + line);
             while (true){
                 var request = gson.fromJson(line, InitRequest.class);
-                logger.info("Got request:" + request);
+                logger.debug("Got request:" + request);
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
                     //lets match versions.
                     if (request.getVersion() != Util.PROTOCOL_VERSION){
@@ -65,11 +64,10 @@ public class InitSession extends Thread {
                     }
                     String stringToken = request.getContent("token");
                     var authKey = new String(Base64.getDecoder().decode(Base64.getDecoder().decode(stringToken)));
-                    //202205290840#114514
                     var date = Long.parseLong(Util.getTimeCode());
                     var key = Long.parseLong(authKey);
                     long permCode = key ^ date;
-                    logger.debug("Got permission code %d".formatted(permCode));
+                    logger.info("Got permission code %d".formatted(permCode));
                     boolean isCodeExist = !(PermissionManager.INSTANCE.getPermission(
                             (int) permCode
                     ) == null);
@@ -79,8 +77,8 @@ public class InitSession extends Thread {
                         encryptedConnector.send(
                                 Response.serialize(new Response().withResponseCode(Result.OK).withContentPair("key",randomKey))
                         );
-                        logger.info(String.format("Starting Session for #%s:%d", socket.getInetAddress(), socket.getPort()));
-                        logger.info(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
+                        logger.info(String.format("Starting SessionServer for #%s:%d", socket.getInetAddress(), socket.getPort()));
+                        logger.debug(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));
                         var session = new SessionServer(new Session(socket, randomKey.getBytes(StandardCharsets.UTF_8)),permissions);
                         session.start();
                         break;

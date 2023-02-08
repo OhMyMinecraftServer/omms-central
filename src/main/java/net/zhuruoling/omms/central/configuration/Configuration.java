@@ -1,7 +1,6 @@
 package net.zhuruoling.omms.central.configuration;
 
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -10,7 +9,7 @@ public class Configuration {
         this.port = port;
         this.serverName = serverName;
         this.httpPort = httpPort;
-        packetLimit = 1000;
+        rateLimit = 1000;
     }
 
     @SerializedName("port")
@@ -19,8 +18,8 @@ public class Configuration {
     @SerializedName("http_port")
     int httpPort;
 
-    @SerializedName("packet_limit")
-    int packetLimit;
+    @SerializedName("rate_limit")
+    int rateLimit;
 
     @SerializedName("server_name")
     String serverName;
@@ -45,8 +44,8 @@ public class Configuration {
         return serverName;
     }
 
-    public int getPacketLimit() {
-        return packetLimit;
+    public int getRateLimit() {
+        return rateLimit;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class Configuration {
         return "Configuration{" +
                 "port=" + port +
                 ", httpPort=" + httpPort +
-                ", packetLimit=" + packetLimit +
+                ", packetLimit=" + rateLimit +
                 ", serverName='" + serverName + '\'' +
                 ", authorisedController=" + Arrays.toString(authorisedController) +
                 '}';

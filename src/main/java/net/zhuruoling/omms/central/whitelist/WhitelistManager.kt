@@ -81,6 +81,8 @@ object WhitelistManager {
         return list
     }
 
+    fun getAllWhitelist() = whitelistTable
+
     fun getWhitelist(whitelistName: String): Whitelist? {
         return whitelistTable[whitelistName]
     }

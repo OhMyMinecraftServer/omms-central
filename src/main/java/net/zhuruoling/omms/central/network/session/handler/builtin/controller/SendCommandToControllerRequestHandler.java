@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.ControllerManager;
+import net.zhuruoling.omms.central.network.http.UtilKt;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
@@ -20,8 +21,8 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
         if (controller == null){
             return response.withResponseCode(Result.CONTROLLER_NOT_EXIST);
         }
-        var result = ControllerManager.INSTANCE.sendCommand(controller,command);
-        response.withResponseCode(Result.OK).withContentPair("output", result == null ? "" : result);
+        var result = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(),command);
+        response.withResponseCode(Result.OK).withContentPair("output", UtilKt.joinToString(result));
         return response;
     }
 

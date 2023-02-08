@@ -6,7 +6,6 @@ import net.zhuruoling.omms.central.network.session.RateExceedException;
 import net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.Session;
-import net.zhuruoling.omms.central.network.session.request.RequestBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
@@ -15,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.SocketException;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +40,7 @@ public class SessionServer extends Thread {
                             this.session.getKey()
                     )
             );
-            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, RuntimeConstants.INSTANCE.getConfig().getPacketLimit());
+            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, RuntimeConstants.INSTANCE.getConfig().getRateLimit());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,8 +88,14 @@ public class SessionServer extends Thread {
                 catch (NullPointerException e){
                     break;
                 }
+                catch (SocketException e){
+                    logger.warn(e.toString());
+                    break;
+                }
                 catch (RateExceedException e){
                     rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED));
+                    logger.warn("Rate limit exceeded.");
+                    break;
                 }
                 catch (Exception e) {
                     e.printStackTrace();

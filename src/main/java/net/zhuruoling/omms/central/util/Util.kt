@@ -2,6 +2,8 @@ package net.zhuruoling.omms.central.util
 
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.whitelist.Whitelist
+import org.slf4j.LoggerFactory
+import java.lang.management.ManagementFactory
 
 fun whitelistPrettyPrinting(whitelist: Whitelist): String{
     return """
@@ -27,4 +29,19 @@ fun toTypedArray(list: MutableList<Int>): Array<Int>{
 
 fun <T> mutableListOf(vararg elements:T): MutableList<T>{
     return kotlin.collections.mutableListOf(*elements)
+}
+
+fun bar() {
+    val logger = LoggerFactory.getLogger("YEE")
+    val os = ManagementFactory.getOperatingSystemMXBean()
+    val runtime = ManagementFactory.getRuntimeMXBean()
+    logger.info(
+        String.format(
+            "${Util.PRODUCT_NAME} is running on %s %s %s at pid %d",
+            os.name,
+            os.arch,
+            os.version,
+            runtime.pid
+        )
+    )
 }

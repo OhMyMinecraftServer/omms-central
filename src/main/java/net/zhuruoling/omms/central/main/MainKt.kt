@@ -6,7 +6,6 @@ import net.zhuruoling.omms.central.configuration.ConfigReader
 import net.zhuruoling.omms.central.configuration.Configuration
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
-import net.zhuruoling.omms.central.foo.Foo.bar
 import net.zhuruoling.omms.central.main.RuntimeConstants.experimental
 import net.zhuruoling.omms.central.main.RuntimeConstants.httpServer
 import net.zhuruoling.omms.central.main.RuntimeConstants.lock
@@ -27,9 +26,8 @@ import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.permissionTable
 import net.zhuruoling.omms.central.plugin.PluginManager
-import net.zhuruoling.omms.central.plugin.PluginManager.loadAll
-import net.zhuruoling.omms.central.plugin.PluginManager.unloadAll
 import net.zhuruoling.omms.central.util.Util
+import net.zhuruoling.omms.central.util.bar
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,7 +53,6 @@ object MainKt {
         val timeStart = System.currentTimeMillis()
         RuntimeConstants.launchTime = timeStart
         bar()
-
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             if (argList.contains("--generateExample")) {
@@ -76,7 +73,7 @@ object MainKt {
             logger.info(Util.joinFilePaths("a", "b"))
             PermissionManager.init()
             PluginManager.init()
-            loadAll()
+            PluginManager.loadAll()
             logger.info(permissionTable.toString())
             ControllerManager.init()
             logger.info(getPermission(100860)?.let { calcPermission(it).toString() })
@@ -118,11 +115,12 @@ object MainKt {
             exitProcess(1)
         }
         RuntimeConstants.config = config
-        println("Config:")
-        println("\tServerName: ${config?.serverName}")
-        println("\tSocketPort: ${config?.port}")
-        println("\tHttpPort: ${config?.httpPort}")
-        println("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
+        logger.info("Config:")
+        logger.info("\tServerName: ${config?.serverName}")
+        logger.info("\tSocketPort: ${config?.port}")
+        logger.info("\tHttpPort: ${config?.httpPort}")
+        logger.info("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
+        logger.info("\tRequestRateLimit: ${config?.rateLimit}")
 
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
@@ -154,7 +152,7 @@ object MainKt {
             AnnouncementManager.init()
             WhitelistManager.init()
             registerBuiltinRequestHandlers()
-            loadAll()
+            PluginManager.loadAll()
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -173,11 +171,10 @@ object MainKt {
         RuntimeConstants.receiver = receiver
         RuntimeConstants.httpServer = httpServer
         udpBroadcastSender = sender
-        udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CONTROL)
         udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
-        logger.info("Done(${timeUsed}s)! For help, type \"help\" or \"?\"")
+        logger.info("Done(${timeUsed}s)! For help, type \"help\".")
         udpBroadcastSender = sender
         initialized = true
         while (true) {
@@ -192,7 +189,7 @@ object MainKt {
         try {
             logger.info("Stopping!")
             normalShutdown = true
-            unloadAll()
+            PluginManager.unloadAll()
             Objects.requireNonNull(httpServer)?.interrupt()
             Objects.requireNonNull(receiver)?.interrupt()
             Objects.requireNonNull(udpBroadcastSender)?.isStopped = true

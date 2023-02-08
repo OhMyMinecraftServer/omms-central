@@ -2,7 +2,6 @@ package net.zhuruoling.omms.central.network.session.response;
 
 public enum Result {
     FAIL,
-
     OK,
     PERMISSION_DENIED,
     OPERATION_ALREADY_EXISTS,

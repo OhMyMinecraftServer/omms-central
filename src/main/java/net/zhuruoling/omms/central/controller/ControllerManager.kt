@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.controller
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.main.RuntimeConstants
+import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
@@ -18,10 +19,9 @@ data class CommandOutputData(val controllerId: String, val command: String, val 
 
 object ControllerManager {
     val controllers = mutableMapOf<String, ControllerInstance>()
+    private val controllerConnector = mutableMapOf<String, ControllerHttpClient>()
     val logger: Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().serializeNulls().create()
-    private val statusCache = mutableMapOf<String, Status>()
-    private val commandOutputCache = mutableMapOf<String, MutableMap<String, String>>()
 
     fun init() {
         controllers.clear()
@@ -41,7 +41,7 @@ object ControllerManager {
                     try {
                         controllers[controller.name] =
                             ControllerInstance(controller, ControllerUtils.resloveTypeFromString(controller.type))
-                        commandOutputCache[controller.name] = mutableMapOf()
+                        controllerConnector[controller.name] = ControllerHttpClient(controller)
                     } catch (e: IllegalArgumentException) {
                         logger.error(
                             "Cannot resolve controller type symbol: %s".format(controller.type),
@@ -59,44 +59,13 @@ object ControllerManager {
         }
     }
 
-    fun sendCommand(controllerName: String, command: String) {
-        getControllerByName(controllerName)?.let { this.sendCommand(it, command) }
-    }
-
-    fun sendCommand(instance: ControllerInstance, command: String): String? {
-        val instruction = Instruction(instance.controllerType, instance.controller.name, command)
-        instruction.setType(InstructionType.RUN_COMMAND)
-        logger.info("Sending command $command to controller ${instance.controller.name}")
-        val json = Instruction.asJsonString(instruction)
-        RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, json)
-        commandOutputCache[instance.controller.name] = mutableMapOf()
-        var countdown = 500
-        while (countdown >= 0) {
-            if (commandOutputCache[instance.controller.name]!!.containsKey(command))
-                break
-            Thread.sleep(10)
-            countdown--
-        }
-        return commandOutputCache[instance.controller.name]!![command]
-    }
-
-    private fun sendCommand(command: Instruction) {
-        RuntimeConstants.udpBroadcastSender?.addToQueue(Util.TARGET_CONTROL, Instruction.asJsonString(command))
-    }
-
-    fun putStatusCache(status: Status) {
-
-        this.statusCache[status.name] = status
-
-    }
-
-    private fun clearStatusCache() {
-        synchronized(statusCache) {
-            statusCache.clear()
+    fun sendCommand(controllerName: String, command: String): List<String> {
+        if (controllers.containsKey(controllerName)) {
+            return controllerConnector[controllerName]!!.sendCommand(command)
+        } else {
+            throw ControllerNotExistException(controllerName)
         }
     }
-
-    fun getStatusCache() = statusCache
 
 
     //controller execute survival give @a dirt
@@ -111,62 +80,38 @@ object ControllerManager {
     @NotNull
     fun getControllerStatus(controllerList: MutableList<String>): MutableMap<String, Status> {
         val map = mutableMapOf<String, Status>()
-        println("Fetching controller statuses.")
-        val target = Util.generateRandomTarget()
-        clearStatusCache()
         controllerList.forEach {
             if (!controllers.containsKey(it)) {
                 throw java.lang.IllegalArgumentException("Controller not exist")
-            }
-        }
-        var allNotQueryable = true
-        controllerList.forEach {
-            val c = controllers[it]!!
-            if (c.controller.isStatusQueryable) {
-                allNotQueryable = false
-                this.sendCommand(
-                    Instruction(
-                        c.controllerType,
-                        c.controller.name,
-                        Util.toJson(target),
-                        InstructionType.UPLOAD_STATUS
-                    )
-                )
-            }
-        }
-        var countdown = 500
-        while (true) {
-            if (allNotQueryable) break
-            Thread.sleep(10)
-            countdown--
-            var allContains = true
-            controllerList.forEach {
-                if (!statusCache.containsKey(it)) {
-                    allContains = false
+            } else {
+                map[it] = Status()
+                map[it]!!.run {
+                    name = it
+                    type = getControllerByName(it)!!.controllerType
+                    isQueryable = getControllerByName(it)!!.controller.isStatusQueryable
                 }
             }
-            if (allContains || countdown <= 1) {
-                break
-            }
         }
-
         controllerList.forEach {
-            if (statusCache.containsKey(it)) {
-                map[it] = statusCache[it]!!
-            } else {
-                val status = Status()
-                status.setName(it)
-                status.setQueryable(this.controllers[it]!!.controller.isStatusQueryable)
-                status.setAlive(false)
-                map[it] = status
+            if (!getControllerByName(it)!!.controller.isStatusQueryable) return@forEach
+            try {
+                val status = controllerConnector[it]!!.queryStatus()
+                map[it]!!.run {
+                    this.name = status.name
+                    this.isAlive = true
+                    this.isQueryable = true
+                    this.maxPlayerCount = status.maxPlayerCount
+                    this.playerCount = status.playerCount
+                    this.players = status.players
+                }
+            } catch (ignored: Exception) {
+                logger.warn("Exception occurred while querying status: $ignored")
             }
         }
         return map
     }
 
-    fun putCommandCache(commandOutputData: CommandOutputData) {
-        commandOutputCache[commandOutputData.controllerId]!![commandOutputData.command] = commandOutputData.output
-    }
-
 
 }
+
+class ControllerNotExistException(controllerName: String) : RuntimeException("Controller $controllerName not exist")

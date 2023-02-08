@@ -33,7 +33,7 @@ public class RateLimitEncryptedSocket {
     public Request receiveRequest() throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var line = this.encryptedSocket.readLine();
         if (enable) {
-            if (time - System.currentTimeMillis() >= 1000L){
+            if (System.currentTimeMillis() - time >= 1000L){
                 time = System.currentTimeMillis();
                 count = 1;
             }else {

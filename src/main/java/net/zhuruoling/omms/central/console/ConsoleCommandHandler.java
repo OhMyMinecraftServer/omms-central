@@ -12,7 +12,6 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
 import net.zhuruoling.omms.central.controller.ControllerManager;
-import net.zhuruoling.omms.central.foo.Foo;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
@@ -23,6 +22,7 @@ import net.zhuruoling.omms.central.permission.PermissionManager;
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
+import net.zhuruoling.omms.central.util.UtilKt;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
@@ -186,7 +186,7 @@ public class ConsoleCommandHandler {
         });
 
         LiteralArgumentBuilder<CommandSourceStack> statusCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(context -> {
-            Foo.INSTANCE.bar();
+            UtilKt.bar();
             RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
             logger.info("Java VM Info: %s %s %s".formatted(runtime.getVmVendor(), runtime.getVmName(), runtime.getVmVersion()));
             logger.info("Java VM Spec Info: %s %s %s".formatted(runtime.getSpecVendor(), runtime.getSpecName(), runtime.getSpecVersion()));
@@ -382,11 +382,8 @@ public class ConsoleCommandHandler {
                                             if (controllerName.equals("all")) {
                                                 ControllerManager.INSTANCE.getControllers().forEach((controllerId, controllerInstance) -> {
                                                     commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerId));
-                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance, command);
-                                                    if (output == null) {
-                                                        return;
-                                                    }
-                                                    for (String line : output.split("\n")) {
+                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.controller().getName(), command);
+                                                    for (String line : output) {
                                                         commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
                                                     }
                                                 });
@@ -394,11 +391,8 @@ public class ConsoleCommandHandler {
                                             }
                                             if (controller != null) {
                                                 commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerName));
-                                                var out = ControllerManager.INSTANCE.sendCommand(controller, command);
-                                                if (out == null) {
-                                                    return 1;
-                                                }
-                                                for (String line : out.split("\n")) {
+                                                var out = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(), command);
+                                                for (String line : out) {
                                                     commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName, line));
                                                 }
                                                 return 0;

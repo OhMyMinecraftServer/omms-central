@@ -31,7 +31,6 @@ public class Util {
     public static final String LOCK_NAME = "omms.lck";
 
     public static final Target TARGET_CHAT = new Target("224.114.51.4", 10086);
-    public static final Target TARGET_CONTROL = new Target("224.114.51.4", 10087);
     public static final String[] DATA_FOLDERS = {
             "controllers",
             "announcements",
@@ -39,19 +38,10 @@ public class Util {
             "plugins",
     };
 
-    public static final String[] PERMISSION_OPERATIONS = {
-            "accept","deny","create","delete"
-    };
 
-    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x02;
+    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x03;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
-
-    public static boolean fuzzySearch(String a, String b) {
-        boolean result = false;
-
-        return false;
-    }
 
     public static @NotNull String getTimeCode() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
@@ -191,21 +181,22 @@ public class Util {
     }
 
     public static void listAll(@NotNull Logger logger) {
-        logger.info("Listing controllers");
+        logger.debug("Listing controllers");
         ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
             for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance.controller()).split("\n")) {
-                logger.info(s1);
+                logger.debug(s1);
             }
-            logger.info("\t-%s".formatted(controllerInstance.controller().toString()));
         });
-        logger.info("Listing Whitelist contents:");
+        logger.info("%d controllers added to this server.".formatted(ControllerManager.INSTANCE.getControllers().size()));
+        logger.debug("Listing Whitelist contents:");
         if (!WhitelistManager.INSTANCE.isNoWhitelist()) {
             WhitelistManager.INSTANCE.forEach(entry -> {
                 for (String s : UtilKt.whitelistPrettyPrinting(entry.getValue()).split("\n")) {
-                    logger.info(s);
+                    logger.debug(s);
                 }
                 return Unit.INSTANCE;
             });
+            logger.info("%d whitelists added to this server.".formatted(WhitelistManager.INSTANCE.getAllWhitelist().size()));
         } else {
             logger.warn("No Whitelist added.");
         }
@@ -220,12 +211,10 @@ public class Util {
 
     private static void walkCommandTree(@NotNull CommandNode<CommandSourceStack> node, int depth, @NotNull ArrayList<String> lines) {
         if (node.getChildren().isEmpty()) {
-            lines.add("  ".repeat(depth) + "-" + node.toString());
+            lines.add("  ".repeat(depth) + "-" + node);
         } else {
-            lines.add("  ".repeat(depth) + "+" + node.toString());
-            node.getChildren().forEach(node1 -> {
-                walkCommandTree(node1, depth + 1, lines);
-            });
+            lines.add("  ".repeat(depth) + "+" + node);
+            node.getChildren().forEach(node1 -> walkCommandTree(node1, depth + 1, lines));
         }
     }
 
@@ -235,15 +224,6 @@ public class Util {
 
     public static String toJson(@NotNull Object obj) {
         return gson.toJson(obj, obj.getClass());
-    }
-
-    public static @NotNull Target generateRandomTarget() {
-        return new Target(
-                "224.114.%d.%d".formatted(
-                        new Random(System.nanoTime()).nextInt(0, 250),
-                        new Random(System.nanoTime()).nextInt(0, 250)
-                ), new Random(System.nanoTime()).nextInt(8080, 25565)
-        );
     }
 
     public boolean createFile(@NotNull String filePath) throws IOException {

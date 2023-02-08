@@ -11,14 +11,13 @@ import net.zhuruoling.omms.central.util.Util
 fun Application.configureRouting() {
     routing {
         get {
-            call.respondText(status = HttpStatusCode.OK){
+            call.respondText(status = HttpStatusCode.OK) {
                 Util.PRODUCT_NAME
             }
         }
         whitelistQueryRouting()
         announcementQueryRouting()
         controllerPairQueryRoute()
-        controllerQueryRouting()
         crashReportQueryRoute()
         authenticate("omms-auth") {
             commandUpstreamRouting()

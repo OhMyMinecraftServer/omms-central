@@ -7,6 +7,7 @@ import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.request.buildFromJson
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.List
 
 suspend fun receiveTextFromCall(call:ApplicationCall): String {
     return call.receiveText()
@@ -16,3 +17,6 @@ suspend fun receiveRequestFromCall(call: ApplicationCall): Request? {
     return buildFromJson(receiveTextFromCall(call))
 }
 
+fun <T> joinToString(list: List<T>): String {
+    return list.joinToString(separator = "\n")
+}
