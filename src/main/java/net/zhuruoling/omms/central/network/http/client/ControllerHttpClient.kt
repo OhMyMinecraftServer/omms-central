@@ -15,12 +15,14 @@ import net.zhuruoling.omms.central.controller.CommandOutputData
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.util.Util
+import org.slf4j.LoggerFactory
 
 fun asSalted(original: String) = original + "WTF IS IT".encodeBase64()
 
 class ControllerHttpClient(val controller: Controller) {
     val client: HttpClient
     private val baseUrl: String
+    private val logger: org.slf4j.Logger
 
     init {
         client = HttpClient(CIO) {
@@ -37,6 +39,7 @@ class ControllerHttpClient(val controller: Controller) {
                 }
             }
         }
+        logger = LoggerFactory.getLogger("ControllerHttpClient#${controller.name}")
         baseUrl = "http://" + controller.httpQueryAddress + "/"
     }
 
@@ -62,25 +65,27 @@ class ControllerHttpClient(val controller: Controller) {
             try {
                 val response = post("runCommand", command)
                 val text = String(response.readBytes())
-                val data = when (response.status){
+                val data = when (response.status) {
                     HttpStatusCode.OK -> {
                         Util.fromJson(text, CommandOutputData::class.javaObjectType)
                     }
+
                     HttpStatusCode.Unauthorized -> {
                         throw RequestUnauthorisedException("ControllerName", controller.name)
                     }
+
                     else -> {
                         null
                     }
                 }
-                if (data != null){
+                if (data != null) {
                     result.addAll(data.output.split("\n"))
                 }
-            }catch (e:Exception){
-                if (e is RequestUnauthorisedException){
+            } catch (e: Exception) {
+                if (e is RequestUnauthorisedException) {
                     throw e
                 }
-                println(e.toString())
+                logger.warn(e.toString())
             }
         }
         return result
@@ -93,7 +98,7 @@ class ControllerHttpClient(val controller: Controller) {
             try {
                 val response = get("status")
                 val text = String(response.readBytes())
-                val result = when (response.status){
+                val result = when (response.status) {
                     HttpStatusCode.OK -> {
                         Util.fromJson(text, Status::class.javaObjectType).run {
                             isAlive = true
@@ -101,16 +106,18 @@ class ControllerHttpClient(val controller: Controller) {
                             this
                         }
                     }
+
                     HttpStatusCode.Unauthorized -> {
                         throw RequestUnauthorisedException("ControllerName", controller.name)
                     }
+
                     else -> {
                         Status()
                     }
                 }
                 status = result
-            }catch (e:Exception){
-                if (e is RequestUnauthorisedException){
+            } catch (e: Exception) {
+                if (e is RequestUnauthorisedException) {
                     throw e
                 }
                 println(e.toString())
@@ -121,9 +128,5 @@ class ControllerHttpClient(val controller: Controller) {
     }
 }
 
-//fun ByteReadChannel.readAllToString():String{
-//
-//}
-
-class RequestUnauthorisedException constructor(val key: String, controllerName:String):
+class RequestUnauthorisedException constructor(val key: String, controllerName: String) :
     java.lang.IllegalArgumentException("Request to controller $controllerName was refused.")
