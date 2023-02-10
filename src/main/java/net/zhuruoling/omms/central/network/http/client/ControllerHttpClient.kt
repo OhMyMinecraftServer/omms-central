@@ -93,6 +93,8 @@ class ControllerHttpClient(val controller: Controller) {
 
     fun queryStatus(): Status {
         var status = Status()
+        var ex: Exception? = null
+        status.isAlive = false
         status.isQueryable = controller.isStatusQueryable
         runBlocking {
             try {
@@ -117,12 +119,11 @@ class ControllerHttpClient(val controller: Controller) {
                 }
                 status = result
             } catch (e: Exception) {
-                if (e is RequestUnauthorisedException) {
-                    throw e
-                }
-                println(e.toString())
-                status.isAlive = false
+                ex = e
             }
+        }
+        if (ex != null) {
+            throw ex!!
         }
         return status
     }

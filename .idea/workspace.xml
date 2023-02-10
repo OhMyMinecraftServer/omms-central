@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.0&#10;RATE LIMIT IS GOOD">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.0 logging">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
@@ -88,7 +89,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1675869319329&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1676021844243&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/test&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -679,13 +680,10 @@
       <workItem from="1675873607161" duration="370000" />
       <workItem from="1675908557745" duration="1141000" />
       <workItem from="1675924173569" duration="1458000" />
-    </task>
-    <task id="LOCAL-00047" summary="merge WhitelistResult.java to Result.java">
-      <created>1663746845049</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1663746845049</updated>
+      <workItem from="1675955540278" duration="891000" />
+      <workItem from="1676017067645" duration="1710000" />
+      <workItem from="1676021811463" duration="227000" />
+      <workItem from="1676023602383" duration="982000" />
     </task>
     <task id="LOCAL-00048" summary="0.5.6">
       <created>1664123916323</created>
@@ -1023,7 +1021,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675873474967</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="0.9.0 logging">
+      <created>1675955643925</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1675955643925</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1087,7 +1092,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.7.1 BUG EXISTS" />
     <MESSAGE value="0.7.1 fixes reply messages bug" />
     <MESSAGE value="0.7.2b skeleton of ManagementQueryRoutes" />
     <MESSAGE value="0.7.2b2 plugin load order calc" />
@@ -1112,7 +1116,8 @@
     <MESSAGE value="0.9.0a&#10;DatabaseConnection" />
     <MESSAGE value="0.9.0&#10;Rate limited connector" />
     <MESSAGE value="0.9.0&#10;RATE LIMIT IS GOOD" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.9.0&#10;RATE LIMIT IS GOOD" />
+    <MESSAGE value="0.9.0 logging" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.9.0 logging" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

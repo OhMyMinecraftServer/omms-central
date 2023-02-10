@@ -89,6 +89,7 @@ object ControllerManager {
                     name = it
                     type = getControllerByName(it)!!.controllerType
                     isQueryable = getControllerByName(it)!!.controller.isStatusQueryable
+                    isAlive = false
                 }
             }
         }
