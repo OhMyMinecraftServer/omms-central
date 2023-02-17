@@ -20,7 +20,7 @@ public class GetSysinfoRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public @NotNull Permission requiresPermission() {
-        return Permission.SERVER_OS_CONTROL;
+    public Permission requiresPermission() {
+        return null;
     }
 }

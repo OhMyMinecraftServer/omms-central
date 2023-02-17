@@ -3,15 +3,11 @@ package net.zhuruoling.omms.central.permission;
 public enum Permission {
     SERVER_OS_CONTROL,
     CENTRAL_SERVER_CONTROL,
-
-
     PERMISSION_LIST,
     PERMISSION_MODIFY,
-
-
-    CONTROLLER_GET,
     CONTROLLER_EXECUTE,
-    CONTROLLER_MODIFY,
+    CONTROLLER_CREATE,
+    RESERVED_2,
     WHITELIST_ADD,
     WHITELIST_REMOVE,
     WHITELIST_CREATE,
@@ -20,7 +16,7 @@ public enum Permission {
     ANNOUNCEMENT_DELETE,
     ANNOUNCEMENT_MODIFY,
     EXECUTE_PLUGIN_REQUEST,
-    ANNOUNCEMENT_READ;
+    RESERVED_1
 }
 
 /*

@@ -22,7 +22,7 @@ public class GetControllersRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public @NotNull Permission requiresPermission() {
-        return Permission.CONTROLLER_GET;
+    public Permission requiresPermission() {
+        return null;
     }
 }

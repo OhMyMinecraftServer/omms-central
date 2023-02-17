@@ -23,7 +23,7 @@ public class ListAnnouncementRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public @NotNull Permission requiresPermission() {
-        return Permission.ANNOUNCEMENT_READ;
+    public Permission requiresPermission() {
+        return null;
     }
 }

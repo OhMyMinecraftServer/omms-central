@@ -1,7 +1,6 @@
 package net.zhuruoling.omms.central.permission
 
 import com.google.gson.GsonBuilder
-import io.ktor.utils.io.*
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -88,7 +87,7 @@ object PermissionManager {
                 }
 
                 5 -> {
-                    p = Permission.CONTROLLER_GET
+                    p = Permission.RESERVED_2
                 }
 
                 6 -> {
@@ -96,7 +95,7 @@ object PermissionManager {
                 }
 
                 7 -> {
-                    p = Permission.CONTROLLER_MODIFY
+                    p = Permission.CONTROLLER_CREATE
                 }
 
                 8 -> {
@@ -116,7 +115,7 @@ object PermissionManager {
                 }
 
                 12 -> {
-                    p = Permission.ANNOUNCEMENT_READ
+                    p = Permission.RESERVED_1
                 }
 
                 13 -> {
@@ -208,7 +207,7 @@ object PermissionManager {
                     code += 1 shl 3
                 }
 
-                Permission.CONTROLLER_GET -> {
+                Permission.RESERVED_2 -> {
                     code += 1 shl 4
                 }
 
@@ -216,7 +215,7 @@ object PermissionManager {
                     code += 1 shl 5
                 }
 
-                Permission.CONTROLLER_MODIFY -> {
+                Permission.CONTROLLER_CREATE -> {
                     code += 1 shl 6
                 }
 
@@ -236,7 +235,7 @@ object PermissionManager {
                     code += 1 shl 10
                 }
 
-                Permission.ANNOUNCEMENT_READ -> {
+                Permission.RESERVED_1 -> {
                     code += 1 shl 11
                 }
 

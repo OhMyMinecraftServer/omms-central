@@ -102,11 +102,12 @@ public class GroovyPluginInstance {
     }
 
     public void onUnload(LifecycleServerInterface lifecycleServerInterface) {
+        assert instance != null;
         instance.onUnload(lifecycleServerInterface);
     }
 
 
-    public PluginMain getInstance() {
+    public @Nullable PluginMain getInstance() {
         return instance;
     }
 }

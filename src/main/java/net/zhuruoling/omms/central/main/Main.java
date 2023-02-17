@@ -25,7 +25,7 @@ public class Main {
                     Objects.requireNonNull(RuntimeConstants.INSTANCE.getSocketServer()).interrupt();
                     if (!RuntimeConstants.INSTANCE.getNoLock()) {
                         System.out.println("Releasing lock.");
-                        Util.releaseLock(RuntimeConstants.INSTANCE.getLock());
+                        Util.releaseLock(Objects.requireNonNull(RuntimeConstants.INSTANCE.getLock()));
                         Files.delete(Path.of(Util.LOCK_NAME));
                     }
                     System.out.println("Bye");

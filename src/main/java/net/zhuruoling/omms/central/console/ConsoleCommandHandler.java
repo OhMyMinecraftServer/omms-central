@@ -371,6 +371,7 @@ public class ConsoleCommandHandler {
                         })
                 );
 
+
         LiteralArgumentBuilder<CommandSourceStack> controllerCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("controller")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("execute").then(
@@ -462,7 +463,6 @@ public class ConsoleCommandHandler {
         dispatcher.register(controllerCommand);
         dispatcher.register(announcementCommand);
         dispatcher.register(pairCommand);
-        //
     }
 
     private static void searchWhitelist(@NotNull String player, @NotNull String s) {

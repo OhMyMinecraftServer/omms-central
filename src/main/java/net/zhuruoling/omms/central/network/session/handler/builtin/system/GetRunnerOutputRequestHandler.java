@@ -24,8 +24,8 @@ public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
         var runnerId = request.getContent("runnerId");
         var outputResult = RunnerManager.INSTANCE.runIfRunnerExists(runnerId, ((runnerManager, s, runnerDaemon) -> {
             List<String> list = CollectionsKt.mutableListOf();
-            if (runnerDaemon.getStarted()){
-                if (runnerDaemon.getRunning()){
+            if (runnerDaemon.getProcessStarted()){
+                if (runnerDaemon.getProcessStarted()){
                     list.addAll(Objects.requireNonNull(runnerDaemon.getReader()).getAllLines());
                 }else {
                     list.add("An exception occurred while Runner attempt to launch a process.");

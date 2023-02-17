@@ -27,7 +27,7 @@ public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
     }
 
     @Override
-    public @NotNull Permission requiresPermission() {
-        return Permission.CONTROLLER_EXECUTE;
+    public Permission requiresPermission() {
+        return null;
     }
 }

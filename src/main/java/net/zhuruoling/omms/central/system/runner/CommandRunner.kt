@@ -8,21 +8,24 @@ import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.ArrayBlockingQueue
 
-class RunnerDaemon constructor(
+class RunnerDaemon(
     val runnerId: String,
     val launchCommand: String,
     val workingDir: String,
-    val description: String
-):
-    Thread("Runner-Daemon-$runnerId"){
+    val description: String,
+    private val onRunnerOutputLine: (String) -> Unit = {},
+    private val processOutputLineFormatter: (String) -> String = { it },
+    private val shouldRecordProcessOutputLine: (String) -> Boolean = { true },
+    private val onProcessExitCallback: (Process) -> Unit = {}
+) :
+    Thread("Runner-Daemon-$runnerId") {
     private val logger = LoggerFactory.getLogger("RunnerDaemon")
     private lateinit var out: OutputStream
     private lateinit var input: InputStream
-    var running = false
+    var processStarted = false
     private val queue = ArrayBlockingQueue<String>(1024)
     private var process: Process? = null
     private var processOutputReader: ProcessOutputReader? = null
-    var started = false
     var startFailReason: RuntimeException? = null
 
     private fun resolveCommand(command: String): Array<out String> {
@@ -39,45 +42,63 @@ class RunnerDaemon constructor(
 
     val processAlive: Boolean
         get() {
-            return if (running && started)
-                process!!.isAlive
-            else
-                throw IllegalStateException("Runner has not started.")
+            ensureStarted()
+            return process!!.isAlive
         }
 
     val returnCode: Int
         get() {
-            return if (!running or !processAlive) {
-                throw IllegalStateException("Runner is still running.")
-            } else {
-                process!!.exitValue()
-            }
+            ensureStopped()
+            return process!!.exitValue()
+
         }
+
+    private fun ensureStarted() {
+        if (!processStarted) throw IllegalStateException("Runner process has not started.")
+    }
+
+    private fun ensureStopped() {
+        if (processStarted and processAlive) throw IllegalStateException("Process is still running.")
+    }
+
+    fun waitForStart() {
+        while (!processStarted) sleep(10)
+    }
+
+    fun waitForProcessStop() {
+        ensureStarted()
+        while (process!!.isAlive) sleep(10)
+    }
 
 
     override fun run() {
-        started = true
         logger.info("Runner started.")
         try {
             process = Runtime.getRuntime().exec(resolveCommand(launchCommand), null, File(workingDir))
             out = process!!.outputStream
             input = process!!.inputStream
+            processStarted = true
         } catch (e: Exception) {
-            startFailReason = RuntimeException("StartupFail",e)
+            startFailReason = RuntimeException("StartupFail", e)
             logger.error("Cannot start runner.", e)
             return
         }
-        processOutputReader = ProcessOutputReader(process!!, runnerId)
+        processOutputReader = ProcessOutputReader(
+            process!!,
+            runnerId,
+            onRunnerOutputLine,
+            processOutputLineFormatter,
+            shouldRecordProcessOutputLine
+        )
         processOutputReader!!.start()
         val writer = out.writer(Charset.defaultCharset())
         while (process!!.isAlive) {
-            running = true
             try {
                 if (queue.isNotEmpty()) {
                     synchronized(queue) {
                         while (queue.isNotEmpty()) {
                             val line = queue.poll()
-                            logger.info("input $line")
+                            logger.debug("input $line")
                             writer.write(line + "\n")
                             writer.flush()
                         }
@@ -88,7 +109,7 @@ class RunnerDaemon constructor(
                 e.printStackTrace()
             }
         }
-        running = false
+        onProcessExitCallback(process!!)
         logger.info("Process exited with exit value ${process!!.exitValue()}")
     }
 
@@ -99,7 +120,7 @@ class RunnerDaemon constructor(
     }
 
     fun terminate() {
-        if (running) {
+        if (processStarted) {
             if (processAlive) {
                 process!!.destroyForcibly()
             } else {
@@ -109,10 +130,21 @@ class RunnerDaemon constructor(
             throw IllegalStateException("Runner has not started.")
         }
     }
+
+    override fun toString(): String {
+        return "RunnerDaemon(runnerId='$runnerId', launchCommand='$launchCommand', workingDir='$workingDir', description='$description', onRunnerOutputLine=$onRunnerOutputLine, processOutputLineFormatter=$processOutputLineFormatter, logger=$logger, out=$out, input=$input, processStarted=$processStarted, queue=$queue, process=$process, processOutputReader=$processOutputReader, startFailReason=$startFailReason)"
+    }
+
 }
 
 
-class ProcessOutputReader(private val process: Process, runnerId: String) :
+class ProcessOutputReader(
+    private val process: Process,
+    runnerId: String,
+    val onRunnerOutputLine: (String) -> Unit = {},
+    val processOutputLineFormatter: (String) -> String = { it },
+    val shouldRecordProcessOutputLine: (String) -> Boolean
+) :
     Thread("Runner-Output-$runnerId") {
     private val logger = LoggerFactory.getLogger("Runner-Output-$runnerId")
     private lateinit var input: InputStream
@@ -125,16 +157,21 @@ class ProcessOutputReader(private val process: Process, runnerId: String) :
             val reader = input.bufferedReader(Charset.forName("utf-8"))
             while (process.isAlive) {
                 sleep(10)
-                while (input.available() > 0){
+                while (input.available() > 0) {
                     val li = reader.readLine()
                     if (li != null) {
-                        synchronized(outputLines) {
-                            outputLines.add(li)
+                        if (shouldRecordProcessOutputLine(li)) {
+                            val formatted = processOutputLineFormatter(li)
+                            onRunnerOutputLine(formatted)
+                            synchronized(outputLines) {
+                                outputLines.add(formatted)
+                            }
                         }
                     }
                 }
             }
-        } catch (ignored: InterruptedException) { }
+        } catch (ignored: InterruptedException) {
+        }
     }
 
     fun nextLine(): String {

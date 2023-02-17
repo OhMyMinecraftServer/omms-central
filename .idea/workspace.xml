@@ -4,10 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.0 logging">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.1&#10;runBlocking wdnmd">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/announcement/GetAnnouncementRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/announcement/GetAnnouncementRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/announcement/ListAnnouncementRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/announcement/ListAnnouncementRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/CreateControllerRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/CreateControllerRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/GetControllerStatusRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/GetControllerStatusRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/GetControllersRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/GetControllersRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/ListControllersRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/ListControllersRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/system/GetRunnerOutputRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/system/GetRunnerOutputRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/system/GetSysinfoRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/system/GetSysinfoRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/Permission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/Permission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/PermissionManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/PermissionManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/runner/CommandRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/runner/CommandRunner.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/runner/RunnerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/runner/RunnerManager.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -30,9 +46,9 @@
         <option value="AnnotationType" />
         <option value="module-info" />
         <option value="Kotlin Class" />
-        <option value="Kotlin File" />
         <option value="Kotlin Object" />
         <option value="Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -76,43 +92,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1676021844243&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/test&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "dart.analysis.tool.window.visible": "false",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
+    "extract.method.default.visibility": "private",
+    "ktor.last.update.timestamp": "1676642379443",
+    "last_opened_file_path": "C:/Users/jkl-9/IdeaProjects/test",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;GitIgnore&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "GitIgnore"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="net.zhuruoling.omms.central.network.session" />
@@ -156,7 +172,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.nolock">
+  <component name="RunManager" selected="Application.main">
     <configuration name="Bar wdnmd" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central" />
@@ -314,9 +330,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="generated-requests | #14" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" index="14" requestIdentifier="#14" runType="Run single request">
-      <method v="2" />
-    </configuration>
     <configuration name="AwaKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.AwaKt" />
       <module name="omms-central" />
@@ -338,6 +351,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.TestKt" />
+      <module name="omms-central" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Bar wdnmd" />
       <item itemvalue="Application.Bar" />
@@ -350,18 +370,18 @@
       <item itemvalue="Application.noplugin" />
       <item itemvalue="Application.test" />
       <item itemvalue="Application.Demo" />
-      <item itemvalue="HTTP Request.generated-requests | #14" />
+      <item itemvalue="Kotlin.TestKt" />
       <item itemvalue="Kotlin.AwaKt" />
       <item itemvalue="Kotlin.FooKt" />
       <item itemvalue="Kotlin.GraphicsUtilKt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.TestKt" />
         <item itemvalue="Kotlin.FooKt" />
         <item itemvalue="Kotlin.GraphicsUtilKt" />
         <item itemvalue="Application.Demo" />
         <item itemvalue="Kotlin.AwaKt" />
-        <item itemvalue="HTTP Request.generated-requests | #14" />
       </list>
     </recent_temporary>
   </component>
@@ -683,14 +703,17 @@
       <workItem from="1675955540278" duration="891000" />
       <workItem from="1676017067645" duration="1710000" />
       <workItem from="1676021811463" duration="227000" />
-      <workItem from="1676023602383" duration="982000" />
-    </task>
-    <task id="LOCAL-00048" summary="0.5.6">
-      <created>1664123916323</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1664123916323</updated>
+      <workItem from="1676023602383" duration="1974000" />
+      <workItem from="1676025936727" duration="3833000" />
+      <workItem from="1676035451642" duration="5546000" />
+      <workItem from="1676106637071" duration="1729000" />
+      <workItem from="1676123863797" duration="1269000" />
+      <workItem from="1676188103604" duration="348000" />
+      <workItem from="1676209783745" duration="2654000" />
+      <workItem from="1676268178195" duration="17000" />
+      <workItem from="1676523216741" duration="1636000" />
+      <workItem from="1676537476271" duration="3775000" />
+      <workItem from="1676637392280" duration="5295000" />
     </task>
     <task id="LOCAL-00049" summary="0.5.6">
       <created>1664123942419</created>
@@ -1028,7 +1051,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675955643925</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="0.9.1&#10;runBlocking wdnmd">
+      <created>1676024865513</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1676024865513</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1092,7 +1122,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.7.1 fixes reply messages bug" />
     <MESSAGE value="0.7.2b skeleton of ManagementQueryRoutes" />
     <MESSAGE value="0.7.2b2 plugin load order calc" />
     <MESSAGE value="0.7.2b3 fix whitelist bug" />
@@ -1117,7 +1146,8 @@
     <MESSAGE value="0.9.0&#10;Rate limited connector" />
     <MESSAGE value="0.9.0&#10;RATE LIMIT IS GOOD" />
     <MESSAGE value="0.9.0 logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.9.0 logging" />
+    <MESSAGE value="0.9.1&#10;runBlocking wdnmd" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.9.1&#10;runBlocking wdnmd" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
