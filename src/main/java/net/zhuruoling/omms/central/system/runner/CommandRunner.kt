@@ -150,6 +150,7 @@ class ProcessOutputReader(
     private lateinit var input: InputStream
     private var lineIndex = 0;
     private val outputLines = mutableListOf<String>()
+
     override fun run() {
         logger.info("Process output reader started.")
         try {
