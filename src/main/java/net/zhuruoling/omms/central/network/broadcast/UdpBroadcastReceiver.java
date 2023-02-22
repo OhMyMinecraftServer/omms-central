@@ -16,16 +16,15 @@ public class UdpBroadcastReceiver extends Thread {
 
     @Override
     public void run() {
+        String oldId = "";
+        int port = 10086;
+        String address = "224.114.51.4"; // 224.114.51.4:10086
         try {
-            String oldId = "";
-            int port = 10086;
-            String address = "224.114.51.4"; // 224.114.51.4:10086
-            MulticastSocket socket;
-            InetAddress inetAddress;
-            inetAddress = InetAddress.getByName(address);
-            socket = new MulticastSocket(port);
+            MulticastSocket socket = new MulticastSocket(port);
+            socket.setReuseAddress(true);
+            InetAddress inetAddress = InetAddress.getByName(address);
             logger.info("Started Broadcast Receiver at " + address + ":" + port);
-            socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
+            socket.joinGroup(new InetSocketAddress(inetAddress, port), null);
 
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
             for (; ; ) {

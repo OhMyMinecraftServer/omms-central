@@ -36,10 +36,8 @@ public class UdpBroadcastSender extends Thread {
 
     private static @NotNull MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
         MulticastSocket socket;
-        InetAddress inetAddress;
-        inetAddress = InetAddress.getByName(addr);
         socket = new MulticastSocket(port);
-        socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
+        //socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
         return socket;
 
     }
@@ -82,7 +80,7 @@ public class UdpBroadcastSender extends Thread {
                 socket = createMulticastSocket(target.getAddress(), target.getPort());
                 multicastSocketCache.put(target,socket);
             }
-            DatagramPacket packet = new DatagramPacket(content, content.length, new InetSocketAddress(target.getAddress(), target.getPort()).getAddress(), target.getPort());
+            DatagramPacket packet = new DatagramPacket(content, content.length, InetAddress.getByName(target.getAddress()), target.getPort());
 
             socket.send(packet);
         } catch (Exception e) {
