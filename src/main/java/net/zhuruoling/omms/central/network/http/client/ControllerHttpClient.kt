@@ -17,7 +17,7 @@ import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 
-fun asSalted(original: String) = original + "WTF IS IT".encodeBase64()
+fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
 
 class ControllerHttpClient(val controller: Controller) {
     val client: HttpClient

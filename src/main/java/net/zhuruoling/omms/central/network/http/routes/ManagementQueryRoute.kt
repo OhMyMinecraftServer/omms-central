@@ -6,9 +6,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
-import net.zhuruoling.omms.central.console.CommandSourceStack
-import net.zhuruoling.omms.central.console.ConsoleCommandHandler
-import net.zhuruoling.omms.central.main.RuntimeConstants
+import net.zhuruoling.omms.central.command.CommandManager
+import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.util.Util
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -80,12 +79,11 @@ fun Route.managementQueryRouting() {
             println("Got upstream command: $command")
             GlobalScope.launch(Dispatchers.Default) {
                 ensureActive()
-                ConsoleCommandHandler.init()
-                val sourceStack = CommandSourceStack(CommandSourceStack.Source.REMOTE)
-                ConsoleCommandHandler().apply {
-                    setLogger(RuntimeConstants.publicLogger)
-                    dispatchCommand(command, sourceStack)
-                }
+                val sourceStack =
+                    CommandSourceStack(CommandSourceStack.Source.REMOTE)
+                CommandManager.INSTANCE.dispatchCommand(command,
+                    CommandSourceStack(CommandSourceStack.Source.REMOTE)
+                )
                 this@post.context.respondText(contentType = ContentType.Text.Plain, status = HttpStatusCode.OK){
                     Util.toJson(object {
                         val feedback = sourceStack.feedbackLines

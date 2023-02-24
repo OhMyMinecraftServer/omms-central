@@ -3,7 +3,7 @@ package net.zhuruoling.omms.central.network.pair
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.ktor.util.*
-import net.zhuruoling.omms.central.console.CommandSourceStack
+import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.main.RuntimeConstants
 import net.zhuruoling.omms.central.util.Util
 import java.io.FileReader

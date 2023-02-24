@@ -7,10 +7,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
+import net.zhuruoling.omms.central.command.CommandManager;
+import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.main.RuntimeConstants;
@@ -27,6 +28,7 @@ import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -38,22 +40,9 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
-public class ConsoleCommandHandler {
-    private static Logger logger;
-
-    private static @NotNull CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
-
-    public ConsoleCommandHandler() {
-        init();
-    }
-
-    public static CommandDispatcher<CommandSourceStack> getDispatcher() {
-        return dispatcher;
-    }
-
-    public static void init() {
-        RuntimeConstants.pluginCommandHashMap.forEach(pluginCommand -> dispatcher.register(pluginCommand.getCommandNode()));
-
+public class BuiltinCommand {
+    private static Logger logger = LoggerFactory.getLogger("BuiltinCommand");
+    public static void registerBuiltinCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> whitelistCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
                         LiteralArgumentBuilder.<CommandSourceStack>literal("get").then(
@@ -173,15 +162,15 @@ public class ConsoleCommandHandler {
         });
 
         LiteralArgumentBuilder<CommandSourceStack> reloadCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
-            dispatcher = new CommandDispatcher<>();
-            RuntimeConstants.pluginCommandHashMap = new ArrayList<>();
+            CommandManager.INSTANCE.clear();
             PluginManager.INSTANCE.unloadAll();
             PluginManager.INSTANCE.init();
             PluginManager.INSTANCE.loadAll();
             PermissionManager.INSTANCE.init();
             ControllerManager.INSTANCE.init();
             AnnouncementManager.INSTANCE.init();
-            init();
+            WhitelistManager.INSTANCE.init();
+            CommandManager.INSTANCE.reload();
             return 0;
         });
 
@@ -228,7 +217,6 @@ public class ConsoleCommandHandler {
             for (String usage : usages) {
                 logger.info(usage);
             }
-
             return 0;
         });
 
@@ -419,7 +407,7 @@ public class ConsoleCommandHandler {
                         })
                 )
                 .then(
-                        LiteralArgumentBuilder.<CommandSourceStack>literal("create").requires(commandSourceStack -> commandSourceStack.source == CommandSourceStack.Source.CONSOLE)
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("create").requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE)
                                 .executes(commandContext -> {
                                     Scanner scanner = new Scanner(System.in);
                                     logger.info("Input announcement title:");
@@ -446,7 +434,7 @@ public class ConsoleCommandHandler {
                 );
 
         LiteralArgumentBuilder<CommandSourceStack> pairCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("pair")
-                .requires(commandSourceStack -> commandSourceStack.source == CommandSourceStack.Source.CONSOLE).executes(commandContext -> {
+                .requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE).executes(commandContext -> {
                     PairManager.INSTANCE.consoleMakePair(commandContext.getSource());
                     return 0;
                 });
@@ -480,10 +468,6 @@ public class ConsoleCommandHandler {
         return CollectionsKt.joinToString(permissionChange.getChanges(), ", ","","",2147483647, "", null);
     }
 
-    public void setLogger(Logger logger) {
-        ConsoleCommandHandler.logger = logger;
-    }
-
     Completers.@NotNull TreeCompleter walkCommandTree(@NotNull CommandNode<CommandSourceStack> node) {
         var completer = new Completers.TreeCompleter();
         Completers.TreeCompleter.node();
@@ -496,16 +480,7 @@ public class ConsoleCommandHandler {
         return completer;
     }
 
-    public void dispatchCommand(String command, CommandSourceStack commandSourceStack) {
-        try {
-            logger.info("CONSOLE issued a command: %s".formatted(command));
-            ConsoleCommandHandler.dispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
-        } catch (CommandSyntaxException e) {
-            logger.error("Invalid Command Syntax: " + e.getLocalizedMessage());
-        } catch (Throwable exception) {
-            logger.error("An error occurred while dispatching command.", new RuntimeException(exception));
-        }
-    }
+
 
 }
 

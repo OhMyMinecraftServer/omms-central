@@ -2,7 +2,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
-import net.zhuruoling.omms.central.console.CommandSourceStack
+import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.broadcast.Broadcast
 import net.zhuruoling.omms.central.network.session.request.Request

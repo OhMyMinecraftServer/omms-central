@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.console;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.zhuruoling.omms.central.command.CommandSourceStack;
 
 public class PluginCommand {
     private final String pluginId;

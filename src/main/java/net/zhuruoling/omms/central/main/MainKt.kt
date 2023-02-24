@@ -83,13 +83,6 @@ object MainKt {
                 logger.error("An error occurred.")
                 e.printStackTrace()
             }
-
-
-            while (true) {
-                val handler0 = ConsoleInputHandler.INSTANCE
-                handler0.handle()
-            }
-
         }
 
         logger.info("Hello World!")

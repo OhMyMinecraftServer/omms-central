@@ -147,8 +147,10 @@ object PluginManager {
                 pluginInstance.onUnload(lifecycleServerInterface)
                 //pluginInstance.invokeMethod("onUnload", initServerInterface)
                 RequestManager.unRegisterPluginRequest(pluginName)
+
                 val pluginCommandHahMap = RuntimeConstants.pluginCommandHashMap
                 val removed = mutableListOf<PluginCommand>()
+
                 pluginCommandHahMap.forEach {
                     if (it.pluginId == pluginInstance.metadata.id) {
                         removed.add(it)

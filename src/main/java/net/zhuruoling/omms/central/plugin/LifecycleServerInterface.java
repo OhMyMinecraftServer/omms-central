@@ -3,10 +3,8 @@ package net.zhuruoling.omms.central.plugin;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.zhuruoling.omms.central.console.CommandSourceStack;
-import net.zhuruoling.omms.central.console.ConsoleCommandHandler;
-import net.zhuruoling.omms.central.console.PluginCommand;
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.command.CommandManager;
+import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.handler.PluginRequestHandler;
@@ -45,13 +43,11 @@ public class LifecycleServerInterface extends ServerInterface {
                     return 0;
                 })
         );
-        ConsoleCommandHandler.getDispatcher().register(node);
-        RuntimeConstants.pluginCommandHashMap.add(new PluginCommand(this.getPluginName(), node));
+        CommandManager.INSTANCE.registerPluginCommand(getPluginName(),node);
     }
 
     public void registerCommand(@NotNull LiteralArgumentBuilder<CommandSourceStack> commandSourceStackLiteralArgumentBuilder) {
-        ConsoleCommandHandler.getDispatcher().register(commandSourceStackLiteralArgumentBuilder);
-        RuntimeConstants.pluginCommandHashMap.add(new PluginCommand(this.getPluginName(), commandSourceStackLiteralArgumentBuilder));
+        CommandManager.INSTANCE.registerPluginCommand(getPluginName(), commandSourceStackLiteralArgumentBuilder);
     }
 
     public PluginMain require(@NotNull String id) throws PluginNotExistException,PluginNotLoadedException {

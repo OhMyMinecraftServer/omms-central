@@ -5,8 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
 import net.zhuruoling.omms.central.configuration.Configuration;
-import net.zhuruoling.omms.central.console.CommandSourceStack;
-import net.zhuruoling.omms.central.console.ConsoleCommandHandler;
+import net.zhuruoling.omms.central.command.CommandManager;
+import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.broadcast.Target;
 import net.zhuruoling.omms.central.network.session.request.InitRequest;
@@ -151,7 +151,6 @@ public class Util {
             file.mkdirs();
             logger.info("Created folder " + path);
         }
-
     }
 
     public static String base64Encode(@NotNull String content) {
@@ -203,7 +202,7 @@ public class Util {
     }
 
     public static @NotNull ArrayList<String> genCommandTree() {
-        var root = ConsoleCommandHandler.getDispatcher().getRoot();
+        var root = CommandManager.INSTANCE.getCommandDispatcher().getRoot();
         ArrayList<String> lines = new ArrayList<>();
         walkCommandTree(root, 0, lines);
         return lines;

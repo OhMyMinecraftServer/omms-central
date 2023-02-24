@@ -1,5 +1,5 @@
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.zhuruoling.omms.central.console.CommandSourceStack
+import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
 import net.zhuruoling.omms.central.plugin.LifecycleServerInterface

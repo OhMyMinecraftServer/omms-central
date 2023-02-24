@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.console;
+package net.zhuruoling.omms.central.command;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
