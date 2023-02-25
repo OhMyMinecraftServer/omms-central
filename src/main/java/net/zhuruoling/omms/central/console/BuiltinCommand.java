@@ -13,6 +13,7 @@ import net.zhuruoling.omms.central.announcement.AnnouncementManager;
 import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
+import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -42,6 +44,7 @@ import static java.lang.System.getProperty;
 
 public class BuiltinCommand {
     private static Logger logger = LoggerFactory.getLogger("BuiltinCommand");
+
     public static void registerBuiltinCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> whitelistCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")
                 .then(
@@ -292,7 +295,7 @@ public class BuiltinCommand {
                                                     });
                                                     if (!checkedPermissions.isEmpty()) {
                                                         PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DENY, code, checkedPermissions));
-                                                    }else {
+                                                    } else {
                                                         x.getSource().sendFeedback("No changes will be made.");
                                                     }
                                                     return 0;
@@ -339,7 +342,7 @@ public class BuiltinCommand {
                                                             });
                                                             if (!checkedPermissions.isEmpty()) {
                                                                 PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.GRANT, code, checkedPermissions));
-                                                            }else {
+                                                            } else {
                                                                 x.getSource().sendFeedback("No changes will be made.");
                                                             }
                                                         } else {
@@ -398,6 +401,35 @@ public class BuiltinCommand {
                                     .forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
                             return 0;
                         }))
+                ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("console").then(
+                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString())
+                                .requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE)
+                                .executes(commandContext -> {
+                                    var name = StringArgumentType.getString(commandContext, "controller");
+                                    if (name.equals("all")) {
+                                        commandContext.getSource().sendFeedback("Controller ALL cannot be used there.");
+                                        return 1;
+                                    }
+                                    var controllers = ConsoleUtil.parseControllerArgument(name);
+                                    if (controllers.size() > 1) {
+                                        commandContext.getSource().sendFeedback("Multiple controller is not supported by this command.");
+                                        return 1;
+                                    }
+                                    var controller = controllers.get(0);
+                                    commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
+                                    SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
+                                    ControllerConsole controllerConsole = new ControllerConsole(ControllerManager.INSTANCE.getControllerByName(controller).controller());
+                                    controllerConsole.start();
+                                    while (controllerConsole.isAlive()){
+                                        try {
+                                            Thread.sleep(50);
+                                        } catch (InterruptedException ignored) {}
+                                    }
+                                    commandContext.getSource().sendFeedback("Exiting console.");
+                                    SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+                                    return 0;
+                                })
+                        )
                 );
 
         LiteralArgumentBuilder<CommandSourceStack> announcementCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("announcement")
@@ -465,7 +497,7 @@ public class BuiltinCommand {
 
 
     private static String makeChangesString(@NotNull PermissionChange permissionChange) {
-        return CollectionsKt.joinToString(permissionChange.getChanges(), ", ","","",2147483647, "", null);
+        return CollectionsKt.joinToString(permissionChange.getChanges(), ", ", "", "", 2147483647, "", null);
     }
 
     Completers.@NotNull TreeCompleter walkCommandTree(@NotNull CommandNode<CommandSourceStack> node) {
@@ -479,7 +511,6 @@ public class BuiltinCommand {
         }
         return completer;
     }
-
 
 
 }

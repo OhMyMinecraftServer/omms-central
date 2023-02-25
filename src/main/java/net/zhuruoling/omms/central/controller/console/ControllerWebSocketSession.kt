@@ -19,7 +19,7 @@ import net.zhuruoling.omms.central.network.http.client.asSalted
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession
-constructor(val onLogReceiveCallback: (String) -> Unit, val controller: Controller) :
+constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit, val controller: Controller) :
     Thread("Console@${controller.name}") {
     val list = mutableListOf<String>()
     var connected = AtomicBoolean(false)
@@ -51,37 +51,39 @@ constructor(val onLogReceiveCallback: (String) -> Unit, val controller: Controll
     }
 
     override fun run() {
-        try{
+        try {
             runBlocking {
                 try {
                     val sp = controller.httpQueryAddress.split(":")
-                    client.webSocket(method = HttpMethod.Get, host = sp[0], port = sp[1].toInt(), path = "/console") {
-                        while (true) {
-                            connected.set(true)
-                            val output = launch(Dispatchers.IO) {
-                                for (line in incoming) {
-                                    line as? Frame.Text ?: continue
-                                    runBlocking {
-                                        onLogReceiveCallback(line.readText())
-                                    }
-                                }
-                            }
-                            val input = launch(Dispatchers.Default) {
-                                synchronized(list) {
-                                    if (list.isNotEmpty()) {
-                                        for (s in list) {
-                                            runBlocking {
-                                                this@webSocket.send(s)
-                                            }
+                    client.webSocket(method = HttpMethod.Get, host = sp[0], port = sp[1].toInt(), path = "/") {
+                        try {
+                            while (true) {
+                                connected.set(true)
+                                val output = launch(Dispatchers.IO) {
+                                    for (line in incoming) {
+                                        line as? Frame.Text ?: continue
+                                        runBlocking {
+                                            onLogReceiveCallback(line.readText())
                                         }
-                                        list.clear()
                                     }
                                 }
+                                val input = launch(Dispatchers.Default) {
+                                    synchronized(list) {
+                                        if (list.isNotEmpty()) {
+                                            for (s in list) {
+                                                runBlocking {
+                                                    this@webSocket.send(s)
+                                                }
+                                            }
+                                            list.clear()
+                                        }
+                                    }
+                                }
+                                input.join()
+                                output.cancelAndJoin()
+                                sleep(50)
                             }
-                            input.join()
-                            output.cancelAndJoin()
-                            sleep(50)
-                        }
+                        } catch (_: InterruptedException) { }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -90,7 +92,7 @@ constructor(val onLogReceiveCallback: (String) -> Unit, val controller: Controll
                     return@runBlocking
                 }
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -99,5 +101,10 @@ constructor(val onLogReceiveCallback: (String) -> Unit, val controller: Controll
         synchronized(list) {
             list.add(line)
         }
+    }
+
+    fun close() {
+        this.client.close()
+        this.interrupt()
     }
 }
