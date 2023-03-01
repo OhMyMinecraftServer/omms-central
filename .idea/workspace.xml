@@ -4,12 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="typo fix">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/RemoteControllerConsoleMain.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/SomeClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/SomeClass.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -32,9 +34,9 @@
         <option value="AnnotationType" />
         <option value="module-info" />
         <option value="Kotlin File" />
-        <option value="Class" />
         <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -78,43 +80,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "dart.analysis.tool.window.visible": "false",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
-    "extract.method.default.visibility": "private",
-    "ktor.last.update.timestamp": "1677338411403",
-    "last_opened_file_path": "C:/Users/jkl-9/IdeaProjects/test",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settings.project.statistic.project.settings",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1677424855305&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/test&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.statistic.project.settings&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "GitIgnore"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;GitIgnore&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="net.zhuruoling.omms.central.network.session" />
@@ -205,6 +207,21 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="net.zhuruoling.omms.central.foo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="controllerConsole" type="Application" factoryName="Application" show_console_on_std_err="true" show_console_on_std_out="true">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.main.Main" />
+      <module name="omms-central" />
+      <option name="PROGRAM_PARAMETERS" value="--controllerConsole --id out_survival" />
+      <shortenClasspath name="NONE" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="net.zhuruoling.omms.central.main.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -350,6 +367,7 @@
       <item itemvalue="Application.Rua" />
       <item itemvalue="Application.experimental nolock" />
       <item itemvalue="Application.main" />
+      <item itemvalue="Application.controllerConsole" />
       <item itemvalue="Application.nolock noplugin" />
       <item itemvalue="Application.nolock" />
       <item itemvalue="Application.noplugin test" />
@@ -708,14 +726,16 @@
       <workItem from="1677163187193" duration="7134000" />
       <workItem from="1677214216763" duration="8204000" />
       <workItem from="1677251187455" duration="4077000" />
-      <workItem from="1677323140534" duration="6667000" />
-    </task>
-    <task id="LOCAL-00054" summary="Changes by ishland">
-      <created>1665052480418</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1665052480418</updated>
+      <workItem from="1677323140534" duration="6854000" />
+      <workItem from="1677396989150" duration="1191000" />
+      <workItem from="1677403675699" duration="701000" />
+      <workItem from="1677410308205" duration="1416000" />
+      <workItem from="1677424708798" duration="334000" />
+      <workItem from="1677468977980" duration="2557000" />
+      <workItem from="1677553443589" duration="1275000" />
+      <workItem from="1677587357800" duration="2311000" />
+      <workItem from="1677598075555" duration="366000" />
+      <workItem from="1677682976994" duration="340000" />
     </task>
     <task id="LOCAL-00055" summary="Hope it works">
       <created>1665053554324</created>
@@ -1053,7 +1073,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677254736618</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;">
+      <created>1677341958146</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1677341958146</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1117,7 +1144,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="i don`t know what changed xD" />
     <MESSAGE value="bug fixes" />
     <MESSAGE value="?" />
     <MESSAGE value="do some TINY refactor" />
@@ -1142,7 +1168,8 @@
     <MESSAGE value="0.9.3&#10;CommandManager refactor" />
     <MESSAGE value="0.9.3&#10;change version in pom.xml" />
     <MESSAGE value="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;" />
+    <MESSAGE value="typo fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="typo fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

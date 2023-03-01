@@ -1,41 +1,20 @@
 package net.zhuruoling.omms.central.foo;
 
 public class SomeClass {
-    private static final int wdnmd = 1919810;
-    private int anInt = 114514;
-    private String string = "1919810";
-    private boolean isItAShit = true;
+    private static int anInt;
+    private static String string;
+    private static boolean isItAShit;
 
-    public SomeClass() {
+    static {
+        string = "wdnmd";
+        anInt = string.hashCode();
+        if (anInt > 114514) {
+            isItAShit = true;
+        }
     }
 
-    public SomeClass(int anInt, String string, boolean isItAShit) {
-        this.anInt = anInt;
-        this.string = string;
-        this.isItAShit = isItAShit;
+    public void wdnmd(){
+        System.out.println("wdnmd");
     }
 
-    public int getAnInt() {
-        return anInt;
-    }
-
-    public void setAnInt(int anInt) {
-        this.anInt = anInt;
-    }
-
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
-    }
-
-    public boolean isItAShit() {
-        return isItAShit;
-    }
-
-    public void setItAShit(boolean itAShit) {
-        isItAShit = itAShit;
-    }
 }

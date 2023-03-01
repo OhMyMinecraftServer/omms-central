@@ -9,7 +9,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
-import io.ktor.websocket.readText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -23,7 +22,7 @@ constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Uni
     Thread("Console@${controller.name}") {
     val list = mutableListOf<String>()
     var connected = AtomicBoolean(false)
-    val client = HttpClient {
+    val client = HttpClient(CIO) {
         install(WebSockets)
         engine {
             threadsCount = 4

@@ -13,13 +13,19 @@ public class ControllerConsole extends Thread {
     private List<String> consoleBuffer = new ArrayList<>();
     private final Controller controller;
     private final ControllerWebSocketSession session;
+    private final boolean useLogger;
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
 
     public ControllerConsole(Controller controller) {
+        this(controller, true);
+    }
+
+    public ControllerConsole(Controller controller, boolean useLogger) {
         super("ControllerConsole");
         this.controller = controller;
+        this.useLogger = useLogger;
         session = new ControllerWebSocketSession(((that, s) -> {
-            if (s.equals("\u1145:END:\u1919")){
+            if (s.equals("\u1145:END:\u1919")) {
                 that.close();
                 this.interrupt();
                 return Unit.INSTANCE;
@@ -27,6 +33,14 @@ public class ControllerConsole extends Thread {
             System.out.println(s);
             return Unit.INSTANCE;
         }), controller);
+    }
+
+    private void info(String info) {
+        if (useLogger) {
+            logger.info(info);
+        }else {
+            System.out.println(info);
+        }
     }
 
     @Override
@@ -41,12 +55,13 @@ public class ControllerConsole extends Thread {
                 throw new RuntimeException(e);
             }
         }
-        logger.info("Connected.");
+
+        info("Connected.");
         while (scanner.hasNext()) {
             var line = scanner.nextLine();
             if (line.startsWith(":")) {
                 if (line.equals(":q")) {
-                    logger.info("Disconnecting.");
+                    info("Disconnecting.");
                     session.close();
                     return;
                 }
