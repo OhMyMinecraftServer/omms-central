@@ -91,7 +91,7 @@ object PermissionManager {
                 }
 
                 6 -> {
-                    p = Permission.CONTROLLER_EXECUTE
+                    p = Permission.CONTROLLER_CONTROL
                 }
 
                 7 -> {
@@ -211,7 +211,7 @@ object PermissionManager {
                     code += 1 shl 4
                 }
 
-                Permission.CONTROLLER_EXECUTE -> {
+                Permission.CONTROLLER_CONTROL -> {
                     code += 1 shl 5
                 }
 

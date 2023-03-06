@@ -25,6 +25,7 @@ import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
+import net.zhuruoling.omms.central.util.io.StdOutPrintTarget;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
@@ -402,33 +403,35 @@ public class BuiltinCommand {
                             return 0;
                         }))
                 ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("console").then(
-                        RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString())
-                                .requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE)
-                                .executes(commandContext -> {
-                                    var name = StringArgumentType.getString(commandContext, "controller");
-                                    if (name.equals("all")) {
-                                        commandContext.getSource().sendFeedback("Controller ALL cannot be used there.");
-                                        return 1;
-                                    }
-                                    var controllers = ConsoleUtil.parseControllerArgument(name);
-                                    if (controllers.size() > 1) {
-                                        commandContext.getSource().sendFeedback("Multiple controller is not supported by this command.");
-                                        return 1;
-                                    }
-                                    var controller = controllers.get(0);
-                                    commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
-                                    SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
-                                    ControllerConsole controllerConsole = new ControllerConsole(ControllerManager.INSTANCE.getControllerByName(controller).controller());
-                                    controllerConsole.start();
-                                    while (controllerConsole.isAlive()){
-                                        try {
-                                            Thread.sleep(50);
-                                        } catch (InterruptedException ignored) {}
-                                    }
-                                    commandContext.getSource().sendFeedback("Exiting console.");
-                                    SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-                                    return 0;
-                                })
+                                RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString())
+                                        .requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE)
+                                        .executes(commandContext -> {
+                                            var name = StringArgumentType.getString(commandContext, "controller");
+                                            if (name.equals("all")) {
+                                                commandContext.getSource().sendFeedback("Controller ALL cannot be used there.");
+                                                return 1;
+                                            }
+                                            var controllers = ConsoleUtil.parseControllerArgument(name);
+                                            if (controllers.size() > 1) {
+                                                commandContext.getSource().sendFeedback("Multiple controller is not supported by this command.");
+                                                return 1;
+                                            }
+                                            var controller = controllers.get(0);
+                                            commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
+                                            SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
+                                            StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
+                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), stdOutPrintTarget);
+                                            controllerConsole.start();
+                                            while (controllerConsole.isAlive()) {
+                                                try {
+                                                    Thread.sleep(50);
+                                                } catch (InterruptedException ignored) {
+                                                }
+                                            }
+                                            commandContext.getSource().sendFeedback("Exiting console.");
+                                            SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+                                            return 0;
+                                        })
                         )
                 );
 

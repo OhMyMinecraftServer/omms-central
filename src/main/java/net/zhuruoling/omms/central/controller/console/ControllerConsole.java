@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.controller.console;
 
 import kotlin.Unit;
 import net.zhuruoling.omms.central.controller.Controller;
+import net.zhuruoling.omms.central.util.io.PrintTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,34 +14,28 @@ public class ControllerConsole extends Thread {
     private List<String> consoleBuffer = new ArrayList<>();
     private final Controller controller;
     private final ControllerWebSocketSession session;
-    private final boolean useLogger;
+
+    private final PrintTarget<?> printTarget;
+
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
 
-    public ControllerConsole(Controller controller) {
-        this(controller, true);
-    }
-
-    public ControllerConsole(Controller controller, boolean useLogger) {
+    public ControllerConsole(Controller controller, PrintTarget<?> printTarget) {
         super("ControllerConsole");
         this.controller = controller;
-        this.useLogger = useLogger;
+        this.printTarget = printTarget;
         session = new ControllerWebSocketSession(((that, s) -> {
             if (s.equals("\u1145:END:\u1919")) {
                 that.close();
                 this.interrupt();
                 return Unit.INSTANCE;
             }
-            System.out.println(s);
+            this.printTarget.println(s);
             return Unit.INSTANCE;
         }), controller);
     }
 
     private void info(String info) {
-        if (useLogger) {
-            logger.info(info);
-        }else {
-            System.out.println(info);
-        }
+        System.out.println(info);
     }
 
     @Override
