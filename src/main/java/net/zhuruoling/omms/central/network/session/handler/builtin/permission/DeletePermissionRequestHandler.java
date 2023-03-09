@@ -22,7 +22,7 @@ public class DeletePermissionRequestHandler extends BuiltinRequestHandler {
                             , null
                     )
             );
-            return response.withResponseCode(Result.OK);
+            return response.withResponseCode(Result.PERMISSION_DELETED);
         }
         catch (Throwable e){
             return response.withResponseCode(Result.OPERATION_ALREADY_EXISTS);

@@ -17,7 +17,7 @@ public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
         if (ControllerManager.INSTANCE.getControllers().containsKey(controllerId)) {
             var status = ControllerManager.INSTANCE.getControllerStatus(kotlin.collections.CollectionsKt.mutableListOf(controllerId));
             if (status.containsKey(controllerId)){
-                return new Response().withResponseCode(Result.OK).withContentPair("status", Util.toJson(status.get(controllerId)));
+                return new Response().withResponseCode(Result.CONTROLLER_STATUS_GOT).withContentPair("status", Util.toJson(status.get(controllerId)));
             }else {
                 return new Response().withResponseCode(Result.CONTROLLER_NO_STATUS);
             }

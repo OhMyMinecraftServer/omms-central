@@ -10,7 +10,6 @@ public class Response {
     private HashMap<String, String> content;
 
     public Response(@NotNull Result result, HashMap<String, String> content) {
-        this.content = new HashMap<>();
         this.responseCode = result;
         this.content = content;
     }

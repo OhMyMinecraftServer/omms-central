@@ -14,7 +14,7 @@ public class ListAnnouncementRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(Request request, SessionContext session) {
         return new Response()
-                .withResponseCode(Result.OK)
+                .withResponseCode(Result.ANNOUNCEMENT_LISTED)
                 .withContentPair("announcements",
                         Util.toJson(
                                 AnnouncementManager.INSTANCE.getAnnouncementMap().keySet()

@@ -10,7 +10,7 @@ import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CreateAnnouncementRequestHandler extends BuiltinRequestHandler {
+public class CreateAnnouncementRequestHandler extends BuiltinRequestHandler {//TODO
     @Override
     public @Nullable Response handle(@NotNull Request request, SessionContext session) {
         String id = request.getContent("id") != null ? request.getContent("id") : Util.randomStringGen(16);

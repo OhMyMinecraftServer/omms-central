@@ -14,6 +14,7 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
@@ -25,7 +26,7 @@ import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
-import net.zhuruoling.omms.central.util.io.StdOutPrintTarget;
+import net.zhuruoling.omms.central.controller.console.input.StdOutPrintTarget;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
@@ -420,7 +421,7 @@ public class BuiltinCommand {
                                             commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                             SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
                                             StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), stdOutPrintTarget);
+                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), stdOutPrintTarget, new StdinInputSource());
                                             controllerConsole.start();
                                             while (controllerConsole.isAlive()) {
                                                 try {

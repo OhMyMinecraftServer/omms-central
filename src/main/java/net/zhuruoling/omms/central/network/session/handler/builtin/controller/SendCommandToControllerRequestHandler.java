@@ -22,7 +22,7 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
             return response.withResponseCode(Result.CONTROLLER_NOT_EXIST);
         }
         var result = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(),command);
-        response.withResponseCode(Result.OK).withContentPair("output", UtilKt.joinToString(result));
+        response.withResponseCode(Result.CONTROLLER_COMMAND_SENT).withContentPair("output", UtilKt.joinToString(result));
         return response;
     }
 

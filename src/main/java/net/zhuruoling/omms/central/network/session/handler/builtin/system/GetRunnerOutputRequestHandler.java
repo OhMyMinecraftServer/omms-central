@@ -40,7 +40,7 @@ public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
             return list;
         }));
         if (outputResult != null) {
-            return new Response().withResponseCode(Result.OK).withContentPair("output", Util.toJson(outputResult));
+            return new Response().withResponseCode(Result.RUNNER_OUTPUT_GOT).withContentPair("output", Util.toJson(outputResult));
         }else {
             return new Response().withResponseCode(Result.RUNNER_NOT_EXIST);
         }

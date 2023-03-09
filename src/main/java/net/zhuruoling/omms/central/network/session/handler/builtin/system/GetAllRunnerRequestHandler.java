@@ -18,7 +18,7 @@ public class GetAllRunnerRequestHandler extends BuiltinRequestHandler {
         if (list.isEmpty()) {
             return new Response().withResponseCode(Result.NO_RUNNER);
         }
-        return new Response().withResponseCode(Result.OK).withContentPair("info", Util.toJson(list));
+        return new Response().withResponseCode(Result.RUNNER_LISTED).withContentPair("info", Util.toJson(list));
     }
 
     @Override

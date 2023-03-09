@@ -1,7 +1,9 @@
 package net.zhuruoling.omms.central.network.session;
 
+import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.permission.Permission;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class SessionContext {
@@ -9,6 +11,7 @@ public class SessionContext {
     Session session;
 
     List<Permission> permissions;
+    HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
 
     public SessionContext(RateLimitEncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
         this.encryptedConnector = encryptedConnector;
@@ -38,5 +41,9 @@ public class SessionContext {
 
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
+    }
+
+    public HashMap<String, ControllerConsole> getControllerConsoleMap() {
+        return controllerConsoleMap;
     }
 }

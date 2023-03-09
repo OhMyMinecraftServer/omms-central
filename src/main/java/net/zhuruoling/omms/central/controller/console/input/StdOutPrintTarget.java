@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.util.io;
+package net.zhuruoling.omms.central.controller.console.input;
 
 import java.io.PrintStream;
 

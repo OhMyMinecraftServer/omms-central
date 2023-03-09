@@ -27,7 +27,7 @@ public class GrantPermissionRequestHandler extends BuiltinRequestHandler {
                             , Arrays.asList(Util.gson.fromJson(request.getContent("permissions"), Permission[].class))
                     )
             );
-            return response.withResponseCode(Result.OK);
+            return response.withResponseCode(Result.PERMISSION_GRANTED);
         }
         catch (Throwable e){
             return response.withResponseCode(Result.OPERATION_ALREADY_EXISTS);

@@ -13,15 +13,25 @@ import net.zhuruoling.omms.central.network.session.response.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.SocketException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SessionServer extends Thread {
     private final Session session;
     private net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket rateLimitEncryptedSocket;
     final Logger logger = LoggerFactory.getLogger("SessionServer");
+    private SessionContext sessionContext;
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     List<Permission> permissions;
     public SessionServer(Session session, List<Permission> permissions){
         this.session = session;
@@ -50,9 +60,26 @@ public class SessionServer extends Thread {
         }
     }
 
+    private void runOnNetworkThread(Runnable runnable){
+        this.executorService.submit(runnable);
+    }
+
+    public void sendResponseAsync(Response response){
+        runOnNetworkThread(() -> {
+            try {
+                rateLimitEncryptedSocket.sendResponse(response);
+            } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException |
+                     BadPaddingException | InvalidKeyException e) {
+                logger.error("Error while sending response.", e);
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     @Override
     public void run() {
         logger.info("%s started.".formatted(this.getName()));
+        sessionContext = new SessionContext(rateLimitEncryptedSocket, session, this.permissions);
         try {
             while (true){
                 try {
@@ -63,12 +90,12 @@ public class SessionServer extends Thread {
                     var handler = Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(request).getRequest()));
                     var permission = handler.requiresPermission();
                     if (permission != null && !permissions.contains(permission)) {
-                        rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.PERMISSION_DENIED));
+                        sendResponseAsync(new Response().withResponseCode(Result.PERMISSION_DENIED));
                         continue;
                     }
                     Response response;
                     try {
-                        response = handler.handle(request, new SessionContext(rateLimitEncryptedSocket, session, this.permissions));
+                        response = handler.handle(request, sessionContext);
                         if (response == null){
                             logger.info("Session terminated.");
                             rateLimitEncryptedSocket.sendResponse(new Response());
@@ -83,7 +110,7 @@ public class SessionServer extends Thread {
                     if (session.getSocket().isClosed()){
                         break;
                     }
-                    rateLimitEncryptedSocket.sendResponse(response);
+                    sendResponseAsync(response);
                 }
                 catch (NullPointerException e){
                     break;
@@ -93,7 +120,7 @@ public class SessionServer extends Thread {
                     break;
                 }
                 catch (RateExceedException e){
-                    rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED));
+                    sendResponseAsync(new Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED));
                     logger.warn("Rate limit exceeded.");
                     break;
                 }

@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.util.io;
+package net.zhuruoling.omms.central.controller.console.input;
 
 public abstract class PrintTarget<T> {
     T target;
@@ -7,7 +7,9 @@ public abstract class PrintTarget<T> {
         this.target = target;
     }
     public void println(String content){
-        println(target,content);
+        synchronized (this){
+            println(target, content);
+        }
     }
 
     abstract void println(T target, String content);

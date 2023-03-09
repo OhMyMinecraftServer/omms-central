@@ -39,7 +39,7 @@ public class Util {
     };
 
 
-    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x03;
+    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x04;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
 

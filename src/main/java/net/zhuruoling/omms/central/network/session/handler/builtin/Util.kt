@@ -1,20 +1,5 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin
 
-import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.CreateControllerRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerStatusRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.SendCommandToControllerRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllersRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.ListControllersRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.permission.*
-import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetRunnerOutputRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.*
 import net.zhuruoling.omms.central.network.session.request.RequestManager
 
 val builtinRequestMap = mutableMapOf(
@@ -43,6 +28,9 @@ val builtinRequestMap = mutableMapOf(
     "WHITELIST_GET" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.GetWhitelistRequestHandler(),
     "SYSTEM_GET_INFO" to net.zhuruoling.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler(),
     "PERMISSION_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.ListPermissionRequestHandler(),
+    "CONTROLLER_LAUNCH_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.LaunchControllerConsoleRequestHandler(),
+    "CONTROLLER_END_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.EndControllerConsoleRequestHandler(),
+    "CONTROLLER_INPUT_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.SendControllerConsoleInputRequestHandler()
 )
 
 

@@ -1,28 +1,27 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
-import net.zhuruoling.omms.central.controller.Controller;
-import net.zhuruoling.omms.central.controller.ControllerManager;
+import net.zhuruoling.omms.central.controller.console.output.SessionInputSource;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
-import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
-public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler {
+public class SendControllerConsoleInputRequestHandler extends BuiltinRequestHandler {
     @Override
     public @Nullable Response handle(Request request, SessionContext session) {
-        String controllerName = request.getContent("controller");
-        Controller controller = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controllerName)).controller();
-        if (controller == null){
-            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST);
+        String id = request.getContent("consoleId");
+        if (session.getControllerConsoleMap().containsKey(id)) {
+            var console = session.getControllerConsoleMap().get(id);
+            String line = request.getContent("command");
+            var inputSource = (SessionInputSource) console.getInputSource();
+            inputSource.put(line);
+            return new Response().withResponseCode(Result.CONTROLLER_CONSOLE_INPUT_SENT);
+        } else {
+            return new Response().withResponseCode(Result.CONSOLE_NOT_EXIST);
         }
-        String id = Util.randomStringGen(16);
-        return new Response().withResponseCode(Result.CONSOLE_LAUNCHED).withContentPair("consoleId", id);
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class DeleteWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        return new Response().withResponseCode(
+        return new Response().withResponseCode(Result.WHITELIST_DELETED).withResponseCode(
                 WhitelistManager.INSTANCE.deleteWhiteList(
                         request.getContent("whitelist")
                 )

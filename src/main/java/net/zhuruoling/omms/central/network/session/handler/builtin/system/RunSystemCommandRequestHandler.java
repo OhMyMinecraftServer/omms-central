@@ -20,7 +20,7 @@ public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {// TO
             var daemon = RunnerManager.INSTANCE.createRunner(command, workingDir, runnerDescription);
             var id = daemon.getRunnerId();
             RunnerManager.INSTANCE.launchRunner(id);
-            return new Response().withResponseCode(Result.OK).withContentPair("runnerId", id);
+            return new Response().withResponseCode(Result.RUNNER_LAUNCHED).withContentPair("runnerId", id);
         }catch (Exception e){
             return new Response().withResponseCode(Result.FAIL).withContentPair("exception",e.toString());
         }

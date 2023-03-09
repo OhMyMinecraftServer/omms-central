@@ -20,7 +20,7 @@ public class GetAnnouncementRequestHandler extends BuiltinRequestHandler {
             return new Response().withResponseCode(Result.ANNOUNCEMENT_NOT_EXIST);
         }
         return new Response()
-                .withResponseCode(Result.OK)
+                .withResponseCode(Result.ANNOUNCEMENT_GOT)
                 .withContentPair("id", announcement.getId())
                 .withContentPair("time", Long.toString(announcement.getTimeMillis()))
                 .withContentPair("title", announcement.getTitle())

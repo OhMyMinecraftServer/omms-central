@@ -2,28 +2,26 @@ package net.zhuruoling.omms.central.controller.console;
 
 import kotlin.Unit;
 import net.zhuruoling.omms.central.controller.Controller;
-import net.zhuruoling.omms.central.util.io.PrintTarget;
+import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
+import net.zhuruoling.omms.central.controller.console.output.InputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 public class ControllerConsole extends Thread {
-    private List<String> consoleBuffer = new ArrayList<>();
     private final Controller controller;
     private final ControllerWebSocketSession session;
 
     private final PrintTarget<?> printTarget;
+    private final InputSource inputSource;
 
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
 
-    public ControllerConsole(Controller controller, PrintTarget<?> printTarget) {
+    public ControllerConsole(Controller controller, PrintTarget<?> printTarget, InputSource inputSource) {
         super("ControllerConsole");
         this.controller = controller;
         this.printTarget = printTarget;
-        session = new ControllerWebSocketSession(((that, s) -> {
+        this.inputSource = inputSource;
+        session = new ControllerWebSocketSession((that, s) -> {
             if (s.equals("\u1145:END:\u1919")) {
                 that.close();
                 this.interrupt();
@@ -31,16 +29,32 @@ public class ControllerConsole extends Thread {
             }
             this.printTarget.println(s);
             return Unit.INSTANCE;
-        }), controller);
+        }, this.controller);
     }
 
     private void info(String info) {
-        System.out.println(info);
+        printTarget.println(info);
+    }
+
+    public void close(){
+        session.close();
+        this.interrupt();
+    }
+
+    public void input(String line){
+        if (line.startsWith(":")) {
+            if (line.equals(":q")) {
+                info("Disconnecting.");
+                session.close();
+                this.interrupt();
+            }
+        } else {
+            session.inputLine(line);
+        }
     }
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
         session.start();
         while (!session.getConnected().get()) {
             try {
@@ -50,19 +64,20 @@ public class ControllerConsole extends Thread {
                 throw new RuntimeException(e);
             }
         }
-
         info("Connected.");
-        while (scanner.hasNext()) {
-            var line = scanner.nextLine();
-            if (line.startsWith(":")) {
-                if (line.equals(":q")) {
-                    info("Disconnecting.");
-                    session.close();
-                    return;
-                }
-            } else {
-                session.inputLine(line);
+        var line = inputSource.getLine();
+        while (true) {
+            try {
+                input(line);
+                sleep(10);
+                line = inputSource.getLine();
+            }catch (InterruptedException ignored){
+                break;
             }
         }
+    }
+
+    public InputSource getInputSource() {
+        return inputSource;
     }
 }

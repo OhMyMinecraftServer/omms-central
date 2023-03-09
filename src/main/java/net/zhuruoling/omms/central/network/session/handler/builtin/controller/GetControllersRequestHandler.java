@@ -18,7 +18,7 @@ public class GetControllersRequestHandler extends BuiltinRequestHandler {
         if (controller == null){
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST);
         }
-        return new Response().withContentPair("controller", controller.controller().toJson());
+        return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", controller.controller().toJson());
     }
 
     @Override

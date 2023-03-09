@@ -23,7 +23,7 @@ public class CreatePermissionRequestHandler extends BuiltinRequestHandler {
                             , null
                     )
             );
-            return response.withResponseCode(Result.OK);
+            return response.withResponseCode(Result.PERMISSION_CREATED);
         }
         catch (Throwable e){
             return response.withResponseCode(Result.OPERATION_ALREADY_EXISTS);

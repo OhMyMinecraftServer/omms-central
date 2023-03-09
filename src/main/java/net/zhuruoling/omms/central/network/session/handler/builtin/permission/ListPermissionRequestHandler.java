@@ -15,7 +15,7 @@ public class ListPermissionRequestHandler extends BuiltinRequestHandler {
     public Response handle(Request request, SessionContext session) {
         var codes = PermissionManager.INSTANCE.getPermissionTable().keySet();
         var codeStrings = Util.gson.toJson(codes);
-        return new Response().withContentPair("codes",codeStrings).withResponseCode(Result.OK);
+        return new Response().withContentPair("codes",codeStrings).withResponseCode(Result.PERMISSION_LISTED);
     }
 
     @Override
