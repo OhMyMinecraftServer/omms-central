@@ -19,7 +19,7 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
         String controllerName = request.getContent("controller");
         Controller controller = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controllerName)).controller();
         if (controller == null){
-            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST);
+            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controller", controllerName);
         }
         String id = Util.randomStringGen(16);
         return new Response().withResponseCode(Result.CONSOLE_LAUNCHED).withContentPair("consoleId", id);

@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 public class CreateWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        return new Response().withResponseCode(Result.WHITELIST_CREATED).withResponseCode(
+        return new Response().withResponseCode(
                 WhitelistManager.INSTANCE.createWhitelist(
                         request.getContent("whitelist")
                 )
-        );
+        ).withContentPair("whitelist", request.getContent("whitelist"));
     }
 
     @Override

@@ -421,7 +421,7 @@ public class BuiltinCommand {
                                             commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                             SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
                                             StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), stdOutPrintTarget, new StdinInputSource());
+                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), controller , stdOutPrintTarget, new StdinInputSource());
                                             controllerConsole.start();
                                             while (controllerConsole.isAlive()) {
                                                 try {

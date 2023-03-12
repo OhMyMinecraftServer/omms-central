@@ -1,14 +1,16 @@
 package net.zhuruoling.omms.central.controller.console.input;
 
+import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+
 import java.io.PrintStream;
 
-public class StdOutPrintTarget extends PrintTarget<PrintStream> {
+public class StdOutPrintTarget extends PrintTarget<PrintStream, ControllerConsole> {
     public StdOutPrintTarget() {
         super(System.out);
     }
 
     @Override
-    void println(PrintStream target, String content) {
-        target.println(content);
+    void println(PrintStream target, ControllerConsole context, String content) {
+        target.println("[" + context.getConsoleId() +"] " + content);
     }
 }

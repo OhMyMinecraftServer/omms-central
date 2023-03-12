@@ -16,7 +16,7 @@ public class DeleteWhitelistRequestHandler extends BuiltinRequestHandler {
                 WhitelistManager.INSTANCE.deleteWhiteList(
                         request.getContent("whitelist")
                 )
-        );
+        ).withContentPair("whitelist", request.getContent("whitelist"));
     }
 
     @Override

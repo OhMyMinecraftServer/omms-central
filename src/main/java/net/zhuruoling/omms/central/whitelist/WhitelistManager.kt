@@ -174,14 +174,17 @@ object WhitelistManager {
             return Result.FAIL
         }
         init()
-        return Result.OK
+        return when(operation){
+            Operation.ADD -> Result.WHITELIST_ADDED
+            Operation.REMOVE -> Result.WHITELIST_REMOVED
+        }
     }
 
-    fun createWhitelist(name: String): Result {
+    fun createWhitelist(name: String): Result {//todo
         return Result.FAIL
     }
 
-    fun deleteWhiteList(name: String): Result {
+    fun deleteWhiteList(name: String): Result {//todo
         return Result.FAIL
     }
 

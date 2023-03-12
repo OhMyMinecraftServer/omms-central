@@ -16,7 +16,7 @@ public class GetControllersRequestHandler extends BuiltinRequestHandler {
         String name = request.getContent("controller");
         var controller = ControllerManager.INSTANCE.getControllerByName(name);
         if (controller == null){
-            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST);
+            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controller", name);
         }
         return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", controller.controller().toJson());
     }

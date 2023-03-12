@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public class AddToWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        return new Response().withResponseCode(Result.WHITELIST_ADDED).withResponseCode(
-                WhitelistManager.INSTANCE.addToWhiteList(
-                        request.getContent("whitelist"),
-                        request.getContent("player")
-                )
+        var result = WhitelistManager.INSTANCE.addToWhiteList(
+                request.getContent("whitelist"),
+                request.getContent("player")
         );
+        return new Response().withResponseCode(
+               result
+        ).withContentPair("whitelist", request.getContent("whitelist")).withContentPair("player", request.getContent("player"));
     }
 
     @Override

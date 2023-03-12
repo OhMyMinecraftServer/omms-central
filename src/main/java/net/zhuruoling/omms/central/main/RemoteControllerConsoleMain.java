@@ -31,7 +31,7 @@ public class RemoteControllerConsoleMain {
         ControllerManager.INSTANCE.init();
         Controller controller = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controllerId)).controller();
         StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-        ControllerConsole controllerConsole = new ControllerConsole(controller, stdOutPrintTarget, new StdinInputSource());
+        ControllerConsole controllerConsole = new ControllerConsole(controller, controllerId, stdOutPrintTarget, new StdinInputSource());
         controllerConsole.start();
         while (controllerConsole.isAlive()) {
             Thread.yield();

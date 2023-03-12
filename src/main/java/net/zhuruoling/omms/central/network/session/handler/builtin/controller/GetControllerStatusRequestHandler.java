@@ -22,7 +22,7 @@ public class GetControllerStatusRequestHandler extends BuiltinRequestHandler {
                 return new Response().withResponseCode(Result.CONTROLLER_NO_STATUS);
             }
         } else {
-            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST);
+            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controller", controllerId);
         }
     }
 

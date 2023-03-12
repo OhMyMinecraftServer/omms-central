@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public class RemoveFromWhitelistHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        return new Response().withResponseCode(Result.WHITELIST_REMOVED).withResponseCode(
-                WhitelistManager.INSTANCE.removeFromWhiteList(
-                        request.getContent("whitelist"),
-                        request.getContent("player")
-                )
+        var result = WhitelistManager.INSTANCE.removeFromWhiteList(
+                request.getContent("whitelist"),
+                request.getContent("player")
         );
+        return new Response().withResponseCode(
+                result
+        ).withContentPair("whitelist", request.getContent("whitelist")).withContentPair("player", request.getContent("player"));
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.network.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.zhuruoling.omms.central.main.RuntimeConstants;
 import net.zhuruoling.omms.central.network.EncryptedSocket;
 import net.zhuruoling.omms.central.network.session.request.InitRequest;
 import net.zhuruoling.omms.central.network.session.response.Response;
@@ -75,7 +76,9 @@ public class InitSession extends Thread {
                     if (isCodeExist) {
                         var randomKey = Util.randomStringGen(32);
                         encryptedConnector.send(
-                                Response.serialize(new Response().withResponseCode(Result.OK).withContentPair("key",randomKey))
+                                Response.serialize(new Response().withResponseCode(Result.OK)
+                                        .withContentPair("key",randomKey)
+                                        .withContentPair("serverName", Objects.requireNonNull(RuntimeConstants.INSTANCE.getConfig()).getServerName()))
                         );
                         logger.info(String.format("Starting SessionServer for #%s:%d", socket.getInetAddress(), socket.getPort()));
                         logger.debug(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));

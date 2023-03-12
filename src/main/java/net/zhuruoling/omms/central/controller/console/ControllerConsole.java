@@ -11,29 +11,32 @@ public class ControllerConsole extends Thread {
     private final Controller controller;
     private final ControllerWebSocketSession session;
 
-    private final PrintTarget<?> printTarget;
+    private final PrintTarget<?, ControllerConsole> printTarget;
     private final InputSource inputSource;
+
+    private final String consoleId;
 
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
 
-    public ControllerConsole(Controller controller, PrintTarget<?> printTarget, InputSource inputSource) {
+    public ControllerConsole(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
         super("ControllerConsole");
         this.controller = controller;
         this.printTarget = printTarget;
         this.inputSource = inputSource;
+        this.consoleId = consoleId;
         session = new ControllerWebSocketSession((that, s) -> {
             if (s.equals("\u1145:END:\u1919")) {
                 that.close();
                 this.interrupt();
                 return Unit.INSTANCE;
             }
-            this.printTarget.println(s);
+            this.printTarget.println(s, this);
             return Unit.INSTANCE;
         }, this.controller);
     }
 
     private void info(String info) {
-        printTarget.println(info);
+        printTarget.println(info, this);
     }
 
     public void close(){
@@ -75,6 +78,10 @@ public class ControllerConsole extends Thread {
                 break;
             }
         }
+    }
+
+    public String getConsoleId() {
+        return consoleId;
     }
 
     public InputSource getInputSource() {
