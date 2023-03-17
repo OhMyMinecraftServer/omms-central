@@ -13,5 +13,6 @@ public class Rua {
 
     public static void main(String[] args) throws InterruptedException {
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+        boolean bl = new Boolean("false");
     }
 }

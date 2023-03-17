@@ -98,7 +98,7 @@ public class SessionServer extends Thread {
                         response = handler.handle(request, sessionContext);
                         if (response == null){
                             logger.info("Session terminated.");
-                            rateLimitEncryptedSocket.sendResponse(new Response());
+                            rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.DISCONNECT));
                             session.getSocket().close();
                             break;
                         }
