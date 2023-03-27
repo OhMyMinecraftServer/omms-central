@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.plugin;
 
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public abstract class ServerInterface {
 
     }
     public Object invokePluginApiMethod(@NotNull String apiProviderId, String methodName, Object... args){
-        var map = RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().get(apiProviderId);
+        var map = GlobalVariable.INSTANCE.getPluginDeclaredApiMethod().get(apiProviderId);
         if (map == null){
             throw new PluginNotExistException("Plugin %s not exist".formatted(apiProviderId));
         }

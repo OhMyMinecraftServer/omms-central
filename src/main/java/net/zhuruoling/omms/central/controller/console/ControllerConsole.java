@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class ControllerConsole extends Thread {
     private final Controller controller;
+
+    public Controller getController() {
+        return controller;
+    }
+
     private final ControllerWebSocketSession session;
 
     private final PrintTarget<?, ControllerConsole> printTarget;
@@ -39,12 +44,12 @@ public class ControllerConsole extends Thread {
         printTarget.println(info, this);
     }
 
-    public void close(){
+    public void close() {
         session.close();
         this.interrupt();
     }
 
-    public void input(String line){
+    public void input(String line) {
         if (line.startsWith(":")) {
             if (line.equals(":q")) {
                 info("Disconnecting.");
@@ -74,7 +79,7 @@ public class ControllerConsole extends Thread {
                 input(line);
                 sleep(10);
                 line = inputSource.getLine();
-            }catch (InterruptedException ignored){
+            } catch (InterruptedException ignored) {
                 break;
             }
         }

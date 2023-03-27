@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.main;
 
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.Executors;
 
 public class Main {
     public static void main(String @NotNull [] args) throws IOException {
@@ -20,16 +20,16 @@ public class Main {
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                if (!RuntimeConstants.INSTANCE.getNormalShutdown() && MainKt.INSTANCE.getInitialized()) {
+                if (!GlobalVariable.INSTANCE.getNormalShutdown() && MainKt.INSTANCE.getInitialized()) {
                     System.out.println("Stopping!");
                     PluginManager.INSTANCE.unloadAll();
-                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getHttpServer()).interrupt();
-                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getReceiver()).interrupt();
-                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).setStopped(true);
-                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getSocketServer()).interrupt();
-                    if (!RuntimeConstants.INSTANCE.getNoLock()) {
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getSocketServer()).interrupt();
+                    if (!GlobalVariable.INSTANCE.getNoLock()) {
                         System.out.println("Releasing lock.");
-                        Util.releaseLock(Objects.requireNonNull(RuntimeConstants.INSTANCE.getLock()));
+                        Util.releaseLock(Objects.requireNonNull(GlobalVariable.INSTANCE.getLock()));
                         Files.delete(Path.of(Util.LOCK_NAME));
                     }
                     System.out.println("Bye");

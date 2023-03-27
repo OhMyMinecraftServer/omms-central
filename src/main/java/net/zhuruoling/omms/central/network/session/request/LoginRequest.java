@@ -2,16 +2,16 @@ package net.zhuruoling.omms.central.network.session.request;
 
 import org.jetbrains.annotations.NotNull;
 
-public class InitRequest extends Request{
+public class LoginRequest extends Request{
     long version = VERSION_BASE + 0xffffL;
 
     public static final long VERSION_BASE = 0xc0000000L;
-    public InitRequest(long version) {
+    public LoginRequest(long version) {
         super("PING");
         this.version = version;
     }
 
-    public InitRequest(@NotNull Request request, long version){
+    public LoginRequest(@NotNull Request request, long version){
         super();
         this.request = request.getRequest();
         this.content = request.content;

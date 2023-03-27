@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.ktor.util.*
 import net.zhuruoling.omms.central.command.CommandSourceStack
-import net.zhuruoling.omms.central.main.RuntimeConstants
+import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.util.Util
 import java.io.FileReader
 import java.io.FileWriter
@@ -31,7 +31,7 @@ object PairManager {
             val writer = FileWriter(path.toFile())
             val pairConfig = PairConfig(
                 true, PreloadControllerConfig(
-                    "localhost:${RuntimeConstants.config!!.httpPort}",
+                    "localhost:${GlobalVariable.config!!.httpPort}",
                     "GLOBAL",
                     "bot_",
                     "_bot",

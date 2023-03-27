@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.plugin;
 
 import groovy.lang.GroovyClassLoader;
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +72,7 @@ public class GroovyPluginInstance {
                     }
                 }
             }
-            RuntimeConstants.INSTANCE.getPluginDeclaredApiMethod().put(metadata.id, map);
+            GlobalVariable.INSTANCE.getPluginDeclaredApiMethod().put(metadata.id, map);
         } catch (MultipleCompilationErrorsException e) {
             throw e;
         } catch (Exception e) {

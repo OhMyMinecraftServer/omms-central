@@ -2,9 +2,9 @@ package net.zhuruoling.omms.central.network.session;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.EncryptedSocket;
-import net.zhuruoling.omms.central.network.session.request.InitRequest;
+import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.server.SessionServer;
 import net.zhuruoling.omms.central.permission.PermissionManager;
@@ -53,7 +53,7 @@ public class InitSession extends Thread {
         try {
             String line = encryptedConnector.readLine();
             while (true){
-                var request = gson.fromJson(line, InitRequest.class);
+                var request = gson.fromJson(line, LoginRequest.class);
                 logger.debug("Got request:" + request);
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
                     //lets match versions.
@@ -78,7 +78,7 @@ public class InitSession extends Thread {
                         encryptedConnector.send(
                                 Response.serialize(new Response().withResponseCode(Result.OK)
                                         .withContentPair("key",randomKey)
-                                        .withContentPair("serverName", Objects.requireNonNull(RuntimeConstants.INSTANCE.getConfig()).getServerName()))
+                                        .withContentPair("serverName", Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getServerName()))
                         );
                         logger.info(String.format("Starting SessionServer for #%s:%d", socket.getInetAddress(), socket.getPort()));
                         logger.debug(String.format("Key of %s:%d is %s", socket.getInetAddress(), socket.getPort(), randomKey));

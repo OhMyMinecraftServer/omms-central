@@ -3,7 +3,7 @@ package net.zhuruoling.omms.central.plugin
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.console.PluginCommand
-import net.zhuruoling.omms.central.main.RuntimeConstants
+import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.util.Util
@@ -20,7 +20,7 @@ object PluginManager {
     val gson: Gson = GsonBuilder().serializeNulls().create()
     private var pluginCommandTable: HashMap<String, ArrayList<String>> = java.util.HashMap()
     fun init() {
-        if (RuntimeConstants.noPlugins) {
+        if (GlobalVariable.noPlugins) {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -69,7 +69,7 @@ object PluginManager {
     }
 
     fun loadAll() {
-        if (RuntimeConstants.noPlugins) {
+        if (GlobalVariable.noPlugins) {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -81,7 +81,7 @@ object PluginManager {
     }
 
     fun unloadAll() {
-        if (RuntimeConstants.noPlugins) {
+        if (GlobalVariable.noPlugins) {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
@@ -148,7 +148,7 @@ object PluginManager {
                 //pluginInstance.invokeMethod("onUnload", initServerInterface)
                 RequestManager.unRegisterPluginRequest(pluginName)
 
-                val pluginCommandHahMap = RuntimeConstants.pluginCommandHashMap
+                val pluginCommandHahMap = GlobalVariable.pluginCommandHashMap
                 val removed = mutableListOf<PluginCommand>()
 
                 pluginCommandHahMap.forEach {
@@ -168,7 +168,7 @@ object PluginManager {
     }
 
     fun reload(pluginId: String) {
-        if (RuntimeConstants.noPlugins) {
+        if (GlobalVariable.noPlugins) {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }

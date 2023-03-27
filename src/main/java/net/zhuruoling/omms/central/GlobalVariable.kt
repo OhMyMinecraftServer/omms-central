@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.main
+package net.zhuruoling.omms.central
 
 import net.zhuruoling.omms.central.configuration.Configuration
 import net.zhuruoling.omms.central.console.PluginCommand
@@ -11,7 +11,7 @@ import java.lang.reflect.Method
 import java.nio.channels.FileLock
 
 
-object RuntimeConstants {
+object GlobalVariable {
     var noLock:Boolean  = false
     var lock: FileLock? = null
     var noPlugins: Boolean = false

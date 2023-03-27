@@ -9,7 +9,7 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.broadcast.Target;
-import net.zhuruoling.omms.central.network.session.request.InitRequest;
+import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class Util {
     };
 
 
-    public static final long PROTOCOL_VERSION = InitRequest.VERSION_BASE + 0x04;
+    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x04;
 
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
 

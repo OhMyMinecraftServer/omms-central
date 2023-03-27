@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.server;
 
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.EncryptedSocket;
 import net.zhuruoling.omms.central.network.session.RateExceedException;
 import net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket;
@@ -50,7 +50,7 @@ public class SessionServer extends Thread {
                             this.session.getKey()
                     )
             );
-            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, RuntimeConstants.INSTANCE.getConfig().getRateLimit());
+            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, GlobalVariable.INSTANCE.getConfig().getRateLimit());
         } catch (IOException e) {
             e.printStackTrace();
         }

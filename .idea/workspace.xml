@@ -4,13 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.10.0&#10;i wrote shit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/routes/WebsocketRoute.kt" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="SHIT CODE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/test.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/PermissionNameCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/PermissionNameCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/RuntimeConstants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/Test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/HttpServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/HttpServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/pair/PairManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/pair/PairManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/InitSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/InitSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/LaunchControllerConsoleRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/LaunchControllerConsoleRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/request/InitRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/request/LoginRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/response/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/response/Result.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionInitialServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionInitialServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/ServerInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/security/HttpAuthUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/security/HttpAuthUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -92,7 +110,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1679059305093&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1679412653962&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -138,6 +156,9 @@
     </key>
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="net.zhuruoling.util" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="net.zhuruoling.omms.central" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
       <recent name="net.zhuruoling.network.broadcast" />
@@ -750,14 +771,12 @@
       <workItem from="1678635380180" duration="701000" />
       <workItem from="1678837308349" duration="1531000" />
       <workItem from="1679059286502" duration="765000" />
-      <workItem from="1679067515604" duration="2007000" />
-    </task>
-    <task id="LOCAL-00059" summary="ban command (it really works">
-      <created>1665855671517</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1665855671518</updated>
+      <workItem from="1679067515604" duration="2384000" />
+      <workItem from="1679245519803" duration="51000" />
+      <workItem from="1679412493577" duration="351000" />
+      <workItem from="1679547519845" duration="344000" />
+      <workItem from="1679760687175" duration="2616000" />
+      <workItem from="1679885790557" duration="602000" />
     </task>
     <task id="LOCAL-00060" summary="imagesssssssssssssss">
       <created>1666072499451</created>
@@ -1095,7 +1114,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678637538861</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="SHIT CODE">
+      <created>1679072152728</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1679072152729</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1159,7 +1185,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="controller pair" />
     <MESSAGE value="move package" />
     <MESSAGE value="fix permission problem" />
     <MESSAGE value="0.8.0&#10;controller commandFeedback" />
@@ -1184,7 +1209,8 @@
     <MESSAGE value="get ready for 0.10.0" />
     <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
     <MESSAGE value="0.10.0&#10;i wrote shit" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.10.0&#10;i wrote shit" />
+    <MESSAGE value="SHIT CODE" />
+    <option name="LAST_COMMIT_MESSAGE" value="SHIT CODE" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

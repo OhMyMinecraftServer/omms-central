@@ -16,7 +16,7 @@ import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
 import net.zhuruoling.omms.central.main.MainKt;
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
 import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
@@ -155,7 +155,7 @@ public class BuiltinCommand {
                                     broadcast.setContent(text);
                                     broadcast.setPlayer(Util.randomStringGen(8));
                                     broadcast.setServer("OMMS CENTRAL");
-                                    Objects.requireNonNull(RuntimeConstants.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
+                                    Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
                                     return 1;
                                 }
                         )

@@ -18,7 +18,7 @@ import net.zhuruoling.omms.central.system.SystemUtil
 import net.zhuruoling.omms.central.network.session.response.Result
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
-import net.zhuruoling.omms.central.network.session.request.InitRequest;
+import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 
 import java.lang.module.ModuleDescriptor
 
@@ -40,7 +40,7 @@ class TestPlugin extends PluginMain {
             logger.info(Util.toJson(AnnouncementManager.INSTANCE.announcementMap.get("LxNHS17krC1ajqBL")))
             logger.info(Util.toJson(WhitelistManager.INSTANCE.whitelists[0]))
             logger.info(Util.toJson(SystemUtil.getSystemInfo()))
-            logger.info(Util.toJson(new InitRequest(Util.PROTOCOL_VERSION).withContentKeyPair("token", "connCode")))
+            logger.info(Util.toJson(new LoginRequest(Util.PROTOCOL_VERSION).withContentKeyPair("token", "connCode")))
         })
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack>literal("another_test")
                 .then(RequiredArgumentBuilder<CommandSourceStack, String>.argument("some_string", greedyString()).executes({

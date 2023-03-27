@@ -2,7 +2,6 @@ package net.zhuruoling.omms.central.controller
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.omms.central.main.RuntimeConstants
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
-import java.util.concurrent.FutureTask
 
 data class CommandOutputData(val controllerId: String, val command: String, val output: String)
 

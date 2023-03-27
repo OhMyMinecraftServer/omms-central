@@ -12,6 +12,7 @@ import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler {
     @Override
@@ -22,7 +23,16 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controller", controllerName);
         }
         String id = Util.randomStringGen(16);
-        return new Response().withResponseCode(Result.CONSOLE_LAUNCHED).withContentPair("consoleId", id);
+        var consoleAlreadyStarted = new AtomicBoolean(false);
+        session.getControllerConsoleMap().forEach(((s, console) -> {
+            if (Objects.equals(console.getController().getName(), controllerName)){
+                consoleAlreadyStarted.set(false);
+            }
+        }));
+        if (consoleAlreadyStarted.get()){
+            return new Response().withResponseCode(Result.CONSOLE_ALREADY_EXISTS).withContentPair("controller", controllerName);
+        }
+        return new Response().withResponseCode(Result.CONSOLE_LAUNCHED).withContentPair("consoleId", id).withContentPair("controller", controllerName);
     }
 
     @Override

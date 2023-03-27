@@ -1,21 +1,22 @@
 package net.zhuruoling.omms.central.main
 
 import com.google.gson.Gson
+import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.configuration.ConfigReader
 import net.zhuruoling.omms.central.configuration.Configuration
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
-import net.zhuruoling.omms.central.main.RuntimeConstants.experimental
-import net.zhuruoling.omms.central.main.RuntimeConstants.httpServer
-import net.zhuruoling.omms.central.main.RuntimeConstants.lock
-import net.zhuruoling.omms.central.main.RuntimeConstants.noLock
-import net.zhuruoling.omms.central.main.RuntimeConstants.noPlugins
-import net.zhuruoling.omms.central.main.RuntimeConstants.normalShutdown
-import net.zhuruoling.omms.central.main.RuntimeConstants.receiver
-import net.zhuruoling.omms.central.main.RuntimeConstants.socketServer
-import net.zhuruoling.omms.central.main.RuntimeConstants.test
-import net.zhuruoling.omms.central.main.RuntimeConstants.udpBroadcastSender
+import net.zhuruoling.omms.central.GlobalVariable.experimental
+import net.zhuruoling.omms.central.GlobalVariable.httpServer
+import net.zhuruoling.omms.central.GlobalVariable.lock
+import net.zhuruoling.omms.central.GlobalVariable.noLock
+import net.zhuruoling.omms.central.GlobalVariable.noPlugins
+import net.zhuruoling.omms.central.GlobalVariable.normalShutdown
+import net.zhuruoling.omms.central.GlobalVariable.receiver
+import net.zhuruoling.omms.central.GlobalVariable.socketServer
+import net.zhuruoling.omms.central.GlobalVariable.test
+import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
@@ -51,7 +52,7 @@ object MainKt {
     @JvmStatic
     fun main(args: Array<String>) {
         val timeStart = System.currentTimeMillis()
-        RuntimeConstants.launchTime = timeStart
+        GlobalVariable.launchTime = timeStart
         bar()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
@@ -107,7 +108,7 @@ object MainKt {
             logger.error("Empty CONFIG.")
             exitProcess(1)
         }
-        RuntimeConstants.config = config
+        GlobalVariable.config = config
         logger.info("Config:")
         logger.info("\tServerName: ${config?.serverName}")
         logger.info("\tSocketPort: ${config?.port}")
@@ -128,7 +129,7 @@ object MainKt {
             val lock: FileLock?
             try {
                 lock = Util.acquireLock(randomAccessFile)
-                RuntimeConstants.lock = lock
+                GlobalVariable.lock = lock
             } catch (e: Exception) {
                 logger.error("Failed to acquire lock.Might another server instance are running?")
                 logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")
@@ -160,9 +161,9 @@ object MainKt {
         socketServer.start()
         receiver.start()
         sender.start()
-        RuntimeConstants.socketServer = socketServer
-        RuntimeConstants.receiver = receiver
-        RuntimeConstants.httpServer = httpServer
+        GlobalVariable.socketServer = socketServer
+        GlobalVariable.receiver = receiver
+        GlobalVariable.httpServer = httpServer
         udpBroadcastSender = sender
         udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
         val timeComplete = System.currentTimeMillis()

@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.server;
 
-import net.zhuruoling.omms.central.main.RuntimeConstants;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.session.InitSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class SessionInitialServer extends Thread {
 
     @Override
     public void run() {
-        try (ServerSocket server = new ServerSocket(Objects.requireNonNull(RuntimeConstants.INSTANCE.getConfig()).getPort())) {
+        try (ServerSocket server = new ServerSocket(Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getPort())) {
             while (true) {
                 logger.info("Started SessionInitialServer.");
                 var socket = server.accept();
