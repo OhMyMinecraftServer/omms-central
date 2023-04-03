@@ -17,7 +17,7 @@ public class GetWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
         var whitelist = request.getContent("whitelist");
-        if (WhitelistManager.INSTANCE.hasWhitelist(whitelist)) {
+        if (!WhitelistManager.INSTANCE.hasWhitelist(whitelist)) {
             return new Response().withResponseCode(Result.WHITELIST_NOT_EXIST)
                     .withContentPair("whitelist", whitelist);
         }

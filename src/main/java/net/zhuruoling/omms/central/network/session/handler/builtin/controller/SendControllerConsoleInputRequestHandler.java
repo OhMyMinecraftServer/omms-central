@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SendControllerConsoleInputRequestHandler extends BuiltinRequestHandler {
     @Override
-    public @Nullable Response handle(Request request, SessionContext session) {
+    public @Nullable Response handle(Request request, SessionContext session) {//NOTE: may ignore by client
         String id = request.getContent("consoleId");
         if (session.getControllerConsoleMap().containsKey(id)) {
             var console = session.getControllerConsoleMap().get(id);

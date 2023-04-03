@@ -15,9 +15,9 @@ public class EndControllerConsoleRequestHandler extends BuiltinRequestHandler {
         if (session.getControllerConsoleMap().containsKey(id)){
             var console = session.getControllerConsoleMap().get(id);
             console.close();
-            return new Response().withResponseCode(Result.CONSOLE_STOPPED);
+            return new Response().withResponseCode(Result.CONSOLE_STOPPED).withContentPair("consoleId",id);
         }else {
-            return new Response().withResponseCode(Result.CONSOLE_NOT_EXIST);
+            return new Response().withResponseCode(Result.CONSOLE_NOT_EXIST).withContentPair("consoleId",id);
         }
     }
 

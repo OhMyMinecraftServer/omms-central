@@ -8,7 +8,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import org.jetbrains.annotations.NotNull;
 
-public class CreateControllerRequestHandler extends BuiltinRequestHandler {
+public class CreateControllerRequestHandler extends BuiltinRequestHandler {//todo
     @Override
     public Response handle(Request request, SessionContext session) {
         return new Response().withResponseCode(Result.CONTROLLER_CREATED);

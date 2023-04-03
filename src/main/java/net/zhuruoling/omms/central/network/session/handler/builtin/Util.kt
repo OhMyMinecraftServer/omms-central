@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin
 
+import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerRequestHandler
 import net.zhuruoling.omms.central.network.session.request.RequestManager
 
 val builtinRequestMap = mutableMapOf(
@@ -24,7 +25,7 @@ val builtinRequestMap = mutableMapOf(
     "ANNOUNCEMENT_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler(),
     "END" to net.zhuruoling.omms.central.network.session.handler.builtin.EndRequestHandler(),
     "WHITELIST_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.CreateWhitelistRequestHandler(),
-    "CONTROLLER_GET" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllersRequestHandler(),
+    "CONTROLLER_GET" to GetControllerRequestHandler(),
     "WHITELIST_GET" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.GetWhitelistRequestHandler(),
     "SYSTEM_GET_INFO" to net.zhuruoling.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler(),
     "PERMISSION_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.ListPermissionRequestHandler(),

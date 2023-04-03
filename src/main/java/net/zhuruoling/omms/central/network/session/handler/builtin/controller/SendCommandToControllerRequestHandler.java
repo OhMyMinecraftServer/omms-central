@@ -19,7 +19,7 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
         var command  = request.getContent("command");
         var controller = ControllerManager.INSTANCE.getControllerByName(name);
         if (controller == null){
-            return response.withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controller", name);
+            return response.withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
         }
         var result = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(),command);
         response.withResponseCode(Result.CONTROLLER_COMMAND_SENT).withContentPair("output", UtilKt.joinToString(result));
