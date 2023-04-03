@@ -50,6 +50,7 @@ public class ControllerConsole extends Thread {
     }
 
     public void input(String line) {
+        if (line == null)return;
         if (line.startsWith(":")) {
             if (line.equals(":q")) {
                 info("Disconnecting.");

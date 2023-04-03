@@ -75,11 +75,16 @@ public class SessionServer extends Thread {
             }
         });
     }
-
+    private void cleanUp(){
+        this.sessionContext.getControllerConsoleMap().forEach((s, controllerConsole) -> {
+            logger.info("Closing controller console %s".formatted(s));
+            controllerConsole.close();
+        });
+    }
     @Override
     public void run() {
         logger.info("%s started.".formatted(this.getName()));
-        sessionContext = new SessionContext(rateLimitEncryptedSocket, session, this.permissions);
+        sessionContext = new SessionContext(this, rateLimitEncryptedSocket, session, this.permissions);
         try {
             while (true){
                 try {
@@ -133,6 +138,7 @@ public class SessionServer extends Thread {
         } catch (Throwable e) {
             new RuntimeException(e).printStackTrace();
         }
+        cleanUp();
     }
 
 }

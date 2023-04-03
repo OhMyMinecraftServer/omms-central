@@ -59,7 +59,11 @@ object ControllerManager {
 
     fun sendCommand(controllerName: String, command: String): List<String> {
         if (controllers.containsKey(controllerName)) {
-            return controllerConnector[controllerName]!!.sendCommand(command)
+            try{
+                return controllerConnector[controllerName]!!.sendCommand(command)
+            }catch (e:Exception){
+                throw e
+            }
         } else {
             throw ControllerNotExistException(controllerName)
         }

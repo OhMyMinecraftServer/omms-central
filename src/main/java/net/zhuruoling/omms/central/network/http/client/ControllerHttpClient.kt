@@ -129,5 +129,5 @@ class ControllerHttpClient(val controller: Controller) {
     }
 }
 
-class RequestUnauthorisedException constructor(val key: String, controllerName: String) :
+class RequestUnauthorisedException(val key: String, controllerName: String) :
     java.lang.IllegalArgumentException("Request to controller $controllerName was refused.")

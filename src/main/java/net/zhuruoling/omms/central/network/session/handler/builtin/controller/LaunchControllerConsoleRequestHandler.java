@@ -2,6 +2,9 @@ package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.Controller;
 import net.zhuruoling.omms.central.controller.ControllerManager;
+import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.input.EncryptedSocketPrintTarget;
+import net.zhuruoling.omms.central.controller.console.output.SessionInputSource;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
@@ -23,6 +26,9 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", controllerName);
         }
         String id = Util.randomStringGen(16);
+        ControllerConsole controllerConsole = new ControllerConsole(controller, id, new EncryptedSocketPrintTarget(session.getServer()), new SessionInputSource());
+        controllerConsole.start();
+        session.getControllerConsoleMap().put(id, controllerConsole);
         var consoleAlreadyStarted = new AtomicBoolean(false);
         session.getControllerConsoleMap().forEach(((s, console) -> {
             if (Objects.equals(console.getController().getName(), controllerName)){

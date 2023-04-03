@@ -68,7 +68,7 @@ object WhitelistManager {
         if (whitelist.getPlayers().contains(value)) {
             return Result.OK
         }
-        return Result.NO_SUCH_PLAYER
+        return Result.PLAYER_NOT_EXIST
     }
 
     fun queryInAllWhitelist(player: String): MutableList<String> {
@@ -153,7 +153,7 @@ object WhitelistManager {
 
             Operation.REMOVE -> {
                 if (!players.contains(value)) {
-                    return Result.NO_SUCH_PLAYER
+                    return Result.PLAYER_NOT_EXIST
                 }
                 players.remove(value)
             }

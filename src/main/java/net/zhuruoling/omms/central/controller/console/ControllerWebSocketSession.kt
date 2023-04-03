@@ -84,14 +84,16 @@ constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Uni
                             }
                         } catch (_: InterruptedException) { }
                     }
-                } catch (e: Exception) {
+                }catch (_: InterruptedException) { }
+                catch (e: Exception) {
                     e.printStackTrace()
                     connected.set(false)
                     client.close()
                     return@runBlocking
                 }
             }
-        } catch (e: Exception) {
+        }catch (_: InterruptedException) { }
+        catch (e: Exception) {
             e.printStackTrace()
         }
     }
