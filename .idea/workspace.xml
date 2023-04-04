@@ -4,19 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="?">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.10.0 DONE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerConsole.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/client/ControllerHttpClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/SessionContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/LaunchControllerConsoleRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/LaunchControllerConsoleRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/SendCommandToControllerRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/SendCommandToControllerRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/response/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/response/Result.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/EndControllerConsoleRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/builtin/controller/EndControllerConsoleRequestHandler.java" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -769,14 +759,8 @@
       <workItem from="1680107451120" duration="483000" />
       <workItem from="1680367324458" duration="3591000" />
       <workItem from="1680491443236" duration="8780000" />
-      <workItem from="1680531106950" duration="8986000" />
-    </task>
-    <task id="LOCAL-00062" summary="0.6.10 reeee">
-      <created>1666282878227</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1666282878227</updated>
+      <workItem from="1680531106950" duration="9187000" />
+      <workItem from="1680622981748" duration="4946000" />
     </task>
     <task id="LOCAL-00063" summary="0.6.11 supports C-S version check +1">
       <created>1666885805657</created>
@@ -1114,7 +1098,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680505047295</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="0.10.0 DONE">
+      <created>1680542681834</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1680542681835</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1178,7 +1169,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix permission problem" />
     <MESSAGE value="0.8.0&#10;controller commandFeedback" />
     <MESSAGE value="0.8.0&#10;immediately response for a not queryable controller" />
     <MESSAGE value="0.8.0" />
@@ -1203,7 +1193,8 @@
     <MESSAGE value="0.10.0&#10;i wrote shit" />
     <MESSAGE value="SHIT CODE" />
     <MESSAGE value="?" />
-    <option name="LAST_COMMIT_MESSAGE" value="?" />
+    <MESSAGE value="0.10.0 DONE" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.10.0 DONE" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
