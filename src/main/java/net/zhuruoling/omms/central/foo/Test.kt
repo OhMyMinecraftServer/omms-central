@@ -1,7 +1,9 @@
 package net.zhuruoling.omms.central.foo
 
+import org.slf4j.LoggerFactory
+
+val logger = LoggerFactory.getLogger("Test")
+
 fun main() {
-    //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
-
-
+    logger.info("WDNMD")
 }

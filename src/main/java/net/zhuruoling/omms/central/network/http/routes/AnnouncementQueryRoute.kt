@@ -12,6 +12,7 @@ fun Route.announcementQueryRouting() {
     val logger = LoggerFactory.getLogger("WhitelistQueryRouting")
     route("/announcement") {
         get("latest") {
+
             val announcement =
                 AnnouncementManager.getLatest() ?: return@get call.respond(HttpStatusCode.OK, "NO_ANNOUNCEMENT")
             call.respondText(announcement.toJson(), status = HttpStatusCode.OK)
