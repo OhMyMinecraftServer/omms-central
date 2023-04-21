@@ -17,6 +17,7 @@ import net.zhuruoling.omms.central.GlobalVariable.receiver
 import net.zhuruoling.omms.central.GlobalVariable.socketServer
 import net.zhuruoling.omms.central.GlobalVariable.test
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
+import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
@@ -115,6 +116,7 @@ object MainKt {
         logger.info("\tHttpPort: ${config?.httpPort}")
         logger.info("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
         logger.info("\tRequestRateLimit: ${config?.rateLimit}")
+        logger.info("\tChatbridgeImplementation: ${config?.chatbridgeImplementation}")
 
         if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
             logger.error("Failed to acquire lock.Might another server instance are running?")
@@ -154,18 +156,24 @@ object MainKt {
         }
         Util.listAll(logger)
         logger.info("Setting up services.")
+
         val socketServer = SessionInitialServer()
-        val receiver = UdpBroadcastReceiver()
-        val httpServer = launchHttpServerAsync(args)
-        val sender = UdpBroadcastSender()
         socketServer.start()
-        receiver.start()
-        sender.start()
         GlobalVariable.socketServer = socketServer
-        GlobalVariable.receiver = receiver
+        if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
+            val receiver = UdpBroadcastReceiver()
+            receiver.start()
+            GlobalVariable.receiver = receiver
+        }
+
+        val httpServer = launchHttpServerAsync(args)
         GlobalVariable.httpServer = httpServer
+
+        val sender = UdpBroadcastSender()
+        sender.start()
         udpBroadcastSender = sender
         udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
+
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\".")
@@ -185,8 +193,10 @@ object MainKt {
             normalShutdown = true
             PluginManager.unloadAll()
             Objects.requireNonNull(httpServer)?.interrupt()
-            Objects.requireNonNull(receiver)?.interrupt()
-            Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
+            if (GlobalVariable.config?.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
+                Objects.requireNonNull(receiver)?.interrupt()
+                Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
+            }
             Objects.requireNonNull(socketServer)?.interrupt()
             if (!noLock) {
                 logger.info("Releasing lock.")

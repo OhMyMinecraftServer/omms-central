@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.configuration;
 
 import com.google.gson.annotations.SerializedName;
+import net.zhuruoling.omms.central.network.ChatbridgeImplementation;
 
 import java.util.Arrays;
 
@@ -26,6 +27,8 @@ public class Configuration {
 
     @SerializedName("authorised_controller")
     String[] authorisedController = new String[]{};
+    @SerializedName("chatbridge_impl")
+    ChatbridgeImplementation chatbridgeImplementation = ChatbridgeImplementation.UDP;
 
     public String[] getAuthorisedController() {
         return authorisedController;
@@ -48,14 +51,20 @@ public class Configuration {
         return rateLimit;
     }
 
+    public ChatbridgeImplementation getChatbridgeImplementation() {
+        if (chatbridgeImplementation == null)return null;
+        return chatbridgeImplementation;
+    }
+
     @Override
     public String toString() {
         return "Configuration{" +
                 "port=" + port +
                 ", httpPort=" + httpPort +
-                ", packetLimit=" + rateLimit +
+                ", rateLimit=" + rateLimit +
                 ", serverName='" + serverName + '\'' +
                 ", authorisedController=" + Arrays.toString(authorisedController) +
+                ", chatbridgeImplementation=" + chatbridgeImplementation +
                 '}';
     }
 }

@@ -1,0 +1,352 @@
+openapi: "3.0.3"
+info:
+  title: "omms_central API"
+  description: "omms_central API"
+  version: "1.0.0"
+servers:
+- url: "https://omms_central"
+paths:
+  /:
+    get:
+      description: ""
+      parameters:
+      - name: "Connection"
+        in: "header"
+        required: true
+        description: "Websocket Connection parameter"
+        schema:
+          type: "string"
+      - name: "Upgrade"
+        in: "header"
+        required: true
+        description: "Websocket Upgrade parameter"
+        schema:
+          type: "string"
+      - name: "Sec-WebSocket-Key"
+        in: "header"
+        required: true
+        description: "Websocket Sec-WebSocket-Key parameter"
+        schema:
+          type: "string"
+      responses:
+        "101":
+          description: "Switching Protocols"
+          headers:
+            Connection:
+              required: true
+              schema:
+                type: "string"
+            Upgrade:
+              required: true
+              schema:
+                type: "string"
+            Sec-WebSocket-Accept:
+              required: true
+              schema:
+                type: "string"
+  /announcement:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /announcement/get/{id}:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing id"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "NO_ANNOUNCEMENT"
+  /announcement/latest:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "NO_ANNOUNCEMENT"
+  /announcement/list:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /controller/crashReport/upload:
+    post:
+      description: ""
+  /management/announcement/create:
+    post:
+      description: ""
+  /management/announcement/delete:
+    post:
+      description: ""
+  /management/broadcast/send:
+    post:
+      description: ""
+  /management/command/run:
+    post:
+      description: ""
+      responses:
+        "403":
+          description: "Forbidden"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /management/controller:
+    get:
+      description: ""
+  /management/controller/run:
+    post:
+      description: ""
+  /management/permission/{id}:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+  /management/permission:
+    get:
+      description: ""
+    post:
+      description: ""
+  /management/permission/{operation}:
+    post:
+      description: ""
+      parameters:
+      - name: "operation"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+  /management/permission/{id}/resolve:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+  /management/permission/resolve:
+    get:
+      description: ""
+  /management/permission/calculate:
+    post:
+      description: ""
+  /management/whitelist/add:
+    post:
+      description: ""
+  /management/whitelist/create:
+    post:
+      description: ""
+  /management/whitelist/delete:
+    post:
+      description: ""
+  /management/whitelist/remove:
+    post:
+      description: ""
+  /pair/{code}:
+    get:
+      description: ""
+      parameters:
+      - name: "code"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "{\"result\":\"Pair is not enabled on this server\",\"config\"\
+                    :{}}"
+                Example#2:
+                  value: "Missing code"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "404":
+          description: "Not Found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Code NOT exist"
+  /status:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /status/controllers:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /whitelist:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "[]"
+  /whitelist/{name}:
+    get:
+      description: ""
+      parameters:
+      - name: "name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing name"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /whitelist/{name}/query/{playerName}:
+    get:
+      description: ""
+      parameters:
+      - name: "name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "playerName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing player"
+                Example#2:
+                  value: "Missing name"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /whitelist/queryAll/{playerName}:
+    get:
+      description: ""
+      parameters:
+      - name: "playerName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Missing player"
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "[]"

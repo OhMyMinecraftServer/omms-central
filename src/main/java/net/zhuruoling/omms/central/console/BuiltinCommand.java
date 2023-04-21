@@ -18,6 +18,7 @@ import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
+import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
 import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
@@ -148,6 +149,10 @@ public class BuiltinCommand {
                 .then(
                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("text", greedyString()).executes(
                                 commandContext -> {
+                                    if (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation() == null){
+                                        commandContext.getSource().sendFeedback("Chatbridge disabled.");
+                                        return 0;
+                                    }
                                     String text = getString(commandContext, "text");
                                     logger.info("Sending message:" + text);
                                     Broadcast broadcast = new Broadcast();
@@ -155,6 +160,11 @@ public class BuiltinCommand {
                                     broadcast.setContent(text);
                                     broadcast.setPlayer(Util.randomStringGen(8));
                                     broadcast.setServer("OMMS CENTRAL");
+                                    switch (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation()) {
+                                        case UDP -> Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender())
+                                                .addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
+                                        case WS -> WebsocketRouteKt.sendToAllWS(broadcast);
+                                    }
                                     Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
                                     return 1;
                                 }
@@ -421,7 +431,7 @@ public class BuiltinCommand {
                                             commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                             SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
                                             StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), controller , stdOutPrintTarget, new StdinInputSource());
+                                            ControllerConsole controllerConsole = new ControllerConsole(Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller(), controller, stdOutPrintTarget, new StdinInputSource());
                                             controllerConsole.start();
                                             while (controllerConsole.isAlive()) {
                                                 try {

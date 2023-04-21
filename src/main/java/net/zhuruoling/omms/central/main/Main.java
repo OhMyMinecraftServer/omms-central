@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.main;
 
 import net.zhuruoling.omms.central.GlobalVariable;
+import net.zhuruoling.omms.central.network.ChatbridgeImplementation;
 import net.zhuruoling.omms.central.plugin.PluginManager;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +25,10 @@ public class Main {
                     System.out.println("Stopping!");
                     PluginManager.INSTANCE.unloadAll();
                     Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
+                    if (Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
+                        Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
+                        Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
+                    }
                     Objects.requireNonNull(GlobalVariable.INSTANCE.getSocketServer()).interrupt();
                     if (!GlobalVariable.INSTANCE.getNoLock()) {
                         System.out.println("Releasing lock.");

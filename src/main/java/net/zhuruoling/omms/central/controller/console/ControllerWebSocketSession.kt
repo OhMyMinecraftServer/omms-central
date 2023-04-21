@@ -17,8 +17,10 @@ import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.network.http.client.asSalted
 import java.util.concurrent.atomic.AtomicBoolean
 
-class ControllerWebSocketSession
-constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit, val controller: Controller) :
+class ControllerWebSocketSession(
+    val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit,
+    val controller: Controller
+) :
     Thread("Console@${controller.name}") {
     val list = mutableListOf<String>()
     var connected = AtomicBoolean(false)
@@ -56,17 +58,17 @@ constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Uni
                     val sp = controller.httpQueryAddress.split(":")
                     client.webSocket(method = HttpMethod.Get, host = sp[0], port = sp[1].toInt(), path = "/") {
                         try {
-                            while (true) {
-                                connected.set(true)
-                                val output = launch(Dispatchers.IO) {
-                                    for (line in incoming) {
-                                        line as? Frame.Text ?: continue
-                                        runBlocking {
-                                            onLogReceiveCallback(line.readText())
-                                        }
+                            connected.set(true)
+                            val output = launch(Dispatchers.IO) {
+                                for (line in incoming) {
+                                    line as? Frame.Text ?: continue
+                                    runBlocking {
+                                        onLogReceiveCallback(line.readText())
                                     }
                                 }
-                                val input = launch(Dispatchers.Default) {
+                            }
+                            val input = launch(Dispatchers.Default) {
+                                while (true) {
                                     synchronized(list) {
                                         if (list.isNotEmpty()) {
                                             for (s in list) {
@@ -77,23 +79,24 @@ constructor(val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Uni
                                             list.clear()
                                         }
                                     }
+                                    sleep(50)
                                 }
-                                input.join()
-                                output.cancelAndJoin()
-                                sleep(50)
                             }
-                        } catch (_: InterruptedException) { }
+                            input.join()
+                            output.cancelAndJoin()
+                        } catch (_: InterruptedException) {
+                        }
                     }
-                }catch (_: InterruptedException) { }
-                catch (e: Exception) {
+                } catch (_: InterruptedException) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                     connected.set(false)
                     client.close()
                     return@runBlocking
                 }
             }
-        }catch (_: InterruptedException) { }
-        catch (e: Exception) {
+        } catch (_: InterruptedException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
