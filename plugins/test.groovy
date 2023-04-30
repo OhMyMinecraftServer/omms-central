@@ -7,12 +7,12 @@ import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.broadcast.Broadcast
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.response.Response
-import net.zhuruoling.omms.central.plugin.LifecycleServerInterface
-import net.zhuruoling.omms.central.plugin.PluginDependency
-import net.zhuruoling.omms.central.plugin.PluginLogger
-import net.zhuruoling.omms.central.plugin.PluginMain
-import net.zhuruoling.omms.central.plugin.PluginMetadata
-import net.zhuruoling.omms.central.plugin.RequestServerInterface
+import net.zhuruoling.omms.central.old.plugin.LifecycleOperationProxy
+import net.zhuruoling.omms.central.old.plugin.PluginDependency
+import net.zhuruoling.omms.central.old.plugin.PluginLogger
+import net.zhuruoling.omms.central.old.plugin.PluginMain
+import net.zhuruoling.omms.central.old.plugin.PluginMetadata
+import net.zhuruoling.omms.central.old.plugin.RequestOperationProxy
 import net.zhuruoling.omms.central.system.SystemInfo
 import net.zhuruoling.omms.central.system.SystemUtil
 import net.zhuruoling.omms.central.network.session.response.Result
@@ -26,10 +26,10 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
 class TestPlugin extends PluginMain {
     @Override
-    void onLoad(LifecycleServerInterface serverInterface) {
+    void onLoad(LifecycleOperationProxy serverInterface) {
         serverInterface.registerRequestCode("TEST", "test")
         serverInterface.registerRequestCode("PING", {
-            RequestServerInterface requestServerInterface, Request command ->
+            RequestOperationProxy requestServerInterface, Request command ->
             requestServerInterface.logger.info("PING COMMAND TRIGGERED")
             return new Response().withResponseCode(Result.OK).withContentPair("message", "pong")
         })
@@ -57,14 +57,14 @@ class TestPlugin extends PluginMain {
 
     }
 
-    Response test(RequestServerInterface serverInterface, Request command) {
+    Response test(RequestOperationProxy serverInterface, Request command) {
         serverInterface.logger.info(command.toString())
         //serverInterface.sendBack("OK", new String[]{"wdnmd"})
         return new Response().withResponseCode(Result.OK).withContentPair("message","wdnmd")
     }
 
     @Override
-    void onUnload(LifecycleServerInterface serverInterface) {
+    void onUnload(LifecycleOperationProxy serverInterface) {
         serverInterface.getLogger().info("Test Plugin unloaded!")
     }
 

@@ -2,7 +2,7 @@ package net.zhuruoling.omms.central.main;
 
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation;
-import net.zhuruoling.omms.central.plugin.PluginManager;
+import net.zhuruoling.omms.central.old.plugin.PluginManager;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;

@@ -1,13 +1,11 @@
 package net.zhuruoling.omms.central.network.session.handler;
 
 import net.zhuruoling.omms.central.network.session.SessionContext;
-import net.zhuruoling.omms.central.network.session.message.MessageBuilderKt;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
-import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
-import net.zhuruoling.omms.central.plugin.PluginManager;
-import net.zhuruoling.omms.central.plugin.RequestServerInterface;
+import net.zhuruoling.omms.central.old.plugin.PluginManager;
+import net.zhuruoling.omms.central.old.plugin.RequestOperationProxy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +16,7 @@ public class PluginRequestHandler extends RequestHandler {
     private final String pluginName;
     private final String code;
     private final String funcName;
-    private final @Nullable BiFunction<RequestServerInterface, Request, Response> function;
+    private final @Nullable BiFunction<RequestOperationProxy, Request, Response> function;
 
     public PluginRequestHandler(String pluginName, String code, String funcName) {
         super("PLUGIN %s".formatted(pluginName));
@@ -28,7 +26,7 @@ public class PluginRequestHandler extends RequestHandler {
         function = null;
     }
 
-    public PluginRequestHandler(String pluginName, String code, BiFunction<RequestServerInterface, Request, Response> function) {
+    public PluginRequestHandler(String pluginName, String code, BiFunction<RequestOperationProxy, Request, Response> function) {
         super("PLUGIN %s".formatted(pluginName));
         this.pluginName = pluginName;
         this.code = code;
@@ -56,9 +54,9 @@ public class PluginRequestHandler extends RequestHandler {
             throw new UnsupportedOperationException("The operation code defined in this class does not align with requested operation code.");
         }
         if (function != null) {
-            return function.apply(new RequestServerInterface(session, pluginName), request);
+            return function.apply(new RequestOperationProxy(session, pluginName), request);
         } else {
-            return (Response) PluginManager.INSTANCE.execute(pluginName, funcName, request, new RequestServerInterface(session, pluginName));
+            return (Response) PluginManager.INSTANCE.execute(pluginName, funcName, request, new RequestOperationProxy(session, pluginName));
         }
     }
 

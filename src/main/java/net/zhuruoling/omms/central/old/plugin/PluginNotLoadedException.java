@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.plugin;
+package net.zhuruoling.omms.central.old.plugin;
 
 public class PluginNotLoadedException extends IllegalStateException{
     public PluginNotLoadedException(String id) {

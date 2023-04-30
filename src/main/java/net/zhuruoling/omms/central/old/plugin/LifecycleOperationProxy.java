@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.plugin;
+package net.zhuruoling.omms.central.old.plugin;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -18,10 +18,10 @@ import java.util.function.Consumer;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 
-public class LifecycleServerInterface extends ServerInterface {
+public class LifecycleOperationProxy extends StageOperationProxy {
 
 
-    public LifecycleServerInterface(String name) {
+    public LifecycleOperationProxy(String name) {
         super(null, name);
     }
 
@@ -30,7 +30,7 @@ public class LifecycleServerInterface extends ServerInterface {
         RequestManager.INSTANCE.registerPluginRequest(code, this.getPluginName(), new PluginRequestHandler(this.getPluginName(), code, functionName), false);
     }
 
-    public void registerRequestCode(@NotNull String code, @NotNull BiFunction<RequestServerInterface, Request, Response> consumer) {
+    public void registerRequestCode(@NotNull String code, @NotNull BiFunction<RequestOperationProxy, Request, Response> consumer) {
         //this.getLogger().info("Registering %s".formatted(code));
         RequestManager.INSTANCE.registerPluginRequest(code, this.getPluginName(), new PluginRequestHandler(this.getPluginName(), code, consumer), false);
     }

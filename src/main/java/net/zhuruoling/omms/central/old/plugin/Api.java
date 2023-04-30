@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.plugin;
+package net.zhuruoling.omms.central.old.plugin;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

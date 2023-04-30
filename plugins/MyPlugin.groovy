@@ -2,11 +2,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
-import net.zhuruoling.omms.central.plugin.LifecycleServerInterface
-import net.zhuruoling.omms.central.plugin.PluginDependency
-import net.zhuruoling.omms.central.plugin.PluginLogger
-import net.zhuruoling.omms.central.plugin.PluginMain
-import net.zhuruoling.omms.central.plugin.PluginMetadata
+import net.zhuruoling.omms.central.old.plugin.LifecycleOperationProxy
+import net.zhuruoling.omms.central.old.plugin.PluginDependency
+import net.zhuruoling.omms.central.old.plugin.PluginLogger
+import net.zhuruoling.omms.central.old.plugin.PluginMain
+import net.zhuruoling.omms.central.old.plugin.PluginMetadata
 
 import java.lang.module.ModuleDescriptor
 
@@ -15,7 +15,7 @@ class MyPlugin extends PluginMain {
     PluginMain util = null
 
     @Override
-    void onLoad(LifecycleServerInterface serverInterface) {
+    void onLoad(LifecycleOperationProxy serverInterface) {
         logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack> literal("another_test")
@@ -54,7 +54,7 @@ class MyPlugin extends PluginMain {
     }
 
     @Override
-    void onUnload(LifecycleServerInterface serverInterface) {
+    void onUnload(LifecycleOperationProxy serverInterface) {
         logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
     }

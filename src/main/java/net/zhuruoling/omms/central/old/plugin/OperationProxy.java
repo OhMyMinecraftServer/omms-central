@@ -1,14 +1,14 @@
-package net.zhuruoling.omms.central.plugin;
+package net.zhuruoling.omms.central.old.plugin;
 
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ServerInterface {
+public abstract class OperationProxy {
     private final SessionContext session;
     private final @NotNull PluginLogger logger;
     private final String pluginName;
-    public ServerInterface(SessionContext sessionContext, String name) {
+    public OperationProxy(SessionContext sessionContext, String name) {
         this.session = sessionContext;
         this.pluginName = name;
         this.logger = new PluginLogger(this.pluginName);

@@ -27,7 +27,7 @@ import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.permissionTable
-import net.zhuruoling.omms.central.plugin.PluginManager
+import net.zhuruoling.omms.central.old.plugin.PluginManager
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.bar
 import net.zhuruoling.omms.central.whitelist.WhitelistManager

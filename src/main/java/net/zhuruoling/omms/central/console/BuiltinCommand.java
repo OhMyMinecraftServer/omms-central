@@ -23,7 +23,7 @@ import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
-import net.zhuruoling.omms.central.plugin.PluginManager;
+import net.zhuruoling.omms.central.old.plugin.PluginManager;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;

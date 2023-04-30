@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.plugin;
+package net.zhuruoling.omms.central.old.plugin;
 
 import groovy.lang.GroovyClassLoader;
 import net.zhuruoling.omms.central.GlobalVariable;
@@ -97,11 +97,11 @@ public class GroovyPluginInstance {
         //return object.invokeMethod(methodName, params);
     }
 
-    public void onLoad(LifecycleServerInterface lifecycleServerInterface) {
+    public void onLoad(LifecycleOperationProxy lifecycleServerInterface) {
         instance.onLoad(lifecycleServerInterface);
     }
 
-    public void onUnload(LifecycleServerInterface lifecycleServerInterface) {
+    public void onUnload(LifecycleOperationProxy lifecycleServerInterface) {
         assert instance != null;
         instance.onUnload(lifecycleServerInterface);
     }

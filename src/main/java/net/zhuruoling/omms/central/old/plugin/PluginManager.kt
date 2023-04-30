@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.plugin
+package net.zhuruoling.omms.central.old.plugin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -102,7 +102,7 @@ object PluginManager {
         pluginName: String,
         functionName: String,
         command: Request,
-        serverInterface: RequestServerInterface
+        serverInterface: RequestOperationProxy
     ): Any? {
         val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
             "Plugin $pluginName does not exist."
@@ -117,7 +117,8 @@ object PluginManager {
         logger.info("Loading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
         pluginCommandTable[pluginName] = ArrayList()
-        val initServerInterface = LifecycleServerInterface(pluginName)
+        val initServerInterface =
+            LifecycleOperationProxy(pluginName)
         if (pluginInstance != null) {
             if (pluginInstance.pluginStatus == PluginStatus.LOADED) {
                 throw PluginAlreadyLoadedException("Plugin $pluginName already loaded.")
@@ -136,7 +137,8 @@ object PluginManager {
     fun unload(pluginName: String, ignorePluginStatus: Boolean) {
         logger.info("Unloading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
-        val lifecycleServerInterface = LifecycleServerInterface(pluginName)
+        val lifecycleServerInterface =
+            LifecycleOperationProxy(pluginName)
         if (pluginInstance != null) {
             if (!ignorePluginStatus) {
                 if (pluginInstance.pluginStatus != PluginStatus.LOADED) {
