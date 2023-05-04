@@ -6,13 +6,16 @@ import net.zhuruoling.omms.central.util.Util;
 public class PluginMetadata {
     String id;
     String version;
-
     String author;
     String link;
     @SerializedName(value = "main", alternate = {"pluginMain", "pluginMainClass"})
     String pluginMainClass;
     @SerializedName(value = "dependencies", alternate = {"pluginDependencies"})
     PluginDependencies[] pluginDependencies;
+    @SerializedName(value = "pluginEventHandler", alternate = {"eventHandler", "handler"})
+    String[] pluginEventHandlers;
+    @SerializedName(value = "pluginRequestHandler", alternate = {"requestHandler"})
+    String[] pluginRequestHandlers;
 
     public static PluginMetadata fromJson(String s) {
         return Util.fromJson(s, PluginMetadata.class);
@@ -40,5 +43,13 @@ public class PluginMetadata {
 
     public PluginDependencies[] getPluginDependencies() {
         return pluginDependencies;
+    }
+
+    public String[] getPluginEventHandlers() {
+        return pluginEventHandlers;
+    }
+
+    public String[] getPluginRequestHandlers() {
+        return pluginRequestHandlers;
     }
 }

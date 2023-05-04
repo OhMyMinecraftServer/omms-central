@@ -6,9 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="hydrogen-qlink" />
         <module name="omms-central" />
-        <module name="uranium-qlink" />
       </profile>
     </annotationProcessing>
   </component>
