@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="merge">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/annotations/EventHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/handler/PluginRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" afterDir="false" />
-    </list>
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="how" />
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
     <list id="3a05e38f-966b-4825-b912-1f5318245386" name="Changes by MapleDust" comment="" />
@@ -805,13 +797,7 @@
       <workItem from="1683095270829" duration="3379000" />
       <workItem from="1683110608536" duration="1035000" />
       <workItem from="1683196345921" duration="3959000" />
-    </task>
-    <task id="LOCAL-00067" summary="0.7.1 status queryable switch">
-      <created>1667146449227</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1667146449227</updated>
+      <workItem from="1683218368251" duration="669000" />
     </task>
     <task id="LOCAL-00068" summary="0.7.1 version update">
       <created>1667146871508</created>
@@ -1149,7 +1135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683089649054</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="how">
+      <created>1683218620248</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1683218620248</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1213,7 +1206,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.8.2&#10;attempt to make changes to PermissionManager" />
     <MESSAGE value="0.8.2&#10;我是SB" />
     <MESSAGE value="0.8.2&#10;我是SB +1" />
     <MESSAGE value="0.8.2&#10;RAINBOW" />
@@ -1238,7 +1230,8 @@
     <MESSAGE value="0.10.0 announcement fix" />
     <MESSAGE value="it might works" />
     <MESSAGE value="merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="merge" />
+    <MESSAGE value="how" />
+    <option name="LAST_COMMIT_MESSAGE" value="how" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
