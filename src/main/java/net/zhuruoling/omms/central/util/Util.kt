@@ -4,6 +4,7 @@ import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.whitelist.Whitelist
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
+import java.net.URL
 
 fun whitelistPrettyPrinting(whitelist: Whitelist): String{
     return """
@@ -24,6 +25,10 @@ fun controllerPrettyPrinting(controller: Controller): String{
 }
 
 fun toTypedArray(list: MutableList<Int>): Array<Int>{
+    return list.toTypedArray()
+}
+
+fun toTypedArray(list: MutableList<URL>): Array<URL>{
     return list.toTypedArray()
 }
 

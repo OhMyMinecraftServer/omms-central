@@ -11,7 +11,7 @@ public class PluginMetadata {
     @SerializedName(value = "main", alternate = {"pluginMain", "pluginMainClass"})
     String pluginMainClass;
     @SerializedName(value = "dependencies", alternate = {"pluginDependencies"})
-    PluginDependencies[] pluginDependencies;
+    PluginDependencyRequirement[] pluginDependencies;
     @SerializedName(value = "pluginEventHandler", alternate = {"eventHandler", "handler"})
     String[] pluginEventHandlers;
     @SerializedName(value = "pluginRequestHandler", alternate = {"requestHandler"})
@@ -41,7 +41,7 @@ public class PluginMetadata {
         return pluginMainClass;
     }
 
-    public PluginDependencies[] getPluginDependencies() {
+    public PluginDependencyRequirement[] getPluginDependencies() {
         return pluginDependencies;
     }
 

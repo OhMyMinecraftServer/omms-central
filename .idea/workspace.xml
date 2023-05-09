@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="how" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="coding without brain">
+      <change afterPath="$PROJECT_DIR$/black_history/uranium-qlink-0.3-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/Util.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/depedency/PluginDependency.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencies.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
+    </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
     <list id="3a05e38f-966b-4825-b912-1f5318245386" name="Changes by MapleDust" comment="" />
@@ -22,13 +33,13 @@
         <option value="Kotlin Script" />
         <option value="Kotlin Data Class" />
         <option value="Interface" />
-        <option value="Enum" />
         <option value="module-info" />
         <option value="Kotlin Class" />
-        <option value="Kotlin File" />
         <option value="Kotlin Object" />
         <option value="AnnotationType" />
+        <option value="Enum" />
         <option value="Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -72,49 +83,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1683209053197&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "dart.analysis.tool.window.visible": "false",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
+    "extract.method.default.visibility": "private",
+    "full.screen.before.presentation.mode": "false",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "17",
+    "ktor.last.update.timestamp": "1683643514474",
+    "last_opened_file_path": "C:/Users/jkl-9/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;GitIgnore&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "GitIgnore"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
-      <recent name="net.zhuruoling.omms.central.network.session" />
       <recent name="net.zhuruoling.omms.central.plugin" />
+      <recent name="net.zhuruoling.omms.central.network.session" />
       <recent name="net.zhuruoling.controller" />
       <recent name="net.zhuruoling.socket" />
     </key>
@@ -129,6 +141,7 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\black_history" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\omms-central-plugin-example\src\main\resources" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\src\main\resources\META-INF\services" />
     </key>
@@ -158,7 +171,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]">
+  <component name="RunManager" selected="Application.nolock noplugin">
     <configuration name="Bar wdnmd" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central" />
@@ -175,19 +188,6 @@
     </configuration>
     <configuration name="Bar" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
-      <module name="omms-central" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="net.zhuruoling.omms.central.foo.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Demo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.foo.Demo" />
       <module name="omms-central" />
       <extension name="coverage">
         <pattern>
@@ -376,6 +376,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UtilKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.plugin.UtilKt" />
+      <module name="omms-central" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Bar wdnmd" />
       <item itemvalue="Application.Bar" />
@@ -388,19 +395,19 @@
       <item itemvalue="Application.noplugin test" />
       <item itemvalue="Application.noplugin" />
       <item itemvalue="Application.test" />
-      <item itemvalue="Application.Demo" />
       <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
+      <item itemvalue="Kotlin.UtilKt" />
       <item itemvalue="Kotlin.FooKt" />
       <item itemvalue="Kotlin.GraphicsUtilKt" />
       <item itemvalue="Kotlin.TestKt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.UtilKt" />
         <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
         <item itemvalue="Kotlin.TestKt" />
         <item itemvalue="Kotlin.FooKt" />
         <item itemvalue="Kotlin.GraphicsUtilKt" />
-        <item itemvalue="Application.Demo" />
       </list>
     </recent_temporary>
   </component>
@@ -798,13 +805,14 @@
       <workItem from="1683110608536" duration="1035000" />
       <workItem from="1683196345921" duration="3959000" />
       <workItem from="1683218368251" duration="669000" />
-    </task>
-    <task id="LOCAL-00068" summary="0.7.1 version update">
-      <created>1667146871508</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1667146871508</updated>
+      <workItem from="1683257431996" duration="8395000" />
+      <workItem from="1683274513654" duration="605000" />
+      <workItem from="1683370252588" duration="9959000" />
+      <workItem from="1683391129620" duration="1018000" />
+      <workItem from="1683451649550" duration="664000" />
+      <workItem from="1683473241482" duration="18000" />
+      <workItem from="1683640551315" duration="2165000" />
+      <workItem from="1683643475421" duration="1095000" />
     </task>
     <task id="LOCAL-00069" summary="0.7.1 cast queryable to http api">
       <created>1667148459870</created>
@@ -1142,7 +1150,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683218620248</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="coding without brain">
+      <created>1683266904922</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1683266904923</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1206,7 +1221,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.8.2&#10;我是SB" />
     <MESSAGE value="0.8.2&#10;我是SB +1" />
     <MESSAGE value="0.8.2&#10;RAINBOW" />
     <MESSAGE value="0.9.0a&#10;DatabaseConnection" />
@@ -1231,7 +1245,8 @@
     <MESSAGE value="it might works" />
     <MESSAGE value="merge" />
     <MESSAGE value="how" />
-    <option name="LAST_COMMIT_MESSAGE" value="how" />
+    <MESSAGE value="coding without brain" />
+    <option name="LAST_COMMIT_MESSAGE" value="coding without brain" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
