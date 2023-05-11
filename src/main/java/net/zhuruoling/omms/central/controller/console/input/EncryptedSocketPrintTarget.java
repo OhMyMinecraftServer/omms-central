@@ -22,7 +22,7 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
     @Override
     void println(SessionServer target, ControllerConsole console, String content) {
         try {
-            logger.info(content);
+            logger.debug(content);
             target.sendResponseAsync(responseBuilder(content, console.getConsoleId()));
         }catch (Exception e){
             throw new RuntimeException("Error occurred while sending log to client.",e);
