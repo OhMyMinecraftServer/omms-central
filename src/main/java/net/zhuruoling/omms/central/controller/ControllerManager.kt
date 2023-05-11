@@ -33,18 +33,18 @@ object ControllerManager {
             } else {
                 files.forEach {
                     logger.debug("server:$it")
-                    val controller: Controller =
-                        gson.fromJson(FileReader(Util.joinFilePaths("./controllers/", it)), Controller().javaClass)
-                    logger.debug(controller.toString())
+                    val controllerImpl: ControllerImpl =
+                        gson.fromJson(FileReader(Util.joinFilePaths("./controllers/", it)), ControllerImpl().javaClass)
+                    logger.debug(controllerImpl.toString())
                     try {
-                        controllers[controller.name] =
-                            ControllerInstance(controller, ControllerUtils.resloveTypeFromString(controller.type))
-                        controllerConnector[controller.name] = ControllerHttpClient(controller)
+                        controllers[controllerImpl.name] =
+                            ControllerInstance(controllerImpl, ControllerUtils.resloveTypeFromString(controllerImpl.type))
+                        controllerConnector[controllerImpl.name] = ControllerHttpClient(controllerImpl)
                     } catch (e: IllegalArgumentException) {
                         logger.error(
-                            "Cannot resolve controller type symbol: %s".format(controller.type),
+                            "Cannot resolve controller type symbol: %s".format(controllerImpl.type),
                             IllegalControllerTypeException(
-                                "Cannot resolve controller type symbol: %s".format(controller.type),
+                                "Cannot resolve controller type symbol: %s".format(controllerImpl.type),
                                 e
                             )
                         )

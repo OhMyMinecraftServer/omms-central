@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.util
 
 import net.zhuruoling.omms.central.controller.Controller
+import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.whitelist.Whitelist
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
@@ -12,15 +13,22 @@ fun whitelistPrettyPrinting(whitelist: Whitelist): String{
     """.trimIndent()
 }
 
-fun controllerPrettyPrinting(controller: Controller): String{
+fun controllerPrettyPrinting(controllerImpl: Controller): String{
+    if (controllerImpl is ControllerImpl)
     return """
-        - Controller: ${controller.name}
-            executable: ${controller.executable}
-            type: ${controller.type}
-            launchParameters: ${controller.launchParams}
-            workingDirectory: ${controller.workingDir}
-            isStatusQueryable: ${controller.isStatusQueryable}
+        - Controller: ${controllerImpl.name}
+            executable: ${controllerImpl.executable}
+            type: ${controllerImpl.type}
+            launchParameters: ${controllerImpl.launchParams}
+            workingDirectory: ${controllerImpl.workingDir}
+            isStatusQueryable: ${controllerImpl.isStatusQueryable}
     """.trimIndent()
+    else
+        return """
+        - Controller: ${controllerImpl.name}
+            isStatusQueryable: ${controllerImpl.isStatusQueryable}
+    """.trimIndent()
+
 }
 
 fun toTypedArray(list: MutableList<Int>): Array<Int>{

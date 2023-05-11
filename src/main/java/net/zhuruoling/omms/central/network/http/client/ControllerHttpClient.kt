@@ -1,7 +1,6 @@
 package net.zhuruoling.omms.central.network.http.client
 
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
@@ -9,17 +8,16 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
-import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
 import net.zhuruoling.omms.central.controller.CommandOutputData
-import net.zhuruoling.omms.central.controller.Controller
+import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 
 fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
 
-class ControllerHttpClient(val controller: Controller) {
+class ControllerHttpClient(val controllerImpl: ControllerImpl) {
     val client: HttpClient
     private val baseUrl: String
     private val logger: org.slf4j.Logger
@@ -33,14 +31,14 @@ class ControllerHttpClient(val controller: Controller) {
             install(Auth) {
                 basic {
                     credentials {
-                        BasicAuthCredentials(username = controller.name, password = asSalted(controller.name))
+                        BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
                     }
                     realm = "Access to the client"
                 }
             }
         }
-        logger = LoggerFactory.getLogger("ControllerHttpClient#${controller.name}")
-        baseUrl = "http://" + controller.httpQueryAddress + "/"
+        logger = LoggerFactory.getLogger("ControllerHttpClient#${controllerImpl.name}")
+        baseUrl = "http://" + controllerImpl.httpQueryAddress + "/"
     }
 
     private suspend fun get(path: String): HttpResponse {
@@ -71,7 +69,7 @@ class ControllerHttpClient(val controller: Controller) {
                     }
 
                     HttpStatusCode.Unauthorized -> {
-                        throw RequestUnauthorisedException("ControllerName", controller.name)
+                        throw RequestUnauthorisedException("ControllerName", controllerImpl.name)
                     }
 
                     else -> {
@@ -95,7 +93,7 @@ class ControllerHttpClient(val controller: Controller) {
         var status = Status()
         var ex: Exception? = null
         status.isAlive = false
-        status.isQueryable = controller.isStatusQueryable
+        status.isQueryable = controllerImpl.isStatusQueryable
         runBlocking {
             try {
                 val response = get("status")
@@ -110,7 +108,7 @@ class ControllerHttpClient(val controller: Controller) {
                     }
 
                     HttpStatusCode.Unauthorized -> {
-                        throw RequestUnauthorisedException("ControllerName", controller.name)
+                        throw RequestUnauthorisedException("ControllerName", controllerImpl.name)
                     }
 
                     else -> {

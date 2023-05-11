@@ -7,6 +7,7 @@ import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
+import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 public class GetControllerRequestHandler extends BuiltinRequestHandler {
@@ -18,7 +19,7 @@ public class GetControllerRequestHandler extends BuiltinRequestHandler {
         if (controller == null){
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
         }
-        return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", controller.controller().toJson());
+        return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", Util.toJson(controller.controller()));
     }
 
     @Override

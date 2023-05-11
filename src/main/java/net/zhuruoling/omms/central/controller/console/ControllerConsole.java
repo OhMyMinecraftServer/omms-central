@@ -1,17 +1,17 @@
 package net.zhuruoling.omms.central.controller.console;
 
 import kotlin.Unit;
-import net.zhuruoling.omms.central.controller.Controller;
+import net.zhuruoling.omms.central.controller.ControllerImpl;
 import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
 import net.zhuruoling.omms.central.controller.console.output.InputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ControllerConsole extends Thread {
-    private final Controller controller;
+    private final ControllerImpl controllerImpl;
 
-    public Controller getController() {
-        return controller;
+    public ControllerImpl getController() {
+        return controllerImpl;
     }
 
     private final ControllerWebSocketSession session;
@@ -23,9 +23,9 @@ public class ControllerConsole extends Thread {
 
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
 
-    public ControllerConsole(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
+    public ControllerConsole(ControllerImpl controllerImpl, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
         super("ControllerConsole");
-        this.controller = controller;
+        this.controllerImpl = controllerImpl;
         this.printTarget = printTarget;
         this.inputSource = inputSource;
         this.consoleId = consoleId;
@@ -37,7 +37,7 @@ public class ControllerConsole extends Thread {
             }
             this.printTarget.println(s, this);
             return Unit.INSTANCE;
-        }, this.controller);
+        }, this.controllerImpl);
     }
 
     private void info(String info) {

@@ -27,7 +27,7 @@ class MyPlugin extends PluginMain {
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack> literal("summon_player")
                 .executes({
                     var controller = ControllerManager.INSTANCE.controllers.get("out_survival")
-                    var client = new ControllerHttpClient(controller.controller())
+                    var client = new ControllerHttpClient(controller.controllerImpl())
                     for (i in 0..<1248) {
                         var result = client.sendCommand("player Minecraft$i spawn")
                         for (line in result) {
@@ -40,7 +40,7 @@ class MyPlugin extends PluginMain {
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack> literal("kill_player")
                 .executes({
                     var controller = ControllerManager.INSTANCE.controllers.get("out_survival")
-                    var client = new ControllerHttpClient(controller.controller())
+                    var client = new ControllerHttpClient(controller.controllerImpl())
                     for (i in 0..<1248) {
                         var result = client.sendCommand("player Minecraft$i kill")
                         for (line in result) {

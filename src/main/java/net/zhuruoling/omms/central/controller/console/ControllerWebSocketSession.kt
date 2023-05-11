@@ -13,15 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import net.zhuruoling.omms.central.controller.Controller
+import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.network.http.client.asSalted
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession(
     val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit,
-    val controller: Controller
+    val controllerImpl: ControllerImpl
 ) :
-    Thread("Console@${controller.name}") {
+    Thread("Console@${controllerImpl.name}") {
     val list = mutableListOf<String>()
     var connected = AtomicBoolean(false)
     val client = HttpClient(CIO) {
@@ -33,7 +33,7 @@ class ControllerWebSocketSession(
         install(Auth) {
             basic {
                 credentials {
-                    BasicAuthCredentials(username = controller.name, password = asSalted(controller.name))
+                    BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
                 }
                 realm = "Access to the client"
             }
@@ -41,7 +41,7 @@ class ControllerWebSocketSession(
     }
 
     fun getHistoryLogs() {
-        val baseUrl = "http://" + controller.httpQueryAddress + "/"
+        val baseUrl = "http://" + controllerImpl.httpQueryAddress + "/"
         runBlocking {
             val result = client.get(baseUrl + "logs")
             val content = String(result.readBytes())
@@ -55,7 +55,7 @@ class ControllerWebSocketSession(
         try {
             runBlocking {
                 try {
-                    val sp = controller.httpQueryAddress.split(":")
+                    val sp = controllerImpl.httpQueryAddress.split(":")
                     client.webSocket(method = HttpMethod.Get, host = sp[0], port = sp[1].toInt(), path = "/") {
                         try {
                             connected.set(true)

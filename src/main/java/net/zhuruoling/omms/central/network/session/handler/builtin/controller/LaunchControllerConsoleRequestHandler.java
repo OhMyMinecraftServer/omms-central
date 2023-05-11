@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.Controller;
+import net.zhuruoling.omms.central.controller.ControllerImpl;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.EncryptedSocketPrintTarget;
@@ -26,7 +27,7 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", controllerName);
         }
         String id = Util.randomStringGen(16);
-        ControllerConsole controllerConsole = new ControllerConsole(controller, id, new EncryptedSocketPrintTarget(session.getServer()), new SessionInputSource());
+        ControllerConsole controllerConsole = controller.startControllerConsole(new SessionInputSource(),new EncryptedSocketPrintTarget(session.getServer()), id);
         controllerConsole.start();
         session.getControllerConsoleMap().put(id, controllerConsole);
         var consoleAlreadyStarted = new AtomicBoolean(false);
