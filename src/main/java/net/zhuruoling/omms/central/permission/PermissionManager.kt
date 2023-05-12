@@ -60,10 +60,10 @@ object PermissionManager {
     }
 
 
-    fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
+    private fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
 
-        var code: Int = components.permission
-        var list: ArrayList<Permission> = ArrayList()
+        val code: Int = components.permission
+        val list: ArrayList<Permission> = ArrayList()
         //HIGHEST perm : 131071
         for (i in 1..16) {
             val m = 1 shl i - 1

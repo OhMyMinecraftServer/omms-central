@@ -1,96 +1,22 @@
 package net.zhuruoling.omms.central.controller.console;
 
-import kotlin.Unit;
-import net.zhuruoling.omms.central.controller.ControllerImpl;
-import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
+import net.zhuruoling.omms.central.controller.Controller;
 import net.zhuruoling.omms.central.controller.console.output.InputSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class ControllerConsole extends Thread {
-    private final ControllerImpl controllerImpl;
+public interface ControllerConsole {
+    Controller getController();
 
-    public ControllerImpl getController() {
-        return controllerImpl;
-    }
+//    static ControllerConsole newInstance(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource){
+//        return null;
+//    }
 
-    private final ControllerWebSocketSession session;
+    String getConsoleId();
 
-    private final PrintTarget<?, ControllerConsole> printTarget;
-    private final InputSource inputSource;
+    void start();
 
-    private final String consoleId;
+    boolean isAlive();
 
-    private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
+    InputSource getInputSource();
 
-    public ControllerConsole(ControllerImpl controllerImpl, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
-        super("ControllerConsole");
-        this.controllerImpl = controllerImpl;
-        this.printTarget = printTarget;
-        this.inputSource = inputSource;
-        this.consoleId = consoleId;
-        session = new ControllerWebSocketSession((that, s) -> {
-            if (s.equals("\u1145:END:\u1919")) {
-                that.close();
-                this.interrupt();
-                return Unit.INSTANCE;
-            }
-            this.printTarget.println(s, this);
-            return Unit.INSTANCE;
-        }, this.controllerImpl);
-    }
-
-    private void info(String info) {
-        printTarget.println(info, this);
-    }
-
-    public void close() {
-        session.close();
-        this.interrupt();
-    }
-
-    public void input(String line) {
-        if (line == null)return;
-        if (line.startsWith(":")) {
-            if (line.equals(":q")) {
-                info("Disconnecting.");
-                session.close();
-                this.interrupt();
-            }
-        } else {
-            session.inputLine(line);
-        }
-    }
-
-    @Override
-    public void run() {
-        session.start();
-        while (!session.getConnected().get()) {
-            try {
-                Thread.sleep(10);
-                if (!session.isAlive()) return;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        info("Connected.");
-        var line = inputSource.getLine();
-        while (true) {
-            try {
-                input(line);
-                sleep(10);
-                line = inputSource.getLine();
-            } catch (InterruptedException ignored) {
-                break;
-            }
-        }
-    }
-
-    public String getConsoleId() {
-        return consoleId;
-    }
-
-    public InputSource getInputSource() {
-        return inputSource;
-    }
+    void close();
 }

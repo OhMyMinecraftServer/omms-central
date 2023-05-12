@@ -14,6 +14,7 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.GlobalVariable;
@@ -386,7 +387,7 @@ public class BuiltinCommand {
                                             if (controllerName.equals("all")) {
                                                 ControllerManager.INSTANCE.getControllers().forEach((controllerId, controllerInstance) -> {
                                                     commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerId));
-                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.controller().getName(), command);
+                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.getName(), command);
                                                     for (String line : output) {
                                                         commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
                                                     }
@@ -395,7 +396,7 @@ public class BuiltinCommand {
                                             }
                                             if (controller != null) {
                                                 commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerName));
-                                                var out = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(), command);
+                                                var out = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
                                                 for (String line : out) {
                                                     commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName, line));
                                                 }
@@ -410,7 +411,9 @@ public class BuiltinCommand {
                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString()).executes(commandContext -> {
                             ControllerManager.INSTANCE
                                     .getControllerStatus(ConsoleUtil.parseControllerArgument(StringArgumentType.getString(commandContext, "controller")))
-                                    .forEach((s, status) -> System.out.println(s + "  " + Util.toJson(status)));
+                                    .forEach((s, status) -> {
+                                        ConsoleUtilKt.printControllerStatus(commandContext.getSource(), s, status);
+                                    });
                             return 0;
                         }))
                 ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("console").then(
@@ -428,13 +431,15 @@ public class BuiltinCommand {
                                                 return 1;
                                             }
                                             var controller = controllers.get(0);
+                                            if(!ControllerManager.INSTANCE.contains(controller)){
+                                                commandContext.getSource().sendFeedback("Controller %s not found.".formatted(controller));
+                                            }
                                             commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                             SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
                                             StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-                                            String id = "COMMAND";
-                                            ControllerConsole controllerConsole = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).controller().startControllerConsole(new StdinInputSource(),stdOutPrintTarget, id);
-                                            controllerConsole.start();
-                                            while (controllerConsole.isAlive()) {
+                                            ControllerConsole controllerConsoleImpl = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).startControllerConsole(new StdinInputSource(),stdOutPrintTarget, controller);
+                                            controllerConsoleImpl.start();
+                                            while (controllerConsoleImpl.isAlive()) {
                                                 try {
                                                     Thread.sleep(50);
                                                 } catch (InterruptedException ignored) {

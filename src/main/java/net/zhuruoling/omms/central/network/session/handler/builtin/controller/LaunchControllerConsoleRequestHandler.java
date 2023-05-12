@@ -1,9 +1,9 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.Controller;
-import net.zhuruoling.omms.central.controller.ControllerImpl;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.input.EncryptedSocketPrintTarget;
 import net.zhuruoling.omms.central.controller.console.output.SessionInputSource;
 import net.zhuruoling.omms.central.network.session.SessionContext;
@@ -22,14 +22,14 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
     @Override
     public @Nullable Response handle(Request request, SessionContext session) {
         String controllerName = request.getContent("controller");
-        Controller controller = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controllerName)).controller();
+        Controller controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
         if (controller == null){
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", controllerName);
         }
         String id = Util.randomStringGen(16);
-        ControllerConsole controllerConsole = controller.startControllerConsole(new SessionInputSource(),new EncryptedSocketPrintTarget(session.getServer()), id);
-        controllerConsole.start();
-        session.getControllerConsoleMap().put(id, controllerConsole);
+        ControllerConsole controllerConsoleImpl =  controller.startControllerConsole(new SessionInputSource(),new EncryptedSocketPrintTarget(session.getServer()), id);
+        controllerConsoleImpl.start();
+        session.getControllerConsoleMap().put(id, controllerConsoleImpl);
         var consoleAlreadyStarted = new AtomicBoolean(false);
         session.getControllerConsoleMap().forEach(((s, console) -> {
             if (Objects.equals(console.getController().getName(), controllerName)){

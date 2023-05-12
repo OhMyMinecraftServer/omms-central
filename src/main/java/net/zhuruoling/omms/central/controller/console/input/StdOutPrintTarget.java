@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.controller.console.input;
 
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 
 import java.io.PrintStream;
 

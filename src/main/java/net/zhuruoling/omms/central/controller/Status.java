@@ -8,7 +8,7 @@ public class Status {
 
     boolean isQueryable = false;
     String name;
-    ControllerTypes type = ControllerTypes.FABRIC;
+    String type = "";
     int playerCount = 0;
     int maxPlayerCount = 0;
     List<String> players = new ArrayList<>();
@@ -41,11 +41,11 @@ public class Status {
         this.name = name;
     }
 
-    public ControllerTypes getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ControllerTypes type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -73,7 +73,7 @@ public class Status {
         this.players = players;
     }
 
-    public Status(ControllerTypes type, int playerCount, int maxPlayerCount, List<String> players) {
+    public Status(String type, int playerCount, int maxPlayerCount, List<String> players) {
         this.type = type;
         this.playerCount = playerCount;
         this.maxPlayerCount = maxPlayerCount;

@@ -182,7 +182,7 @@ public class Util {
     public static void listAll(@NotNull Logger logger) {
         logger.debug("Listing controllers");
         ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
-            for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance.controller()).split("\n")) {
+            for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance).split("\n")) {
                 logger.debug(s1);
             }
         });

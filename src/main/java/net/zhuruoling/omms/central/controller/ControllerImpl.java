@@ -1,27 +1,35 @@
 package net.zhuruoling.omms.central.controller;
 
+import com.google.gson.annotations.Expose;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
+import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
 import net.zhuruoling.omms.central.controller.console.output.InputSource;
+import net.zhuruoling.omms.central.controller.crashreport.CrashReportStorage;
+import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ControllerImpl extends Controller {
-    private String name;
+    String name;
 
-    private String executable;
+    String executable;
 
-    private String type;
+    String type;
 
-    private String launchParams;
+    String launchParams;
 
-    private String workingDir;
+    String workingDir;
 
-    private String httpQueryAddress;
+    String httpQueryAddress;
 
-    private boolean statusQueryable;
+    boolean statusQueryable;
+
+    @Expose(serialize = false, deserialize = false)
+    private ControllerHttpClient controllerHttpClient;
 
     public boolean isStatusQueryable() {
         return statusQueryable;
@@ -33,17 +41,26 @@ public class ControllerImpl extends Controller {
     }
 
     @Override
-    public ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ?> printTarget, String id) {
-        return null;
+    public ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ControllerConsole> printTarget, String id) {
+        return ControllerConsoleImpl.newInstance(this, id, printTarget, inputSource);
     }
 
 
     @Override
-    public Status getControllerStatus() {
-        return null;
+    public Status queryControllerStatus() {
+        return controllerHttpClient.queryStatus();
+    }
+
+    @Override
+    public CrashReportStorage convertCrashReport(String raw) {
+        return new CrashReportStorage(this.name, System.currentTimeMillis(), Arrays.stream(raw.split("\n")).toList());
     }
 
     public ControllerImpl() {
+    }
+
+    public void fixFields(){
+        this.controllerHttpClient = new ControllerHttpClient(this);
     }
 
     public ControllerImpl(String name, String executable, String type, String launchCommand, String workingDir) {
@@ -52,6 +69,7 @@ public class ControllerImpl extends Controller {
         this.type = type;
         this.launchParams = launchCommand;
         this.workingDir = workingDir;
+        this.controllerHttpClient = new ControllerHttpClient(this);
     }
 
     public String getName() {

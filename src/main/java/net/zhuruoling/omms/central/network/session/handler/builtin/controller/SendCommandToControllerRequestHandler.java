@@ -23,7 +23,7 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
             return response.withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
         }
         try {
-            var result = ControllerManager.INSTANCE.sendCommand(controller.controller().getName(), command);
+            var result = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
             response.withResponseCode(Result.CONTROLLER_COMMAND_SENT).withContentPair("controllerId", name).withContentPair("output", UtilKt.joinToString(result));
             return response;
         }catch (RequestUnauthorisedException e){
