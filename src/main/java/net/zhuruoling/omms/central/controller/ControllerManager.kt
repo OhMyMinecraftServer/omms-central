@@ -5,6 +5,7 @@ import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
+import net.zhuruoling.omms.central.plugin.callback.ControllerLoadCallback
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger
@@ -65,6 +66,7 @@ object ControllerManager {
             logger.warn("No Controller added to this server.")
             return
         }
+        ControllerLoadCallback.INSTANCE.invokeAll(this)
     }
 
     operator fun plusAssign(controller: Controller) {

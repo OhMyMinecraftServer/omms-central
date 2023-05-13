@@ -142,13 +142,13 @@ object MainKt {
 
         logger.info("Setting up managers.")
         try {
-            PluginManager.init()
+            //PluginManager.init()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
             registerBuiltinRequestHandlers()
-            PluginManager.loadAll()
+            //PluginManager.loadAll()
 
         } catch (e: Exception) {
             e.printStackTrace()

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class RequestManagerLoadCallback extends Callback<RequestManager> {
 
-    public final RequestManagerLoadCallback INSTANCE = new RequestManagerLoadCallback();
+    public static final RequestManagerLoadCallback INSTANCE = new RequestManagerLoadCallback();
 
     @Override
     void register(Consumer<RequestManager> consumer) {

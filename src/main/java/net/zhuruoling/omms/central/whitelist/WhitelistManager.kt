@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import net.zhuruoling.omms.central.network.session.response.Result
+import net.zhuruoling.omms.central.plugin.callback.WhitelistLoadCallback
 import net.zhuruoling.omms.central.util.Util
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
@@ -55,6 +56,7 @@ object WhitelistManager {
                 throw IOException("Cannot load whitelist file(${it.toFile().absolutePath}).", e)
             }
         }
+        WhitelistLoadCallback.INSTANCE.invokeAll(this)
     }
 
     private fun whitelistNameFix(filePath: Path) {
