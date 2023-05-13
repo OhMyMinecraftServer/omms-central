@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.console;
 
-import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+
 import org.jetbrains.annotations.NotNull;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;

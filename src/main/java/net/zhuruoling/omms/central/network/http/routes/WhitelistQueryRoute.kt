@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
+import net.zhuruoling.omms.central.whitelist.WhitelistNotExistException
 import org.slf4j.LoggerFactory
 
 data class HttpResponse(val result: Result, val data: MutableList<String>)
@@ -53,10 +54,17 @@ fun Route.whitelistQueryRouting() {
                 status = HttpStatusCode.BadRequest
             )
             logger.debug("Querying player $playerName in $name.")
-            val result = WhitelistManager.queryWhitelist(name, playerName)
-            call.respondText(status = HttpStatusCode.OK) {
-                "{\"result\":\"$result\"}"
+            try {
+                val result = WhitelistManager.queryWhitelist(name, playerName)
+                call.respondText(status = HttpStatusCode.OK) {
+                    "{\"result\":\"${if(result) Result.OK else Result.PLAYER_NOT_EXIST}\"}"
+                }
+            }catch (e: WhitelistNotExistException){
+                call.respondText(status = HttpStatusCode.OK) {
+                    "{\"result\":\"${Result.WHITELIST_NOT_EXIST}\"}"
+                }
             }
+
         }
         get("queryAll/{playerName?}") {
             val playerName = call.parameters["playerName"] ?: return@get call.respondText(

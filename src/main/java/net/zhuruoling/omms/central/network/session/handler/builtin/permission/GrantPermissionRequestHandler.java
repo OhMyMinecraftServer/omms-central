@@ -18,8 +18,6 @@ public class GrantPermissionRequestHandler extends BuiltinRequestHandler {
     public Response handle(@NotNull Request request, SessionContext session) {
         var response = new Response();
         try {
-            //草 彳亍
-            //|ishland/
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
                             PermissionChange.Operation.GRANT

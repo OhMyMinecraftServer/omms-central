@@ -70,12 +70,9 @@ object WhitelistManager {
         whitelistMap += whitelist.name to whitelist
     }
 
-    fun queryWhitelist(whitelistName: String?, value: String): Result {
-        val whitelist = whitelistMap[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
-        if (value in whitelist) {
-            return Result.OK
-        }
-        return Result.PLAYER_NOT_EXIST
+    fun queryWhitelist(whitelistName: String, value: String): Boolean{
+        val whitelist = whitelistMap[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
+        return value in whitelist
     }
 
     fun queryInAllWhitelist(player: String): MutableList<String> {
@@ -157,53 +154,6 @@ object WhitelistManager {
             whitelist.addPlayer(value)
         }
     }
-
-    private fun performWhitelistModify(whitelistName: String, value: String, operation: Operation): Result {
-        val whitelist = whitelistMap[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
-        val players = mutableListOf<String>()
-        players.addAll(whitelist.players)
-        when (operation) {
-            Operation.ADD -> {
-                if (players.contains(value)) {
-                    return Result.PLAYER_ALREADY_EXISTS
-                }
-                players.add(value)
-            }
-
-            Operation.REMOVE -> {
-                if (!players.contains(value)) {
-                    return Result.PLAYER_NOT_EXIST
-                }
-                players.remove(value)
-            }
-        }
-        players.sort()
-        val json = gson.toJson(
-            WhitelistImpl(
-                players,
-                whitelistName
-            )
-        )
-        val path = Path(Util.joinFilePaths("whitelists", "${whitelistName}.json"))
-        try {
-            if (Files.exists(path)) {
-                val writer = FileWriter(path.toFile())
-                writer.write(json)
-                writer.flush()
-                writer.close()
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            init()
-            return Result.FAIL
-        }
-        init()
-        return when (operation) {
-            Operation.ADD -> Result.WHITELIST_ADDED
-            Operation.REMOVE -> Result.WHITELIST_REMOVED
-        }
-    }
-
 
     fun createWhitelist(name: String) {//todo
         TODO()

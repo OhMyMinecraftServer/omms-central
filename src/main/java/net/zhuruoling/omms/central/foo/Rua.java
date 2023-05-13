@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.foo;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.UtilKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,10 @@ public class Rua {
     private static final Logger logger = LoggerFactory.getLogger("Rua");
 
     public static void main(String[] args) throws Throwable {
-        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        logger.info("WDNMD");
+        //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+        Arrays.stream(Result.values()).map(Enum::toString).sorted().forEach(it -> {
+            System.out.printf("%s, \n", it);
+        });
 
     }
 }
