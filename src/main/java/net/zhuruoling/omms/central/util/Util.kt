@@ -3,14 +3,15 @@ package net.zhuruoling.omms.central.util
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.whitelist.Whitelist
+import net.zhuruoling.omms.central.whitelist.WhitelistImpl
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 import java.net.URL
 
-fun whitelistPrettyPrinting(whitelist: Whitelist): String{
+fun whitelistPrettyPrinting(whitelistImpl: Whitelist): String{
     return """
-        - Whitelist: ${whitelist.name}
-            ${whitelist.players.joinToString(separator = ", ")}
+        - Whitelist: ${whitelistImpl.name}
+            ${whitelistImpl.players.joinToString(separator = ", ")}
     """.trimIndent()
 }
 

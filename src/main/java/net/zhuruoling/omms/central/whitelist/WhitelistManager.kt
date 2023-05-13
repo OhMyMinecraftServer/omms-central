@@ -14,14 +14,16 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.jvm.Throws
 
+@SuppressWarnings("all")
 object WhitelistManager {
 
-    private val whitelistTable = HashMap<String, Whitelist>()
+    private val whitelistMap = HashMap<String, Whitelist>()
     private val gson = GsonBuilder().serializeNulls().create()
     private val logger = LoggerFactory.getLogger("WhitelistManager")
     fun init() {
-        whitelistTable.clear()
+        whitelistMap.clear()
         val folder = File(Util.joinFilePaths("whitelists"))
         val files = mutableListOf<Path>()
         val gson = GsonBuilder().serializeNulls().create()
@@ -35,17 +37,17 @@ object WhitelistManager {
         files.forEach {
             try {
                 val reader = FileReader(it.toFile())
-                val whitelist = gson.fromJson(reader, Whitelist::class.java)
-                if (it.toFile().name != "${whitelist.name}.json") {
-                    logger.warn("Whitelist name(${whitelist.name}) does not match with file name(${it.toFile().name}).")
-                    logger.warn("Renaming ${it.toFile().name} -> ${whitelist.name}.json")
+                val whitelistImpl = gson.fromJson(reader, WhitelistImpl::class.java)
+                if (it.toFile().name != "${whitelistImpl.name}.json") {
+                    logger.warn("Whitelist name(${whitelistImpl.name}) does not match with file name(${it.toFile().name}).")
+                    logger.warn("Renaming ${it.toFile().name} -> ${whitelistImpl.name}.json")
                     reader.close()
                     whitelistNameFix(it)
                 }
-                if (whitelistTable.containsKey(whitelist.getName())) {
-                    throw RuntimeException("Duplicated whitelist name(${whitelist.name}).")
+                if (whitelistMap.containsKey(whitelistImpl.getName())) {
+                    throw RuntimeException("Duplicated whitelist name(${whitelistImpl.name}).")
                 }
-                whitelistTable[whitelist.getName()] = whitelist
+                whitelistMap[whitelistImpl.getName()] = whitelistImpl
                 reader.close()
             } catch (e: JsonParseException) {
                 throw e
@@ -55,17 +57,22 @@ object WhitelistManager {
         }
     }
 
-    private fun whitelistNameFix(filePath: Path){
+    private fun whitelistNameFix(filePath: Path) {
         val reader = FileReader(filePath.toFile())
-        val whitelist = gson.fromJson(reader, Whitelist::class.javaObjectType)
+        val whitelistImpl = gson.fromJson(reader, WhitelistImpl::class.javaObjectType)
         reader.close()
-        val newFileName = whitelist.name + ".json"
-        FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists",newFileName)))
+        val newFileName = whitelistImpl.name + ".json"
+        FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists", newFileName)))
+    }
+
+    operator fun plusAssign(whitelist: Whitelist) {
+        if (whitelist.name in this.whitelistMap) throw WhitelistAlreadyExistsException(whitelist.name)
+        whitelistMap += whitelist.name to whitelist
     }
 
     fun queryWhitelist(whitelistName: String?, value: String): Result {
-        val whitelist = whitelistTable[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
-        if (whitelist.getPlayers().contains(value)) {
+        val whitelist = whitelistMap[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
+        if (value in whitelist) {
             return Result.OK
         }
         return Result.PLAYER_NOT_EXIST
@@ -73,41 +80,41 @@ object WhitelistManager {
 
     fun queryInAllWhitelist(player: String): MutableList<String> {
         val list = mutableListOf<String>()
-        whitelistTable.forEach {
-            if (it.value.getPlayers().contains(player)) {
+        whitelistMap.forEach {
+            if (player in it.value) {
                 list.add(it.key)
             }
         }
         return list
     }
 
-    fun getAllWhitelist() = whitelistTable
+    fun getAllWhitelist() = whitelistMap
 
     fun getWhitelist(whitelistName: String): Whitelist? {
-        return whitelistTable[whitelistName]
+        return whitelistMap[whitelistName]
     }
 
     fun getWhitelists(): MutableCollection<Whitelist> {
-        return whitelistTable.values
+        return whitelistMap.values
     }
 
     fun isNoWhitelist(): Boolean {
-        return whitelistTable.isEmpty()
+        return whitelistMap.isEmpty()
     }
 
     fun hasWhitelist(whitelistName: String): Boolean {
-        return whitelistTable.containsKey(whitelistName)
+        return whitelistMap.containsKey(whitelistName)
     }
 
     fun forEach(action: (Map.Entry<String, Whitelist>) -> Unit) {
-        whitelistTable.forEach {
-            action.invoke(it)
+        whitelistMap.forEach {
+            action(it)
         }
     }
 
     @Synchronized
     fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult>? {
-        val whitelist = whitelistTable[whitelistName] ?: return null
+        val whitelist = whitelistMap[whitelistName] ?: return null
         val result = mutableListOf<SearchResult>()
         whitelist.players.forEach {
             val ratio = FuzzySearch.tokenSortPartialRatio(it, playerName)
@@ -125,22 +132,34 @@ object WhitelistManager {
     }
 
     fun getWhitelistNames(): MutableSet<String> {
-        return whitelistTable.keys
+        return whitelistMap.keys
     }
 
 
     @Synchronized
-    fun addToWhiteList(whitelistName: String, value: String): Result {
-        return performWhitelistModify(whitelistName, value, Operation.ADD)
+    @Throws(WhitelistNotExistException::class, PlayerAlreadyExistsException::class)
+    fun addToWhiteList(whitelistName: String, value: String) {
+        val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
+        synchronized(whitelist){
+            whitelist.addPlayer(value)
+        }
+    }
+
+    private operator fun get(whitelistName: String): Whitelist? {
+        return this.whitelistMap[whitelistName]
     }
 
     @Synchronized
-    fun removeFromWhiteList(whitelistName: String, value: String): Result {
-        return performWhitelistModify(whitelistName, value, Operation.REMOVE)
+    @Throws(WhitelistNotExistException::class, PlayerNotFoundException::class)
+    fun removeFromWhiteList(whitelistName: String, value: String) {
+        val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
+        synchronized(whitelist){
+            whitelist.addPlayer(value)
+        }
     }
 
     private fun performWhitelistModify(whitelistName: String, value: String, operation: Operation): Result {
-        val whitelist = whitelistTable[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
+        val whitelist = whitelistMap[whitelistName] ?: return Result.WHITELIST_NOT_EXIST
         val players = mutableListOf<String>()
         players.addAll(whitelist.players)
         when (operation) {
@@ -159,7 +178,12 @@ object WhitelistManager {
             }
         }
         players.sort()
-        val json = gson.toJson(Whitelist(players.toTypedArray(), whitelistName))
+        val json = gson.toJson(
+            WhitelistImpl(
+                players,
+                whitelistName
+            )
+        )
         val path = Path(Util.joinFilePaths("whitelists", "${whitelistName}.json"))
         try {
             if (Files.exists(path)) {
@@ -174,18 +198,19 @@ object WhitelistManager {
             return Result.FAIL
         }
         init()
-        return when(operation){
+        return when (operation) {
             Operation.ADD -> Result.WHITELIST_ADDED
             Operation.REMOVE -> Result.WHITELIST_REMOVED
         }
     }
 
-    fun createWhitelist(name: String): Result {//todo
-        return Result.FAIL
+
+    fun createWhitelist(name: String) {//todo
+        TODO()
     }
 
-    fun deleteWhiteList(name: String): Result {//todo
-        return Result.FAIL
+    fun deleteWhiteList(name: String) {//todo
+        TODO()
     }
 
     enum class Operation {

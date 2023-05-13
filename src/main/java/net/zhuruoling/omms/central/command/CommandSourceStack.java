@@ -36,6 +36,14 @@ public class CommandSourceStack {
         }
     }
 
+    public void sendError(String message){
+        if (source == Source.CONSOLE){
+            logger.error(message);
+        }else {
+            feedbackLines.add("E: " + message);
+        }
+    }
+
     public List<String> getFeedbackLines() {
         return feedbackLines;
     }

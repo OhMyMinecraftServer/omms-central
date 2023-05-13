@@ -12,11 +12,14 @@ import org.jetbrains.annotations.NotNull;
 public class DeleteWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        return new Response().withResponseCode(Result.WHITELIST_DELETED).withResponseCode(
-                WhitelistManager.INSTANCE.deleteWhiteList(
-                        request.getContent("whitelist")
-                )
-        ).withContentPair("whitelist", request.getContent("whitelist"));
+        Result result = Result.FAIL;
+        try {
+            WhitelistManager.INSTANCE.deleteWhiteList(request.getContent("whitelist"));
+            result = Result.WHITELIST_DELETED;
+        }catch (Exception e){
+
+        }
+        return new Response().withResponseCode(result).withContentPair("whitelist", request.getContent("whitelist"));
     }
 
     @Override

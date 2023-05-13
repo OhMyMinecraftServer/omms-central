@@ -29,7 +29,7 @@ import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
 import net.zhuruoling.omms.central.controller.console.input.StdOutPrintTarget;
-import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import net.zhuruoling.omms.central.whitelist.*;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public class BuiltinCommand {
                                                 logger.error("Whitelist %s does not exist.".formatted(name));
                                             } else {
                                                 logger.info("Whitelist %s :".formatted(whitelist.getName()));
-                                                Arrays.stream(whitelist.getPlayers()).toList().forEach(x -> logger.info("\t-%s".formatted(x)));
+                                                whitelist.getPlayers().forEach(x -> logger.info("\t-%s".formatted(x)));
                                             }
                                             return 1;
                                         }
@@ -92,12 +92,15 @@ public class BuiltinCommand {
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
-                                                    var result = WhitelistManager.INSTANCE.addToWhiteList(whitelist, player);
-                                                    if (result.equals(Result.OK)) {
-                                                        logger.info("Successfully added %s to %s".formatted(player, whitelist));
+                                                    try {
+                                                        WhitelistManager.INSTANCE.addToWhiteList(whitelist, player);
+                                                        commandContext.getSource().sendFeedback("Successfully added %s to %s".formatted(player, whitelist));
                                                         return 0;
+                                                    } catch (WhitelistNotExistException e) {
+                                                        commandContext.getSource().sendError("Whitelist %s not exist".formatted(e.getWhitelistName()));
+                                                    } catch (PlayerAlreadyExistsException e) {
+                                                        commandContext.getSource().sendError("Player %s already added to %s exist".formatted(e.getPlayer(), e.getWhitelist()));
                                                     }
-                                                    logger.error("Cannot add %s to %s,reason:%s".formatted(player, whitelist, result));
                                                     return 1;
                                                 }
                                         )
@@ -110,12 +113,15 @@ public class BuiltinCommand {
                                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                                                     String whitelist = getString(commandContext, "whitelist");
                                                     String player = getString(commandContext, "player");
-                                                    var result = WhitelistManager.INSTANCE.removeFromWhiteList(whitelist, player);
-                                                    if (result.equals(Result.OK)) {
-                                                        logger.info("Successfully removed %s from %s".formatted(player, whitelist));
+                                                    try {
+                                                        WhitelistManager.INSTANCE.removeFromWhiteList(whitelist, player);
+                                                        commandContext.getSource().sendFeedback("Successfully added %s to %s".formatted(player, whitelist));
                                                         return 0;
+                                                    } catch (PlayerNotFoundException e) {
+                                                        commandContext.getSource().sendError("Player %s not exist.".formatted(e.getPlayer()));
+                                                    } catch (WhitelistNotExistException e) {
+                                                        commandContext.getSource().sendError("Whitelist %s not found.".formatted(e.getWhitelistName()));
                                                     }
-                                                    logger.error("Cannot remove %s from %s,reason:%s".formatted(player, whitelist, result));
                                                     return 1;
                                                 }
                                         )
@@ -150,7 +156,7 @@ public class BuiltinCommand {
                 .then(
                         RequiredArgumentBuilder.<CommandSourceStack, String>argument("text", greedyString()).executes(
                                 commandContext -> {
-                                    if (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation() == null){
+                                    if (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation() == null) {
                                         commandContext.getSource().sendFeedback("Chatbridge disabled.");
                                         return 0;
                                     }
@@ -162,8 +168,9 @@ public class BuiltinCommand {
                                     broadcast.setPlayer(Util.randomStringGen(8));
                                     broadcast.setServer("OMMS CENTRAL");
                                     switch (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation()) {
-                                        case UDP -> Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender())
-                                                .addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
+                                        case UDP ->
+                                                Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender())
+                                                        .addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
                                         case WS -> WebsocketRouteKt.sendToAllWS(broadcast);
                                     }
                                     Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
@@ -242,7 +249,10 @@ public class BuiltinCommand {
                     var list = WhitelistManager.INSTANCE.getWhitelistNames();
                     var whitelistNames = new ArrayList<>(list);
                     whitelistNames.forEach(s -> {
-                        logger.info("Removing player from whitelist " + s + " -> " + WhitelistManager.INSTANCE.removeFromWhiteList(s, player));
+                        try {
+                            logger.info("Removing player from whitelist " + s);
+                            WhitelistManager.INSTANCE.removeFromWhiteList(s, player);
+                        } catch (Exception ignored) {}
                     });
                     ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
                         logger.info("kicking player %s from %s".formatted(player, s));
@@ -431,13 +441,13 @@ public class BuiltinCommand {
                                                 return 1;
                                             }
                                             var controller = controllers.get(0);
-                                            if(!ControllerManager.INSTANCE.contains(controller)){
+                                            if (!ControllerManager.INSTANCE.contains(controller)) {
                                                 commandContext.getSource().sendFeedback("Controller %s not found.".formatted(controller));
                                             }
                                             commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                             SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
                                             StdOutPrintTarget stdOutPrintTarget = new StdOutPrintTarget();
-                                            ControllerConsole controllerConsoleImpl = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).startControllerConsole(new StdinInputSource(),stdOutPrintTarget, controller);
+                                            ControllerConsole controllerConsoleImpl = Objects.requireNonNull(ControllerManager.INSTANCE.getControllerByName(controller)).startControllerConsole(new StdinInputSource(), stdOutPrintTarget, controller);
                                             controllerConsoleImpl.start();
                                             while (controllerConsoleImpl.isAlive()) {
                                                 try {

@@ -1,43 +1,17 @@
 package net.zhuruoling.omms.central.whitelist;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.Arrays;
-import kotlinx.serialization.Serializable;
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
-@Serializable
-public class Whitelist {
-    @SerializedName("players")
-    String[] players;
-    @SerializedName("name")
-    String name;
+public abstract class Whitelist {
+    abstract public String getName();
+    abstract public boolean contains(String player);
 
-    public Whitelist(String[] players, String name) {
-        this.players = players;
-        this.name = name;
-    }
+    abstract public List<String> getPlayers();
 
-    public String getName() {
-        return this.name;
-    }
+    abstract public void addPlayer(String player) throws PlayerAlreadyExistsException;
 
-    public String[] getPlayers() {
-        return this.players;
-    }
+    abstract public void removePlayer(String player) throws PlayerNotFoundException;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    abstract public void saveModifiedBuffer();
 
-    public void setPlayers(String[] players) {
-        this.players = players;
-    }
-
-    public @NotNull String toString() {
-        return "Whitelist{players=" + Arrays.toString(this.players) + ", name='" + this.name + "'}";
-    }
-
-    public boolean containsPlayer(String player) {
-        return Arrays.stream(this.players).toList().contains(player);
-    }
 }
