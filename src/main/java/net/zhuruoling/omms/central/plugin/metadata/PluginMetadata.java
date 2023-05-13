@@ -1,7 +1,9 @@
 package net.zhuruoling.omms.central.plugin.metadata;
 
 import com.google.gson.annotations.SerializedName;
-import net.zhuruoling.omms.central.util.Util;
+import net.zhuruoling.omms.central.plugin.UtilKt;
+
+import java.util.List;
 
 public class PluginMetadata {
     String id;
@@ -11,14 +13,14 @@ public class PluginMetadata {
     @SerializedName(value = "main", alternate = {"pluginMain", "pluginMainClass"})
     String pluginMainClass;
     @SerializedName(value = "dependencies", alternate = {"pluginDependencies"})
-    PluginDependencyRequirement[] pluginDependencies;
+    List<PluginDependencyRequirement> pluginDependencies;
     @SerializedName(value = "pluginEventHandler", alternate = {"eventHandler", "handler"})
-    String[] pluginEventHandlers;
+    List<String> pluginEventHandlers;
     @SerializedName(value = "pluginRequestHandler", alternate = {"requestHandler"})
-    String[] pluginRequestHandlers;
+    List<String> pluginRequestHandlers;
 
     public static PluginMetadata fromJson(String s) {
-        return Util.fromJson(s, PluginMetadata.class);
+        return UtilKt.getGsonForPluginMetadata().fromJson(s, PluginMetadata.class);
     }
 
     public String getId() {
@@ -41,15 +43,15 @@ public class PluginMetadata {
         return pluginMainClass;
     }
 
-    public PluginDependencyRequirement[] getPluginDependencies() {
+    public List<PluginDependencyRequirement> getPluginDependencies() {
         return pluginDependencies;
     }
 
-    public String[] getPluginEventHandlers() {
+    public List<String> getPluginEventHandlers() {
         return pluginEventHandlers;
     }
 
-    public String[] getPluginRequestHandlers() {
+    public List<String> getPluginRequestHandlers() {
         return pluginRequestHandlers;
     }
 }

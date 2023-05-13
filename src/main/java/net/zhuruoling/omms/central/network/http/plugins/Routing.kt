@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.http.routes.*
+import net.zhuruoling.omms.central.plugin.callback.HttpServerLoadCallback
 import net.zhuruoling.omms.central.util.Util
 
 fun Application.configureRouting() {
@@ -31,5 +32,6 @@ fun Application.configureRouting() {
                 websocketRoute()
             }
         }
+        HttpServerLoadCallback.INSTANCE.invokeAll(this@configureRouting)
     }
 }

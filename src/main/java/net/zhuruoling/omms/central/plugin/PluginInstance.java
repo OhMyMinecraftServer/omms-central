@@ -3,10 +3,10 @@ package net.zhuruoling.omms.central.plugin;
 import kotlin.Pair;
 import net.zhuruoling.omms.central.plugin.annotations.EventHandler;
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency;
-import net.zhuruoling.omms.central.plugin.event.EventHandlerInstance;
 import net.zhuruoling.omms.central.plugin.handler.PluginRequestHandler;
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement;
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,11 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.ZipFile;
-
-import org.slf4j.Logger;
-
-import static net.zhuruoling.omms.central.util.UtilKt.toTypedArray;
-
+@SuppressWarnings("all")
 public class PluginInstance implements AutoCloseable {
     private PluginMetadata pluginMetadata;
 
@@ -30,23 +26,23 @@ public class PluginInstance implements AutoCloseable {
     private Class<?> pluginMainClass;
     private PluginState pluginState = PluginState.NO_STATE;
     private PluginMain pluginMain;
-    private final List<EventHandlerInstance> eventHandlers = new ArrayList<>();
     private final Map<String, PluginRequestHandler> pluginRequestHandlers = new LinkedHashMap<>();
     private final URL pluginPathUrl;
 
     private final Path pluginPath;
-    private URLClassLoader classLoader;
+    private final URLClassLoader classLoader;
 
 
-    public PluginInstance(Path jarPath) throws MalformedURLException {
+    public PluginInstance(URLClassLoader classLoader, Path jarPath) throws MalformedURLException {
         pluginPathUrl = new URL("file://" + jarPath.toAbsolutePath());
         pluginPath = jarPath;
+        this.classLoader = classLoader;
     }
 
     public void loadJar() {
         logger.info("Loading Plugin: " + pluginPath.getFileName());
         pluginState = PluginState.NO_STATE;
-        try (ZipFile zipFile = new ZipFile(pluginPath.toFile())){
+        try (ZipFile zipFile = new ZipFile(pluginPath.toFile())) {
             var entry = zipFile.getEntry("plugin.metadata.json");
             if (entry == null) {
                 logger.error("This plugin file has no plugin metadata file,file path: %s".formatted(pluginPath.toAbsolutePath().toString()));
@@ -57,22 +53,18 @@ public class PluginInstance implements AutoCloseable {
             var pluginMetadataString = new String(stream.readAllBytes(), Charset.defaultCharset());
             logger.debug("Plugin metadata: " + pluginMetadataString);
             pluginMetadata = PluginMetadata.fromJson(pluginMetadataString);
+            pluginMetadata.getPluginDependencies().forEach(requirement -> requirement.parseRequirement());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         pluginState = PluginState.PRE_LOAD;
     }
 
-    public void buildClassLoader(List<URL> urls){
-        urls.add(pluginPathUrl);
-        classLoader = new URLClassLoader(toTypedArray(urls));
-    }
-
-    public void loadPluginDepedencies(Map<PluginDependency,Path> pathMap){
+    public void loadPluginDepedencies(Map<PluginDependency, Path> pathMap) {
 
     }
 
-    private void loadPluginClasses() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public void loadPluginClasses() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (pluginMetadata.getPluginMainClass() != null) {
             logger.debug("Plugin main class name: " + pluginMetadata.getPluginMainClass());
             pluginMainClass = classLoader.loadClass(pluginMetadata.getPluginMainClass());
@@ -96,7 +88,7 @@ public class PluginInstance implements AutoCloseable {
             logger.debug("Plugin %s has no EventHandler".formatted(pluginPath.toAbsolutePath().toString()));
         }
         if (pluginMetadata.getPluginRequestHandlers() != null) {
-            Arrays.stream(pluginMetadata.getPluginRequestHandlers()).map(s -> {
+            pluginMetadata.getPluginRequestHandlers().stream().map(s -> {
                 logger.debug("Plugin %s -> RequestHandler CLASS %s".formatted(pluginMetadata.getId(), s));
                 try {
                     var clazz = classLoader.loadClass(s);
@@ -136,30 +128,19 @@ public class PluginInstance implements AutoCloseable {
         }
     }
 
-    private void addDepedency(String jarPath) {
-
-    }
 
     public List<PluginDependencyRequirement> checkDepenciesSatisfied(List<PluginDependency> dependencies) {
-        return Arrays.stream(pluginMetadata.getPluginDependencies())
-                .filter(pluginDependency -> dependencies.stream().noneMatch(pluginDependency::satisfyRequirement))
+        return pluginMetadata.getPluginDependencies().stream()
+                .filter(requirement -> dependencies.stream().noneMatch(it -> requirement.requirementMatches(it)))
                 .toList();
     }
 
-    public void onLoad() {
-        pluginMain.onLoad();
-    }
-
-    public void onUnload() {
-        pluginMain.onUnload();
+    public void onInitialize() {
+        pluginMain.onInitialize();
     }
 
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         return classLoader.loadClass(className);
-    }
-
-    public PluginInstance(String p) throws MalformedURLException {
-        this(Path.of(p));
     }
 
     @Override
@@ -185,10 +166,6 @@ public class PluginInstance implements AutoCloseable {
 
     public PluginState getPluginState() {
         return pluginState;
-    }
-
-    public List<EventHandlerInstance> getEventHandlers() {
-        return eventHandlers;
     }
 
     public Map<String, PluginRequestHandler> getPluginRequestHandlers() {
