@@ -499,6 +499,13 @@ public class BuiltinCommand {
                     return 0;
                 });
 
+        LiteralArgumentBuilder<CommandSourceStack> pluginCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("plugin")
+                .then(
+                        LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(commandContext -> {
+                            return 0;
+                        })
+                );
+
 
         dispatcher.register(whitelistCommand);
         dispatcher.register(broadcastCommand);
@@ -511,6 +518,7 @@ public class BuiltinCommand {
         dispatcher.register(controllerCommand);
         dispatcher.register(announcementCommand);
         dispatcher.register(pairCommand);
+        dispatcher.register(pluginCommand);
     }
 
     private static void searchWhitelist(@NotNull String player, @NotNull String s) {

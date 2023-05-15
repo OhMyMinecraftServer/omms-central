@@ -1,12 +1,7 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin
 
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerRequestHandler
-import net.zhuruoling.omms.central.network.session.request.RequestManager
 
-
-
-
-    //hard-coded request registering(
+//hard-coded request registering(
     //do something mojang does
     // codegen
 //    RequestManager.registerRequest("WHITELIST_CREATE", CreateWhitelistRequestHandler())
