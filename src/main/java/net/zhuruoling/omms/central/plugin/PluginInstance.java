@@ -1,7 +1,6 @@
 package net.zhuruoling.omms.central.plugin;
 
 import kotlin.Pair;
-import net.zhuruoling.omms.central.plugin.annotations.EventHandler;
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency;
 import net.zhuruoling.omms.central.plugin.handler.PluginRequestHandler;
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement;
@@ -15,20 +14,19 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipFile;
 @SuppressWarnings("all")
 public class PluginInstance implements AutoCloseable {
     private PluginMetadata pluginMetadata;
-
     private final Logger logger = LoggerFactory.getLogger("PluginInstance");
-
     private Class<?> pluginMainClass;
     private PluginState pluginState = PluginState.NO_STATE;
     private PluginMain pluginMain;
     private final Map<String, PluginRequestHandler> pluginRequestHandlers = new LinkedHashMap<>();
     private final URL pluginPathUrl;
-
     private final Path pluginPath;
     private final URLClassLoader classLoader;
 

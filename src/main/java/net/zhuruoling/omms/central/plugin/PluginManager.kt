@@ -26,17 +26,17 @@ object PluginManager {
             .filter { it.toFile().extension == "jar" }.forEach {
                 pluginFileList += it.absolutePathString()
             }
-
         classLoader = URLClassLoader(pluginFileList.stream().map { URL("file://$it") }.toList().toTypedArray())
         pluginFileList.forEach {
-            PluginInstance(classLoader, Path(it)).run { loadJar();loadPluginClasses(); this.pluginMetadata.id to this }
-                .apply {
-                    if (this.first in pluginMap) {
-                        logger.error("Plugin $it has a same id with plugin ${pluginMap[this.second.pluginMetadata.id]!!.pluginPathUrl.path}")
-                        return@forEach
-                    }
-                    pluginMap += this
+            PluginInstance(classLoader, Path(it)).run {
+                loadJar()
+                if (pluginMetadata.id in pluginMap) {
+                    logger.error("Plugin $it has a same id with plugin ${pluginMap[pluginMetadata.id]!!.pluginPathUrl.path}")
+                    return@forEach
                 }
+                loadPluginClasses()
+                this.pluginMetadata.id to this
+            }.apply { pluginMap += this }
         }
     }
 

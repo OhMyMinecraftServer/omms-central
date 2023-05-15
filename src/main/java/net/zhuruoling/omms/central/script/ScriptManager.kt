@@ -1,8 +1,11 @@
+@file:SuppressWarnings("all")
+@file:Suppress("all")
+
 package net.zhuruoling.omms.central.script
+
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.omms.central.console.PluginCommand
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.request.RequestManager
@@ -14,57 +17,58 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 object ScriptManager {
-    val logger: Logger = LoggerFactory.getLogger("PluginManger")
-    private var pluginFileList = ArrayList<String>()
-    private var pluginTable = HashMap<String, GroovyScriptInstance>()
+    val logger: Logger = LoggerFactory.getLogger("ScriptManger")
+    private var scriptFileList = ArrayList<String>()
+    private var scriptInstanceHashMap = HashMap<String, GroovyScriptInstance>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
-    private var pluginCommandTable: HashMap<String, ArrayList<String>> = java.util.HashMap()
+    private var scriptCommandTable: HashMap<String, ArrayList<String>> = java.util.HashMap()
     fun init() {
-        if (GlobalVariable.noPlugins) {
-            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+        if (GlobalVariable.noScripts) {
+            logger.warn("--noscript has been set, ${Util.PRODUCT_NAME} won`t load any script")
             return
         }
-        pluginTable.clear()
-        pluginFileList.clear()
-        val files = Files.list(Path.of(Util.joinFilePaths("plugins")))
+        scriptInstanceHashMap.clear()
+        scriptFileList.clear()
+        val files = Files.list(Path.of(Util.joinFilePaths("script")))
         files.forEach {
             if (it.toFile().extension == "groovy") {
-                pluginFileList.add(it.toFile().absolutePath)
+                scriptFileList.add(it.toFile().absolutePath)
             }
         }
-        logger.debug(pluginFileList.toString())
-        pluginFileList.forEach {
+        logger.debug(scriptFileList.toString())
+        scriptFileList.forEach {
             try {
                 val pluginInstance = GroovyScriptInstance(it)
                 pluginInstance.initPlugin()
                 val metadata = pluginInstance.metadata
-                logger.debug("Metadata of plugin $it is $metadata")
-                logger.info("Initiating plugin $it")
-                if (pluginTable.contains(metadata.id)) {
+                logger.debug("Metadata of script {} is {}", it, metadata)
+                logger.info("Initiating script $it")
+                if (scriptInstanceHashMap.contains(metadata.id)) {
                     val pluginId = metadata.id
-                    logger.error("Plugin $it got a conflicted plugin id with plugin ${pluginTable[pluginId]?.pluginFilePath}")
+                    logger.error("Script $it got a conflicted script id with script ${scriptInstanceHashMap[pluginId]?.pluginFilePath}")
                     return@forEach
                 }
                 pluginInstance.pluginStatus = ScriptStatus.UNLOADED
-                pluginTable[metadata.id] = pluginInstance
+                scriptInstanceHashMap[metadata.id] = pluginInstance
             } catch (e: MultipleCompilationErrorsException) {
-                logger.error("An error occurred while loading plugin $it")
+                logger.error("An error occurred while loading script $it")
                 logger.error(e.message)
             } catch (e: Exception) {
-                logger.error("An error occurred while loading plugin $it", e)
+                logger.error("An error occurred while loading script $it", e)
             }
 
         }
     }
 
-    fun registerPluginCommand(pluginName: String, command: String) {
-        if (pluginCommandTable.containsKey(pluginName)) {
-            val list = pluginCommandTable[pluginName]
+    
+    fun registerPluginCommand(scriptName: String, command: String) {
+        if (scriptCommandTable.containsKey(scriptName)) {
+            val list = scriptCommandTable[scriptName]
             list?.add(command)
-            pluginCommandTable[pluginName] = list as java.util.ArrayList<String>
+            scriptCommandTable[scriptName] = list as java.util.ArrayList<String>
             return
         }
-        throw ScriptNotExistException("The specified plugin $pluginName does not exist.")
+        throw ScriptNotExistException("The specified script $scriptName does not exist.")
 
     }
 
@@ -73,7 +77,7 @@ object ScriptManager {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
-        pluginTable.forEach {
+        scriptInstanceHashMap.forEach {
             if (!it.equals("omms-central")) {
                 load(it.key)
             }
@@ -85,14 +89,14 @@ object ScriptManager {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
-        pluginTable.forEach {
+        scriptInstanceHashMap.forEach {
             unload(it.key, true)
         }
     }
 
     fun getPluginInstance(id: String): GroovyScriptInstance {
-        val instance = pluginTable[id] ?: throw ScriptNotExistException(
-            "Specified plugin $id not exist."
+        val instance = scriptInstanceHashMap[id] ?: throw ScriptNotExistException(
+            "Specified script $id not exist."
         )
         if (instance.pluginStatus != ScriptStatus.LOADED) {
             throw ScriptNotLoadedException(id)
@@ -101,73 +105,66 @@ object ScriptManager {
     }
 
     fun execute(
-        pluginName: String,
+        scriptName: String,
         functionName: String,
         command: Request,
         serverInterface: OperationInterface
     ): Any? {
-        val pluginInstance = pluginTable[pluginName] ?: throw ScriptNotExistException(
-            "Plugin $pluginName does not exist."
+        val pluginInstance = scriptInstanceHashMap[scriptName] ?: throw ScriptNotExistException(
+            "Script $scriptName does not exist."
         )
         if (pluginInstance.pluginStatus == ScriptStatus.UNLOADED)
-            throw ScriptNotLoadedException("Plugin $pluginName hasn't been loaded.")
+            throw ScriptNotLoadedException("Script $scriptName hasn't been loaded.")
         return pluginInstance.invokeMethod(functionName, serverInterface, command)
 
     }
 
-    fun load(pluginName: String) {
-        logger.info("Loading Plugin:%s".format(pluginName))
-        val pluginInstance = pluginTable[pluginName]
-        pluginCommandTable[pluginName] = ArrayList()
+    fun load(scriptName: String) {
+        logger.info("Loading Plugin:%s".format(scriptName))
+        val pluginInstance = scriptInstanceHashMap[scriptName]
+        scriptCommandTable[scriptName] = ArrayList()
         val initServerInterface =
-            LifecycleOperationInterface(pluginName)
+            LifecycleOperationInterface(scriptName)
         if (pluginInstance != null) {
             if (pluginInstance.pluginStatus == ScriptStatus.LOADED) {
-                throw ScriptAlreadyLoadedException("Plugin $pluginName already loaded.")
+                throw ScriptAlreadyLoadedException("Script $scriptName already loaded.")
             }
             try {
                 pluginInstance.onLoad(initServerInterface)
                 pluginInstance.pluginStatus = ScriptStatus.LOADED
             } catch (e: Exception) {
-                logger.error("While loading plugin $pluginName ,an error occurred.", e)
+                logger.error("While loading script $scriptName ,an error occurred.", e)
             }
         } else {
-            throw ScriptNotExistException("Plugin $pluginName not exist.")
+            throw ScriptNotExistException("Script $scriptName not exist.")
         }
     }
 
-    fun unload(pluginName: String, ignorePluginStatus: Boolean) {
-        logger.info("Unloading Plugin:%s".format(pluginName))
-        val pluginInstance = pluginTable[pluginName]
+    fun unload(scriptName: String, ignoreScriptStatus: Boolean) {
+        logger.info("Unloading Plugin:%s".format(scriptName))
+        val scriptInstance = scriptInstanceHashMap[scriptName]
         val lifecycleServerInterface =
-            LifecycleOperationInterface(pluginName)
-        if (pluginInstance != null) {
-            if (!ignorePluginStatus) {
-                if (pluginInstance.pluginStatus != ScriptStatus.LOADED) {
-                    throw ScriptNotLoadedException("Plugin $pluginName hasn't been loaded.")
+            LifecycleOperationInterface(scriptName)
+        if (scriptInstance != null) {
+            if (!ignoreScriptStatus) {
+                if (scriptInstance.pluginStatus != ScriptStatus.LOADED) {
+                    throw ScriptNotLoadedException("Script $scriptName hasn't been loaded.")
                 }
             }
             try {
-                pluginInstance.onUnload(lifecycleServerInterface)
-                //pluginInstance.invokeMethod("onUnload", initServerInterface)
-                RequestManager.unRegisterPluginRequest(pluginName)
+                scriptInstance.onUnload(lifecycleServerInterface)
+                RequestManager.unRegisterPluginRequest(scriptName)
 
                 val pluginCommandHahMap = GlobalVariable.pluginCommandHashMap
-                val removed = mutableListOf<PluginCommand>()
-
-                pluginCommandHahMap.forEach {
-                    if (it.pluginId == pluginInstance.metadata.id) {
-                        removed.add(it)
-                    }
-                }
+                val removed = pluginCommandHahMap.stream().filter{it.pluginId == scriptInstance.metadata.id}.toList()
                 pluginCommandHahMap.removeAll(removed.toSet())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
-            pluginInstance.pluginStatus = ScriptStatus.UNLOADED
+            scriptInstance.pluginStatus = ScriptStatus.UNLOADED
         } else {
-            throw ScriptNotExistException("Plugin $pluginName not exist.")
+            throw ScriptNotExistException("Script $scriptName not exist.")
         }
     }
 

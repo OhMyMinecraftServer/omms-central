@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@SuppressWarnings("all")
 public class GroovyScriptInstance {
     private final String pluginFilePath;
     private final @NotNull GroovyClassLoader groovyClassLoader;
@@ -25,7 +25,7 @@ public class GroovyScriptInstance {
     private ScriptStatus scriptStatus = ScriptStatus.NONE;
     private @Nullable ScriptMetadata metadata = null;
 
-    private final Logger logger = LoggerFactory.getLogger("PluginLoader");
+    private final Logger logger = LoggerFactory.getLogger("ScriptInstance");
 
     public GroovyScriptInstance(String pluginFilePath) {
         this.pluginFilePath = pluginFilePath;
@@ -62,16 +62,6 @@ public class GroovyScriptInstance {
                 throw new ScriptException("Plugin %s does not provide a plugin metadata.");
             }
             var map = new HashMap<String, Method>();
-            for (Method declaredMethod : clazz.getDeclaredMethods()) {
-                declaredMethod.setAccessible(true);
-                for (Annotation declaredAnnotation : declaredMethod.getDeclaredAnnotations()) {
-                    if (declaredAnnotation.annotationType() == Api.class) {
-                        String name = declaredMethod.getName();
-                        logger.debug("Plugin %s got Api Method %s%n".formatted(metadata.id, name));
-                        map.put(name, declaredMethod);
-                    }
-                }
-            }
             GlobalVariable.INSTANCE.getPluginDeclaredApiMethod().put(metadata.id, map);
         } catch (MultipleCompilationErrorsException e) {
             throw e;

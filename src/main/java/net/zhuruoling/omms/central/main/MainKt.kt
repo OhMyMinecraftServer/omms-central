@@ -21,12 +21,12 @@ import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
-import net.zhuruoling.omms.central.network.session.handler.builtin.registerBuiltinRequestHandlers
 import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.permissionTable
+import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.bar
@@ -142,13 +142,14 @@ object MainKt {
 
         logger.info("Setting up managers.")
         try {
-            //PluginManager.init()
+            PluginManager.init()
+            ScriptManager.init()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
-            registerBuiltinRequestHandlers()
             //PluginManager.loadAll()
+            ScriptManager.loadAll()
 
         } catch (e: Exception) {
             e.printStackTrace()
