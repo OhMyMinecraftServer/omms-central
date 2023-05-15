@@ -17,10 +17,12 @@ import net.zhuruoling.omms.central.GlobalVariable.receiver
 import net.zhuruoling.omms.central.GlobalVariable.socketServer
 import net.zhuruoling.omms.central.GlobalVariable.test
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
+import net.zhuruoling.omms.central.command.CommandManager
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
+import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
@@ -46,7 +48,6 @@ import kotlin.system.exitProcess
 object MainKt {
     private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
-    private var isInit = false
     var initialized = false
 
     @Throws(IOException::class)
@@ -66,6 +67,7 @@ object MainKt {
             noPlugins = argList.contains("--noplugin")
             noLock = argList.contains("--nolock")
             experimental = argList.contains("--experimental")
+            GlobalVariable.noScripts = argList.contains("--nologs")
         }
 
 
@@ -89,21 +91,24 @@ object MainKt {
 
         logger.info("Hello World!")
         logger.info("Loading Config.")
-        if (!Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")) {
-            isInit = true
-            Util.createConfig(logger)
-        }
-        for (folder in Util.DATA_FOLDERS.clone()) {
-            val file = File(Util.getWorkingDir() + File.separator + folder)
-            if (!file.exists() || !file.isDirectory) isInit = true
-        }
-        if (isInit) {
-            logger.info("Preparing for data folders.")
-            for (folder in Util.DATA_FOLDERS.clone()) {
-                Util.createFolder(Util.getWorkingDir() + File.separator + folder, logger)
+
+        (Arrays.stream(Util.DATA_FOLDERS).map { File(Util.getWorkingDir() + File.separator + it) }
+            .filter { !(it.isDirectory or it.exists()) }.toList() to
+                !Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")).run {
+            first.run {
+                if (!isEmpty()) {
+                    logger.info("Preparing for data folders.")
+                    forEach {
+                        Util.createFolder(it.path, logger)
+                    }
+                }
             }
-            exitProcess(0)
+            if (second) {
+                Util.createConfig(logger)
+            }
+            if (first.isNotEmpty() or second) exitProcess(0)
         }
+
         config = ConfigReader.read()
         if (config == null) {
             logger.error("Empty CONFIG.")
@@ -143,12 +148,14 @@ object MainKt {
         logger.info("Setting up managers.")
         try {
             PluginManager.init()
+            PluginManager.loadAll()
             ScriptManager.init()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
-            //PluginManager.loadAll()
+            CommandManager.INSTANCE.init()
+            RequestManager.init()
             ScriptManager.loadAll()
 
         } catch (e: Exception) {

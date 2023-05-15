@@ -29,7 +29,7 @@ object ScriptManager {
         }
         scriptInstanceHashMap.clear()
         scriptFileList.clear()
-        val files = Files.list(Path.of(Util.joinFilePaths("script")))
+        val files = Files.list(Path.of(Util.joinFilePaths("scripts")))
         files.forEach {
             if (it.toFile().extension == "groovy") {
                 scriptFileList.add(it.toFile().absolutePath)

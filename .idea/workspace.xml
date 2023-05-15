@@ -4,18 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="merge">
-      <change beforePath="$PROJECT_DIR$/plugins/NotEnoughUtil.groovy" beforeDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="it launches">
+      <change afterPath="$PROJECT_DIR$/plugins/omms-central-plugin-example-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/MyScript.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/MyScript.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/test.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/test.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/annotations/EventArg.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/annotations/EventHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/Api.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/GroovyScriptInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/GroovyScriptInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/Util.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/Callback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/Callback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/CommandRegistrationCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/CommandRegistrationCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/ControllerLoadCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/ControllerLoadCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/HttpServerLoadCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/HttpServerLoadCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/RequestManagerLoadCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/RequestManagerLoadCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/ScriptManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/ScriptManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -103,7 +111,7 @@
     "git-widget-placeholder": "master",
     "jdk.selected.JAVA_MODULE": "17",
     "ktor.last.update.timestamp": "1684137569981",
-    "last_opened_file_path": "C:/Users/jkl-9/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+    "last_opened_file_path": "C:/Users/jkl-9/IdeaProjects/omms-central/plugins",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -113,7 +121,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
   },
@@ -134,16 +142,17 @@
       <recent name="net.zhuruoling.socket" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\plugins" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\src\main\java\net\zhuruoling\foo" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\src\main\java\net\zhuruoling\network\experimental\session" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\controllers" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\whitelists" />
-      <recent name="C:\Users\jkl-9\IdeaProjects\omms-central" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\scripts" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\black_history" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\omms-central-plugin-example\src\main\resources" />
       <recent name="C:\Users\jkl-9\IdeaProjects\omms-central\src\main\resources\META-INF\services" />
@@ -179,7 +188,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.Rua">
+  <component name="RunManager" selected="Application.nolock">
     <configuration name="Bar wdnmd" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central" />
@@ -828,13 +837,6 @@
       <workItem from="1684000566103" duration="827000" />
       <workItem from="1684127770646" duration="805000" />
     </task>
-    <task id="LOCAL-00076" summary="i don`t know what changed xD">
-      <created>1672231951156</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1672231951156</updated>
-    </task>
     <task id="LOCAL-00077" summary="bug fixes">
       <created>1672836207725</created>
       <option name="number" value="00077" />
@@ -1171,7 +1173,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684001150180</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="MERGE">
+      <created>1684162187115</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1684162187115</updated>
+    </task>
+    <option name="localTasksCounter" value="126" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1235,8 +1244,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.9.0&#10;RATE LIMIT IS GOOD" />
-    <MESSAGE value="0.9.0 logging" />
     <MESSAGE value="0.9.1&#10;runBlocking wdnmd" />
     <MESSAGE value="0.9.1&#10;RunnerDaemon" />
     <MESSAGE value="0.9.1&#10;FUCK YOU CENTOS" />
@@ -1260,7 +1267,9 @@
     <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor" />
     <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor" />
     <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks" />
+    <MESSAGE value="MERGE" />
+    <MESSAGE value="it launches" />
+    <option name="LAST_COMMIT_MESSAGE" value="it launches" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1293,11 +1302,11 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/omms_central$Bar_wdnmd.ic" NAME="Bar wdnmd Coverage Results" MODIFIED="1675330269335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>net.zhuruoling.omms.central.foo.*</FILTER>
-    </SUITE>
     <SUITE FILE_PATH="coverage/omms_central$nolock.ic" NAME="nolock Coverage Results" MODIFIED="1681895981243" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.zhuruoling.omms.central.main.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/omms_central$Bar_wdnmd.ic" NAME="Bar wdnmd Coverage Results" MODIFIED="1675330269335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>net.zhuruoling.omms.central.foo.*</FILTER>
     </SUITE>
   </component>
 </project>

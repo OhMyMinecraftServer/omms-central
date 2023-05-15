@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.util;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -9,6 +11,7 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.broadcast.Target;
+import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
 import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +39,17 @@ public class Util {
             "announcements",
             "whitelists",
             "plugins",
+            "scripts"
     };
 
 
     public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x04;
 
-    public static final Gson gson = new GsonBuilder().serializeNulls().create();
+    public static final Gson gson = new GsonBuilder()
+            .addDeserializationExclusionStrategy(new GlobalExclusionStrategy())
+            .addSerializationExclusionStrategy(new GlobalExclusionStrategy())
+            .serializeNulls()
+            .create();
 
     public static @NotNull String getTimeCode() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
@@ -227,6 +235,19 @@ public class Util {
 
     public boolean createFile(@NotNull String filePath) throws IOException {
         return new File(filePath).createNewFile();
+    }
+
+    public static class GlobalExclusionStrategy implements ExclusionStrategy{
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes f) {
+            return false;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return clazz.getName().contains("io.ktor") || clazz == ControllerHttpClient.class;
+        }
     }
 
 

@@ -9,7 +9,7 @@ public class ControllerLoadCallback extends Callback<ControllerManager> {
     public static final ControllerLoadCallback INSTANCE = new ControllerLoadCallback();
 
     @Override
-    void register(Consumer<ControllerManager> consumer) {
+    public void register(Consumer<ControllerManager> consumer) {
         this.consumers.add(consumer);
     }
 }

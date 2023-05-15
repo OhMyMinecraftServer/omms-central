@@ -8,7 +8,7 @@ public class CommandRegistrationCallback extends Callback<CommandManager>{
 
     public static final CommandRegistrationCallback INSTANCE = new CommandRegistrationCallback();
     @Override
-    void register(Consumer<CommandManager> consumer) {
+    public void register(Consumer<CommandManager> consumer) {
         this.consumers.add(consumer);
     }
 }

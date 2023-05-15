@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipFile;
 @SuppressWarnings("all")
 public class PluginInstance implements AutoCloseable {
@@ -51,7 +52,14 @@ public class PluginInstance implements AutoCloseable {
             var pluginMetadataString = new String(stream.readAllBytes(), Charset.defaultCharset());
             logger.debug("Plugin metadata: " + pluginMetadataString);
             pluginMetadata = PluginMetadata.fromJson(pluginMetadataString);
-            pluginMetadata.getPluginDependencies().forEach(requirement -> requirement.parseRequirement());
+            if (Objects.isNull(pluginMetadata.getId())){
+                logger.error("This plugin metadata file has no pluginId specified,file path: %s".formatted(pluginPath.toAbsolutePath().toString()));
+                pluginState = PluginState.ERROR;
+                return;
+            }
+            if (pluginMetadata.getPluginDependencies() != null) {
+                pluginMetadata.getPluginDependencies().forEach(requirement -> requirement.parseRequirement());
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,11 +70,19 @@ public class PluginInstance implements AutoCloseable {
 
     }
 
-    public void loadPluginClasses() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public void loadPluginClasses() {
         if (pluginMetadata.getPluginMainClass() != null) {
             logger.debug("Plugin main class name: " + pluginMetadata.getPluginMainClass());
-            pluginMainClass = classLoader.loadClass(pluginMetadata.getPluginMainClass());
-            pluginMain = (PluginMain) pluginMainClass.getConstructor().newInstance();
+            try {
+                pluginMainClass = classLoader.loadClass(pluginMetadata.getPluginMainClass());
+                pluginMain = (PluginMain) pluginMainClass.getConstructor().newInstance();
+            }catch (ClassNotFoundException | NoSuchMethodException|InvocationTargetException|InstantiationException|IllegalAccessException e){
+                logger.error("Cannot find plugin main class %s".formatted(pluginMetadata.getPluginMainClass()), e);
+                pluginState = PluginState.ERROR;
+            }catch (ClassCastException e){
+                logger.error("Cannot cast plugin main class %s to PluginMain.".formatted(pluginMetadata.getPluginMainClass()), e);
+                pluginState = PluginState.ERROR;
+            }
         }
         if (pluginMetadata.getPluginRequestHandlers() != null) {
             pluginMetadata.getPluginRequestHandlers().stream().map(s -> {
@@ -81,14 +97,17 @@ public class PluginInstance implements AutoCloseable {
                         return new Pair<>(requestHandler, requestHandler.getRequestCode());
                     } else {
                         logger.error("Class %s is not a valid request handler.".formatted(s));
+                        pluginState = PluginState.ERROR;
                         return new Pair<PluginRequestHandler, String>(null, null);
                     }
                 } catch (ClassNotFoundException e) {
                     logger.error("Request handler class %s not exist.".formatted(s), e);
+                    pluginState = PluginState.ERROR;
                     return new Pair<PluginRequestHandler, String>(null, null);
                 } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                          IllegalAccessException e) {
                     logger.error("Class %s is not a valid request handler.".formatted(s), e);
+                    pluginState = PluginState.ERROR;
                     return new Pair<PluginRequestHandler, String>(null, null);
                 }
 
@@ -100,6 +119,7 @@ public class PluginInstance implements AutoCloseable {
                     logger.error("Plugin request handler %s has a same request code with %s,which is NOT ALLOWED."
                             .formatted(it.component1().getClass().getName(),
                                     pluginRequestHandlers.get(it.component2()).getClass().getName()));
+                    pluginState = PluginState.ERROR;
                     return;
                 }
                 pluginRequestHandlers.put(it.component2(), it.component1());

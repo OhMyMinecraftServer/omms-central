@@ -9,7 +9,7 @@ public class RequestManagerLoadCallback extends Callback<RequestManager> {
     public static final RequestManagerLoadCallback INSTANCE = new RequestManagerLoadCallback();
 
     @Override
-    void register(Consumer<RequestManager> consumer) {
+    public void register(Consumer<RequestManager> consumer) {
         this.consumers.add(consumer);
     }
 }

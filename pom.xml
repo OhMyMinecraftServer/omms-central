@@ -13,6 +13,10 @@
             <name>Minecraft Libraries</name>
             <url>https://libraries.minecraft.net</url>
         </repository>
+        <repository>
+            <id>opencollab</id>
+            <url>https://repo.opencollab.dev/maven-releases/</url>
+        </repository>
     </repositories>
 
 

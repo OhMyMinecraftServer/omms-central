@@ -51,7 +51,6 @@ class MyScript extends ScriptMain {
                     return 0
                 })
         )
-        util = serverInterface.require("not_enough_util")
     }
 
     @Override

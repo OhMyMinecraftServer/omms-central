@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.zhuruoling.omms.central.console.BuiltinCommand;
+import net.zhuruoling.omms.central.plugin.callback.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,9 @@ public class CommandManager {
     private CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
     private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
 
+    public void init(){
+
+    }
 
     public void registerScriptCommand(String pluginId, LiteralArgumentBuilder<CommandSourceStack> builder) {
         if (scriptRegisteredCommandMap.containsKey(pluginId)) {
@@ -47,6 +51,7 @@ public class CommandManager {
             literalArgumentBuilders.forEach(commandDispatcher::register);
         });
         BuiltinCommand.registerBuiltinCommand(commandDispatcher);
+        CommandRegistrationCallback.INSTANCE.invokeAll(this);
     }
 
     public void clear() {

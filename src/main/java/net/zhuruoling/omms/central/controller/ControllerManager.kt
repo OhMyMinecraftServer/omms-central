@@ -83,7 +83,7 @@ object ControllerManager {
     fun sendCommand(controllerName: String, command: String): List<String> {
         if (controllerName in controllers) {
             try {
-                return controllerConnector[controllerName]!!.sendCommand(command)
+                return this[controllerName]!!.sendCommand(command)
             } catch (e: Exception) {
                 throw e
             }
