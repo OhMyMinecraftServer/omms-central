@@ -27,7 +27,7 @@ import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
 import net.zhuruoling.omms.central.permission.PermissionManager.permissionTable
-import net.zhuruoling.omms.central.old.plugin.PluginManager
+import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.bar
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
@@ -74,8 +74,8 @@ object MainKt {
             logger.info(Arrays.toString(gson.fromJson("[\"1\",\"2\",\"3\"]", Array<String>::class.java)))
             logger.info(Util.joinFilePaths("a", "b"))
             PermissionManager.init()
-            PluginManager.init()
-            PluginManager.loadAll()
+            ScriptManager.init()
+            ScriptManager.loadAll()
             logger.info(permissionTable.toString())
             ControllerManager.init()
             logger.info(getPermission(100860)?.let { calcPermission(it).toString() })
@@ -191,7 +191,7 @@ object MainKt {
         try {
             logger.info("Stopping!")
             normalShutdown = true
-            PluginManager.unloadAll()
+            ScriptManager.unloadAll()
             Objects.requireNonNull(httpServer)?.interrupt()
             if (GlobalVariable.config?.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
                 Objects.requireNonNull(receiver)?.interrupt()

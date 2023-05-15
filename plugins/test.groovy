@@ -7,12 +7,13 @@ import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.broadcast.Broadcast
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.response.Response
-import net.zhuruoling.omms.central.old.plugin.LifecycleOperationProxy
-import net.zhuruoling.omms.central.old.plugin.PluginDependency
-import net.zhuruoling.omms.central.old.plugin.PluginLogger
-import net.zhuruoling.omms.central.old.plugin.PluginMain
-import net.zhuruoling.omms.central.old.plugin.PluginMetadata
-import net.zhuruoling.omms.central.old.plugin.RequestOperationProxy
+import net.zhuruoling.omms.central.script.LifecycleOperationInterface
+
+import net.zhuruoling.omms.central.script.ScriptLogger
+import net.zhuruoling.omms.central.script.ScriptMain
+import net.zhuruoling.omms.central.script.ScriptMetadata
+
+import net.zhuruoling.omms.central.script.ScriptMain
 import net.zhuruoling.omms.central.system.SystemInfo
 import net.zhuruoling.omms.central.system.SystemUtil
 import net.zhuruoling.omms.central.network.session.response.Result
@@ -24,17 +25,10 @@ import java.lang.module.ModuleDescriptor
 
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString
 
-class TestPlugin extends PluginMain {
+class TestScript extends ScriptMain {
     @Override
-    void onLoad(LifecycleOperationProxy serverInterface) {
-        serverInterface.registerRequestCode("TEST", "test")
-        serverInterface.registerRequestCode("PING", {
-            RequestOperationProxy requestServerInterface, Request command ->
-            requestServerInterface.logger.info("PING COMMAND TRIGGERED")
-            return new Response().withResponseCode(Result.OK).withContentPair("message", "pong")
-        })
-
-        PluginLogger logger = serverInterface.getLogger()
+    void onLoad(LifecycleOperationInterface serverInterface) {
+        ScriptLogger logger = serverInterface.getLogger()
         serverInterface.registerCommand("shit" , {
             logger.info(Util.toJson(ControllerManager.INSTANCE.controllers.get("creative")))
             logger.info(Util.toJson(AnnouncementManager.INSTANCE.announcementMap.get("LxNHS17krC1ajqBL")))
@@ -56,41 +50,14 @@ class TestPlugin extends PluginMain {
         logger.info("Test Plugin loaded!")
 
     }
-
-    Response test(RequestOperationProxy serverInterface, Request command) {
-        serverInterface.logger.info(command.toString())
-        //serverInterface.sendBack("OK", new String[]{"wdnmd"})
-        return new Response().withResponseCode(Result.OK).withContentPair("message","wdnmd")
-    }
-
     @Override
-    void onUnload(LifecycleOperationProxy serverInterface) {
+    void onUnload(LifecycleOperationInterface serverInterface) {
         serverInterface.getLogger().info("Test Plugin unloaded!")
     }
 
     @Override
-    PluginMetadata getPluginMetadata() {
-        ArrayList<PluginDependency.Dependency> dependencies = new ArrayList<>()
-        dependencies.add(new PluginDependency.Dependency() {
-            @Override
-            String getId() {
-                return "omms-central"
-            }
-
-            @Override
-            PluginDependency.Operator getOperator() {
-                return PluginDependency.Operator.GREATER
-            }
-
-            @Override
-            ModuleDescriptor.Version getVersion() {
-                return ModuleDescriptor.Version.parse("0.5.4")
-            }
-        })
-        dependencies.add(PluginDependency.Dependency.of("another-dependency", PluginDependency.Operator.GREATER, "0.0.1"))
-
-        PluginDependency dependency = new PluginDependency(dependencies)
-        return new PluginMetadata("test", "0.0.1", "ZhuRuoLing", dependency)
+    ScriptMetadata getPluginMetadata() {
+        return new ScriptMetadata("test", "0.0.1", "ZhuRuoLing")
     }
 }
 

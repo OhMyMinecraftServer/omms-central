@@ -70,23 +70,6 @@ public class PluginInstance implements AutoCloseable {
             pluginMainClass = classLoader.loadClass(pluginMetadata.getPluginMainClass());
             pluginMain = (PluginMain) pluginMainClass.getConstructor().newInstance();
         }
-        if (pluginMetadata.getPluginEventHandlers() != null) {
-            for (String pluginEventHandler : pluginMetadata.getPluginEventHandlers()) {
-                logger.debug("Plugin %s -> EventHandler CLASS %s".formatted(pluginMetadata.getId(), pluginEventHandler));
-                try {
-                    var clazz = classLoader.loadClass(pluginEventHandler);
-                    Arrays.stream(clazz.getDeclaredMethods()).filter(it ->
-                            Arrays.stream(it.getAnnotations()).anyMatch(it2 -> it2.annotationType() == EventHandler.class)
-                    ).forEach(it -> {
-
-                    });
-                } catch (ClassNotFoundException e) {
-                    logger.error("Event Handler %s not exist.".formatted(pluginEventHandler), e);
-                }
-            }
-        } else {
-            logger.debug("Plugin %s has no EventHandler".formatted(pluginPath.toAbsolutePath().toString()));
-        }
         if (pluginMetadata.getPluginRequestHandlers() != null) {
             pluginMetadata.getPluginRequestHandlers().stream().map(s -> {
                 logger.debug("Plugin %s -> RequestHandler CLASS %s".formatted(pluginMetadata.getId(), s));

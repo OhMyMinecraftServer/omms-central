@@ -16,16 +16,16 @@ public class CommandManager {
     public static final CommandManager INSTANCE = new CommandManager();
     private final Logger logger = LoggerFactory.getLogger("CommandManager");
     private CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
-    private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> pluginRegisteredCommandMap = new HashMap<>();
+    private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
 
 
-    public void registerPluginCommand(String pluginId, LiteralArgumentBuilder<CommandSourceStack> builder) {
-        if (pluginRegisteredCommandMap.containsKey(pluginId)) {
-            pluginRegisteredCommandMap.get(pluginId).add(builder);
+    public void registerScriptCommand(String pluginId, LiteralArgumentBuilder<CommandSourceStack> builder) {
+        if (scriptRegisteredCommandMap.containsKey(pluginId)) {
+            scriptRegisteredCommandMap.get(pluginId).add(builder);
         } else {
             var l = new ArrayList<LiteralArgumentBuilder<CommandSourceStack>>();
             l.add(builder);
-            pluginRegisteredCommandMap.put(pluginId, l);
+            scriptRegisteredCommandMap.put(pluginId, l);
         }
         commandDispatcher.register(builder);
     }
@@ -43,18 +43,18 @@ public class CommandManager {
 
     public void reload() {
         commandDispatcher = new CommandDispatcher<>();
-        pluginRegisteredCommandMap.forEach((s, literalArgumentBuilders) -> {
+        scriptRegisteredCommandMap.forEach((s, literalArgumentBuilders) -> {
             literalArgumentBuilders.forEach(commandDispatcher::register);
         });
         BuiltinCommand.registerBuiltinCommand(commandDispatcher);
     }
 
     public void clear() {
-        pluginRegisteredCommandMap.clear();
+        scriptRegisteredCommandMap.clear();
     }
 
     public void clearAllPluginCommand(String pluginId) {
-        pluginRegisteredCommandMap.remove(pluginId);
+        scriptRegisteredCommandMap.remove(pluginId);
     }
 
     public CommandDispatcher<CommandSourceStack> getCommandDispatcher() {

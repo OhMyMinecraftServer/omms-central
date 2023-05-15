@@ -14,8 +14,6 @@ public class PluginMetadata {
     String pluginMainClass;
     @SerializedName(value = "dependencies", alternate = {"pluginDependencies"})
     List<PluginDependencyRequirement> pluginDependencies;
-    @SerializedName(value = "pluginEventHandler", alternate = {"eventHandler", "handler"})
-    List<String> pluginEventHandlers;
     @SerializedName(value = "pluginRequestHandler", alternate = {"requestHandler"})
     List<String> pluginRequestHandlers;
 
@@ -45,10 +43,6 @@ public class PluginMetadata {
 
     public List<PluginDependencyRequirement> getPluginDependencies() {
         return pluginDependencies;
-    }
-
-    public List<String> getPluginEventHandlers() {
-        return pluginEventHandlers;
     }
 
     public List<String> getPluginRequestHandlers() {

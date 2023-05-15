@@ -4,26 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/Callback.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/ControllerLoadCallback.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/HttpServerLoadCallback.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/RequestManagerLoadCallback.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/WhitelistLoadCallback.java" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/callback/CommandRegistrationCallback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/jarTest-0.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/plugins/Routing.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/http/plugins/Routing.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/MyPlugin.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/MyPlugin.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/NotEnoughUtil.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/NotEnoughUtil.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugins/test.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/plugins/test.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/PluginRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/PluginRequestHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/Api.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/Api.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/GroovyPluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/GroovyScriptInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/LifecycleOperationProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/LifecycleOperationInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/OperationProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/OperationProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginAlreadyLoadedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginAlreadyLoadedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginDependency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginDependency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginMetadata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginMetadata.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginNotExistException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginNotExistException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginNotLoadedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginNotLoadedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginStatus.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginStatus.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/PluginUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/PluginUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/RequestOperationProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/RequestOperationProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/old/plugin/StageOperationProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/script/StageOperationInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginMain.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/Util.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/event/EventArgs.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/event/EventDispatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/event/EventHandlerInstance.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/event/EventResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/event/PluginEventHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginMetadata.java" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
@@ -833,20 +843,8 @@
       <workItem from="1683899994999" duration="5129000" />
       <workItem from="1683948107665" duration="5154000" />
       <workItem from="1683990328677" duration="8673000" />
-    </task>
-    <task id="LOCAL-00074" summary="0.7.2b3 fix whitelist bug">
-      <created>1669096834190</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1669096834190</updated>
-    </task>
-    <task id="LOCAL-00075" summary="new plugin api provide method using annotation">
-      <created>1670738979206</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1670738979206</updated>
+      <workItem from="1684000566103" duration="827000" />
+      <workItem from="1684127770646" duration="805000" />
     </task>
     <task id="LOCAL-00076" summary="i don`t know what changed xD">
       <created>1672231951156</created>
@@ -1177,7 +1175,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683952925693</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor">
+      <created>1684000772875</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1684000772875</updated>
+    </task>
+    <task id="LOCAL-00124" summary="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks">
+      <created>1684001150179</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1684001150180</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1241,7 +1253,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.9.0&#10;Rate limited connector" />
     <MESSAGE value="0.9.0&#10;RATE LIMIT IS GOOD" />
     <MESSAGE value="0.9.0 logging" />
     <MESSAGE value="0.9.1&#10;runBlocking wdnmd" />
@@ -1266,7 +1277,8 @@
     <MESSAGE value="merge!" />
     <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor" />
     <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor" />
+    <MESSAGE value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.12.0 WIP&#10;controller refactor&#10;plugin refactor&#10;whitelist refactor&#10;callbacks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

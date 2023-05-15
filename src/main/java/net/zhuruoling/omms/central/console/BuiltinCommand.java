@@ -14,7 +14,6 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
-import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
 import net.zhuruoling.omms.central.main.MainKt;
 import net.zhuruoling.omms.central.GlobalVariable;
@@ -24,8 +23,7 @@ import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
-import net.zhuruoling.omms.central.old.plugin.PluginManager;
-import net.zhuruoling.omms.central.network.session.response.Result;
+import net.zhuruoling.omms.central.script.ScriptManager;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
 import net.zhuruoling.omms.central.controller.console.input.StdOutPrintTarget;
@@ -186,9 +184,9 @@ public class BuiltinCommand {
 
         LiteralArgumentBuilder<CommandSourceStack> reloadCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
             CommandManager.INSTANCE.clear();
-            PluginManager.INSTANCE.unloadAll();
-            PluginManager.INSTANCE.init();
-            PluginManager.INSTANCE.loadAll();
+            ScriptManager.INSTANCE.unloadAll();
+            ScriptManager.INSTANCE.init();
+            ScriptManager.INSTANCE.loadAll();
             PermissionManager.INSTANCE.init();
             ControllerManager.INSTANCE.init();
             AnnouncementManager.INSTANCE.init();

@@ -1,28 +1,28 @@
-import net.zhuruoling.omms.central.old.plugin.Api
-import net.zhuruoling.omms.central.old.plugin.LifecycleOperationProxy
-import net.zhuruoling.omms.central.old.plugin.PluginLogger
-import net.zhuruoling.omms.central.old.plugin.PluginMain
-import net.zhuruoling.omms.central.old.plugin.PluginMetadata
+import net.zhuruoling.omms.central.script.Api
+import net.zhuruoling.omms.central.script.LifecycleOperationInterface
+import net.zhuruoling.omms.central.script.ScriptLogger
+import net.zhuruoling.omms.central.script.ScriptMain
+import net.zhuruoling.omms.central.script.ScriptMetadata
 
 import java.lang.module.ModuleDescriptor
 
-class NotEnougnUtil extends PluginMain {
-    PluginLogger logger = null
+class NotEnougnUtil extends ScriptMain {
+    ScriptLogger logger = null
 
     @Override
-    void onLoad(LifecycleOperationProxy serverInterface) {
+    void onLoad(LifecycleOperationInterface serverInterface) {
         logger = serverInterface.getLogger()
         logger.info("KONNICHIWA ZAWARUDO!")
     }
 
     @Override
-    void onUnload(LifecycleOperationProxy serverInterface) {
+    void onUnload(LifecycleOperationInterface serverInterface) {
         logger = serverInterface.getLogger()
     }
 
     @Override
-    PluginMetadata getPluginMetadata() {
-        return new PluginMetadata("not_enough_util", ModuleDescriptor.Version.parse("0.0.1"), "ZhuRuoLing")
+    ScriptMetadata getPluginMetadata() {
+        return new ScriptMetadata("not_enough_util", ModuleDescriptor.Version.parse("0.0.1"), "ZhuRuoLing")
     }
 
     @Api

@@ -2,7 +2,7 @@ package net.zhuruoling.omms.central.plugin
 
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.foo.logger
-import net.zhuruoling.omms.central.old.plugin.PluginManager
+import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.Util
 import java.net.URL
 import java.net.URLClassLoader
@@ -17,7 +17,7 @@ object PluginManager {
     private lateinit var classLoader: URLClassLoader
     fun init() {
         if (GlobalVariable.noPlugins) {
-            PluginManager.logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            ScriptManager.logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
         pluginMap.clear()

@@ -1,12 +1,12 @@
-package net.zhuruoling.omms.central.old.plugin;
+package net.zhuruoling.omms.central.script;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PluginLogger {
+public class ScriptLogger {
     final Logger logger = LoggerFactory.getLogger("InitServerInterface");
     final String pluginName;
-    public PluginLogger(String name){
+    public ScriptLogger(String name){
         this.pluginName = name;
     }
 

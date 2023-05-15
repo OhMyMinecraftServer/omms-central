@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.old.plugin
+package net.zhuruoling.omms.central.script
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 
-object PluginManager {
+object ScriptManager {
     val logger: Logger = LoggerFactory.getLogger("PluginManger")
     private var pluginFileList = ArrayList<String>()
-    private var pluginTable = HashMap<String, GroovyPluginInstance>()
+    private var pluginTable = HashMap<String, GroovyScriptInstance>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
     private var pluginCommandTable: HashMap<String, ArrayList<String>> = java.util.HashMap()
     fun init() {
@@ -35,7 +35,7 @@ object PluginManager {
         logger.debug(pluginFileList.toString())
         pluginFileList.forEach {
             try {
-                val pluginInstance = GroovyPluginInstance(it)
+                val pluginInstance = GroovyScriptInstance(it)
                 pluginInstance.initPlugin()
                 val metadata = pluginInstance.metadata
                 logger.debug("Metadata of plugin $it is $metadata")
@@ -45,7 +45,7 @@ object PluginManager {
                     logger.error("Plugin $it got a conflicted plugin id with plugin ${pluginTable[pluginId]?.pluginFilePath}")
                     return@forEach
                 }
-                pluginInstance.pluginStatus = PluginStatus.UNLOADED
+                pluginInstance.pluginStatus = ScriptStatus.UNLOADED
                 pluginTable[metadata.id] = pluginInstance
             } catch (e: MultipleCompilationErrorsException) {
                 logger.error("An error occurred while loading plugin $it")
@@ -64,7 +64,7 @@ object PluginManager {
             pluginCommandTable[pluginName] = list as java.util.ArrayList<String>
             return
         }
-        throw PluginNotExistException("The specified plugin $pluginName does not exist.")
+        throw ScriptNotExistException("The specified plugin $pluginName does not exist.")
 
     }
 
@@ -90,10 +90,12 @@ object PluginManager {
         }
     }
 
-    fun getPluginInstance(id: String): GroovyPluginInstance {
-        val instance = pluginTable[id] ?: throw PluginNotExistException("Specified plugin $id not exist.")
-        if (instance.pluginStatus != PluginStatus.LOADED) {
-            throw PluginNotLoadedException(id)
+    fun getPluginInstance(id: String): GroovyScriptInstance {
+        val instance = pluginTable[id] ?: throw ScriptNotExistException(
+            "Specified plugin $id not exist."
+        )
+        if (instance.pluginStatus != ScriptStatus.LOADED) {
+            throw ScriptNotLoadedException(id)
         }
         return instance
     }
@@ -102,13 +104,13 @@ object PluginManager {
         pluginName: String,
         functionName: String,
         command: Request,
-        serverInterface: RequestOperationProxy
+        serverInterface: OperationInterface
     ): Any? {
-        val pluginInstance = pluginTable[pluginName] ?: throw PluginNotExistException(
+        val pluginInstance = pluginTable[pluginName] ?: throw ScriptNotExistException(
             "Plugin $pluginName does not exist."
         )
-        if (pluginInstance.pluginStatus == PluginStatus.UNLOADED)
-            throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
+        if (pluginInstance.pluginStatus == ScriptStatus.UNLOADED)
+            throw ScriptNotLoadedException("Plugin $pluginName hasn't been loaded.")
         return pluginInstance.invokeMethod(functionName, serverInterface, command)
 
     }
@@ -118,19 +120,19 @@ object PluginManager {
         val pluginInstance = pluginTable[pluginName]
         pluginCommandTable[pluginName] = ArrayList()
         val initServerInterface =
-            LifecycleOperationProxy(pluginName)
+            LifecycleOperationInterface(pluginName)
         if (pluginInstance != null) {
-            if (pluginInstance.pluginStatus == PluginStatus.LOADED) {
-                throw PluginAlreadyLoadedException("Plugin $pluginName already loaded.")
+            if (pluginInstance.pluginStatus == ScriptStatus.LOADED) {
+                throw ScriptAlreadyLoadedException("Plugin $pluginName already loaded.")
             }
             try {
                 pluginInstance.onLoad(initServerInterface)
-                pluginInstance.pluginStatus = PluginStatus.LOADED
+                pluginInstance.pluginStatus = ScriptStatus.LOADED
             } catch (e: Exception) {
                 logger.error("While loading plugin $pluginName ,an error occurred.", e)
             }
         } else {
-            throw PluginNotExistException("Plugin $pluginName not exist.")
+            throw ScriptNotExistException("Plugin $pluginName not exist.")
         }
     }
 
@@ -138,11 +140,11 @@ object PluginManager {
         logger.info("Unloading Plugin:%s".format(pluginName))
         val pluginInstance = pluginTable[pluginName]
         val lifecycleServerInterface =
-            LifecycleOperationProxy(pluginName)
+            LifecycleOperationInterface(pluginName)
         if (pluginInstance != null) {
             if (!ignorePluginStatus) {
-                if (pluginInstance.pluginStatus != PluginStatus.LOADED) {
-                    throw PluginNotLoadedException("Plugin $pluginName hasn't been loaded.")
+                if (pluginInstance.pluginStatus != ScriptStatus.LOADED) {
+                    throw ScriptNotLoadedException("Plugin $pluginName hasn't been loaded.")
                 }
             }
             try {
@@ -163,9 +165,9 @@ object PluginManager {
                 e.printStackTrace()
             }
 
-            pluginInstance.pluginStatus = PluginStatus.UNLOADED
+            pluginInstance.pluginStatus = ScriptStatus.UNLOADED
         } else {
-            throw PluginNotExistException("Plugin $pluginName not exist.")
+            throw ScriptNotExistException("Plugin $pluginName not exist.")
         }
     }
 

@@ -2,20 +2,21 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
-import net.zhuruoling.omms.central.old.plugin.LifecycleOperationProxy
-import net.zhuruoling.omms.central.old.plugin.PluginDependency
-import net.zhuruoling.omms.central.old.plugin.PluginLogger
-import net.zhuruoling.omms.central.old.plugin.PluginMain
-import net.zhuruoling.omms.central.old.plugin.PluginMetadata
+import net.zhuruoling.omms.central.script.LifecycleOperationInterface
+
+import net.zhuruoling.omms.central.script.ScriptLogger
+import net.zhuruoling.omms.central.script.ScriptMain
+import net.zhuruoling.omms.central.script.ScriptMetadata
+import net.zhuruoling.omms.central.script.ScriptMain
 
 import java.lang.module.ModuleDescriptor
 
-class MyPlugin extends PluginMain {
-    PluginLogger logger = null
-    PluginMain util = null
+class MyScript extends ScriptMain {
+    ScriptLogger logger = null
+    ScriptMain util = null
 
     @Override
-    void onLoad(LifecycleOperationProxy serverInterface) {
+    void onLoad(LifecycleOperationInterface serverInterface) {
         logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
         serverInterface.registerCommand(LiteralArgumentBuilder.<CommandSourceStack> literal("another_test")
@@ -54,14 +55,13 @@ class MyPlugin extends PluginMain {
     }
 
     @Override
-    void onUnload(LifecycleOperationProxy serverInterface) {
+    void onUnload(LifecycleOperationInterface serverInterface) {
         logger = serverInterface.getLogger()
         logger.info("Plugin loaded!")
     }
 
     @Override
-    PluginMetadata getPluginMetadata() {
-        return new PluginMetadata("my_plugin", ModuleDescriptor.Version.parse("0.5.4"), "ZhuRuoLing",
-                new PluginDependency(List.of(PluginDependency.Dependency.of("not_enough_util", PluginDependency.Operator.GREATER, "0.0.1"))))
+    ScriptMetadata getPluginMetadata() {
+        return new ScriptMetadata("my_plugin", ModuleDescriptor.Version.parse("0.5.4"), "ZhuRuoLing")
     }
 }

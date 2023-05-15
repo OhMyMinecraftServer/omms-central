@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.old.plugin;
+package net.zhuruoling.omms.central.script;
 
 import groovy.lang.GroovyClassLoader;
 import net.zhuruoling.omms.central.GlobalVariable;
@@ -18,16 +18,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GroovyPluginInstance {
+public class GroovyScriptInstance {
     private final String pluginFilePath;
     private final @NotNull GroovyClassLoader groovyClassLoader;
-    private @Nullable PluginMain instance = null;
-    private PluginStatus pluginStatus = PluginStatus.NONE;
-    private @Nullable PluginMetadata metadata = null;
+    private @Nullable ScriptMain instance = null;
+    private ScriptStatus scriptStatus = ScriptStatus.NONE;
+    private @Nullable ScriptMetadata metadata = null;
 
     private final Logger logger = LoggerFactory.getLogger("PluginLoader");
 
-    public GroovyPluginInstance(String pluginFilePath) {
+    public GroovyScriptInstance(String pluginFilePath) {
         this.pluginFilePath = pluginFilePath;
         CompilerConfiguration config = new CompilerConfiguration();
         config.setSourceEncoding("UTF-8");
@@ -38,28 +38,28 @@ public class GroovyPluginInstance {
         return pluginFilePath;
     }
 
-    public PluginStatus getPluginStatus() {
-        return pluginStatus;
+    public ScriptStatus getPluginStatus() {
+        return scriptStatus;
     }
 
-    public void setPluginStatus(PluginStatus pluginStatus) {
-        this.pluginStatus = pluginStatus;
+    public void setPluginStatus(ScriptStatus scriptStatus) {
+        this.scriptStatus = scriptStatus;
     }
 
-    public PluginMetadata getMetadata() {
+    public ScriptMetadata getMetadata() {
         return metadata;
     }
 
     public void initPlugin() {
         if (!Files.exists(Path.of(pluginFilePath))) {
-            throw new PluginNotExistException("The specified plugin file %s does not exist.".formatted(pluginFilePath));
+            throw new ScriptNotExistException("The specified plugin file %s does not exist.".formatted(pluginFilePath));
         }
         try {
             Class<?> clazz = groovyClassLoader.parseClass(new File(pluginFilePath));
-            instance = (PluginMain) clazz.getDeclaredConstructor().newInstance();
+            instance = (ScriptMain) clazz.getDeclaredConstructor().newInstance();
             this.metadata = instance.getPluginMetadata();
             if (this.metadata == null){
-                throw new PluginException("Plugin %s does not provide a plugin metadata.");
+                throw new ScriptException("Plugin %s does not provide a plugin metadata.");
             }
             var map = new HashMap<String, Method>();
             for (Method declaredMethod : clazz.getDeclaredMethods()) {
@@ -81,7 +81,7 @@ public class GroovyPluginInstance {
     }
 
     public @Nullable Object invokeMethod(@NotNull String methodName, Object @NotNull ... params) {
-        Class<? extends PluginMain> clazz = instance.getClass();
+        Class<? extends ScriptMain> clazz = instance.getClass();
         ArrayList<Class<?>> paramTypes = new ArrayList<>();
         for (Object param : params) {
             paramTypes.add(param.getClass());
@@ -97,17 +97,17 @@ public class GroovyPluginInstance {
         //return object.invokeMethod(methodName, params);
     }
 
-    public void onLoad(LifecycleOperationProxy lifecycleServerInterface) {
+    public void onLoad(LifecycleOperationInterface lifecycleServerInterface) {
         instance.onLoad(lifecycleServerInterface);
     }
 
-    public void onUnload(LifecycleOperationProxy lifecycleServerInterface) {
+    public void onUnload(LifecycleOperationInterface lifecycleServerInterface) {
         assert instance != null;
         instance.onUnload(lifecycleServerInterface);
     }
 
 
-    public @Nullable PluginMain getInstance() {
+    public @Nullable ScriptMain getInstance() {
         return instance;
     }
 }
