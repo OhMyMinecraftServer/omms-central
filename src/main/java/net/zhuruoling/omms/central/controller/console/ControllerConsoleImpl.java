@@ -3,8 +3,8 @@ package net.zhuruoling.omms.central.controller.console;
 import kotlin.Unit;
 import net.zhuruoling.omms.central.controller.Controller;
 import net.zhuruoling.omms.central.controller.ControllerImpl;
-import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
-import net.zhuruoling.omms.central.controller.console.output.InputSource;
+import net.zhuruoling.omms.central.controller.console.output.PrintTarget;
+import net.zhuruoling.omms.central.controller.console.input.InputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

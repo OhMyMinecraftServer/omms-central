@@ -1,8 +1,8 @@
 package net.zhuruoling.omms.central.controller;
 
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
-import net.zhuruoling.omms.central.controller.console.input.PrintTarget;
-import net.zhuruoling.omms.central.controller.console.output.InputSource;
+import net.zhuruoling.omms.central.controller.console.output.PrintTarget;
+import net.zhuruoling.omms.central.controller.console.input.InputSource;
 import net.zhuruoling.omms.central.controller.crashreport.CrashReportStorage;
 
 import java.util.List;

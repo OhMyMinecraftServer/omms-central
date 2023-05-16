@@ -2,6 +2,9 @@ package net.zhuruoling.omms.central.whitelist
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
+import net.zhuruoling.omms.central.util.Util
+import java.io.File
+import java.nio.charset.Charset
 
 @Serializable
 class WhitelistImpl(
@@ -32,8 +35,25 @@ class WhitelistImpl(
     }
 
     override fun saveModifiedBuffer() {
-
+        val file = File(Util.joinFilePaths("whitelists", "$name.json"))
+        if (file.exists()) {
+            file.delete()
+        }
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+        file.writer(Charset.forName("UTF-8")).use {
+            Util.gson.toJson(this, this::class.java, it)
+        }
     }
+
+    override fun deleteWhitelist() {
+        val file = File(Util.joinFilePaths("whitelists", "$name.json"))
+        if (file.exists()) {
+            file.delete()
+        }
+    }
+
     override fun toString(): String {
         return "WhitelistImpl{" +
                 "players=" + players +

@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.controller.console.output;
+package net.zhuruoling.omms.central.controller.console.input;
 
 import java.util.Stack;
 
@@ -13,7 +13,7 @@ public class SessionInputSource extends InputSource{
                 return cache.pop();
             }
         }else {
-            return null;
+            return "";
         }
     }
 

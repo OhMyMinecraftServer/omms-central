@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
-import net.zhuruoling.omms.central.controller.console.output.SessionInputSource;
+import net.zhuruoling.omms.central.controller.console.input.SessionInputSource;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;

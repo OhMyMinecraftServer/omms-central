@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.controller.console.output;
+package net.zhuruoling.omms.central.controller.console.input;
 
 import java.util.Scanner;
 

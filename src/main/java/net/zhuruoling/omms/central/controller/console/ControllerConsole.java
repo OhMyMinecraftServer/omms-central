@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.controller.console;
 
 import net.zhuruoling.omms.central.controller.Controller;
-import net.zhuruoling.omms.central.controller.console.output.InputSource;
+import net.zhuruoling.omms.central.controller.console.input.InputSource;
 
 public interface ControllerConsole {
     Controller getController();

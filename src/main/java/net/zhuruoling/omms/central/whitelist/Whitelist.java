@@ -14,4 +14,6 @@ public abstract class Whitelist {
 
     abstract public void saveModifiedBuffer();
 
+    abstract public void deleteWhitelist();
+
 }

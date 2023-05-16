@@ -67,9 +67,13 @@ object WhitelistManager {
         FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists", newFileName)))
     }
 
-    operator fun plusAssign(whitelist: Whitelist) {
+    fun addWhitelist(whitelist: Whitelist){
         if (whitelist.name in this.whitelistMap) throw WhitelistAlreadyExistsException(whitelist.name)
         whitelistMap += whitelist.name to whitelist
+    }
+
+    operator fun plusAssign(whitelist: Whitelist) {
+       addWhitelist(whitelist)
     }
 
     fun queryWhitelist(whitelistName: String, value: String): Boolean{
@@ -142,6 +146,7 @@ object WhitelistManager {
         synchronized(whitelist){
             whitelist.addPlayer(value)
         }
+        whitelist.saveModifiedBuffer()
     }
 
     private operator fun get(whitelistName: String): Whitelist? {
@@ -153,16 +158,21 @@ object WhitelistManager {
     fun removeFromWhiteList(whitelistName: String, value: String) {
         val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
         synchronized(whitelist){
-            whitelist.addPlayer(value)
+            whitelist.removePlayer(value)
         }
+        whitelist.saveModifiedBuffer()
     }
 
     fun createWhitelist(name: String) {//todo
         TODO()
     }
 
+    @Throws(WhitelistNotExistException::class)
     fun deleteWhiteList(name: String) {//todo
-        TODO()
+        val whitelist = this[name] ?: throw WhitelistNotExistException(name)
+        whitelist.deleteWhitelist()
+        this.whitelistMap.remove(name)
+        //接下来交给GC (x
     }
 
     enum class Operation {

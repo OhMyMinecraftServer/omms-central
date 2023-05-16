@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.controller.console.input;
+package net.zhuruoling.omms.central.controller.console.output;
 
 public abstract class PrintTarget<T, K> {
     T target;

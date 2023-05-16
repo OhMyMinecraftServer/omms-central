@@ -3,8 +3,8 @@ package net.zhuruoling.omms.central.main;
 import net.zhuruoling.omms.central.controller.Controller;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
-import net.zhuruoling.omms.central.controller.console.input.StdOutPrintTarget;
-import net.zhuruoling.omms.central.controller.console.output.StdinInputSource;
+import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
+import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

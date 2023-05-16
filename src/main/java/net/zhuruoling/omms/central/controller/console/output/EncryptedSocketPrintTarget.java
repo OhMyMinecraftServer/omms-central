@@ -1,7 +1,6 @@
-package net.zhuruoling.omms.central.controller.console.input;
+package net.zhuruoling.omms.central.controller.console.output;
 
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
-import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.network.session.server.SessionServer;
