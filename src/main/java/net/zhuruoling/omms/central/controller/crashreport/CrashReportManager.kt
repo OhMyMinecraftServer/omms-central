@@ -5,7 +5,7 @@ import net.zhuruoling.omms.central.util.Util
 import org.apache.commons.io.FileUtils
 import java.nio.file.Files
 import kotlin.io.path.Path
-
+//WIP
 data class CrashReport(val from:String, val time: Long, val content: List<String>)
 
 object CrashReportManager {
