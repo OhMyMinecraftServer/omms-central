@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="migrate to gradle&#10;use LineReader in StdinInputSource">
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="console history support">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleInputHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/ConsoleInputHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/input/StdinInputSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/input/StdinInputSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/RemoteControllerConsoleMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/RemoteControllerConsoleMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -899,14 +892,8 @@
       <workItem from="1684200891432" duration="4927000" />
       <workItem from="1684206203765" duration="1150000" />
       <workItem from="1684297927365" duration="747000" />
-      <workItem from="1684298684570" duration="4381000" />
-    </task>
-    <task id="LOCAL-00081" summary="fix permission problem">
-      <created>1673441092972</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1673441092972</updated>
+      <workItem from="1684298684570" duration="4595000" />
+      <workItem from="1684303326269" duration="37000" />
     </task>
     <task id="LOCAL-00082" summary="0.8.0">
       <created>1673881820402</created>
@@ -1244,7 +1231,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684300610024</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="console history support">
+      <created>1684303273673</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1684303273673</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1308,7 +1302,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.9.3&#10;change version in pom.xml" />
     <MESSAGE value="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;" />
     <MESSAGE value="typo fix" />
     <MESSAGE value="get ready for 0.10.0" />
@@ -1333,7 +1326,8 @@
     <MESSAGE value="0.12.0 RELEASE!&#10;package rename" />
     <MESSAGE value="example plugin jar" />
     <MESSAGE value="migrate to gradle&#10;use LineReader in StdinInputSource" />
-    <option name="LAST_COMMIT_MESSAGE" value="migrate to gradle&#10;use LineReader in StdinInputSource" />
+    <MESSAGE value="console history support" />
+    <option name="LAST_COMMIT_MESSAGE" value="console history support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
