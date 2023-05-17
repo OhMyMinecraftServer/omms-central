@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import net.zhuruoling.omms.central.network.session.response.Result
 import net.zhuruoling.omms.central.plugin.callback.WhitelistLoadCallback
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
@@ -18,12 +19,12 @@ import kotlin.io.path.Path
 import kotlin.jvm.Throws
 
 @SuppressWarnings("all")
-object WhitelistManager {
+object WhitelistManager : Manager() {
 
     private val whitelistMap = HashMap<String, Whitelist>()
     private val gson = GsonBuilder().serializeNulls().create()
     private val logger = LoggerFactory.getLogger("WhitelistManager")
-    fun init() {
+    override fun init() {
         whitelistMap.clear()
         val folder = File(Util.joinFilePaths("whitelists"))
         val files = mutableListOf<Path>()
@@ -67,16 +68,16 @@ object WhitelistManager {
         FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists", newFileName)))
     }
 
-    fun addWhitelist(whitelist: Whitelist){
+    fun addWhitelist(whitelist: Whitelist) {
         if (whitelist.name in this.whitelistMap) throw WhitelistAlreadyExistsException(whitelist.name)
         whitelistMap += whitelist.name to whitelist
     }
 
     operator fun plusAssign(whitelist: Whitelist) {
-       addWhitelist(whitelist)
+        addWhitelist(whitelist)
     }
 
-    fun queryWhitelist(whitelistName: String, value: String): Boolean{
+    fun queryWhitelist(whitelistName: String, value: String): Boolean {
         val whitelist = whitelistMap[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
         return value in whitelist
     }
@@ -143,7 +144,7 @@ object WhitelistManager {
     @Throws(WhitelistNotExistException::class, PlayerAlreadyExistsException::class)
     fun addToWhiteList(whitelistName: String, value: String) {
         val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
-        synchronized(whitelist){
+        synchronized(whitelist) {
             whitelist.addPlayer(value)
         }
         whitelist.saveModifiedBuffer()
@@ -157,7 +158,7 @@ object WhitelistManager {
     @Throws(WhitelistNotExistException::class, PlayerNotFoundException::class)
     fun removeFromWhiteList(whitelistName: String, value: String) {
         val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
-        synchronized(whitelist){
+        synchronized(whitelist) {
             whitelist.removePlayer(value)
         }
         whitelist.saveModifiedBuffer()

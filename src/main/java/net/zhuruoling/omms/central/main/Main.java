@@ -21,7 +21,7 @@ public class Main {
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                if (!GlobalVariable.INSTANCE.getNormalShutdown() && MainKt.INSTANCE.getInitialized()) {
+                if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServerMain.INSTANCE.getInitialized()) {
                     System.out.println("Stopping!");
                     ScriptManager.INSTANCE.unloadAll();
                     Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
@@ -45,6 +45,6 @@ public class Main {
         }, "ShutdownHook"));
         System.out.println("Starting net.zhuruoling.omms.central.main.MainKt");
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        MainKt.main(args);
+        CentralServerMain.main(args);
     }
 }

@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.controller.crashreport
 
 import cn.hutool.core.io.FileUtil
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.apache.commons.io.FileUtils
 import java.nio.file.Files
@@ -8,10 +9,10 @@ import kotlin.io.path.Path
 //WIP
 data class CrashReport(val from:String, val time: Long, val content: List<String>)
 
-object CrashReportManager {
+object CrashReportManager : Manager() {
     val storagePath = Path(Util.joinFilePaths("crashReport"))
 
-    fun init(){
+    override fun init(){
         if (!storagePath.toFile().exists()){
             Files.createDirectory(storagePath)
         }

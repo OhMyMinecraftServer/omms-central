@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
 import net.zhuruoling.omms.central.plugin.callback.ControllerLoadCallback
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger
@@ -17,7 +18,7 @@ import java.io.FilenameFilter
 data class CommandOutputData(val controllerId: String, val command: String, val output: String)
 
 
-object ControllerManager {
+object ControllerManager : Manager() {
     val controllers = mutableMapOf<String, Controller>()
     private val controllerConnector = mutableMapOf<String, ControllerHttpClient>()
     val logger: Logger = LoggerFactory.getLogger("ControllerManager")
@@ -32,7 +33,7 @@ object ControllerManager {
 
     }).serializeNulls().create()
 
-    fun init() {
+    override fun init() {
         controllers.clear()
         val path = File(Util.joinFilePaths("controllers"))
         val files =

@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.permission
 
 import com.google.gson.GsonBuilder
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,7 +12,7 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.random.Random
 
-object PermissionManager {
+object PermissionManager : Manager() {
     var permissionTable: HashMap<Int, MutableList<Permission>> = hashMapOf()
     val logger: Logger = LoggerFactory.getLogger("Main")
     var tableHash: Int = 0;
@@ -26,7 +27,7 @@ object PermissionManager {
         val permission: Int
     )
 
-    fun init() {
+    override fun init() {
         permissionTable.clear()
         if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) {
             logger.warn("Permission File does not exist!")
@@ -265,9 +266,9 @@ object PermissionManager {
 
     fun savePermissionFile() {
         logger.info("Saving modified buffer.")
-        synchronized(permissionTable){
+        synchronized(permissionTable) {
             val perm: PermissionStorage
-            synchronized(changesTable){
+            synchronized(changesTable) {
                 changesTable.forEach {
                     applyChangeToMap(it)
                 }
@@ -291,24 +292,26 @@ object PermissionManager {
         }
     }
 
-    private fun applyChangeToMap(change: PermissionChange){
-        if (change.code in permissionTable.keys){
+    private fun applyChangeToMap(change: PermissionChange) {
+        if (change.code in permissionTable.keys) {
             logger.info("Applying change $change")
-            when(change.operation){
+            when (change.operation) {
                 PermissionChange.Operation.GRANT -> permissionTable[change.code]!!.addAll(change.changes)
                 PermissionChange.Operation.DENY -> permissionTable[change.code]!!.removeIf { it in change.changes }
                 PermissionChange.Operation.DELETE -> permissionTable.remove(change.code)
-                PermissionChange.Operation.CREATE -> permissionTable[change.code] = mutableListOf(*change.changes.toTypedArray())
+                PermissionChange.Operation.CREATE -> permissionTable[change.code] =
+                    mutableListOf(*change.changes.toTypedArray())
+
                 null -> permissionTable//do nothing
             }
-        }else{
+        } else {
             throw java.lang.IllegalArgumentException("Permission Code ${change.code} not exist.($change)")
         }
     }
 
 
     fun getPermission(code: Int): List<Permission>? {
-        synchronized(permissionTable){
+        synchronized(permissionTable) {
             if (permissionTable.contains(code)) {
                 return permissionTable[code]
             }
@@ -330,7 +333,7 @@ object PermissionManager {
             val permissionNames = Arrays.stream(string.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()).toList()
             val arrayList = ArrayList<Permission>()
-            permissionNames.forEach{
+            permissionNames.forEach {
                 try {
                     val permission =
                         Permission.valueOf(it!!)

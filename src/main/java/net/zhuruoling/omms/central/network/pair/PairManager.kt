@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import io.ktor.util.*
 import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.GlobalVariable
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import java.io.FileReader
 import java.io.FileWriter
@@ -19,12 +20,12 @@ data class ControllerConfig(
     val preloadControllerConfig: PreloadControllerConfig
 )
 
-object PairManager {
+object PairManager : Manager() {
     private var preloadConfig = PreloadControllerConfig()
     var enabled = false
     private val pairCodeMap = mutableMapOf<String, ControllerConfig>()
 
-    fun init() {
+    override fun init() {
         val path = Path(Util.joinFilePaths("pair.json"))
         if (!Files.exists(path)) {
             Files.createFile(path)

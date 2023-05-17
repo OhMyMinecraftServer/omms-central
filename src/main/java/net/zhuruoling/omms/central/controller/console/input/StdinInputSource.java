@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.controller.console.input;
 
+import net.zhuruoling.omms.central.console.ConsoleInputHandler;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.AggregateCompleter;
@@ -7,8 +8,6 @@ import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.reader.impl.history.DefaultHistory;
-
-import static net.zhuruoling.omms.central.console.ConsoleInputHandler.terminal;
 
 public class StdinInputSource extends InputSource {
 
@@ -80,14 +79,14 @@ public class StdinInputSource extends InputSource {
         );
     }
 
-    LineReader lineReader = LineReaderBuilder.builder().completer(simpleMinecraftServerCompleter).terminal(terminal).build();
+    LineReader lineReader = LineReaderBuilder.builder().completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
     @Override
     public String getLine() {
         return lineReader.readLine().stripTrailing();
     }
 
     public StdinInputSource withHistory(DefaultHistory history){
-        lineReader = LineReaderBuilder.builder().history(history).completer(simpleMinecraftServerCompleter).terminal(terminal).build();
+        lineReader = LineReaderBuilder.builder().history(history).completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
         return this;
     }
 }

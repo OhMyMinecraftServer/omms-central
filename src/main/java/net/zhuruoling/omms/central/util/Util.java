@@ -149,10 +149,6 @@ public class Util {
         return path.toString();
     }
 
-    public static void generateExample() {
-
-    }
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void createFolder(@NotNull String path, @NotNull Logger logger) {
         File file = new File(path);

@@ -15,7 +15,7 @@ import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
-import net.zhuruoling.omms.central.main.MainKt;
+import net.zhuruoling.omms.central.main.CentralServerMain;
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
 import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
@@ -178,7 +178,7 @@ public class BuiltinCommand {
                 );
 
         LiteralArgumentBuilder<CommandSourceStack> stopCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("stop").executes(context -> {
-            MainKt.stop();
+            CentralServerMain.stop();
             return 0;
         });
 
@@ -196,7 +196,7 @@ public class BuiltinCommand {
         });
 
         LiteralArgumentBuilder<CommandSourceStack> statusCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(context -> {
-            UtilKt.bar();
+            UtilKt.printRuntimeEnv();
             RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
             logger.info("Java VM Info: %s %s %s".formatted(runtime.getVmVendor(), runtime.getVmName(), runtime.getVmVersion()));
             logger.info("Java VM Spec Info: %s %s %s".formatted(runtime.getSpecVendor(), runtime.getSpecName(), runtime.getSpecVersion()));

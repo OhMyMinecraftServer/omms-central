@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.plugin
 
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.script.ScriptManager
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -11,12 +12,12 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 
-object PluginManager {
+object PluginManager : Manager(){
     private var pluginMap = LinkedHashMap<String, PluginInstance>()
     private var pluginFileList = arrayListOf<String>()
     private lateinit var classLoader: URLClassLoader
     private val logger = LoggerFactory.getLogger("PluginManager")
-    fun init() {
+    override fun init() {
         if (GlobalVariable.noPlugins) {
             ScriptManager.logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return

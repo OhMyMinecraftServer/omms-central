@@ -1,12 +1,6 @@
 package net.zhuruoling.omms.central.main
 
-import com.google.gson.Gson
 import net.zhuruoling.omms.central.GlobalVariable
-import net.zhuruoling.omms.central.announcement.AnnouncementManager
-import net.zhuruoling.omms.central.configuration.ConfigReader
-import net.zhuruoling.omms.central.configuration.Configuration
-import net.zhuruoling.omms.central.console.ConsoleInputHandler
-import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.GlobalVariable.experimental
 import net.zhuruoling.omms.central.GlobalVariable.httpServer
 import net.zhuruoling.omms.central.GlobalVariable.lock
@@ -17,7 +11,12 @@ import net.zhuruoling.omms.central.GlobalVariable.receiver
 import net.zhuruoling.omms.central.GlobalVariable.socketServer
 import net.zhuruoling.omms.central.GlobalVariable.test
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
+import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.command.CommandManager
+import net.zhuruoling.omms.central.configuration.ConfigReader
+import net.zhuruoling.omms.central.configuration.Configuration
+import net.zhuruoling.omms.central.console.ConsoleInputHandler
+import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
@@ -25,13 +24,10 @@ import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
 import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
 import net.zhuruoling.omms.central.permission.PermissionManager
-import net.zhuruoling.omms.central.permission.PermissionManager.calcPermission
-import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
-import net.zhuruoling.omms.central.permission.PermissionManager.permissionTable
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.Util
-import net.zhuruoling.omms.central.util.bar
+import net.zhuruoling.omms.central.util.printRuntimeEnv
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -45,7 +41,7 @@ import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess
 
-object MainKt {
+object CentralServerMain {
     private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
     var initialized = false
@@ -53,40 +49,16 @@ object MainKt {
     @Throws(IOException::class)
     @JvmStatic
     fun main(args: Array<String>) {
+        ConsoleInputHandler.INSTANCE.prepareTerminal()
         val timeStart = System.currentTimeMillis()
         GlobalVariable.launchTime = timeStart
-        bar()
+        printRuntimeEnv()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
-            if (argList.contains("--generateExample")) {
-                logger.info("Generating examples.")
-                Util.generateExample()
-                exitProcess(0)
-            }
-            test = argList.contains("--test")
             noPlugins = argList.contains("--noplugin")
             noLock = argList.contains("--nolock")
             experimental = argList.contains("--experimental")
-            GlobalVariable.noScripts = argList.contains("--nologs")
-        }
-
-
-        if (test) {
-            val gson = Gson()
-            logger.info(Arrays.toString(gson.fromJson("[\"1\",\"2\",\"3\"]", Array<String>::class.java)))
-            logger.info(Util.joinFilePaths("a", "b"))
-            PermissionManager.init()
-            ScriptManager.init()
-            ScriptManager.loadAll()
-            logger.info(permissionTable.toString())
-            ControllerManager.init()
-            logger.info(getPermission(100860)?.let { calcPermission(it).toString() })
-            try {
-                throw RuntimeException("Test!")
-            } catch (e: RuntimeException) {
-                logger.error("An error occurred.")
-                e.printStackTrace()
-            }
+            GlobalVariable.noScripts = argList.contains("--noscripts")
         }
 
         logger.info("Hello World!")
@@ -157,7 +129,6 @@ object MainKt {
             CommandManager.INSTANCE.init()
             RequestManager.init()
             ScriptManager.loadAll()
-
         } catch (e: Exception) {
             e.printStackTrace()
             exitProcess(2)
@@ -177,15 +148,16 @@ object MainKt {
         val httpServer = launchHttpServerAsync(args)
         GlobalVariable.httpServer = httpServer
 
-        val sender = UdpBroadcastSender()
-        sender.start()
-        udpBroadcastSender = sender
-        udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
+        if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP){
+            val sender = UdpBroadcastSender()
+            sender.start()
+            udpBroadcastSender = sender
+            udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
+        }
 
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\".")
-        udpBroadcastSender = sender
         initialized = true
         while (true) {
             val handler = ConsoleInputHandler.INSTANCE

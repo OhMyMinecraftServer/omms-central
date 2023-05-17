@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.request.RequestManager
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.slf4j.Logger
@@ -16,13 +17,13 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 
-object ScriptManager {
+object ScriptManager : Manager() {
     val logger: Logger = LoggerFactory.getLogger("ScriptManger")
     private var scriptFileList = ArrayList<String>()
     private var scriptInstanceHashMap = HashMap<String, GroovyScriptInstance>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
     private var scriptCommandTable: HashMap<String, ArrayList<String>> = java.util.HashMap()
-    fun init() {
+    override fun init() {
         if (GlobalVariable.noScripts) {
             logger.warn("--noscript has been set, ${Util.PRODUCT_NAME} won`t load any script")
             return
@@ -60,7 +61,7 @@ object ScriptManager {
         }
     }
 
-    
+
     fun registerPluginCommand(scriptName: String, command: String) {
         if (scriptCommandTable.containsKey(scriptName)) {
             val list = scriptCommandTable[scriptName]
@@ -156,7 +157,7 @@ object ScriptManager {
                 RequestManager.unRegisterPluginRequest(scriptName)
 
                 val pluginCommandHahMap = GlobalVariable.pluginCommandHashMap
-                val removed = pluginCommandHahMap.stream().filter{it.pluginId == scriptInstance.metadata.id}.toList()
+                val removed = pluginCommandHahMap.stream().filter { it.pluginId == scriptInstance.metadata.id }.toList()
                 pluginCommandHahMap.removeAll(removed.toSet())
             } catch (e: Exception) {
                 e.printStackTrace()

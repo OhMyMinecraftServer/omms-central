@@ -4,7 +4,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
-class Manager<K, V> {
+class ManagerKt<K, V> {
 
     private val table = hashMapOf<K,V>()
 

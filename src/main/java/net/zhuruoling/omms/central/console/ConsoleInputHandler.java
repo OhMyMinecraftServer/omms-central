@@ -20,9 +20,9 @@ import java.io.IOException;
 public class ConsoleInputHandler {
 
 
-    public static final Terminal terminal;
+    private Terminal terminal;
 
-    static {
+    public void prepareTerminal(){
         try {
             terminal = TerminalBuilder.builder().system(true).dumb(true).build();
         } catch (IOException e) {
@@ -30,9 +30,10 @@ public class ConsoleInputHandler {
         }
     }
 
-    ConsoleInputHandler(){
+    ConsoleInputHandler() {
 
     }
+
     public static @NotNull ConsoleInputHandler INSTANCE = new ConsoleInputHandler();
 
     public void handle() {
@@ -128,4 +129,7 @@ public class ConsoleInputHandler {
         }
     }
 
+    public Terminal getTerminal() {
+        return terminal;
+    }
 }

@@ -13,7 +13,7 @@ import java.nio.channels.FileLock
 
 
 object GlobalVariable {
-    var noLock:Boolean  = false
+    var noLock: Boolean = false
     var lock: FileLock? = null
     var noPlugins: Boolean = false
     var noScripts: Boolean = false
@@ -30,12 +30,14 @@ object GlobalVariable {
     val startupLock = Object()
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
+    val pluginDeclaredApiMethod = hashMapOf<String, HashMap<String, Method>>()
 
-    val pluginDeclaredApiMethod = hashMapOf<String,HashMap<String,Method>>()
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")
+
     @JvmField
     var pluginCommandHashMap = ArrayList<PluginCommand>()
+
     init {
         Permission.values().forEach {
             permissionNames.add(it.name)

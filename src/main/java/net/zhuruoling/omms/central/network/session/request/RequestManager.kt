@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.network.session.request
 import net.zhuruoling.omms.central.network.session.handler.RequestHandler
 import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerRequestHandler
 import net.zhuruoling.omms.central.plugin.callback.RequestManagerLoadCallback
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.StringPair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,14 +11,14 @@ import java.util.Hashtable
 import java.util.NoSuchElementException
 
 
-object RequestManager {
+object RequestManager : Manager(){
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
     private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
     private val pluginRequestTable: MutableList<StringPair> = mutableListOf()
 
     fun getAllRegisteredRequest() = requestTable
 
-    fun init() {
+    override fun init() {
         builtinRequestMap.forEach {
             registerRequest(it.key, it.value)
         }

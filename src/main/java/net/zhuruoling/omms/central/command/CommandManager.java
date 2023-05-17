@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.zhuruoling.omms.central.console.BuiltinCommand;
 import net.zhuruoling.omms.central.plugin.callback.CommandRegistrationCallback;
+import net.zhuruoling.omms.central.util.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,13 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CommandManager {
+public class CommandManager extends Manager {
 
     public static final CommandManager INSTANCE = new CommandManager();
     private final Logger logger = LoggerFactory.getLogger("CommandManager");
     private CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
     private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
 
+    @Override
     public void init(){
 
     }

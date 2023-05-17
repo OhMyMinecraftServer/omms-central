@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.announcement
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,12 +12,12 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 
-object AnnouncementManager {
+object AnnouncementManager: Manager() {
 
     val announcementMap = mutableMapOf<String, Announcement>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
     val logger: Logger = LoggerFactory.getLogger("AM")
-    fun init() {
+    override fun init() {
         announcementMap.clear()
         val files = Files.list(Path(Util.joinFilePaths("announcements")))
         val fileList = mutableListOf<String>()

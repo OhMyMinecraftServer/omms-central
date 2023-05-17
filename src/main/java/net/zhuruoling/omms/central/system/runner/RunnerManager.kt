@@ -1,8 +1,9 @@
 package net.zhuruoling.omms.central.system.runner
 
+import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 
-object RunnerManager {
+object RunnerManager :Manager() {
 
     data class RunnerInfo(val id: String, val description: String, val command: String, val workingDir: String)
 
@@ -61,6 +62,10 @@ object RunnerManager {
             list.add(RunnerInfo(it.key, it.value.description, it.value.launchCommand, it.value.workingDir))
         }
         return list
+    }
+
+    override fun init() {
+
     }
 
 }

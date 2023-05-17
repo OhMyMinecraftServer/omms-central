@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="console history support">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Github Action CI">
+      <change beforePath="$PROJECT_DIR$/.idea/statistic.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/statistic.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -146,7 +148,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.statistic.project.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -893,21 +895,8 @@
       <workItem from="1684206203765" duration="1150000" />
       <workItem from="1684297927365" duration="747000" />
       <workItem from="1684298684570" duration="4595000" />
-      <workItem from="1684303326269" duration="37000" />
-    </task>
-    <task id="LOCAL-00082" summary="0.8.0">
-      <created>1673881820402</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1673881820403</updated>
-    </task>
-    <task id="LOCAL-00083" summary="0.8.0&#10;controller commandFeedback">
-      <created>1674131848096</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1674131848097</updated>
+      <workItem from="1684303326269" duration="2070000" />
+      <workItem from="1684333815364" duration="3158000" />
     </task>
     <task id="LOCAL-00084" summary="0.8.0&#10;controller commandFeedback">
       <created>1674132287291</created>
@@ -1238,7 +1227,21 @@
       <option name="project" value="LOCAL" />
       <updated>1684303273673</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="Github Action CI">
+      <created>1684303485729</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1684303485730</updated>
+    </task>
+    <task id="LOCAL-00132" summary="Github Action CI">
+      <created>1684303528895</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1684303528895</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1302,7 +1305,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.9.3&#10;add command:&#10;    controller console &lt;controllerName&gt;" />
     <MESSAGE value="typo fix" />
     <MESSAGE value="get ready for 0.10.0" />
     <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
@@ -1327,7 +1329,8 @@
     <MESSAGE value="example plugin jar" />
     <MESSAGE value="migrate to gradle&#10;use LineReader in StdinInputSource" />
     <MESSAGE value="console history support" />
-    <option name="LAST_COMMIT_MESSAGE" value="console history support" />
+    <MESSAGE value="Github Action CI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Github Action CI" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
