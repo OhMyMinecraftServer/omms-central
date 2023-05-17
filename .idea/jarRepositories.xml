@@ -32,6 +32,11 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Repository Switchboard" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
@@ -43,11 +48,6 @@
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
-      <option name="name" value="Maven Repository Switchboard" />
-      <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://maven.aliyun.com/repository/public" />
     </remote-repository>
@@ -55,6 +55,21 @@
       <option name="id" value="minecraft-libraries" />
       <option name="name" value="Minecraft Libraries" />
       <option name="url" value="https://maven.aliyun.com/repository/public" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://repo.opencollab.dev/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="MavenLocal" />
+      <option name="name" value="MavenLocal" />
+      <option name="url" value="file:/$MAVEN_REPOSITORY$/" />
     </remote-repository>
   </component>
 </project>

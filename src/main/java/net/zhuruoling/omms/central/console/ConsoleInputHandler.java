@@ -19,7 +19,7 @@ import java.io.IOException;
 public class ConsoleInputHandler {
 
 
-    private static final Terminal terminal;
+    public static final Terminal terminal;
 
     static {
         try {

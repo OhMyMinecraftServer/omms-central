@@ -1,14 +1,14 @@
 package net.zhuruoling.omms.central.controller.console.input;
 
-import java.util.Scanner;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+
+import static net.zhuruoling.omms.central.console.ConsoleInputHandler.terminal;
 
 public class StdinInputSource extends InputSource {
-    Scanner scanner = new Scanner(System.in);
-
+    LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).build();
     @Override
     public String getLine() {
-        if (scanner.hasNext()) {
-            return scanner.nextLine();
-        } else return null;
+        return lineReader.readLine();
     }
 }
