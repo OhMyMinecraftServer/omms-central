@@ -6,13 +6,11 @@ import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 
 val logger: Logger = LoggerFactory.getLogger("Test")
 
-class ReflectionMetadata
-
-infix fun <L,R> L.reflexpr(left: R): ReflectionMetadata  {
-    return ReflectionMetadata()
-}
 
 fun main() {
-    SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
-
+    //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
+    val str = "replace|keep|outline|hollow|destroy"
+    str.split("|").forEach {
+        print("\"$it\",")
+    }
 }

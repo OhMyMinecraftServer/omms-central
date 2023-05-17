@@ -15,6 +15,7 @@ import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
 import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -228,6 +229,8 @@ public class Util {
     public static <WDNMD> WDNMD fromJson(String content, Class<WDNMD> clazz) {
         return gson.fromJson(content, clazz);
     }
+
+
 
     public static String toJson(@NotNull Object obj) {
         return gson.toJson(obj, obj.getClass());

@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.console;
 
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import org.jetbrains.annotations.NotNull;
@@ -114,7 +115,7 @@ public class ConsoleInputHandler {
         );
         //console complete may not work in intellij idea console
         try {
-            LineReader lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer).build();
+            LineReader lineReader = LineReaderBuilder.builder().history(GlobalVariable.INSTANCE.getConsoleHistory()).terminal(terminal).completer(completer).build();
             String line = lineReader.readLine();
             line = line.strip().stripIndent().stripLeading().stripTrailing();
             if (line.isEmpty()) {

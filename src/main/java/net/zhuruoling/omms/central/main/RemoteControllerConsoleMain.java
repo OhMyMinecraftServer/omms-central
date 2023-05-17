@@ -5,6 +5,7 @@ import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
+import net.zhuruoling.omms.central.util.UtilKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class RemoteControllerConsoleMain {
 //        StdOutPrintTarget stdOutPrintTarget = ;
 //        ControllerConsole controllerConsole = new ControllerConsole(controllerImpl, controllerId, stdOutPrintTarget, new StdinInputSource());
         String id = "MAIN";
-        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource(),new StdOutPrintTarget(), id);
+        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource().withHistory(UtilKt.getOrCreateControllerHistroy(controllerId)),new StdOutPrintTarget(), id);
         controllerConsoleImpl.start();
         while (controllerConsoleImpl.isAlive()) {
             Thread.yield();

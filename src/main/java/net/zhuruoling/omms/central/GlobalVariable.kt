@@ -6,6 +6,7 @@ import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
 import net.zhuruoling.omms.central.permission.Permission
+import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.nio.channels.FileLock
@@ -27,6 +28,8 @@ object GlobalVariable {
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
     val startupLock = Object()
+    val consoleHistory = DefaultHistory()
+    val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
 
     val pluginDeclaredApiMethod = hashMapOf<String,HashMap<String,Method>>()
     @JvmField
