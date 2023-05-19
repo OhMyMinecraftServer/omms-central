@@ -47,7 +47,7 @@ fun <T> mutableListOf(vararg elements: T): MutableList<T> {
 }
 
 fun printRuntimeEnv() {
-    val logger = LoggerFactory.getLogger("YEE")
+    val logger = LoggerFactory.getLogger("Util")
     val os = ManagementFactory.getOperatingSystemMXBean()
     val runtime = ManagementFactory.getRuntimeMXBean()
     logger.info(

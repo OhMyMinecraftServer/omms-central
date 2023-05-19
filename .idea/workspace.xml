@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Github Action CI">
-      <change beforePath="$PROJECT_DIR$/.idea/statistic.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/statistic.xml" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="ManagerBase">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileSystemDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/GlobalVariable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/SomeClass.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
@@ -67,7 +71,6 @@
         <option value="JUnit5 Test Class" />
         <option value="Kotlin Script" />
         <option value="Kotlin Data Class" />
-        <option value="module-info" />
         <option value="Kotlin Object" />
         <option value="AnnotationType" />
         <option value="Enum" />
@@ -75,6 +78,7 @@
         <option value="Kotlin File" />
         <option value="Interface" />
         <option value="Kotlin Class" />
+        <option value="module-info" />
         <option value="Class" />
       </list>
     </option>
@@ -137,7 +141,7 @@
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1684298357395&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1684509047716&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/plugins&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -216,7 +220,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.omms-central [shadowJar]">
+  <component name="RunManager" selected="Application.Rua linux">
     <configuration name="Bar (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central.main" />
@@ -263,6 +267,20 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="net.zhuruoling.omms.central.main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Rua linux" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Rua" />
+      <module name="omms-central.main" />
+      <target name="ZhuRuoLing@192.168.31.137:22" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="net.zhuruoling.omms.central.foo.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -448,9 +466,20 @@
       <ForceTestExec>false</ForceTestExec>
       <method v="2" />
     </configuration>
-    <configuration name="TestKt (1)" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+    <configuration name="TestKt linux" type="JetRunConfigurationType" temporary="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.TestKt" />
       <module name="omms-central.main" />
+      <target name="ZhuRuoLing@192.168.31.137:22" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestKt" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.TestKt" />
+      <module name="omms-central.main" />
+      <target name="@@@LOCAL@@@" />
+      <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -459,6 +488,7 @@
       <item itemvalue="Application.Bar wdnmd" />
       <item itemvalue="Application.Bar" />
       <item itemvalue="Application.Rua" />
+      <item itemvalue="Application.Rua linux" />
       <item itemvalue="Application.controllerConsole" />
       <item itemvalue="Application.experimental nolock" />
       <item itemvalue="Application.main" />
@@ -471,12 +501,13 @@
       <item itemvalue="Application.Main" />
       <item itemvalue="Gradle.omms-central [shadowJar]" />
       <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
-      <item itemvalue="Kotlin.TestKt (1)" />
+      <item itemvalue="Kotlin.TestKt" />
+      <item itemvalue="Kotlin.TestKt linux" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.TestKt linux" />
         <item itemvalue="Gradle.omms-central [shadowJar]" />
-        <item itemvalue="Kotlin.TestKt (1)" />
         <item itemvalue="Application.Bar (1)" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
@@ -896,14 +927,10 @@
       <workItem from="1684297927365" duration="747000" />
       <workItem from="1684298684570" duration="4595000" />
       <workItem from="1684303326269" duration="2070000" />
-      <workItem from="1684333815364" duration="3158000" />
-    </task>
-    <task id="LOCAL-00084" summary="0.8.0&#10;controller commandFeedback">
-      <created>1674132287291</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1674132287291</updated>
+      <workItem from="1684333815364" duration="5343000" />
+      <workItem from="1684485675225" duration="92000" />
+      <workItem from="1684509007228" duration="3442000" />
+      <workItem from="1684513443655" duration="4610000" />
     </task>
     <task id="LOCAL-00085" summary="0.8.0&#10;immediately response for a not queryable controller">
       <created>1674188970140</created>
@@ -1241,7 +1268,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684303528895</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="ManagerBase">
+      <created>1684342642738</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1684342642739</updated>
+    </task>
+    <option name="localTasksCounter" value="134" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1305,7 +1339,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="typo fix" />
     <MESSAGE value="get ready for 0.10.0" />
     <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
     <MESSAGE value="0.10.0&#10;i wrote shit" />
@@ -1330,7 +1363,8 @@
     <MESSAGE value="migrate to gradle&#10;use LineReader in StdinInputSource" />
     <MESSAGE value="console history support" />
     <MESSAGE value="Github Action CI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Github Action CI" />
+    <MESSAGE value="ManagerBase" />
+    <option name="LAST_COMMIT_MESSAGE" value="ManagerBase" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
