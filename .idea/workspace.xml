@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="ManagerBase">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileSystemDescriptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Commit Message">
+      <change afterPath="$PROJECT_DIR$/shit.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Rua.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/SomeClass.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -220,7 +217,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.Rua linux">
+  <component name="RunManager" selected="Kotlin.TestKt">
     <configuration name="Bar (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central.main" />
@@ -420,30 +417,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="init" />
-            <option value="--type" />
-            <option value="pom" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <ForceTestExec>false</ForceTestExec>
-      <method v="2" />
-    </configuration>
     <configuration name="omms-central [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -465,6 +438,13 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <ForceTestExec>false</ForceTestExec>
       <method v="2" />
+    </configuration>
+    <configuration name="FooKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.FooKt" />
+      <module name="omms-central.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="TestKt linux" type="JetRunConfigurationType" temporary="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.TestKt" />
@@ -500,17 +480,17 @@
       <item itemvalue="Application.Bar (1)" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Gradle.omms-central [shadowJar]" />
-      <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
       <item itemvalue="Kotlin.TestKt" />
+      <item itemvalue="Kotlin.FooKt" />
       <item itemvalue="Kotlin.TestKt linux" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.FooKt" />
         <item itemvalue="Kotlin.TestKt linux" />
         <item itemvalue="Gradle.omms-central [shadowJar]" />
         <item itemvalue="Application.Bar (1)" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="Gradle.C:/Users/jkl-9/IdeaProjects/omms-central [init --type pom]" />
       </list>
     </recent_temporary>
   </component>
@@ -930,14 +910,9 @@
       <workItem from="1684333815364" duration="5343000" />
       <workItem from="1684485675225" duration="92000" />
       <workItem from="1684509007228" duration="3442000" />
-      <workItem from="1684513443655" duration="4610000" />
-    </task>
-    <task id="LOCAL-00085" summary="0.8.0&#10;immediately response for a not queryable controller">
-      <created>1674188970140</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1674188970140</updated>
+      <workItem from="1684513443655" duration="5966000" />
+      <workItem from="1684565325993" duration="3003000" />
+      <workItem from="1684569050521" duration="503000" />
     </task>
     <task id="LOCAL-00086" summary="0.8.1&#10;code refactor">
       <created>1674224655787</created>
@@ -1275,7 +1250,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684342642739</updated>
     </task>
-    <option name="localTasksCounter" value="134" />
+    <task id="LOCAL-00134" summary="Commit Message">
+      <created>1684518311223</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1684518311223</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1339,7 +1321,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="get ready for 0.10.0" />
     <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
     <MESSAGE value="0.10.0&#10;i wrote shit" />
     <MESSAGE value="SHIT CODE" />
@@ -1364,7 +1345,8 @@
     <MESSAGE value="console history support" />
     <MESSAGE value="Github Action CI" />
     <MESSAGE value="ManagerBase" />
-    <option name="LAST_COMMIT_MESSAGE" value="ManagerBase" />
+    <MESSAGE value="Commit Message" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit Message" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1403,5 +1385,6 @@
     <SUITE FILE_PATH="coverage/omms_central$Bar_wdnmd.ic" NAME="Bar wdnmd Coverage Results" MODIFIED="1675330269335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.zhuruoling.omms.central.foo.*</FILTER>
     </SUITE>
+    <SUITE FILE_PATH="coverage/omms_central$TestKt.ic" NAME="TestKt Coverage Results" MODIFIED="1684566638573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

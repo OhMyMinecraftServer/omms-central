@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession(
     val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit,
-    val controllerImpl: ControllerImpl
+    private val controllerImpl: ControllerImpl
 ) :
     Thread("Console@${controllerImpl.name}") {
     val list = mutableListOf<String>()

@@ -20,9 +20,5 @@ public class Rua {
 
 
     public static void main(String[] args) throws Throwable {
-        UtilKt.printRuntimeEnv();
-        for (FileSystemDescriptor fileSystemDescriptor : FileUtils.getAllFileSystemDescriptors()) {
-            logger.info(fileSystemDescriptor.toString());
-        }
     }
 }

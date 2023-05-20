@@ -1,0 +1,30 @@
+{
+  "id": "example",
+  "version": "0.0.1",
+  "buildConfig": {
+    "sourcesPath": [
+      {
+        "path": "src/main.kt"
+      },
+      {
+        "path": "src/hello.kt"
+      }
+    ]
+  },
+  "dependencies": {
+    "dependencies": [
+      {
+        "name": "com.mojang:brigadier:1.0.18"
+      },
+      {
+        "name": "org.slf4j:slf4j-api:1.7.36"
+      },
+      {
+        "name": "ch.qos.logback:logback-classic:1.2.11"
+      },
+      {
+        "name": "ch.qos.logback:logback-core:1.2.11"
+      }
+    ]
+  }
+}
