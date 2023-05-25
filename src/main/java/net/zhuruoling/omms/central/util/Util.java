@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
-import net.zhuruoling.omms.central.configuration.Configuration;
+import net.zhuruoling.omms.central.config.Configuration;
 import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
@@ -15,7 +15,6 @@ import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
 import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
-import org.jline.reader.impl.history.DefaultHistory;
 import org.slf4j.Logger;
 
 import java.io.*;

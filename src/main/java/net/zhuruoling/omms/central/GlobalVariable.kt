@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central
 
-import net.zhuruoling.omms.central.configuration.Configuration
+import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.PluginCommand
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender

@@ -13,8 +13,8 @@ import net.zhuruoling.omms.central.GlobalVariable.test
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.command.CommandManager
-import net.zhuruoling.omms.central.configuration.ConfigReader
-import net.zhuruoling.omms.central.configuration.Configuration
+import net.zhuruoling.omms.central.config.ConfigReader
+import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation

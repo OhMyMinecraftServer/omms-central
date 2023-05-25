@@ -23,7 +23,7 @@ class Dependencies {
     class ProjectDependency(val name: String)
 }
 
-fun Dependencies.dependency(id: String){
+fun Dependencies.dependency(id: String) {
     this.dependencies += Dependencies.ProjectDependency(name = id)
 }
 
@@ -43,11 +43,11 @@ inline fun Project.build(func: BuildConfig.() -> Unit) {
     this.buildConfig = BuildConfig().run { func(this);this }
 }
 
-inline fun Project.dependencies(func: Dependencies.() -> Unit){
+inline fun Project.dependencies(func: Dependencies.() -> Unit) {
     this.dependencies = Dependencies().run { func(this);this }
 }
+
 fun main() {
-    {}()
 
     val proj = Project {
         id = "example"
@@ -64,5 +64,6 @@ fun main() {
         }
     }
     val gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
-    println(gson.toJson(proj))
+
+
 }

@@ -45,6 +45,9 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
+    maven{
+        url = uri("https://jcenter.bintray.com/")
+    }
 }
 
 dependencies {
@@ -86,5 +89,6 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:2.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
+    implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.7.10")
 }

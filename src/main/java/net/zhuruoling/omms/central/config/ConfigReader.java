@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.configuration;
+package net.zhuruoling.omms.central.config;
 
 import com.google.gson.Gson;
 import net.zhuruoling.omms.central.util.Util;

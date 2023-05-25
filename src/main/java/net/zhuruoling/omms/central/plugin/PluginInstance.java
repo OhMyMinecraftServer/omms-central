@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.zip.ZipFile;
 @SuppressWarnings("all")
-public class PluginInstance implements AutoCloseable {
+public class PluginInstance{
     private PluginMetadata pluginMetadata;
     private final Logger logger = LoggerFactory.getLogger("PluginInstance");
     private Class<?> pluginMainClass;
@@ -142,11 +142,6 @@ public class PluginInstance implements AutoCloseable {
 
     public Class<?> loadClass(String className) throws ClassNotFoundException {
         return classLoader.loadClass(className);
-    }
-
-    @Override
-    public void close() throws Exception {
-        classLoader.close();
     }
 
     public PluginMetadata getPluginMetadata() {
