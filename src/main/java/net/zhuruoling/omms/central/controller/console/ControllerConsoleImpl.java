@@ -57,6 +57,7 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole{
 
     public void input(String line) {
         if (line == null)return;
+        if(line.isEmpty())return;
         if (line.startsWith(":")) {
             if (line.equals(":q")) {
                 info("Disconnecting.");

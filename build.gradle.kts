@@ -26,7 +26,7 @@ application {
 
 
 group = "org.zhuruoling"
-version = "0.12.0"
+version = "0.12.1"
 description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
