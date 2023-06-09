@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-//TODO:用的AES/ECB/PKCS5Padding
+//AES/ECB/PKCS5Padding
 public class EncryptedSocket {
     private final BufferedReader in;
     private final PrintWriter out;

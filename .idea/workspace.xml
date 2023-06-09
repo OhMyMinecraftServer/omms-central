@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Commit Message" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Commit Message">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Bar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Bar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/EncryptedSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/EncryptedSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/RateLimitEncryptedSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/FuseEncryptedSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/SessionContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/SessionContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionInitialServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionInitialServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/server/SessionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/security/CryptoUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/security/CryptoUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.java" afterDir="false" />
+    </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
     <list id="3a05e38f-966b-4825-b912-1f5318245386" name="Changes by MapleDust" comment="" />
@@ -107,7 +119,7 @@
     </option>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2AZOIJu28goXqXbM3jJQv1Z8S05" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -132,7 +144,7 @@
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1684988495953&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1686071440560&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/plugins&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -143,7 +155,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.statistic.project.settings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -211,7 +223,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.omms-central [shadowJar]">
+  <component name="RunManager" selected="Application.Bar wdnmd">
     <configuration name="Bar (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central.main" />
@@ -916,13 +928,18 @@
       <workItem from="1684858397801" duration="1368000" />
       <workItem from="1684860219639" duration="849000" />
       <workItem from="1684988440461" duration="5401000" />
-    </task>
-    <task id="LOCAL-00088" summary="0.8.2&#10;attempt to make changes to PermissionManager">
-      <created>1675147679111</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1675147679111</updated>
+      <workItem from="1685036061567" duration="776000" />
+      <workItem from="1685174183124" duration="39000" />
+      <workItem from="1685263897356" duration="688000" />
+      <workItem from="1685695763851" duration="1927000" />
+      <workItem from="1686054423043" duration="2033000" />
+      <workItem from="1686070680450" duration="1525000" />
+      <workItem from="1686140518824" duration="30000" />
+      <workItem from="1686140589815" duration="449000" />
+      <workItem from="1686142494823" duration="1930000" />
+      <workItem from="1686208741888" duration="4000" />
+      <workItem from="1686286760118" duration="256000" />
+      <workItem from="1686321269987" duration="829000" />
     </task>
     <task id="LOCAL-00089" summary="0.8.2&#10;我是SB">
       <created>1675177028137</created>
@@ -1260,7 +1277,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685033894267</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="Commit Message">
+      <created>1685036231575</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1685036231576</updated>
+    </task>
+    <option name="localTasksCounter" value="138" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

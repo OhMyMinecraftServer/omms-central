@@ -1,8 +1,12 @@
 package net.zhuruoling.omms.central.foo
 
 import com.google.gson.GsonBuilder
+import io.ktor.util.*
+import net.zhuruoling.omms.central.util.Util
+import net.zhuruoling.omms.central.util.printRuntimeEnv
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 
 val logger: Logger = LoggerFactory.getLogger("Test")
 
@@ -48,7 +52,6 @@ inline fun Project.dependencies(func: Dependencies.() -> Unit) {
 }
 
 fun main() {
-
     val proj = Project {
         id = "example"
         version = "0.0.1"
@@ -64,6 +67,5 @@ fun main() {
         }
     }
     val gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
-
-
+    printRuntimeEnv()
 }

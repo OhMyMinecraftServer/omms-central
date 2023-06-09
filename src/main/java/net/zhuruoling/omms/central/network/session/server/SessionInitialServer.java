@@ -30,7 +30,5 @@ public class SessionInitialServer extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

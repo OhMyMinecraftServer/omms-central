@@ -131,7 +131,7 @@ public class Util {
         StringBuilder stringBuffer = new StringBuilder();
         for (int i = 0; i < len; i++) {
             Random random = new Random(System.nanoTime());
-            int num = random.nextInt(62);
+            int num = random.nextInt(ch.length()-1);
             stringBuffer.append(ch.charAt(num));
         }
         return stringBuffer.toString();
@@ -235,7 +235,7 @@ public class Util {
         return new File(filePath).createNewFile();
     }
 
-    public static class GlobalExclusionStrategy implements ExclusionStrategy{
+    public static class GlobalExclusionStrategy implements ExclusionStrategy {
 
         @Override
         public boolean shouldSkipField(FieldAttributes f) {

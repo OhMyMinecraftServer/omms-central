@@ -45,7 +45,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
 
 public class BuiltinCommand {
-    private static Logger logger = LoggerFactory.getLogger("BuiltinCommand");
+    private static final Logger logger = LoggerFactory.getLogger("BuiltinCommand");
 
     public static void registerBuiltinCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> whitelistCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("whitelist")

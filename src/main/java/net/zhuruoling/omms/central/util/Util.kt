@@ -50,15 +50,8 @@ fun printRuntimeEnv() {
     val logger = LoggerFactory.getLogger("Util")
     val os = ManagementFactory.getOperatingSystemMXBean()
     val runtime = ManagementFactory.getRuntimeMXBean()
-    logger.info(
-        String.format(
-            "${Util.PRODUCT_NAME} is running on %s %s %s at pid %d",
-            os.name,
-            os.arch,
-            os.version,
-            runtime.pid
-        )
-    )
+    val version = BuildProperties["version"]
+    logger.info("${Util.PRODUCT_NAME} $version is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}",)
 }
 
 fun getOrCreateControllerHistroy(controllerId: String): DefaultHistory {

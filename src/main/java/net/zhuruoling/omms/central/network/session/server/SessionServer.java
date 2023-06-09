@@ -3,7 +3,7 @@ package net.zhuruoling.omms.central.network.session.server;
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.EncryptedSocket;
 import net.zhuruoling.omms.central.network.session.RateExceedException;
-import net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket;
+import net.zhuruoling.omms.central.network.session.FuseEncryptedSocket;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.Session;
 import net.zhuruoling.omms.central.network.session.request.RequestManager;
@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 
 public class SessionServer extends Thread {
     private final Session session;
-    private net.zhuruoling.omms.central.network.session.RateLimitEncryptedSocket rateLimitEncryptedSocket;
+    private FuseEncryptedSocket fuseEncryptedSocket;
     final Logger logger = LoggerFactory.getLogger("SessionServer");
     private SessionContext sessionContext;
 
@@ -50,7 +50,7 @@ public class SessionServer extends Thread {
                             this.session.getKey()
                     )
             );
-            this.rateLimitEncryptedSocket = RateLimitEncryptedSocket.of(encryptedConnector, GlobalVariable.INSTANCE.getConfig().getRateLimit());
+            this.fuseEncryptedSocket = FuseEncryptedSocket.of(encryptedConnector, GlobalVariable.INSTANCE.getConfig().getRateLimit());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class SessionServer extends Thread {
     public void sendResponseAsync(Response response){
         runOnNetworkThread(() -> {
             try {
-                rateLimitEncryptedSocket.sendResponse(response);
+                fuseEncryptedSocket.sendResponse(response);
             } catch (NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException |
                      BadPaddingException | InvalidKeyException e) {
                 logger.error("Error while sending response.", e);
@@ -84,13 +84,13 @@ public class SessionServer extends Thread {
     @Override
     public void run() {
         logger.info("%s started.".formatted(this.getName()));
-        sessionContext = new SessionContext(this, rateLimitEncryptedSocket, session, this.permissions);
+        sessionContext = new SessionContext(this, fuseEncryptedSocket, session, this.permissions);
         try {
             while (true){
                 try {
                     if (session.getSocket().isClosed())
                         break;
-                    var request = rateLimitEncryptedSocket.receiveRequest();
+                    var request = fuseEncryptedSocket.receiveRequest();
                     logger.debug("Received " + request);
                     var handler = Objects.requireNonNull(RequestManager.INSTANCE.getRequestHandler(Objects.requireNonNull(request).getRequest()));
                     var permission = handler.requiresPermission();
@@ -103,7 +103,7 @@ public class SessionServer extends Thread {
                         response = handler.handle(request, sessionContext);
                         if (response == null){
                             logger.info("Session terminated.");
-                            rateLimitEncryptedSocket.sendResponse(new Response().withResponseCode(Result.DISCONNECT));
+                            fuseEncryptedSocket.sendResponse(new Response().withResponseCode(Result.DISCONNECT));
                             session.getSocket().close();
                             break;
                         }

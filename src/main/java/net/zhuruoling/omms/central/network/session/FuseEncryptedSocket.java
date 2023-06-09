@@ -12,22 +12,22 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class RateLimitEncryptedSocket {
+public class FuseEncryptedSocket {
     private final EncryptedSocket encryptedSocket;
     private final int rateLimit;
     private final boolean enable;
     private int count = 0;
     private long time;
 
-    public RateLimitEncryptedSocket(EncryptedSocket encryptedSocket, int rateLimit) {
+    public FuseEncryptedSocket(EncryptedSocket encryptedSocket, int rateLimit) {
         this.encryptedSocket = encryptedSocket;
         this.rateLimit = rateLimit;
         enable = rateLimit >= 1;
         time = System.currentTimeMillis();
     }
 
-    public static RateLimitEncryptedSocket of(EncryptedSocket encryptedSocket, int limit) {
-        return new RateLimitEncryptedSocket(encryptedSocket, limit);
+    public static FuseEncryptedSocket of(EncryptedSocket encryptedSocket, int limit) {
+        return new FuseEncryptedSocket(encryptedSocket, limit);
     }
 
     public Request receiveRequest() throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
