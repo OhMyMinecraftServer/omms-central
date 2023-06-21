@@ -16,20 +16,21 @@ fun whitelistPrettyPrinting(whitelistImpl: Whitelist): String {
     """.trimIndent()
 }
 
-fun controllerPrettyPrinting(controllerImpl: Controller): String {
-    if (controllerImpl is ControllerImpl)
+fun controllerPrettyPrinting(controller: Controller): String {
+    if (controller is ControllerImpl)
         return """
-        - Controller: ${controllerImpl.name}
-            executable: ${controllerImpl.executable}
-            type: ${controllerImpl.type}
-            launchParameters: ${controllerImpl.launchParams}
-            workingDirectory: ${controllerImpl.workingDir}
-            isStatusQueryable: ${controllerImpl.isStatusQueryable}
+        - Controller: ${controller.name}
+            isStatusQueryable: ${controller.isStatusQueryable}
+            type: ${controller.type}
+            executable: ${controller.executable}
+            launchParameters: ${controller.launchParams}
+            workingDirectory: ${controller.workingDir}
     """.trimIndent()
     else
         return """
-        - Controller: ${controllerImpl.name}
-            isStatusQueryable: ${controllerImpl.isStatusQueryable}
+        - Controller: ${controller.name}
+            type: ${controller.type}
+            isStatusQueryable: ${controller.isStatusQueryable}
     """.trimIndent()
 
 }

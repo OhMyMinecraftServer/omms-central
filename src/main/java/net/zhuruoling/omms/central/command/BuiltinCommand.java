@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.console;
+package net.zhuruoling.omms.central.command;
 
 import com.google.gson.Gson;
 import kotlin.collections.CollectionsKt;
@@ -12,6 +12,8 @@ import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
 import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
+import net.zhuruoling.omms.central.console.ConsoleUtil;
+import net.zhuruoling.omms.central.console.ConsoleUtilKt;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;

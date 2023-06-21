@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.foo
 
 import com.google.gson.GsonBuilder
 import io.ktor.util.*
+import net.zhuruoling.omms.central.network.http.receiveTextFromCall
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.printRuntimeEnv
 import org.slf4j.Logger
@@ -66,6 +67,9 @@ fun main() {
             dependency("ch.qos.logback:logback-core:1.2.11")
         }
     }
+    val fn = { a: Int, b: Int ->
+        a + b
+    }
     val gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
-    printRuntimeEnv()
+    println(gson.toJson(proj))
 }
