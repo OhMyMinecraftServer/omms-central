@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.plugin;
 
 import kotlin.Pair;
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency;
+import net.zhuruoling.omms.central.plugin.exception.PluginException;
 import net.zhuruoling.omms.central.plugin.handler.PluginRequestHandler;
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement;
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata;
@@ -14,13 +15,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.zip.ZipFile;
+
 @SuppressWarnings("all")
-public class PluginInstance{
+public class PluginInstance {
     private PluginMetadata pluginMetadata;
     private final Logger logger = LoggerFactory.getLogger("PluginInstance");
     private Class<?> pluginMainClass;
@@ -52,13 +51,15 @@ public class PluginInstance{
             var pluginMetadataString = new String(stream.readAllBytes(), Charset.defaultCharset());
             logger.debug("Plugin metadata: " + pluginMetadataString);
             pluginMetadata = PluginMetadata.fromJson(pluginMetadataString);
-            if (Objects.isNull(pluginMetadata.getId())){
+            if (Objects.isNull(pluginMetadata.getId())) {
                 logger.error("This plugin metadata file has no pluginId specified,file path: %s".formatted(pluginPath.toAbsolutePath().toString()));
                 pluginState = PluginState.ERROR;
                 return;
             }
             if (pluginMetadata.getPluginDependencies() != null) {
-                pluginMetadata.getPluginDependencies().forEach(requirement -> requirement.parseRequirement());
+                pluginMetadata.getPluginDependencies().forEach(requirement -> {
+                    requirement.parseRequirement();
+                });
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -76,10 +77,11 @@ public class PluginInstance{
             try {
                 pluginMainClass = classLoader.loadClass(pluginMetadata.getPluginMainClass());
                 pluginMain = (PluginMain) pluginMainClass.getConstructor().newInstance();
-            }catch (ClassNotFoundException | NoSuchMethodException|InvocationTargetException|InstantiationException|IllegalAccessException e){
+            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                     InstantiationException | IllegalAccessException e) {
                 logger.error("Cannot find plugin main class %s".formatted(pluginMetadata.getPluginMainClass()), e);
                 pluginState = PluginState.ERROR;
-            }catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 logger.error("Cannot cast plugin main class %s to PluginMain.".formatted(pluginMetadata.getPluginMainClass()), e);
                 pluginState = PluginState.ERROR;
             }
@@ -136,6 +138,17 @@ public class PluginInstance{
                 .toList();
     }
 
+    public List<PluginDependencyRequirement> checkPluginDependcencyRequirements(List<PluginDependency> dependencies) {
+        pluginState = PluginState.ERROR;
+        List<PluginDependencyRequirement> result = new ArrayList<PluginDependencyRequirement>();
+        if (pluginMetadata.getPluginDependencies() != null) {
+            result = pluginMetadata.getPluginDependencies().stream().filter(it -> dependencies.stream().noneMatch(it2 -> it.requirementMatches(it2))).toList();
+        }
+        pluginState = PluginState.INITIALIZED;
+        return result;
+    }
+
+
     public void onInitialize() {
         pluginMain.onInitialize();
     }
@@ -167,4 +180,6 @@ public class PluginInstance{
     public Map<String, PluginRequestHandler> getPluginRequestHandlers() {
         return pluginRequestHandlers;
     }
+
+
 }

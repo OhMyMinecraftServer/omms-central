@@ -4,20 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Commit Message">
-      <change afterPath="$PROJECT_DIR$/plugins/omms-central-mcsm-support-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/jkl_9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/jkl_9.xml" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.12.3">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/exception/PluginException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/AtemLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugins/omms-central-plugin-example-1.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/CommandManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/console/BuiltinCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/command/BuiltinCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/ControllerManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/ControllerWebSocketSession.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/output/StdOutPrintTarget.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/console/output/StdOutPrintTarget.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/util/Util.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistImpl.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -82,9 +78,9 @@
         <option value="Kotlin File" />
         <option value="Kotlin Class" />
         <option value="module-info" />
-        <option value="Class" />
         <option value="AnnotationType" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -146,8 +142,8 @@
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1687105521562&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/plugins&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1687588372909&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/src/main/resources/AtemLexer.g4&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -951,14 +947,14 @@
       <workItem from="1687007536820" duration="2475000" />
       <workItem from="1687103880526" duration="4622000" />
       <workItem from="1687186365725" duration="1573000" />
-      <workItem from="1687347585582" duration="1639000" />
-    </task>
-    <task id="LOCAL-00090" summary="0.8.2&#10;我是SB +1">
-      <created>1675228989868</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1675228989868</updated>
+      <workItem from="1687347585582" duration="5689000" />
+      <workItem from="1687445210986" duration="270000" />
+      <workItem from="1687445986725" duration="15000" />
+      <workItem from="1687450150768" duration="613000" />
+      <workItem from="1687588351090" duration="1286000" />
+      <workItem from="1687599704391" duration="142000" />
+      <workItem from="1687613320046" duration="7000" />
+      <workItem from="1687620197986" duration="941000" />
     </task>
     <task id="LOCAL-00091" summary="0.8.2&#10;RAINBOW">
       <created>1675668831282</created>
@@ -1296,7 +1292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686328699320</updated>
     </task>
-    <option name="localTasksCounter" value="139" />
+    <task id="LOCAL-00139" summary="0.12.3">
+      <created>1687351333764</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351333765</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1360,7 +1363,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
     <MESSAGE value="0.10.0&#10;i wrote shit" />
     <MESSAGE value="SHIT CODE" />
     <MESSAGE value="?" />
@@ -1385,7 +1387,8 @@
     <MESSAGE value="Github Action CI" />
     <MESSAGE value="ManagerBase" />
     <MESSAGE value="Commit Message" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit Message" />
+    <MESSAGE value="0.12.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.12.3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

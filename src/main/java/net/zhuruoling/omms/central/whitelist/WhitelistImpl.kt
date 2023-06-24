@@ -6,7 +6,7 @@ import net.zhuruoling.omms.central.util.Util
 import java.io.File
 import java.nio.charset.Charset
 
-@Serializable
+
 class WhitelistImpl(
     @field:SerializedName("players") private var players: List<String>,
     @field:SerializedName("name") private var name: String
