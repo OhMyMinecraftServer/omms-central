@@ -12,6 +12,9 @@ class WhitelistImpl(
     @field:SerializedName("name") private var name: String
 ) : Whitelist() {
     override fun getName() = name
+    override fun init() {
+        //WhitelistImpl initiated by WhitelistManager
+    }
 
     override fun contains(player: String) = players.contains(player)
 

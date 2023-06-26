@@ -46,10 +46,10 @@ object WhitelistManager : Manager() {
                     reader.close()
                     whitelistNameFix(it)
                 }
-                if (whitelistMap.containsKey(whitelistImpl.getName())) {
+                if (whitelistMap.containsKey(whitelistImpl.name)) {
                     throw RuntimeException("Duplicated whitelist name(${whitelistImpl.name}).")
                 }
-                whitelistMap[whitelistImpl.getName()] = whitelistImpl
+                whitelistMap[whitelistImpl.name] = whitelistImpl
                 reader.close()
             } catch (e: JsonParseException) {
                 throw e
@@ -164,20 +164,18 @@ object WhitelistManager : Manager() {
         whitelist.saveModifiedBuffer()
     }
 
-    fun createWhitelist(name: String) {//todo
-        TODO()
+    fun createWhitelist(name: String) {
+        if (name in whitelistMap)throw WhitelistAlreadyExistsException(name)
+        val whitelist = WhitelistImpl(mutableListOf(), name)
+        whitelistMap += name to whitelist
+        whitelist.saveModifiedBuffer()
     }
 
     @Throws(WhitelistNotExistException::class)
-    fun deleteWhiteList(name: String) {//todo
+    fun deleteWhiteList(name: String) {
         val whitelist = this[name] ?: throw WhitelistNotExistException(name)
         whitelist.deleteWhitelist()
         this.whitelistMap.remove(name)
-        //接下来交给GC (x
-    }
-
-    enum class Operation {
-        ADD, REMOVE
     }
 
     data class SearchResult(val ratio: Int, val playerName: String)

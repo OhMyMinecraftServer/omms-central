@@ -6,18 +6,21 @@ import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
+import net.zhuruoling.omms.central.whitelist.WhitelistAlreadyExistsException;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class CreateWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        Result result = Result.FAIL;
+        Result result;
         try {
             WhitelistManager.INSTANCE.createWhitelist(request.getContent("whitelist"));
             result = Result.WHITELIST_CREATED;
-        }catch (Exception e){
-
+        } catch (WhitelistAlreadyExistsException e) {
+            result = Result.WHITELIST_ALREADT_EXISTS;
         }
         return new Response().withResponseCode(result).withContentPair("whitelist", request.getContent("whitelist"));
     }
