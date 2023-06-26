@@ -1,11 +1,17 @@
 package net.zhuruoling.omms.central.plugin
 
 import net.zhuruoling.omms.central.GlobalVariable
+import net.zhuruoling.omms.central.plugin.depedency.PluginDependency
+import net.zhuruoling.omms.central.plugin.exception.PluginException
+import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
+import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata
 import net.zhuruoling.omms.central.script.ScriptManager
+import net.zhuruoling.omms.central.util.BuildProperties
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.lang.module.ModuleDescriptor
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
@@ -47,6 +53,7 @@ object PluginManager : Manager(){
     }
 
     fun loadAll() {
+        checkRequirements()
         pluginMap.forEach {
             logger.debug("Loading plugin ${it.key}")
             it.value.onInitialize()
@@ -56,5 +63,49 @@ object PluginManager : Manager(){
     operator fun get(id: String): PluginInstance? {
         return pluginMap[id]
     }
-
+    private fun checkRequirements() {
+        val dependencies = mutableListOf<PluginDependency>()
+        dependencies += PluginDependency(
+            ModuleDescriptor.Version.parse(BuildProperties["version"]!!),
+            BuildProperties["applicationName"]!!
+        )
+        pluginMap.forEach {
+            dependencies += PluginDependency(ModuleDescriptor.Version.parse(it.value.pluginMetadata.version), it.key)
+        }
+        val unsatisfied = mutableMapOf<PluginMetadata, List<PluginDependencyRequirement>>()
+        pluginMap.forEach {
+            unsatisfied += it.value.pluginMetadata to it.value.checkPluginDependcencyRequirements(dependencies)
+        }
+        if (unsatisfied.any { it.value.isNotEmpty() }) {
+            println("not empty")
+            val dependencyMap = mutableMapOf<String, String>()
+            dependencies.forEach {
+                dependencyMap += it.id to it.version.toString()
+            }
+            val builder = StringBuilder()
+            builder.append("Incompatible plugin set.\n")
+            builder.append("Unmet dependency listing:\n")
+            unsatisfied.forEach {
+                it.value.forEach { requirement ->
+                    builder.append(
+                        "\t${it.key.id} ${it.key.version} requires ${requirement.id} of version ${requirement.requirement}, ${if (requirement.id !in dependencyMap) "which is missing!" else "but only the wrong version are present: ${dependencyMap[requirement.id]}!"}\n"
+                    )
+                }
+            }
+            builder.append("A potential solution has been determined:\n")
+            unsatisfied.forEach { entry ->
+                entry.value.forEach {
+                    builder.append(
+                        if (it.id !in dependencyMap)
+                            "\tInstall ${it.id} of version ${it.requirement}."
+                        else
+                            "\tReplace ${it.id} ${dependencyMap[it.id]} with ${it.id} of version ${it.requirement}"
+                    )
+                    builder.append("\n")
+                }
+            }
+            throw PluginException(builder.toString())
+        }
+    }
 }
+

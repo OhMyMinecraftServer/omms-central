@@ -28,7 +28,7 @@ application {
 
 
 group = "org.zhuruoling"
-version = "0.12.1"
+version = "0.12.3"
 description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -92,6 +92,7 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     implementation("org.apache.groovy:groovy:4.0.10")
+    implementation("io.socket:socket.io-client:2.1.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.7.10")
 }
 

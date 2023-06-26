@@ -11,6 +11,6 @@ public class StdOutPrintTarget extends PrintTarget<PrintStream, ControllerConsol
 
     @Override
     void println(PrintStream target, ControllerConsole context, String content) {
-        target.println("[" + context.getConsoleId() +"] " + content + " ");
+        target.print("[" + context.getConsoleId() + "] " + content + ((content.endsWith("\n") || content.endsWith("\r\n") || content.endsWith("\r")) ? "" : "\n"));
     }
 }

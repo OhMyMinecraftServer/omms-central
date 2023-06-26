@@ -67,7 +67,7 @@ class ControllerWebSocketSession(
                                     }
                                 }
                             }
-                            val input = launch(Dispatchers.Default) {
+                            val input = launch(Dispatchers.IO) {
                                 while (true) {
                                     synchronized(list) {
                                         if (list.isNotEmpty()) {

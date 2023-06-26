@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="Commit Message">
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+    <list default="true" id="46250d27-1799-4e21-8266-66844c2551a1" name="变更" comment="0.12.3">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/exception/PluginException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/AtemLexer.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileSystemDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileSystemDescriptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/file/FileUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginInstance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/metadata/PluginDependencyRequirement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/whitelist/WhitelistImpl.kt" afterDir="false" />
     </list>
     <list id="2191cb46-9e3f-4544-b032-da2901e433dd" name="Changes by 34376" comment="" />
     <list id="dc4a770b-efd5-4003-b607-5a23c68f14ac" name="Changes by ishland" comment="Changes by ishland" />
@@ -74,9 +78,9 @@
         <option value="Kotlin File" />
         <option value="Kotlin Class" />
         <option value="module-info" />
-        <option value="Class" />
         <option value="AnnotationType" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -84,12 +88,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file:///Applications/Termius.app/Contents/Resources/app/js/ui-process.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/.github/workflows/maven.yml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/plugins/test.groovy" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/controller/Controller.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/foo/Bar.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/main/MainKt.kt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/handler/PluginRequestHandler.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/network/session/message/Message.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/Permission.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/permission/PermissionManager.kt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/GroovyPluginInstance.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/plugin/PluginManager.kt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/MemoryInfo.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/net/zhuruoling/omms/central/system/StorageInfo.java" root0="FORCE_HIGHLIGHTING" />
@@ -133,8 +142,8 @@
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;ktor.last.update.timestamp&quot;: &quot;1687450137803&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/plugins&quot;,
+    &quot;ktor.last.update.timestamp&quot;: &quot;1687588372909&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/jkl-9/IdeaProjects/omms-central/src/main/resources/AtemLexer.g4&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -200,6 +209,9 @@
     <key name="CreateTestDialog.RecentsKey">
       <recent name="net.zhuruoling.permcode" />
     </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="net.zhuruoling.omms.central.util" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="net.zhuruoling.omms.central.whitelist" />
       <recent name="net.zhuruoling.network.broadcast" />
@@ -212,7 +224,7 @@
       <command value="ipconfig" />
     </option>
   </component>
-  <component name="RunManager" selected="Kotlin.TestKt">
+  <component name="RunManager" selected="Application.nolock">
     <configuration name="Bar (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="net.zhuruoling.omms.central.foo.Bar" />
       <module name="omms-central.main" />
@@ -928,30 +940,21 @@
       <workItem from="1686142494823" duration="1930000" />
       <workItem from="1686208741888" duration="4000" />
       <workItem from="1686286760118" duration="256000" />
-      <workItem from="1686321269987" duration="829000" />
-      <workItem from="1686569758197" duration="670000" />
-      <workItem from="1686749485910" duration="888000" />
-      <workItem from="1686750388504" duration="654000" />
-      <workItem from="1686843391544" duration="807000" />
-      <workItem from="1686850852966" duration="178000" />
-      <workItem from="1686851050507" duration="413000" />
-      <workItem from="1686851648477" duration="390000" />
-      <workItem from="1687449995369" duration="1917000" />
-      <workItem from="1687606847091" duration="500000" />
-    </task>
-    <task id="LOCAL-00089" summary="0.8.2&#10;我是SB">
-      <created>1675177028137</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1675177028138</updated>
-    </task>
-    <task id="LOCAL-00090" summary="0.8.2&#10;我是SB +1">
-      <created>1675228989868</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1675228989868</updated>
+      <workItem from="1686321269987" duration="4598000" />
+      <workItem from="1686660978456" duration="3118000" />
+      <workItem from="1686889080906" duration="264000" />
+      <workItem from="1686924514128" duration="1251000" />
+      <workItem from="1687007536820" duration="2475000" />
+      <workItem from="1687103880526" duration="4622000" />
+      <workItem from="1687186365725" duration="1573000" />
+      <workItem from="1687347585582" duration="5689000" />
+      <workItem from="1687445210986" duration="270000" />
+      <workItem from="1687445986725" duration="15000" />
+      <workItem from="1687450150768" duration="613000" />
+      <workItem from="1687588351090" duration="1286000" />
+      <workItem from="1687599704391" duration="142000" />
+      <workItem from="1687613320046" duration="7000" />
+      <workItem from="1687620197986" duration="941000" />
     </task>
     <task id="LOCAL-00091" summary="0.8.2&#10;RAINBOW">
       <created>1675668831282</created>
@@ -1282,7 +1285,21 @@
       <option name="project" value="LOCAL" />
       <updated>1685036231576</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="Commit Message">
+      <created>1686328699320</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1686328699320</updated>
+    </task>
+    <task id="LOCAL-00139" summary="0.12.3">
+      <created>1687351333764</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1687351333765</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1346,7 +1363,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="0.10.0&#10;specify Result&#10;ControllerConsole via Session" />
     <MESSAGE value="0.10.0&#10;i wrote shit" />
     <MESSAGE value="SHIT CODE" />
     <MESSAGE value="?" />
@@ -1371,7 +1387,8 @@
     <MESSAGE value="Github Action CI" />
     <MESSAGE value="ManagerBase" />
     <MESSAGE value="Commit Message" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit Message" />
+    <MESSAGE value="0.12.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.12.3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1407,9 +1424,9 @@
     <SUITE FILE_PATH="coverage/omms_central$nolock.ic" NAME="nolock Coverage Results" MODIFIED="1681895981243" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.zhuruoling.omms.central.main.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/omms_central$TestKt.ic" NAME="TestKt Coverage Results" MODIFIED="1684566638573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/omms_central$Bar_wdnmd.ic" NAME="Bar wdnmd Coverage Results" MODIFIED="1675330269335" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>net.zhuruoling.omms.central.foo.*</FILTER>
     </SUITE>
+    <SUITE FILE_PATH="coverage/omms_central$TestKt.ic" NAME="TestKt Coverage Results" MODIFIED="1684566638573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

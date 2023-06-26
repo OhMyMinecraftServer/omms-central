@@ -129,7 +129,7 @@ object ControllerManager : Manager() {
                 val status = this[it]!!.queryControllerStatus()
                 map[it]!!.run {
                     this.name = status.name
-                    this.isAlive = true
+                    this.isAlive = status.isAlive
                     this.maxPlayerCount = status.maxPlayerCount
                     this.playerCount = status.playerCount
                     this.players = status.players

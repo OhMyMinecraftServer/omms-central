@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.plugin.metadata;
 import com.google.gson.annotations.SerializedName;
 import net.zhuruoling.omms.central.plugin.UtilKt;
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency;
+import net.zhuruoling.omms.central.plugin.exception.PluginException;
 
 import java.lang.module.ModuleDescriptor;
 
@@ -14,7 +15,17 @@ public class PluginDependencyRequirement {
 
     private String symbol;
     private ModuleDescriptor.Version parsedVersion;
+
     public void parseRequirement() {
+        if (id == null) {
+            throw new PluginException("No `id` provided for PluginDependencyRequirement.");
+        }
+        if (requirement == null) requirement = "*";
+        if (requirement.equals("*")){
+            symbol = "*";
+            parsedVersion = null;
+            return;
+        }
         var matcher = UtilKt.getVersionNamePattern().matcher(requirement);
         if (!matcher.matches()) throw new IllegalStateException("Unexpected value: " + requirement);
         var match = matcher.toMatchResult();
@@ -36,5 +47,9 @@ public class PluginDependencyRequirement {
 
     public ModuleDescriptor.Version getParsedVersion() {
         return parsedVersion;
+    }
+
+    public String getRequirement() {
+        return requirement;
     }
 }
