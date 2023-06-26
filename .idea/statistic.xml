@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Statistic">
-    <option name="fileTypes" value="md;log;class;svn-base;svn-work;Extra;gif;png;jpg;jpeg;bmp;tga;tiff;ear;war;zip;jar;iml;iws;ipr;conf;json;db;xml;bz2;gz;pyc;yaml;kts;properties;jar;bat;" />
-    <option name="excludeDotArtifactDirectory" value="true" />
-    <option name="activateWhenOpenProject" value="true" />
-  </component>
-</project>
