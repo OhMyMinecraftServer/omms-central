@@ -2,10 +2,13 @@ package net.zhuruoling.omms.central.foo
 
 import com.google.gson.GsonBuilder
 import io.ktor.util.*
+import net.zhuruoling.omms.central.file.FileSystemDescriptor
+import net.zhuruoling.omms.central.file.FileUtils
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.printRuntimeEnv
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.FileDescriptor
 import java.util.*
 
 val logger: Logger = LoggerFactory.getLogger("Test")
@@ -52,20 +55,9 @@ inline fun Project.dependencies(func: Dependencies.() -> Unit) {
 }
 
 fun main() {
-    val proj = Project {
-        id = "example"
-        version = "0.0.1"
-        build {
-            source("src/main.kt")
-            source("src/hello.kt")
-        }
-        dependencies {
-            dependency("com.mojang:brigadier:1.0.18")
-            dependency("org.slf4j:slf4j-api:1.7.36")
-            dependency("ch.qos.logback:logback-classic:1.2.11")
-            dependency("ch.qos.logback:logback-core:1.2.11")
-        }
-    }
-    val gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
-    printRuntimeEnv()
+    val list = mutableListOf<FileSystemDescriptor>()
+    FileUtils.linuxListFileSystemDescriptorImpl(list)
+    list.forEach(::println)
+    println()
+    FileUtils.getAllFileSystemDescriptors().forEach(::println)
 }

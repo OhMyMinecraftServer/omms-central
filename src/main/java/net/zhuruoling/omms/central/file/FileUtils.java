@@ -10,27 +10,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-    
+
     public static boolean IS_WINDOWS;
     public static boolean IS_LINUX;
 
+    public static boolean IS_MACOS;
+
     private static final PlatformEnum platformEnum;
-    
+
     static {
         platformEnum = SystemInfo.getCurrentPlatform();
         IS_WINDOWS = platformEnum == PlatformEnum.WINDOWS;
         IS_LINUX = platformEnum == PlatformEnum.LINUX || platformEnum == PlatformEnum.ANDROID;
-        if (!IS_WINDOWS && !IS_LINUX){
+        IS_MACOS = platformEnum == PlatformEnum.MACOS;
+        if (!IS_WINDOWS && !IS_LINUX && !IS_MACOS) {
             throw new UnsupportedOperationException("Operating system not supported: " + platformEnum.getName());
         }
     }
-    
-    public static List<FileSystemDescriptor> getAllFileSystemDescriptors(){
+
+    public static List<FileSystemDescriptor> getAllFileSystemDescriptors() {
         List<FileSystemDescriptor> fileSystemDescriptors = new ArrayList<>();
-        switch (platformEnum){
+        switch (platformEnum) {
             case WINDOWS -> windowsListFileSystemDescriptorImpl(fileSystemDescriptors);
             case LINUX, ANDROID -> linuxListFileSystemDescriptorImpl(fileSystemDescriptors);
-            default -> throw new UnsupportedOperationException("Operating system not supported: " + platformEnum.getName());
+            case MACOS -> macOSListFileSystemDescriptorImpl(fileSystemDescriptors);
+            default ->
+                    throw new UnsupportedOperationException("Operating system not supported: " + platformEnum.getName());
         }
         return fileSystemDescriptors;
     }
@@ -43,7 +48,7 @@ public class FileUtils {
         }
     }
 
-    private static void linuxListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
+    public static void linuxListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
         for (FileStore fileStore : FileSystems.getDefault().getFileStores()) {
             String s = fileStore.toString();
             String path = s.subSequence(0, s.indexOf('(') - 1).toString();
@@ -55,6 +60,16 @@ public class FileUtils {
             } else {
                 fileSystemDescriptors.add(new FileSystemDescriptor(path, of));
             }
+        }
+    }
+
+    private static void macOSListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
+        for (FileStore fileStore : FileSystems.getDefault().getFileStores()) {
+            String s = fileStore.toString();
+            System.out.println(s);
+            String path = s.subSequence(0, s.indexOf('(') - 1).toString();
+            Path mountPath = Path.of(path);
+            fileSystemDescriptors.add(new FileSystemDescriptor(s.substring(s.indexOf("("), s.indexOf(")")), mountPath));
         }
     }
 }
