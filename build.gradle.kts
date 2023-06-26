@@ -10,7 +10,24 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
+    id("maven-publish")
 }
+
+group = "com.github.ZhuRuoLing"
+version = properties["version"]!!
+
+
+publishing{
+    repositories {
+        mavenLocal()
+    }
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+}
+
 
 tasks{
     shadowJar {
@@ -26,9 +43,6 @@ application {
     mainClass.set("net.zhuruoling.omms.central.main.Main")
 }
 
-
-group = "org.zhuruoling"
-version = "0.12.3"
 description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
