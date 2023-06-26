@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
 
 /*
@@ -46,6 +47,9 @@ application {
 description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+tasks.withType<KotlinCompile>{
+    kotlinOptions.jvmTarget = "17"
+}
 
 repositories {
     mavenCentral()
