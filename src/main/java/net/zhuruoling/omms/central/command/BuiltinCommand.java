@@ -10,14 +10,12 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
-import net.zhuruoling.omms.central.command.CommandManager;
-import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.console.ConsoleUtil;
 import net.zhuruoling.omms.central.console.ConsoleUtilKt;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
-import net.zhuruoling.omms.central.main.CentralServerMain;
+import net.zhuruoling.omms.central.main.CentralServer;
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
 import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
@@ -180,7 +178,7 @@ public class BuiltinCommand {
                 );
 
         LiteralArgumentBuilder<CommandSourceStack> stopCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("stop").executes(context -> {
-            CentralServerMain.stop();
+            CentralServer.stop();
             return 0;
         });
 

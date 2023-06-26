@@ -41,7 +41,7 @@ import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess
 
-object CentralServerMain {
+object CentralServer {
     private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
     var initialized = false
