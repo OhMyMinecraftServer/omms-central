@@ -43,7 +43,7 @@ public class Util {
     };
 
 
-    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x04;
+    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x05;
 
     public static final Gson gson = new GsonBuilder()
             .addDeserializationExclusionStrategy(new GlobalExclusionStrategy())
@@ -244,7 +244,7 @@ public class Util {
 
         @Override
         public boolean shouldSkipClass(Class<?> clazz) {
-            return clazz.getName().contains("io.ktor") || clazz == ControllerHttpClient.class;
+            return clazz.getName().startsWith("io.") || clazz == ControllerHttpClient.class;
         }
     }
 

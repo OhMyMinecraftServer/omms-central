@@ -4,6 +4,7 @@ import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import net.zhuruoling.omms.central.network.session.request.Request;
+import net.zhuruoling.omms.central.network.session.response.ControllerData;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
@@ -19,7 +20,7 @@ public class GetControllerRequestHandler extends BuiltinRequestHandler {
         if (controller == null){
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
         }
-        return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", Util.toJson(controller));
+        return new Response().withResponseCode(Result.CONTROLLER_GOT).withContentPair("controller", Util.toJson(ControllerData.fromController(controller)));
     }
 
     @Override
