@@ -73,6 +73,7 @@ task("generateBuildInfo"){
         m.toSortedMap().forEach{
             writer.println("${it.key} = ${it.value}")
         }
+        writer.flush()
     }
 }
 
