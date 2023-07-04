@@ -37,7 +37,7 @@ public class ControllerImpl extends Controller {
 
     @Override
     public List<String> sendCommand(String command) {
-        return null;
+        return controllerHttpClient.sendCommand(command);
     }
 
     @Override

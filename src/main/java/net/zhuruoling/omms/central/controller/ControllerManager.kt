@@ -16,8 +16,6 @@ import java.io.FileReader
 import java.io.FilenameFilter
 
 data class CommandOutputData(val controllerId: String, val command: String, val output: String)
-
-
 object ControllerManager : Manager() {
     val controllers = mutableMapOf<String, Controller>()
     private val controllerConnector = mutableMapOf<String, ControllerHttpClient>()
