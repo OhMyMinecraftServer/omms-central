@@ -41,6 +41,11 @@ public class PluginDependencyRequirement {
         return UtilKt.requirementMatches(this, dependency);
     }
 
+    @Override
+    public String toString() {
+        return "%s %s".formatted(id, requirement);
+    }
+
     public String getSymbol() {
         return symbol;
     }

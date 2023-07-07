@@ -17,7 +17,7 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 
-object PluginManager : Manager(){
+object PluginManager : Manager(), Iterable<PluginInstance>{
     private var pluginMap = LinkedHashMap<String, PluginInstance>()
     private var pluginFileList = arrayListOf<String>()
     private lateinit var classLoader: URLClassLoader
@@ -105,6 +105,10 @@ object PluginManager : Manager(){
             }
             throw PluginException(builder.toString())
         }
+    }
+
+    override fun iterator(): Iterator<PluginInstance> {
+        return pluginMap.values.iterator()
     }
 }
 
