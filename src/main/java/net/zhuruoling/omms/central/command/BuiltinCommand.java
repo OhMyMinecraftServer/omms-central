@@ -23,7 +23,6 @@ import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
-import net.zhuruoling.omms.central.script.ScriptManager;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
 import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
@@ -184,9 +183,6 @@ public class BuiltinCommand {
 
         LiteralArgumentBuilder<CommandSourceStack> reloadCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("reload").executes(context -> {
             CommandManager.INSTANCE.clear();
-            ScriptManager.INSTANCE.unloadAll();
-            ScriptManager.INSTANCE.init();
-            ScriptManager.INSTANCE.loadAll();
             PermissionManager.INSTANCE.init();
             ControllerManager.INSTANCE.init();
             AnnouncementManager.INSTANCE.init();

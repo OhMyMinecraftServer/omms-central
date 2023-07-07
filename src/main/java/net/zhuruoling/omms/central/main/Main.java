@@ -2,7 +2,6 @@ package net.zhuruoling.omms.central.main;
 
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation;
-import net.zhuruoling.omms.central.script.ScriptManager;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
@@ -23,7 +22,6 @@ public class Main {
             try {
                 if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
                     System.out.println("Stopping!");
-                    ScriptManager.INSTANCE.unloadAll();
                     Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
                     if (Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
                         Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();

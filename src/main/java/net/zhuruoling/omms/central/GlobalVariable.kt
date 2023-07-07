@@ -16,7 +16,6 @@ object GlobalVariable {
     var noLock: Boolean = false
     var lock: FileLock? = null
     var noPlugins: Boolean = false
-    var noScripts: Boolean = false
     var test: Boolean = false
     var udpBroadcastSender: UdpBroadcastSender? = null
     var launchTime: Long = 0L
@@ -30,7 +29,6 @@ object GlobalVariable {
     val startupLock = Object()
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
-    val pluginDeclaredApiMethod = hashMapOf<String, HashMap<String, Method>>()
 
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")

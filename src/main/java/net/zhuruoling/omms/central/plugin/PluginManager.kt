@@ -5,7 +5,6 @@ import net.zhuruoling.omms.central.plugin.depedency.PluginDependency
 import net.zhuruoling.omms.central.plugin.exception.PluginException
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata
-import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.BuildProperties
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
