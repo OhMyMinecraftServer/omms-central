@@ -4,7 +4,7 @@ import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.PluginCommand
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
-import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
+import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.permission.Permission
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
@@ -20,7 +20,7 @@ object GlobalVariable {
     var test: Boolean = false
     var udpBroadcastSender: UdpBroadcastSender? = null
     var launchTime: Long = 0L
-    var socketServer: SessionInitialServer? = null
+    var socketServer: SessionLoginServer? = null
     var httpServer: Thread? = null
     var receiver: UdpBroadcastReceiver? = null
     val permissionNames: MutableList<String> = mutableListOf()

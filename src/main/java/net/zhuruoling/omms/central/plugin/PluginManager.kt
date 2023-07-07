@@ -25,7 +25,7 @@ object PluginManager : Manager(){
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
         if (GlobalVariable.noPlugins) {
-            ScriptManager.logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
         pluginMap.clear()

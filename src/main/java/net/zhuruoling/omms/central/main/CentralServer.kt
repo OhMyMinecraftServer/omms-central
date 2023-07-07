@@ -22,7 +22,7 @@ import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
 import net.zhuruoling.omms.central.network.session.request.RequestManager
-import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
+import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.script.ScriptManager
@@ -136,7 +136,7 @@ object CentralServer {
         Util.listAll(logger)
         logger.info("Setting up services.")
 
-        val socketServer = SessionInitialServer()
+        val socketServer = SessionLoginServer()
         socketServer.start()
         GlobalVariable.socketServer = socketServer
         if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP) {

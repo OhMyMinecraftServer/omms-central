@@ -30,13 +30,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Objects;
 
-public class InitSession extends Thread {
+public class LoginSession extends Thread {
     private final @NotNull EncryptedSocket encryptedConnector;
     private final Logger logger = LoggerFactory.getLogger("InitSession");
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final @NotNull Socket socket;
-    public InitSession(@NotNull Socket socket) throws IOException {
-        super(String.format("InitSession#%s:%d",socket.getInetAddress(), socket.getPort()));
+    public LoginSession(@NotNull Socket socket) throws IOException {
+        super(String.format("LoginSession#%s:%d",socket.getInetAddress(), socket.getPort()));
         var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         var out = new PrintWriter(socket.getOutputStream(), true);
         var date = LocalDateTime.now();
@@ -56,7 +56,6 @@ public class InitSession extends Thread {
                 var request = gson.fromJson(line, LoginRequest.class);
                 logger.debug("Got request:" + request);
                 if (Objects.equals(Objects.requireNonNull(request).getRequest(), "PING")) {
-                    //lets match versions.
                     if (request.getVersion() != Util.PROTOCOL_VERSION){
                         encryptedConnector.send(
                                 Response.serialize(new Response().withResponseCode(Result.VERSION_NOT_MATCH))
@@ -90,13 +89,18 @@ public class InitSession extends Thread {
                                 Response.serialize(new Response().withResponseCode(Result.PERMISSION_DENIED))
                         );
                     }
-
                     break;
                 }
                 line = encryptedConnector.readLine();
             }
         } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
+            logger.error("Error occurred while handling Session login request: %s".formatted(e.toString()));
+            logger.debug("Exception: ",e);
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                logger.error("Error occurred while handling Session login request: %s".formatted(ex.toString()));
+            }
         }
     }
 }
