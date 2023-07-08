@@ -1,13 +1,17 @@
 package net.zhuruoling.omms.central.command;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.google.gson.Gson;
-import kotlin.collections.CollectionsKt;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
+import kotlin.Unit;
+import kotlin.collections.CollectionsKt;
+import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
 import net.zhuruoling.omms.central.console.ConsoleUtil;
@@ -15,8 +19,8 @@ import net.zhuruoling.omms.central.console.ConsoleUtilKt;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
+import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
 import net.zhuruoling.omms.central.main.CentralServer;
-import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.network.broadcast.Broadcast;
 import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
 import net.zhuruoling.omms.central.network.pair.PairManager;
@@ -29,8 +33,10 @@ import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement;
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata;
 import net.zhuruoling.omms.central.util.Util;
 import net.zhuruoling.omms.central.util.UtilKt;
-import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
-import net.zhuruoling.omms.central.whitelist.*;
+import net.zhuruoling.omms.central.whitelist.PlayerAlreadyExistsException;
+import net.zhuruoling.omms.central.whitelist.PlayerNotFoundException;
+import net.zhuruoling.omms.central.whitelist.WhitelistManager;
+import net.zhuruoling.omms.central.whitelist.WhitelistNotExistException;
 import org.jetbrains.annotations.NotNull;
 import org.jline.builtins.Completers;
 import org.slf4j.Logger;
@@ -41,13 +47,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
-import java.text.MessageFormat;
 import java.util.*;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static java.lang.System.getProperty;
-import static java.lang.System.in;
 
 public class BuiltinCommand {
     private static final Logger logger = LoggerFactory.getLogger("BuiltinCommand");
@@ -60,31 +64,29 @@ public class BuiltinCommand {
                                         if (whitelist == null) {
                                             logger.error("Whitelist %s does not exist.".formatted(name));
                                         } else {
-                                            logger.info("Whitelist %s :".formatted(whitelist.getName()));
-                                            whitelist.getPlayers().forEach(x -> logger.info("\t-%s".formatted(x)));
+                                            c.getSource().sendFeedback("Whitelist %s :".formatted(whitelist.getName()));
+                                            whitelist.getPlayers().forEach(x -> c.getSource().sendFeedback("\t-%s".formatted(x)));
                                         }
                                         return 1;
                                     }
                             )
                     )
             )
-
             .then(LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(context -> {
                         var names = WhitelistManager.INSTANCE.getWhitelistNames();
-                        logger.info("%d whitelists(%s) added to this server.".formatted(names.size(), names));
+                        context.getSource().sendFeedback("%d whitelists(%s) added to this server.".formatted(names.size(), names));
                         return 1;
                     })
             )
-
             .then(LiteralArgumentBuilder.<CommandSourceStack>literal("query").then(
                     RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(commandContext -> {
                         String player = getString(commandContext, "player");
                         List<String> names = WhitelistManager.INSTANCE.queryInAllWhitelist(player);
                         if (names.isEmpty()) {
-                            logger.info("Player %s does not exist in any whitelists.".formatted(player));
+                            commandContext.getSource().sendFeedback("Player %s does not exist in any whitelists.".formatted(player));
                             return 1;
                         }
-                        logger.info("Player %s exists in whitelist:%s.".formatted(player, names));
+                        commandContext.getSource().sendFeedback("Player %s exists in whitelist:%s.".formatted(player, names));
                         return 1;
                     })
             ))
@@ -130,39 +132,80 @@ public class BuiltinCommand {
                     )
 
             )
-            .then(
-                    LiteralArgumentBuilder.<CommandSourceStack>literal("search")
-                            .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word())
-                                    .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word())
-                                            .executes(commandContext -> {
-                                                var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
-                                                var player = StringArgumentType.getString(commandContext, "player");
-                                                if (Objects.equals(whitelistName, "all")) {
-                                                    WhitelistManager.INSTANCE.getWhitelistNames().forEach(s -> {
-                                                        searchWhitelist(player, s);
-                                                    });
-                                                    return 0;
-                                                }
-                                                if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)) {
-                                                    logger.error("Specified whitelist does not exist.");
-                                                }
-                                                searchWhitelist(player, whitelistName);
-                                                return 0;
-                                            })
-                                    )
+            .then(LiteralArgumentBuilder.<CommandSourceStack>literal("search")
+                    .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("whitelist", word())
+                            .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word())
+                                    .executes(commandContext -> {
+                                        var whitelistName = StringArgumentType.getString(commandContext, "whitelist");
+                                        var player = StringArgumentType.getString(commandContext, "player");
+                                        if (Objects.equals(whitelistName, "all")) {
+                                            WhitelistManager.INSTANCE.getWhitelistNames().forEach(s -> {
+                                                searchWhitelist(player, s, commandContext);
+                                            });
+                                            return 0;
+                                        }
+                                        if (!WhitelistManager.INSTANCE.hasWhitelist(whitelistName)) {
+                                            logger.error("Specified whitelist does not exist.");
+                                        }
+                                        searchWhitelist(player, whitelistName, commandContext);
+                                        return 0;
+                                    })
                             )
+                    )
+            ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(commandContext -> {
+                        WhitelistManager.INSTANCE.forEach(stringEntry -> {
+                            Arrays.stream(UtilKt.whitelistPrettyPrinting(stringEntry.getValue()).split("\n")).forEach(commandContext.getSource()::sendFeedback);
+                            return Unit.INSTANCE;
+                        });
+                        return 0;
+                    })
+            ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("create")
+                    .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("name", StringArgumentType.word())
+                            .executes(commandContext -> {
+                                var src = commandContext.getSource();
+                                var name = StringArgumentType.getString(commandContext, "name");
+                                if (WhitelistManager.INSTANCE.hasWhitelist(name)) {
+                                    src.sendError("Whitelist %s already exists".formatted(name));
+                                    return 1;
+                                }
+                                try {
+                                    WhitelistManager.INSTANCE.createWhitelist(name);
+                                }catch (Exception e){
+                                    src.sendError(ExceptionUtil.stacktraceToString(e));
+                                }
+                                src.sendFeedback("Done.");
+                                return 0;
+                            })
+                    )
+            ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("delete")
+                    .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("name", StringArgumentType.word())
+                            .executes(commandContext -> {
+                                var src = commandContext.getSource();
+                                var name = StringArgumentType.getString(commandContext, "name");
+                                if (!WhitelistManager.INSTANCE.hasWhitelist(name)) {
+                                    src.sendError("Whitelist %s not exist".formatted(name));
+                                    return 1;
+                                }
+                                try {
+                                    WhitelistManager.INSTANCE.deleteWhiteList(name);
+                                } catch (WhitelistNotExistException e) {
+                                    src.sendError(ExceptionUtil.stacktraceToString(e));
+                                }
+                                return 0;
+                            })
+                    )
             );
 
     static LiteralArgumentBuilder<CommandSourceStack> broadcastCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("broadcast")
             .then(
                     RequiredArgumentBuilder.<CommandSourceStack, String>argument("text", greedyString()).executes(
                             commandContext -> {
-                                if (GlobalVariable.INSTANCE.getConfig().getChatbridgeImplementation() == null) {
+                                if (Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getChatbridgeImplementation() == null) {
                                     commandContext.getSource().sendFeedback("Chatbridge disabled.");
                                     return 0;
                                 }
                                 String text = getString(commandContext, "text");
-                                logger.info("Sending message:" + text);
+                                commandContext.getSource().sendFeedback("Sending message:" + text);
                                 Broadcast broadcast = new Broadcast();
                                 broadcast.setChannel("GLOBAL");
                                 broadcast.setContent(text);
@@ -197,12 +240,12 @@ public class BuiltinCommand {
     static LiteralArgumentBuilder<CommandSourceStack> statusCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("status").executes(context -> {
         UtilKt.printRuntimeEnv();
         RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        logger.info("Java VM Info: %s %s %s".formatted(runtime.getVmVendor(), runtime.getVmName(), runtime.getVmVersion()));
-        logger.info("Java VM Spec Info: %s %s %s".formatted(runtime.getSpecVendor(), runtime.getSpecName(), runtime.getSpecVersion()));
-        logger.info("Java version: %s".formatted(getProperty("java.version")));
+        context.getSource().sendFeedback("Java VM Info: %s %s %s".formatted(runtime.getVmVendor(), runtime.getVmName(), runtime.getVmVersion()));
+        context.getSource().sendFeedback("Java VM Spec Info: %s %s %s".formatted(runtime.getSpecVendor(), runtime.getSpecName(), runtime.getSpecVersion()));
+        context.getSource().sendFeedback("Java version: %s".formatted(getProperty("java.version")));
 
         double upTime = runtime.getUptime() / 1000.0;
-        logger.info("Uptime: %.3fS".formatted(upTime));
+        context.getSource().sendFeedback("Uptime: %.3fS".formatted(upTime));
 
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
@@ -210,7 +253,7 @@ public class BuiltinCommand {
         //double totalMemory = ((heapMemoryUsage.getInit() + nonHeapMemoryUsage.getInit()) / 1024.0) / 1024.0;
         double maxMemory = ((heapMemoryUsage.getMax() + nonHeapMemoryUsage.getMax()) / 1024.0) / 1024.0;
         double usedMemory = ((heapMemoryUsage.getUsed() + nonHeapMemoryUsage.getUsed()) / 1024.0) / 1024.0;
-        logger.info("Memory usage: %.3fMiB/%.3fMiB".formatted(usedMemory, maxMemory));
+        context.getSource().sendFeedback("Memory usage: %.3fMiB/%.3fMiB".formatted(usedMemory, maxMemory));
 
         Util.listAll(logger);
 
@@ -218,16 +261,16 @@ public class BuiltinCommand {
         int count = threadGroup.activeCount();
         Thread[] threads = new Thread[count];
         threadGroup.enumerate(threads);
-        logger.info("Threads:");
+        context.getSource().sendFeedback("Threads:");
         for (Thread thread : threads) {
             if (thread.isDaemon()) {
-                logger.info("\t+ %s %d DAEMON %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
+                context.getSource().sendFeedback("\t+ %s %d DAEMON %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
             }
-            logger.info("\t+ %s %d %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
+            context.getSource().sendFeedback("\t+ %s %d %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
         }
 
-        logger.info("Java VM Arguments:");
-        runtime.getInputArguments().forEach(x -> logger.info("\t%s".formatted(x)));
+        context.getSource().sendFeedback("Java VM Arguments:");
+        runtime.getInputArguments().forEach(x -> context.getSource().sendFeedback("\t%s".formatted(x)));
 
         return 0;
     });
@@ -236,7 +279,7 @@ public class BuiltinCommand {
         var dispatcher = CommandManager.INSTANCE.getCommandDispatcher();
         var usages = dispatcher.getAllUsage(dispatcher.getRoot(), new CommandSourceStack(CommandSourceStack.Source.INTERNAL), false);
         for (String usage : usages) {
-            logger.info(usage);
+            x.getSource().sendFeedback(usage);
         }
         return 0;
     });
@@ -248,13 +291,13 @@ public class BuiltinCommand {
                 var whitelistNames = new ArrayList<>(list);
                 whitelistNames.forEach(s -> {
                     try {
-                        logger.info("Removing player from whitelist " + s);
+                        x.getSource().sendFeedback("Removing player from whitelist " + s);
                         WhitelistManager.INSTANCE.removeFromWhiteList(s, player);
                     } catch (Exception ignored) {
                     }
                 });
                 ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
-                    logger.info("kicking player %s from %s".formatted(player, s));
+                    x.getSource().sendFeedback("kicking player %s from %s".formatted(player, s));
                     ControllerManager.INSTANCE.sendCommand(s, "kick " + player);
                 });
                 return 0;
@@ -264,25 +307,25 @@ public class BuiltinCommand {
     static LiteralArgumentBuilder<CommandSourceStack> permissionCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("permission").then(
                     LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(x -> {
                         var permissionMap = PermissionManager.INSTANCE.getPermissionTable();
-                        logger.info("Listing permissions:");
+                        x.getSource().sendFeedback("Listing permissions:");
                         permissionMap.forEach((i, p) -> {
-                            logger.info("\tcode %d has got those permissions:".formatted(i));
-                            p.forEach(permission -> logger.info("\t\t- %s".formatted(permission.name())));
+                            x.getSource().sendFeedback("\tcode %d has got those permissions:".formatted(i));
+                            p.forEach(permission -> x.getSource().sendFeedback("\t\t- %s".formatted(permission.name())));
                         });
                         if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
-                            logger.info("Changes listed below will be applied to permission files.");
+                            x.getSource().sendFeedback("Changes listed below will be applied to permission files.");
                             var changes = PermissionManager.INSTANCE.getChangesTable();
                             changes.forEach(permissionChange -> {
                                 switch (permissionChange.getOperation()) {
                                     case GRANT ->
-                                            logger.info("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
+                                            x.getSource().sendFeedback("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
                                     case CREATE ->
-                                            logger.info("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                            x.getSource().sendFeedback("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
                                     case DELETE ->
-                                            logger.info("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
+                                            x.getSource().sendFeedback("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
                                     case DENY -> {
                                         buildChangesString(permissionChange);
-                                        logger.info("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
+                                        x.getSource().sendFeedback("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
 
                                     }
                                     default -> {
@@ -331,8 +374,8 @@ public class BuiltinCommand {
                                             logger.warn("Permission code %d does not exist.".formatted(code));
                                             return -1;
                                         }
-                                        logger.info("Permission code %d has got those permissions:");
-                                        permissions.forEach(permission -> logger.info("\t- " + permission));
+                                        x.getSource().sendFeedback("Permission code %d has got those permissions:");
+                                        permissions.forEach(permission -> x.getSource().sendFeedback("\t- " + permission));
                                         return 0;
                                     })
                             )
@@ -385,6 +428,15 @@ public class BuiltinCommand {
 
     static LiteralArgumentBuilder<CommandSourceStack> controllerCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("controller")
             .then(
+                    LiteralArgumentBuilder.<CommandSourceStack>literal("list").executes(commandContext -> {
+                        ControllerManager.INSTANCE.getControllers().forEach((s, controller) -> {
+                            var result = UtilKt.controllerPrettyPrinting(controller);
+                            Arrays.stream(result.split("\n")).forEach(commandContext.getSource()::sendFeedback);
+                        });
+                        return 0;
+                    })
+            )
+            .then(
                     LiteralArgumentBuilder.<CommandSourceStack>literal("execute").then(
                             RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", word()).then(
                                     RequiredArgumentBuilder.<CommandSourceStack, String>argument("command", greedyString()).executes(commandContext -> {
@@ -415,9 +467,9 @@ public class BuiltinCommand {
                             )
                     )
             ).then(LiteralArgumentBuilder.<CommandSourceStack>literal("status").then(
-                    RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", StringArgumentType.greedyString()).executes(commandContext -> {
+                    RequiredArgumentBuilder.<CommandSourceStack, String>argument("controller", greedyString()).executes(commandContext -> {
                         ControllerManager.INSTANCE
-                                .getControllerStatus(ConsoleUtil.parseControllerArgument(StringArgumentType.getString(commandContext, "controller")))
+                                .getControllerStatus(ConsoleUtil.parseControllerArgument(getString(commandContext, "controller")))
                                 .forEach((s, status) -> {
                                     ConsoleUtilKt.printControllerStatus(commandContext.getSource(), s, status);
                                 });
@@ -469,9 +521,9 @@ public class BuiltinCommand {
                     LiteralArgumentBuilder.<CommandSourceStack>literal("create").requires(commandSourceStack -> commandSourceStack.getSource() == CommandSourceStack.Source.CONSOLE)
                             .executes(commandContext -> {
                                 Scanner scanner = new Scanner(System.in);
-                                logger.info("Input announcement title:");
+                                commandContext.getSource().sendFeedback("Input announcement title:");
                                 String title = scanner.nextLine();
-                                logger.info("Input announcement content, double return to end:");
+                                commandContext.getSource().sendFeedback("Input announcement content, double return to end:");
                                 ArrayList<String> lines = new ArrayList<>();
                                 while (true) {
                                     String line = scanner.nextLine();
@@ -486,7 +538,7 @@ public class BuiltinCommand {
                                 logger.debug(title);
                                 lines.forEach(logger::debug);
                                 Announcement announcement = new Announcement(title, lines.toArray(new String[]{}));
-                                logger.info(announcement.toString());
+                                commandContext.getSource().sendFeedback(announcement.toString());
                                 AnnouncementManager.INSTANCE.create(announcement);
                                 return 0;
                             })
@@ -537,23 +589,23 @@ public class BuiltinCommand {
             if (metadata.getPluginDependencies() != null && !metadata.getPluginDependencies().isEmpty()) {
                 commandSourceStack.sendFeedback("    - Requires: %s".formatted(joinToDependencyString(metadata.getPluginDependencies())));
             }
-            if (metadata.getPluginMainClass() != null){
+            if (metadata.getPluginMainClass() != null) {
                 commandSourceStack.sendFeedback("    - Plugin Initializer: %s".formatted(metadata.getPluginMainClass()));
             }
-            if (metadata.getPluginRequestHandlers() != null && !metadata.getPluginRequestHandlers().isEmpty()){
+            if (metadata.getPluginRequestHandlers() != null && !metadata.getPluginRequestHandlers().isEmpty()) {
                 commandSourceStack.sendFeedback("    - Plugin Request Handlers: %s".formatted(net.zhuruoling.omms.central.network.http.UtilKt.joinToString(metadata.getPluginRequestHandlers(), " ")));
             }
 
         }
     }
 
-    private static void searchWhitelist(@NotNull String player, @NotNull String s) {
+    private static void searchWhitelist(@NotNull String player, @NotNull String s, CommandContext<? extends CommandSourceStack> context) {
         var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
         if (result == null) {
-            logger.info("No valid results in whitelist %s.".formatted(s));
+            context.getSource().sendFeedback("No valid results in whitelist %s.".formatted(s));
         } else {
-            logger.info("Search result in whitelist %s:".formatted(s));
-            result.forEach(searchResult -> logger.info("\t%s".formatted(searchResult.getPlayerName())));
+            context.getSource().sendFeedback("Search result in whitelist %s:".formatted(s));
+            result.forEach(searchResult -> context.getSource().sendFeedback("\t%s".formatted(searchResult.getPlayerName())));
         }
     }
 
@@ -568,7 +620,8 @@ public class BuiltinCommand {
         return CollectionsKt.joinToString(permissionChange.getChanges(), ", ", "", "", 2147483647, "", null);
     }
 
-    Completers.@NotNull TreeCompleter walkCommandTree(@NotNull CommandNode<CommandSourceStack> node) {
+    @NotNull
+    Completers.TreeCompleter walkCommandTree(@NotNull CommandNode<CommandSourceStack> node) {
         var completer = new Completers.TreeCompleter();
         Completers.TreeCompleter.node();
         if (node.getChildren().isEmpty()) {
