@@ -18,6 +18,7 @@ public class Main {
             RemoteControllerConsoleMain.main(args);
             return;
         }
+        GlobalVariable.INSTANCE.setArgs(args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {

@@ -205,6 +205,28 @@ public class Util {
         }
     }
 
+    public static void listAllByCommandSource(@NotNull CommandSourceStack logger) {
+        logger.sendFeedback("Listing controllers");
+        ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
+            for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance).split("\n")) {
+                logger.sendFeedback(s1);
+            }
+        });
+        logger.sendFeedback("%d controllers added to this server.".formatted(ControllerManager.INSTANCE.getControllers().size()));
+        logger.sendFeedback("Listing Whitelist contents:");
+        if (!WhitelistManager.INSTANCE.isNoWhitelist()) {
+            WhitelistManager.INSTANCE.forEach(entry -> {
+                for (String s : UtilKt.whitelistPrettyPrinting(entry.getValue()).split("\n")) {
+                    logger.sendFeedback(s);
+                }
+                return Unit.INSTANCE;
+            });
+            logger.sendFeedback("%d whitelists added to this server.".formatted(WhitelistManager.INSTANCE.getAllWhitelist().size()));
+        } else {
+            logger.sendFeedback("No Whitelist added.");
+        }
+    }
+
     public static @NotNull ArrayList<String> genCommandTree() {
         var root = CommandManager.INSTANCE.getCommandDispatcher().getRoot();
         ArrayList<String> lines = new ArrayList<>();

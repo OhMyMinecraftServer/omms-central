@@ -29,6 +29,11 @@ object GlobalVariable {
     val startupLock = Object()
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
+    var args = mutableListOf<String>()
+        private set
+    fun setArgs(args:Array<String>){
+        this.args = args.toMutableList()
+    }
 
     @JvmField
     val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")

@@ -255,23 +255,26 @@ public class BuiltinCommand {
         double usedMemory = ((heapMemoryUsage.getUsed() + nonHeapMemoryUsage.getUsed()) / 1024.0) / 1024.0;
         context.getSource().sendFeedback("Memory usage: %.3fMiB/%.3fMiB".formatted(usedMemory, maxMemory));
 
-        Util.listAll(logger);
+        Util.listAllByCommandSource(context.getSource());
 
         var threadGroup = Thread.currentThread().getThreadGroup();
         int count = threadGroup.activeCount();
         Thread[] threads = new Thread[count];
         threadGroup.enumerate(threads);
+        context.getSource().sendFeedback("Thread Count: %d".formatted(count));
         context.getSource().sendFeedback("Threads:");
         for (Thread thread : threads) {
             if (thread.isDaemon()) {
                 context.getSource().sendFeedback("\t+ %s %d DAEMON %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
-            }
+                continue;
+                }
             context.getSource().sendFeedback("\t+ %s %d %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
         }
 
         context.getSource().sendFeedback("Java VM Arguments:");
         runtime.getInputArguments().forEach(x -> context.getSource().sendFeedback("\t%s".formatted(x)));
-
+        context.getSource().sendFeedback("main() Arguments:");
+        GlobalVariable.INSTANCE.getArgs().forEach(x -> context.getSource().sendFeedback("\t%s".formatted(x)));
         return 0;
     });
 
