@@ -114,6 +114,16 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.7.10")
 }
 
+task("generateProperties"){
+    doLast {
+        generateProperties()
+    }
+}
+
+tasks.getByName("processResources"){
+    dependsOn("generateProperties")
+}
+
 fun generateProperties(){
     val propertiesFile = file("./src/main/resources/build.properties")
     if (propertiesFile.exists()) {
@@ -137,5 +147,3 @@ fun generateProperties(){
         }
     }
 }
-
-generateProperties()

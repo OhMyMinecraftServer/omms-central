@@ -20,6 +20,7 @@ public class Rua {
         String[] cmd = {"powershell"};
         var env = System.getenv();
         PtyProcess process = new PtyProcessBuilder().setCommand(cmd).setUseWinConPty(true).setEnvironment(env).start();
+
         ConsoleInputHandler.INSTANCE.prepareTerminal();
         Thread thread = new Thread(() -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.defaultCharset()))){

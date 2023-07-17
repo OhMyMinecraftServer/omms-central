@@ -287,6 +287,9 @@ public class BuiltinCommand {
         return 0;
     });
 
+
+
+
     static LiteralArgumentBuilder<CommandSourceStack> banCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("ban").then(
             RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", word()).executes(x -> {
                 String player = StringArgumentType.getString(x, "player");

@@ -8,7 +8,7 @@
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>debug</level>
+            <level>info</level>
         </filter>
         <encoder>
             <pattern>%yellow([%d{yyyy-MM-dd HH:mm:ss.SSS}]) %customColor([%thread/%level]) %cyan(\(%logger{1}\)): %msg%n</pattern>
