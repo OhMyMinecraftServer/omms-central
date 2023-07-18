@@ -19,7 +19,7 @@ import net.zhuruoling.omms.central.system.SystemUtil
 import net.zhuruoling.omms.central.network.session.response.Result
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
-import net.zhuruoling.omms.central.network.session.request.LoginRequest;
+import net.zhuruoling.omms.central.network.session.request.LoginRequest
 
 import java.lang.module.ModuleDescriptor
 

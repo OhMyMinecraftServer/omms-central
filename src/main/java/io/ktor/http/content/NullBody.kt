@@ -1,4 +1,3 @@
 package io.ktor.http.content
 
-object NullBody {
-}
+object NullBody

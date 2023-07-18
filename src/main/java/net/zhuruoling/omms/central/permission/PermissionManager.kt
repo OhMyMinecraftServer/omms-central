@@ -15,7 +15,7 @@ import kotlin.random.Random
 object PermissionManager : Manager() {
     var permissionTable: HashMap<Int, MutableList<Permission>> = hashMapOf()
     val logger: Logger = LoggerFactory.getLogger("Main")
-    var tableHash: Int = 0;
+    var tableHash: Int = 0
     val changesTable: MutableList<PermissionChange> = mutableListOf()
 
     data class PermissionStorage(
