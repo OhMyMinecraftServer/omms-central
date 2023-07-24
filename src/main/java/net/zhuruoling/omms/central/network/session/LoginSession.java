@@ -36,7 +36,7 @@ public class LoginSession extends Thread {
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final @NotNull Socket socket;
     public LoginSession(@NotNull Socket socket) throws IOException {
-        super(String.format("LoginSession#%s:%d",socket.getInetAddress(), socket.getPort()));
+        super(String.format("LoginSession@%s:%d",socket.getInetAddress(), socket.getPort()));
         var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         var out = new PrintWriter(socket.getOutputStream(), true);
         var date = LocalDateTime.now();
@@ -44,7 +44,7 @@ public class LoginSession extends Thread {
         key = Util.base64Encode(Util.base64Encode(key));
         logger.debug("key:%s".formatted(key));
         this.encryptedConnector = new EncryptedSocket(in, out, key);
-        logger.info("client:" + socket.getInetAddress() + ":" + socket.getPort() + " connected.");
+        logger.info("Client: " + socket.getInetAddress() + ":" + socket.getPort() + " connected.");
         this.socket = socket;
     }
 
@@ -93,13 +93,13 @@ public class LoginSession extends Thread {
                 }
                 line = encryptedConnector.readLine();
             }
-        } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+        } catch (Throwable e) {
             logger.error("Error occurred while handling Session login request: %s".formatted(e.toString()));
             logger.debug("Exception: ",e);
             try {
                 socket.close();
             } catch (IOException ex) {
-                logger.error("Error occurred while handling Session login request: %s".formatted(ex.toString()));
+                logger.error("Error occurred while closing crashed session: %s".formatted(ex.toString()));
             }
         }
     }
