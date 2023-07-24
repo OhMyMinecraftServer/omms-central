@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.controller;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +83,7 @@ public class Status {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Status{" +
                 "isAlive=" + isAlive +
                 ", isQueryable=" + isQueryable +

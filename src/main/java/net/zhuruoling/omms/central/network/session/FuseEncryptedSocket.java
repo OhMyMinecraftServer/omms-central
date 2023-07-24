@@ -4,6 +4,7 @@ import net.zhuruoling.omms.central.network.EncryptedSocket;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -26,7 +27,7 @@ public class FuseEncryptedSocket {
         time = System.currentTimeMillis();
     }
 
-    public static FuseEncryptedSocket of(EncryptedSocket encryptedSocket, int limit) {
+    public static @NotNull FuseEncryptedSocket of(EncryptedSocket encryptedSocket, int limit) {
         return new FuseEncryptedSocket(encryptedSocket, limit);
     }
 
@@ -46,7 +47,7 @@ public class FuseEncryptedSocket {
         return Util.fromJson(line, Request.class);
     }
 
-    public void sendResponse(Response response) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void sendResponse(@NotNull Response response) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var line = Util.toJson(response);
         encryptedSocket.println(line);
     }

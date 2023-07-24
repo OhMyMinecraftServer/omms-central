@@ -36,23 +36,23 @@ public class ControllerImpl extends Controller {
     }
 
     @Override
-    public List<String> sendCommand(String command) {
+    public @NotNull List<String> sendCommand(@NotNull String command) {
         return controllerHttpClient.sendCommand(command);
     }
 
     @Override
-    public ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ControllerConsole> printTarget, String id) {
+    public @NotNull ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ControllerConsole> printTarget, String id) {
         return ControllerConsoleImpl.newInstance(this, id, printTarget, inputSource);
     }
 
 
     @Override
-    public Status queryControllerStatus() {
+    public @NotNull Status queryControllerStatus() {
         return controllerHttpClient.queryStatus();
     }
 
     @Override
-    public CrashReportStorage convertCrashReport(String raw) {
+    public @NotNull CrashReportStorage convertCrashReport(@NotNull String raw) {
         return new CrashReportStorage(this.name, System.currentTimeMillis(), Arrays.stream(raw.split("\n")).toList());
     }
 

@@ -1,11 +1,13 @@
 package net.zhuruoling.omms.central.plugin.callback;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class Callback<T> {
-    protected List<Consumer<T>> consumers = new ArrayList<>();
+    protected @NotNull List<Consumer<T>> consumers = new ArrayList<>();
 
     abstract public void register(Consumer<T> consumer);
 

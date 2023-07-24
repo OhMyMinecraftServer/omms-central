@@ -12,6 +12,7 @@ import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.util.Util;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler {
     @Override
-    public @Nullable Response handle(Request request, SessionContext session) {
+    public @Nullable Response handle(@NotNull Request request, @NotNull SessionContext session) {
         String controllerName = request.getContent("controller");
         Controller controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
         if (controller == null){

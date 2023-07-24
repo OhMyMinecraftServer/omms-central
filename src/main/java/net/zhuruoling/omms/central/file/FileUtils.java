@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.file;
 
+import org.jetbrains.annotations.NotNull;
 import oshi.PlatformEnum;
 import oshi.SystemInfo;
 
@@ -28,7 +29,7 @@ public class FileUtils {
         }
     }
 
-    public static List<FileSystemDescriptor> getAllFileSystemDescriptors() {
+    public static @NotNull List<FileSystemDescriptor> getAllFileSystemDescriptors() {
         List<FileSystemDescriptor> fileSystemDescriptors = new ArrayList<>();
         switch (platformEnum) {
             case WINDOWS -> windowsListFileSystemDescriptorImpl(fileSystemDescriptors);
@@ -40,7 +41,7 @@ public class FileUtils {
         return fileSystemDescriptors;
     }
 
-    private static void windowsListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
+    private static void windowsListFileSystemDescriptorImpl(@NotNull List<FileSystemDescriptor> fileSystemDescriptors) {
         for (FileStore fileStore : FileSystems.getDefault().getFileStores()) {
             String s = fileStore.toString();
             String path = s.subSequence(s.indexOf('(') + 1, s.indexOf(')')).toString();
@@ -48,7 +49,7 @@ public class FileUtils {
         }
     }
 
-    public static void linuxListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
+    public static void linuxListFileSystemDescriptorImpl(@NotNull List<FileSystemDescriptor> fileSystemDescriptors) {
         for (FileStore fileStore : FileSystems.getDefault().getFileStores()) {
             String s = fileStore.toString();
             String path = s.subSequence(0, s.indexOf('(') - 1).toString();
@@ -63,7 +64,7 @@ public class FileUtils {
         }
     }
 
-    private static void macOSListFileSystemDescriptorImpl(List<FileSystemDescriptor> fileSystemDescriptors) {
+    private static void macOSListFileSystemDescriptorImpl(@NotNull List<FileSystemDescriptor> fileSystemDescriptors) {
         for (FileStore fileStore : FileSystems.getDefault().getFileStores()) {
             String s = fileStore.toString();
             System.out.println(s);

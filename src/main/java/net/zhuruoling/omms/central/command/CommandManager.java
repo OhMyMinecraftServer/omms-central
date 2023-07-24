@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.zhuruoling.omms.central.plugin.callback.CommandRegistrationCallback;
 import net.zhuruoling.omms.central.util.Manager;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ public class CommandManager extends Manager {
 
     public static final CommandManager INSTANCE = new CommandManager();
     private final Logger logger = LoggerFactory.getLogger("CommandManager");
-    private CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
+    private @NotNull CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
     private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
 
     @Override
@@ -35,7 +36,7 @@ public class CommandManager extends Manager {
         commandDispatcher.register(builder);
     }
 
-    public void dispatchCommand(String command, CommandSourceStack commandSourceStack) {
+    public void dispatchCommand(String command, @NotNull CommandSourceStack commandSourceStack) {
         try {
             logger.info("%s issued a command: %s".formatted(commandSourceStack.getSource().toString(),command));
             commandDispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));

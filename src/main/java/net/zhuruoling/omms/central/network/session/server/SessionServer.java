@@ -10,6 +10,7 @@ import net.zhuruoling.omms.central.network.session.request.RequestManager;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.network.session.response.Result;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public class SessionServer extends Thread {
         }
     }
 
-    private void runOnNetworkThread(Runnable runnable){
+    private void runOnNetworkThread(@NotNull Runnable runnable){
         this.executorService.submit(runnable);
     }
 

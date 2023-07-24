@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.network.session.response;
 
 import net.zhuruoling.omms.central.controller.Controller;
+import org.jetbrains.annotations.NotNull;
 
 public class ControllerData {
     //{\"name\":\"creative\",\"executable\":\"python\",\"type\":\"fabric\",\"launchParams\":\"-m mcdreforged\",\"workingDir\":\"..\\\\creative\",\"httpQueryAddress\":\"127.0.0.1:50014\",\"statusQueryable\":true}
@@ -8,7 +9,7 @@ public class ControllerData {
     private String name;
     private String type;
     private boolean statusQueryable;
-    public static ControllerData fromController(Controller controller){
+    public static @NotNull ControllerData fromController(@NotNull Controller controller){
         var data = new ControllerData();
         data.name = controller.getName();
         data.statusQueryable = controller.isStatusQueryable();

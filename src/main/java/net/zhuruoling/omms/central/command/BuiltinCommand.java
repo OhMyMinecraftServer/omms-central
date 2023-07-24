@@ -564,7 +564,7 @@ public class BuiltinCommand {
                     })
             );
 
-    public static void registerBuiltinCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void registerBuiltinCommand(@NotNull CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(whitelistCommand);
         dispatcher.register(broadcastCommand);
         dispatcher.register(stopCommand);
@@ -579,7 +579,7 @@ public class BuiltinCommand {
         dispatcher.register(pluginCommand);
     }
 
-    private static void listPlugins(CommandSourceStack commandSourceStack) {
+    private static void listPlugins(@NotNull CommandSourceStack commandSourceStack) {
         for (PluginInstance instance : PluginManager.INSTANCE) {
             PluginMetadata metadata = instance.getPluginMetadata();
             commandSourceStack.sendFeedback(":: %s%s ::".formatted(
@@ -605,7 +605,7 @@ public class BuiltinCommand {
         }
     }
 
-    private static void searchWhitelist(@NotNull String player, @NotNull String s, CommandContext<? extends CommandSourceStack> context) {
+    private static void searchWhitelist(@NotNull String player, @NotNull String s, @NotNull CommandContext<? extends CommandSourceStack> context) {
         var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
         if (result == null) {
             context.getSource().sendFeedback("No valid results in whitelist %s.".formatted(s));
@@ -616,13 +616,13 @@ public class BuiltinCommand {
     }
 
 
-    private static String joinToDependencyString(List<? extends PluginDependencyRequirement> pluginDependencyRequirements) {
+    private static @NotNull String joinToDependencyString(@NotNull List<? extends PluginDependencyRequirement> pluginDependencyRequirements) {
         StringBuilder stringBuilder = new StringBuilder();
         pluginDependencyRequirements.forEach(pluginDependencyRequirement -> stringBuilder.append(pluginDependencyRequirement.toString()).append(" "));
         return stringBuilder.toString();
     }
 
-    private static String buildChangesString(@NotNull PermissionChange permissionChange) {
+    private static @NotNull String buildChangesString(@NotNull PermissionChange permissionChange) {
         return CollectionsKt.joinToString(permissionChange.getChanges(), ", ", "", "", 2147483647, "", null);
     }
 

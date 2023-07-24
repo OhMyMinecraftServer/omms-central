@@ -1,6 +1,7 @@
 package net.zhuruoling.omms.central.controller.console.input;
 
 import net.zhuruoling.omms.central.console.ConsoleInputHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.AggregateCompleter;
@@ -11,7 +12,7 @@ import org.jline.reader.impl.history.DefaultHistory;
 
 public class StdinInputSource extends InputSource {
 
-    private static final AggregateCompleter simpleMinecraftServerCompleter;
+    private static final @NotNull AggregateCompleter simpleMinecraftServerCompleter;
 
     static {
         simpleMinecraftServerCompleter = new AggregateCompleter(//not all minecraft server command are here.
@@ -79,13 +80,13 @@ public class StdinInputSource extends InputSource {
         );
     }
 
-    LineReader lineReader = LineReaderBuilder.builder().completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
+    @NotNull LineReader lineReader = LineReaderBuilder.builder().completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
     @Override
     public String getLine() {
         return lineReader.readLine().stripTrailing();
     }
 
-    public StdinInputSource withHistory(DefaultHistory history){
+    public @NotNull StdinInputSource withHistory(DefaultHistory history){
         lineReader = LineReaderBuilder.builder().history(history).completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
         return this;
     }

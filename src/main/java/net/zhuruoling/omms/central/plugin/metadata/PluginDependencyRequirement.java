@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import net.zhuruoling.omms.central.plugin.UtilKt;
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency;
 import net.zhuruoling.omms.central.plugin.exception.PluginException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.module.ModuleDescriptor;
 
@@ -14,7 +16,7 @@ public class PluginDependencyRequirement {
     String requirement;
 
     private String symbol;
-    private ModuleDescriptor.Version parsedVersion;
+    private ModuleDescriptor.@Nullable Version parsedVersion;
 
     public void parseRequirement() {
         if (id == null) {
@@ -37,7 +39,7 @@ public class PluginDependencyRequirement {
         return id;
     }
 
-    public Boolean requirementMatches(PluginDependency dependency) {
+    public @NotNull Boolean requirementMatches(@NotNull PluginDependency dependency) {
         return UtilKt.requirementMatches(this, dependency);
     }
 

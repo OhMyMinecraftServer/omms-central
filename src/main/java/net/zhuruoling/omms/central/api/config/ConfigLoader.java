@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.api.config;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -14,11 +15,11 @@ import java.util.Properties;
 
 @SuppressWarnings("all")
 public class ConfigLoader {
-    public static <T> T loadConfig(Path configPath,
-                                   Class<? extends T> configClass,
-                                   T defaultConfig,
-                                   ExclusionStrategy exclusionStrategy,
-                                   Map<Class<?>, TypeAdapter<?>> typeAdapterMap
+    public static <T> @Nullable T loadConfig(@NotNull Path configPath,
+                                             @NotNull Class<? extends T> configClass,
+                                             T defaultConfig,
+                                             @NotNull ExclusionStrategy exclusionStrategy,
+                                             Map<Class<?>, TypeAdapter<?>> typeAdapterMap
     ) {
         var fields = configClass.getDeclaredFields();
         var map = new HashMap<Class<?>, WrappedConfigValue>();

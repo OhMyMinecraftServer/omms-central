@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.security;
 
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -20,7 +21,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class CryptoUtil {
 
-    public static String toPaddedAesKey(String src) {
+    public static @NotNull String toPaddedAesKey(String src) {
         String key = src;
         if (key.length() <= 16) {
             StringBuilder keyBuilder = new StringBuilder(key);
@@ -40,7 +41,7 @@ public class CryptoUtil {
         return key;
     }
 
-    public static String aesEncryptToB64String(String data, String key) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public static @NotNull String aesEncryptToB64String(@NotNull String data, String key) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return new String(
                 encryptECB(
                         data.getBytes(StandardCharsets.UTF_8),
@@ -49,7 +50,7 @@ public class CryptoUtil {
         );
     }
 
-    public static String aesDecryptFromB64String(String data, String key) throws Exception {
+    public static @NotNull String aesDecryptFromB64String(@NotNull String data, String key) throws Exception {
         return new String(decryptECB(data.getBytes(StandardCharsets.UTF_8), toPaddedAesKey(key).getBytes(StandardCharsets.UTF_8)));
     }
 
@@ -67,7 +68,7 @@ public class CryptoUtil {
         return cipher.doFinal(base64);
     }
 
-    public static String gzipCompress(String source) {
+    public static String gzipCompress(@NotNull String source) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         GZIPOutputStream gzip;
         try {
@@ -80,7 +81,7 @@ public class CryptoUtil {
         return Util.base64Encode(out.toString());
     }
 
-    public static String gzipDecompress(String source){
+    public static @Nullable String gzipDecompress(@NotNull String source){
         ByteArrayInputStream in = new ByteArrayInputStream(Base64.getDecoder().decode(source.getBytes(StandardCharsets.UTF_8)));
         try (GZIPInputStream stream = new GZIPInputStream(in)){
             return new String(stream.readAllBytes());

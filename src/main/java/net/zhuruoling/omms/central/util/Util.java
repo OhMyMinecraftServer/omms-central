@@ -265,7 +265,7 @@ public class Util {
         }
 
         @Override
-        public boolean shouldSkipClass(Class<?> clazz) {
+        public boolean shouldSkipClass(@NotNull Class<?> clazz) {
             return clazz.getName().startsWith("io.") || clazz == ControllerHttpClient.class;
         }
     }
