@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.permission.player;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class PlayerData {
@@ -14,7 +16,7 @@ public class PlayerData {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PlayerData{" +
                 "playerName='" + playerName + '\'' +
                 ", inGroup=" + inGroup +

@@ -6,6 +6,7 @@ import net.zhuruoling.omms.central.plugin.exception.PluginException;
 import net.zhuruoling.omms.central.plugin.handler.PluginRequestHandler;
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement;
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,8 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.FutureTask;
 import java.util.zip.ZipFile;
 
 @SuppressWarnings("all")
@@ -23,15 +26,15 @@ public class PluginInstance {
     private PluginMetadata pluginMetadata;
     private final Logger logger = LoggerFactory.getLogger("PluginInstance");
     private Class<?> pluginMainClass;
-    private PluginState pluginState = PluginState.NO_STATE;
+    private @NotNull PluginState pluginState = PluginState.NO_STATE;
     private PluginMain pluginMain;
     private final Map<String, PluginRequestHandler> pluginRequestHandlers = new LinkedHashMap<>();
-    private final URL pluginPathUrl;
-    private final Path pluginPath;
+    private final @NotNull URL pluginPathUrl;
+    private final @NotNull Path pluginPath;
     private final URLClassLoader classLoader;
 
 
-    public PluginInstance(URLClassLoader classLoader, Path jarPath) throws MalformedURLException {
+    public PluginInstance(URLClassLoader classLoader, @NotNull Path jarPath) throws MalformedURLException {
         pluginPathUrl = new URL("file://" + jarPath.toAbsolutePath());
         pluginPath = jarPath;
         this.classLoader = classLoader;
@@ -132,13 +135,13 @@ public class PluginInstance {
     }
 
 
-    public List<PluginDependencyRequirement> checkDepenciesSatisfied(List<PluginDependency> dependencies) {
+    public @NotNull List<PluginDependencyRequirement> checkDepenciesSatisfied(@NotNull List<PluginDependency> dependencies) {
         return pluginMetadata.getPluginDependencies().stream()
                 .filter(requirement -> dependencies.stream().noneMatch(it -> requirement.requirementMatches(it)))
                 .toList();
     }
 
-    public List<PluginDependencyRequirement> checkPluginDependcencyRequirements(List<PluginDependency> dependencies) {
+    public @NotNull List<PluginDependencyRequirement> checkPluginDependcencyRequirements(@NotNull List<PluginDependency> dependencies) {
         pluginState = PluginState.ERROR;
         List<PluginDependencyRequirement> result = new ArrayList<PluginDependencyRequirement>();
         if (pluginMetadata.getPluginDependencies() != null) {
@@ -177,7 +180,7 @@ public class PluginInstance {
         return pluginState;
     }
 
-    public Map<String, PluginRequestHandler> getPluginRequestHandlers() {
+    public @NotNull Map<String, PluginRequestHandler> getPluginRequestHandlers() {
         return pluginRequestHandlers;
     }
 

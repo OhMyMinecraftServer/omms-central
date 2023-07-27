@@ -148,7 +148,7 @@ class ProcessOutputReader(
     Thread("Runner-Output-$runnerId") {
     private val logger = LoggerFactory.getLogger("Runner-Output-$runnerId")
     private lateinit var input: InputStream
-    private var lineIndex = 0;
+    private var lineIndex = 0
     private val outputLines = mutableListOf<String>()
 
     override fun run() {

@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.permission.player;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class Group {
@@ -12,7 +14,7 @@ public class Group {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Group{" +
                 "name='" + name + '\'' +
                 ", permittedServer=" + permittedServer +

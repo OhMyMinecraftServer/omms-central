@@ -5,7 +5,6 @@ import net.zhuruoling.omms.central.plugin.depedency.PluginDependency
 import net.zhuruoling.omms.central.plugin.exception.PluginException
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
 import net.zhuruoling.omms.central.plugin.metadata.PluginMetadata
-import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.BuildProperties
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
@@ -18,14 +17,14 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 
-object PluginManager : Manager(){
+object PluginManager : Manager(), Iterable<PluginInstance>{
     private var pluginMap = LinkedHashMap<String, PluginInstance>()
     private var pluginFileList = arrayListOf<String>()
     private lateinit var classLoader: URLClassLoader
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
         if (GlobalVariable.noPlugins) {
-            ScriptManager.logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
         pluginMap.clear()
@@ -106,6 +105,10 @@ object PluginManager : Manager(){
             }
             throw PluginException(builder.toString())
         }
+    }
+
+    override fun iterator(): Iterator<PluginInstance> {
+        return pluginMap.values.iterator()
     }
 }
 

@@ -44,7 +44,7 @@ public class CommandSourceStack {
         }
     }
 
-    public List<String> getFeedbackLines() {
+    public @NotNull List<String> getFeedbackLines() {
         return feedbackLines;
     }
 }

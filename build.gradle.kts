@@ -49,32 +49,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.withType<KotlinCompile>{
     kotlinOptions.jvmTarget = "17"
-    dependsOn("generateBuildInfo")
-}
-
-task("generateBuildInfo"){
-    val propertiesFile = file("./src/main/resources/build.properties")
-    if (propertiesFile.exists()) {
-        propertiesFile.delete()
-    }
-    propertiesFile.createNewFile()
-    val m = mutableMapOf<String, String>()
-    propertiesFile.printWriter().use {writer ->
-        properties.forEach {
-            val str = it.value.toString()
-            if ("@" in str || "(" in str || ")" in str || "extension" in str || "null" == str || "\'" in str || "\\" in str || "/" in str)return@forEach
-            if ("PROJECT" in str.toUpperCaseAsciiOnly() || "PROJECT" in it.key.toUpperCaseAsciiOnly() || " " in str)return@forEach
-            if ("GRADLE" in it.key.toUpperCaseAsciiOnly() || "GRADLE" in str.toUpperCaseAsciiOnly() || "PROP" in it.key.toUpperCaseAsciiOnly())return@forEach
-            if("." in it.key || "TEST" in it.key.toUpperCaseAsciiOnly())return@forEach
-            if(it.value.toString().length <= 2)return@forEach
-            m += it.key to str
-        }
-        m += "buildTime" to System.currentTimeMillis().toString()
-        m.toSortedMap().forEach{
-            writer.println("${it.key} = ${it.value}")
-        }
-        writer.flush()
-    }
 }
 
 repositories {
@@ -138,4 +112,38 @@ dependencies {
     implementation("org.apache.groovy:groovy:4.0.10")
     implementation("io.socket:socket.io-client:2.1.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.7.10")
+}
+
+task("generateProperties"){
+    doLast {
+        generateProperties()
+    }
+}
+
+tasks.getByName("processResources"){
+    dependsOn("generateProperties")
+}
+
+fun generateProperties(){
+    val propertiesFile = file("./src/main/resources/build.properties")
+    if (propertiesFile.exists()) {
+        propertiesFile.delete()
+    }
+    propertiesFile.createNewFile()
+    val m = mutableMapOf<String, String>()
+    propertiesFile.printWriter().use {writer ->
+        properties.forEach {
+            val str = it.value.toString()
+            if ("@" in str || "(" in str || ")" in str || "extension" in str || "null" == str || "\'" in str || "\\" in str || "/" in str)return@forEach
+            if ("PROJECT" in str.toUpperCaseAsciiOnly() || "PROJECT" in it.key.toUpperCaseAsciiOnly() || " " in str)return@forEach
+            if ("GRADLE" in it.key.toUpperCaseAsciiOnly() || "GRADLE" in str.toUpperCaseAsciiOnly() || "PROP" in it.key.toUpperCaseAsciiOnly())return@forEach
+            if("." in it.key || "TEST" in it.key.toUpperCaseAsciiOnly())return@forEach
+            if(it.value.toString().length <= 2)return@forEach
+            m += it.key to str
+        }
+        m += "buildTime" to System.currentTimeMillis().toString()
+        m.toSortedMap().forEach{
+            writer.println("${it.key} = ${it.value}")
+        }
+    }
 }

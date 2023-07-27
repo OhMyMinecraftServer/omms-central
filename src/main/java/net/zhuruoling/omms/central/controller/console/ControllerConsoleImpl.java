@@ -5,6 +5,8 @@ import net.zhuruoling.omms.central.controller.Controller;
 import net.zhuruoling.omms.central.controller.ControllerImpl;
 import net.zhuruoling.omms.central.controller.console.output.PrintTarget;
 import net.zhuruoling.omms.central.controller.console.input.InputSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +18,11 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole{
     }
 
 
-    public static ControllerConsole newInstance(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
+    public static @NotNull ControllerConsole newInstance(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
         return new ControllerConsoleImpl(controller, consoleId, printTarget, inputSource);
     }
 
-    private final ControllerWebSocketSession session;
+    private final @NotNull ControllerWebSocketSession session;
 
     private final PrintTarget<?, ControllerConsole> printTarget;
     private final InputSource inputSource;
@@ -55,7 +57,7 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole{
         this.interrupt();
     }
 
-    public void input(String line) {
+    public void input(@Nullable String line) {
         if (line == null)return;
         if(line.isEmpty())return;
         if (line.startsWith(":")) {

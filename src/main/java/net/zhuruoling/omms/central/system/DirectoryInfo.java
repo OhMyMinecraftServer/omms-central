@@ -26,7 +26,7 @@ public class DirectoryInfo {
         this.result = result;
     }
 
-    public List<String> getFolders() {
+    public @Nullable List<String> getFolders() {
         return folders;
     }
 
@@ -34,7 +34,7 @@ public class DirectoryInfo {
         this.folders = folders;
     }
 
-    public List<String> getFiles() {
+    public @Nullable List<String> getFiles() {
         return files;
     }
 

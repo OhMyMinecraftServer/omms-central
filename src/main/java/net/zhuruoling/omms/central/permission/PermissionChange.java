@@ -1,5 +1,7 @@
 package net.zhuruoling.omms.central.permission;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +56,7 @@ public class PermissionChange {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PermissionChange{" +
                 "operation=" + operation +
                 ", code=" + code +

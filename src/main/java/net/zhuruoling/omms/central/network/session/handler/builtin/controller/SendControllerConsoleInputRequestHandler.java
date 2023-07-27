@@ -7,11 +7,12 @@ import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.permission.Permission;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SendControllerConsoleInputRequestHandler extends BuiltinRequestHandler {
     @Override
-    public @Nullable Response handle(Request request, SessionContext session) {//NOTE: may ignore by client
+    public @Nullable Response handle(@NotNull Request request, @NotNull SessionContext session) {//NOTE: may ignore by client
         String id = request.getContent("consoleId");
         if (session.getControllerConsoleMap().containsKey(id)) {
             var console = session.getControllerConsoleMap().get(id);

@@ -22,10 +22,9 @@ import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
 import net.zhuruoling.omms.central.network.session.request.RequestManager
-import net.zhuruoling.omms.central.network.session.server.SessionInitialServer
+import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
-import net.zhuruoling.omms.central.script.ScriptManager
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.util.printRuntimeEnv
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
@@ -58,12 +57,9 @@ object CentralServer {
             noPlugins = argList.contains("--noplugin")
             noLock = argList.contains("--nolock")
             experimental = argList.contains("--experimental")
-            GlobalVariable.noScripts = argList.contains("--noscripts")
         }
-
         logger.info("Hello World!")
         logger.info("Loading Config.")
-
         (Arrays.stream(Util.DATA_FOLDERS).map { File(Util.getWorkingDir() + File.separator + it) }
             .filter { !(it.isDirectory or it.exists()) }.toList() to
                 !Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")).run {
@@ -121,14 +117,12 @@ object CentralServer {
         try {
             PluginManager.init()
             PluginManager.loadAll()
-            ScriptManager.init()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
             CommandManager.INSTANCE.init()
             RequestManager.init()
-            ScriptManager.loadAll()
         } catch (e: Exception) {
             e.printStackTrace()
             exitProcess(2)
@@ -136,7 +130,7 @@ object CentralServer {
         Util.listAll(logger)
         logger.info("Setting up services.")
 
-        val socketServer = SessionInitialServer()
+        val socketServer = SessionLoginServer()
         socketServer.start()
         GlobalVariable.socketServer = socketServer
         if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
@@ -171,7 +165,6 @@ object CentralServer {
         try {
             logger.info("Stopping!")
             normalShutdown = true
-            ScriptManager.unloadAll()
             Objects.requireNonNull(httpServer)?.interrupt()
             if (GlobalVariable.config?.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
                 Objects.requireNonNull(receiver)?.interrupt()

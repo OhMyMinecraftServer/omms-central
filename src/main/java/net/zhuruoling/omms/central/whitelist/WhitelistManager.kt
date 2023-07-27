@@ -163,7 +163,7 @@ object WhitelistManager : Manager() {
         }
         whitelist.saveModifiedBuffer()
     }
-
+    @Throws(WhitelistAlreadyExistsException::class)
     fun createWhitelist(name: String) {
         if (name in whitelistMap)throw WhitelistAlreadyExistsException(name)
         val whitelist = WhitelistImpl(mutableListOf(), name)
