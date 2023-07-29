@@ -1,7 +1,7 @@
-package net.zhuruoling.omms.central.network.session.server;
+package net.zhuruoling.omms.central.network.old.session.server;
 
 import net.zhuruoling.omms.central.GlobalVariable;
-import net.zhuruoling.omms.central.network.session.LoginSession;
+import net.zhuruoling.omms.central.network.old.session.LoginSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

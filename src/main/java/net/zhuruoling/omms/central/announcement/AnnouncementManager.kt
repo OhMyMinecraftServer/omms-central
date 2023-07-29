@@ -33,6 +33,9 @@ object AnnouncementManager: Manager() {
                     logger.warn("Duplicated id(${announcement.id}) in file $it, ignoring.")
                     return
                 }
+                if (announcement.contentType == null) {
+                    announcement.contentType = ContentType.STRING
+                }
                 announcementMap[announcement.id] = announcement
             }
             catch (e: Throwable){

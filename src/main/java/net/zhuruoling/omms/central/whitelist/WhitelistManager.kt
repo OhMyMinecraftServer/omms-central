@@ -3,7 +3,6 @@ package net.zhuruoling.omms.central.whitelist
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import me.xdrop.fuzzywuzzy.FuzzySearch
-import net.zhuruoling.omms.central.network.session.response.Result
 import net.zhuruoling.omms.central.plugin.callback.WhitelistLoadCallback
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
@@ -11,11 +10,9 @@ import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileReader
-import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.jvm.Throws
 
 @SuppressWarnings("all")

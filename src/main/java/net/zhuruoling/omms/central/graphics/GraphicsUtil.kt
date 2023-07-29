@@ -1,13 +1,19 @@
 package net.zhuruoling.omms.central.graphics
 
-import io.ktor.util.*
 import net.zhuruoling.omms.central.system.SystemUtil
 import net.zhuruoling.omms.central.util.Util
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
+import java.awt.Image
+import java.awt.RenderingHints
+import java.awt.geom.AffineTransform
+import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
+import java.awt.image.BufferedImageOp
+import java.awt.image.RescaleOp
+import java.io.File
 import java.lang.management.ManagementFactory
 import java.nio.file.Path
 import javax.imageio.ImageIO
@@ -21,14 +27,15 @@ fun saveImage(path: Path, bufferedImage: BufferedImage) {
     ImageIO.write(bufferedImage, "png", path.toFile())
 }
 
-fun getGraphics(bufferedImage: BufferedImage, action: (Graphics2D) -> Unit) {
-    val graphics2D = bufferedImage.createGraphics()
+fun BufferedImage.withGraphics( action: (Graphics2D) -> Unit) {
+    val graphics2D = this.createGraphics()
+    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
     action.invoke(graphics2D)
     graphics2D.dispose()
 }
 
 fun clearImage(bufferedImage: BufferedImage, color: Color = Color.WHITE) {
-    getGraphics(bufferedImage) {
+   bufferedImage.withGraphics {
         it.color = color
         it.stroke = BasicStroke(1f)
         it.fillRect(0, 0, bufferedImage.width, bufferedImage.height)
@@ -36,14 +43,19 @@ fun clearImage(bufferedImage: BufferedImage, color: Color = Color.WHITE) {
 }
 
 fun main() {
-    info()
+    //info()
+    val img = createImage(1280,720)
+    img.withGraphics {
+        renderBottomCard(it)
+    }
+    saveImage(Path(Util.joinFilePaths("image", "jrrp.png")), img)
 }
 
 fun test(len: Int) {
     println("Creating image")
     val image = createImage(1080, 1720)
     clearImage(image)
-    getGraphics(image) {
+   image.withGraphics {
         it.font = Font("Consolas", Font.PLAIN, 40)
         it.color = Color.BLACK
         val h = it.fontMetrics.height
@@ -54,10 +66,13 @@ fun test(len: Int) {
     saveImage(Path(Util.joinFilePaths("image", "${Util.randomStringGen(8)}.png")), image)
 }
 
+fun renderBottomCard(image: Graphics2D){
+//    image.fillRoundRect()
+}
+
 fun info() {
     println("Creating image")
     val info = SystemUtil.getSystemInfo()
-
     val strings = mutableListOf<String>()
     strings.add("Operating system:${info.osName} ${info.osVersion} ${info.osArch}")
     strings.add("Processor: ${info.processorInfo.processorName.trimEnd()} x${info.processorInfo.physicalCPUCount}")
@@ -74,7 +89,7 @@ fun info() {
         "RAM: ${info.memoryInfo.memoryUsed / 1024 / 1024}MB/${info.memoryInfo.memoryTotal / 1024 / 1024}MB(${
             String.format(
                 "%.3f",
-                1.0 - info.memoryInfo.memoryUsed * 1.0f / info.memoryInfo.memoryTotal
+                info.memoryInfo.memoryUsed * 1.0f / info.memoryInfo.memoryTotal
             )
         })"
     )
@@ -110,13 +125,9 @@ fun info() {
                 || it.displayName.contains("VMware")
                 || it.displayName.contains("Hyper-V")
                 || it.displayName.contains("Virtual")
+                || it.displayName.contains("TAP")
             ) {
-                if (it.displayName.contains("PCIe")
-                    || it.displayName.toLowerCasePreservingASCIIRules().contains("wi")
-                    || it.displayName.toLowerCasePreservingASCIIRules().contains("fi")
-                ) else {
-                    return@forEach
-                }
+                return@forEach
             }
             strings.add("    ${it.displayName}")
             strings.add("      speed: ${it.speed / 1024 / 1024}Mbps")
@@ -132,7 +143,7 @@ fun info() {
             }
         }
     }
-    val font = Font("Consolas", Font.PLAIN, 32)
+    val font = Font("微软雅黑", Font.PLAIN, 32)
     val image = createImage(
         1080,
         (font.getLineMetrics(
@@ -141,12 +152,17 @@ fun info() {
         ).height * strings.size).plus(64).toInt()
     )
     clearImage(image)
-    getGraphics(image) { graphics2D ->
-        graphics2D.font = font
-        graphics2D.color = Color.BLACK
-        val h = graphics2D.fontMetrics.height
+    val background = ImageIO.read(File(Util.joinFilePaths("image","background.JPG")))
+    val zoom = image.width.toDouble() / background.width
+    image.withGraphics {
+        it.drawImage(background, AffineTransformOp(AffineTransform.getScaleInstance(zoom,zoom) ,AffineTransformOp.TYPE_BICUBIC), 0,0)
+    }
+    image.withGraphics{
+        it.font = font
+        it.color = Color.BLACK
+        val h = it.fontMetrics.height
         for (i in 0 until strings.size) {
-            graphics2D.drawString(strings[i], 0, (i + 1) * h)
+            it.drawString( " " + strings[i], 0, (i + 1) * h)
         }
     }
     saveImage(Path(Util.joinFilePaths("image", "system_info.png")), image)

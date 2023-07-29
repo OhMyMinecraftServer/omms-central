@@ -1,7 +1,18 @@
 package net.zhuruoling.omms.central.network.session.request
 
 import net.zhuruoling.omms.central.network.session.handler.RequestHandler
-import net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.EndRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetRunnerOutputRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
+import net.zhuruoling.omms.central.network.session.handler.builtin.controller.*
+import net.zhuruoling.omms.central.network.session.handler.builtin.permission.*
+import net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.*
 import net.zhuruoling.omms.central.plugin.callback.RequestManagerLoadCallback
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.StringPair
@@ -89,32 +100,32 @@ object RequestManager : Manager(){
 
 
 val builtinRequestMap = mutableMapOf(
-    "PERMISSION_DELETE" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.DeletePermissionRequestHandler(),
-    "SYSTEM_GET_ALL_RUNNER" to net.zhuruoling.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler(),
-    "SYSTEM_RUN_COMMAND" to net.zhuruoling.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler(),
-    "CONTROLLER_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.CreateControllerRequestHandler(),
-    "PERMISSION_GRANT" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.GrantPermissionRequestHandler(),
-    "WHITELIST_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.ListWhitelistRequestHandler(),
-    "WHITELIST_ADD" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.AddToWhitelistRequestHandler(),
-    "PERMISSION_DENY" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.DenyPermissionRequestHandler(),
-    "WHITELIST_REMOVE" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.RemoveFromWhitelistHandler(),
-    "CONTROLLER_GET_STATUS" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.GetControllerStatusRequestHandler(),
-    "CONTROLLER_EXECUTE_COMMAND" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.SendCommandToControllerRequestHandler(),
-    "ANNOUNCEMENT_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler(),
-    "ANNOUNCEMENT_DELETE" to net.zhuruoling.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler(),
-    "WHITELIST_DELETE" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.DeleteWhitelistRequestHandler(),
-    "PERMISSION_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.CreatePermissionRequestHandler(),
-    "SYSTEM_GET_RUNNER_OUTPUT" to net.zhuruoling.omms.central.network.session.handler.builtin.system.GetRunnerOutputRequestHandler(),
-    "CONTROLLER_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.ListControllersRequestHandler(),
-    "ANNOUNCEMENT_GET" to net.zhuruoling.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler(),
-    "ANNOUNCEMENT_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler(),
-    "END" to net.zhuruoling.omms.central.network.session.handler.builtin.EndRequestHandler(),
-    "WHITELIST_CREATE" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.CreateWhitelistRequestHandler(),
+    "PERMISSION_DELETE" to DeletePermissionRequestHandler(),
+    "SYSTEM_GET_ALL_RUNNER" to GetAllRunnerRequestHandler(),
+    "SYSTEM_RUN_COMMAND" to RunSystemCommandRequestHandler(),
+    "CONTROLLER_CREATE" to CreateControllerRequestHandler(),
+    "PERMISSION_GRANT" to GrantPermissionRequestHandler(),
+    "WHITELIST_LIST" to ListWhitelistRequestHandler(),
+    "WHITELIST_ADD" to AddToWhitelistRequestHandler(),
+    "PERMISSION_DENY" to DenyPermissionRequestHandler(),
+    "WHITELIST_REMOVE" to RemoveFromWhitelistHandler(),
+    "CONTROLLER_GET_STATUS" to GetControllerStatusRequestHandler(),
+    "CONTROLLER_EXECUTE_COMMAND" to SendCommandToControllerRequestHandler(),
+    "ANNOUNCEMENT_LIST" to ListAnnouncementRequestHandler(),
+    "ANNOUNCEMENT_DELETE" to DeleteAnnouncementRequestHandler(),
+    "WHITELIST_DELETE" to DeleteWhitelistRequestHandler(),
+    "PERMISSION_CREATE" to CreatePermissionRequestHandler(),
+    "SYSTEM_GET_RUNNER_OUTPUT" to GetRunnerOutputRequestHandler(),
+    "CONTROLLER_LIST" to ListControllersRequestHandler(),
+    "ANNOUNCEMENT_GET" to GetAnnouncementRequestHandler(),
+    "ANNOUNCEMENT_CREATE" to CreateAnnouncementRequestHandler(),
+    "END" to EndRequestHandler(),
+    "WHITELIST_CREATE" to CreateWhitelistRequestHandler(),
     "CONTROLLER_GET" to GetControllerRequestHandler(),
-    "WHITELIST_GET" to net.zhuruoling.omms.central.network.session.handler.builtin.whitelist.GetWhitelistRequestHandler(),
-    "SYSTEM_GET_INFO" to net.zhuruoling.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler(),
-    "PERMISSION_LIST" to net.zhuruoling.omms.central.network.session.handler.builtin.permission.ListPermissionRequestHandler(),
-    "CONTROLLER_LAUNCH_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.LaunchControllerConsoleRequestHandler(),
-    "CONTROLLER_END_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.EndControllerConsoleRequestHandler(),
-    "CONTROLLER_INPUT_CONSOLE" to net.zhuruoling.omms.central.network.session.handler.builtin.controller.SendControllerConsoleInputRequestHandler()
+    "WHITELIST_GET" to GetWhitelistRequestHandler(),
+    "SYSTEM_GET_INFO" to GetSysinfoRequestHandler(),
+    "PERMISSION_LIST" to ListPermissionRequestHandler(),
+    "CONTROLLER_LAUNCH_CONSOLE" to LaunchControllerConsoleRequestHandler(),
+    "CONTROLLER_END_CONSOLE" to EndControllerConsoleRequestHandler(),
+    "CONTROLLER_INPUT_CONSOLE" to SendControllerConsoleInputRequestHandler()
 )

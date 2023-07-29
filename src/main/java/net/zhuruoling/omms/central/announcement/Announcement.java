@@ -6,6 +6,7 @@ import java.util.Arrays;
 import kotlinx.serialization.Serializable;
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Serializable
 public class Announcement {
@@ -13,6 +14,8 @@ public class Announcement {
     private long timeMillis;
     private String title;
     private String[] content;
+    @Nullable
+    ContentType contentType = ContentType.STRING;
 
     public Announcement(String id, long timeMillis, String title, String[] content) {
         this.id = id;
