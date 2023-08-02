@@ -97,26 +97,6 @@ public class Util {
             return false;
         }
     }
-
-    public static FileLock acquireLock(@NotNull RandomAccessFile file) {
-        try {
-            FileChannel channel = file.getChannel();
-            return channel.tryLock();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void releaseLock(@NotNull FileLock lock) {
-        try {
-            var ch = lock.acquiredBy();
-            lock.release();
-            ch.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static @NotNull String getWorkingDir() {
         File directory = new File("");
         return directory.getAbsolutePath();

@@ -13,7 +13,6 @@ import java.nio.channels.FileLock
 
 
 object GlobalVariable {
-    var noLock: Boolean = false
     var lock: FileLock? = null
     var noPlugins: Boolean = false
     var test: Boolean = false

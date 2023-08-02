@@ -20,26 +20,16 @@ public class Main {
         }
         GlobalVariable.INSTANCE.setArgs(args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
-                    System.out.println("Stopping!");
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
-                    if (Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
-                        Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
-                        Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
-                    }
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getSocketServer()).interrupt();
-                    if (!GlobalVariable.INSTANCE.getNoLock()) {
-                        System.out.println("Releasing lock.");
-                        Util.releaseLock(Objects.requireNonNull(GlobalVariable.INSTANCE.getLock()));
-                        Files.delete(Path.of(Util.LOCK_NAME));
-                    }
-                    System.out.println("Bye");
-                    //Runtime.getRuntime().halt(0);
+            if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
+                System.out.println("Stopping!");
+                Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
+                if (Objects.requireNonNull(GlobalVariable.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
+                    Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
                 }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                Objects.requireNonNull(GlobalVariable.INSTANCE.getSocketServer()).interrupt();
+                System.out.println("Bye");
+                //Runtime.getRuntime().halt(0);
             }
         }, "ShutdownHook"));
         System.out.println("Starting net.zhuruoling.omms.central.main.MainKt");

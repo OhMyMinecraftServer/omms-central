@@ -38,7 +38,7 @@ public class CommandManager extends Manager {
 
     public void dispatchCommand(String command, @NotNull CommandSourceStack commandSourceStack) {
         try {
-            logger.info("%s issued a command: %s".formatted(commandSourceStack.getSource().toString(),command));
+            logger.info("%s issued a command: %s".formatted(commandSourceStack.getSource().toString(), command));
             commandDispatcher.execute(command, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         } catch (CommandSyntaxException e) {
             logger.error("Invalid Command Syntax: " + e.getLocalizedMessage());

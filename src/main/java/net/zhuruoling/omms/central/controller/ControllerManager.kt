@@ -65,6 +65,7 @@ object ControllerManager : Manager() {
             logger.warn("No Controller added to this server.")
             return
         }
+        ControllerBindingManager.init()
         ControllerLoadCallback.INSTANCE.invokeAll(this)
     }
 
@@ -77,6 +78,10 @@ object ControllerManager : Manager() {
             throw ControllerExistsException(controller.name)
         }
         controllers += controller.name to controller
+    }
+
+    fun replaceController(controller: Controller){
+        controllers[controller.name] = controller
     }
 
     fun sendCommand(controllerName: String, command: String): List<String> {

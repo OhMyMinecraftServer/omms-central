@@ -16,7 +16,7 @@ fun Route.whitelistQueryRouting() {
     val logger = LoggerFactory.getLogger("WhitelistQueryRouting")
     route("/whitelist") {
         get {
-            logger.info("Querying whitelist names.")
+            logger.debug("Querying whitelist names.")
             val whitelistNames = WhitelistManager.getWhitelistNames()
             if (whitelistNames.isEmpty()) {
                 call.respondText("[]", status = HttpStatusCode.OK)
@@ -30,7 +30,7 @@ fun Route.whitelistQueryRouting() {
                 "Missing name",
                 status = HttpStatusCode.BadRequest
             )
-            logger.info("Querying whitelist $name content.")
+            logger.debug("Querying whitelist $name content.")
             val content = WhitelistManager.getWhitelist(name)
             if (content == null) {
                 call.respondText(

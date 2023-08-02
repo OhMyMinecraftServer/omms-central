@@ -28,6 +28,8 @@ public class ControllerImpl extends Controller {
 
     boolean statusQueryable;
 
+    String mcdrCommandPrefix = "!!";
+
     @Expose(serialize = false, deserialize = false)
     private ControllerHttpClient controllerHttpClient;
 
@@ -61,6 +63,9 @@ public class ControllerImpl extends Controller {
 
     public void fixFields(){
         this.controllerHttpClient = new ControllerHttpClient(this);
+        if (this.mcdrCommandPrefix == null){
+            this.mcdrCommandPrefix = "!!";
+        }
     }
 
     public ControllerImpl(String name, String executable, String type, String launchCommand, String workingDir) {
@@ -106,12 +111,6 @@ public class ControllerImpl extends Controller {
     public String getWorkingDir() {
         return workingDir;
     }
-
-
-    public String toJson() {
-        return Util.gson.toJson(this);
-    }
-
 
     public String getHttpQueryAddress() {
         return httpQueryAddress;

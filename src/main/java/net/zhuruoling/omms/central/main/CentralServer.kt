@@ -3,8 +3,6 @@ package net.zhuruoling.omms.central.main
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.GlobalVariable.experimental
 import net.zhuruoling.omms.central.GlobalVariable.httpServer
-import net.zhuruoling.omms.central.GlobalVariable.lock
-import net.zhuruoling.omms.central.GlobalVariable.noLock
 import net.zhuruoling.omms.central.GlobalVariable.noPlugins
 import net.zhuruoling.omms.central.GlobalVariable.normalShutdown
 import net.zhuruoling.omms.central.GlobalVariable.receiver
@@ -21,8 +19,8 @@ import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
-import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.network.old.session.server.SessionLoginServer
+import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.util.Util
@@ -32,10 +30,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
-import java.io.RandomAccessFile
-import java.nio.channels.FileLock
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess
@@ -55,7 +50,6 @@ object CentralServer {
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             noPlugins = argList.contains("--noplugin")
-            noLock = argList.contains("--nolock")
             experimental = argList.contains("--experimental")
         }
         logger.info("Hello World!")
@@ -90,29 +84,6 @@ object CentralServer {
         logger.info("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
         logger.info("\tRequestRateLimit: ${config?.rateLimit}")
         logger.info("\tChatbridgeImplementation: ${config?.chatbridgeImplementation}")
-
-        if (Files.exists(Paths.get(Util.joinFilePaths(Util.LOCK_NAME)))) {
-            logger.error("Failed to acquire lock.Might another server instance are running?")
-            logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")
-            logger.info("Stopping.")
-            exitProcess(1)
-        }
-
-
-        if (!noLock) {
-            val randomAccessFile = RandomAccessFile(Util.joinFilePaths(Util.LOCK_NAME), "rw")
-            val lock: FileLock?
-            try {
-                lock = Util.acquireLock(randomAccessFile)
-                GlobalVariable.lock = lock
-            } catch (e: Exception) {
-                logger.error("Failed to acquire lock.Might another server instance are running?")
-                logger.info("HINT:If you are sure there are no server instance running in this path,you can remove the \"${Util.LOCK_NAME}\" file. ")
-                logger.info("Stopping.")
-                exitProcess(3)
-            }
-        }
-
         logger.info("Setting up managers.")
         try {
             PluginManager.init()
@@ -171,11 +142,6 @@ object CentralServer {
                 Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
             }
             Objects.requireNonNull(socketServer)?.interrupt()
-            if (!noLock) {
-                logger.info("Releasing lock.")
-                Util.releaseLock(lock!!)
-                Files.delete(Path.of(Util.LOCK_NAME))
-            }
             logger.info("Bye")
             if (normalShutdown) {
                 exitProcess(0)

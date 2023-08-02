@@ -27,6 +27,7 @@ public class Configuration {
     @SerializedName("chatbridge_impl")
     @NotNull
     ChatbridgeImplementation chatbridgeImplementation = ChatbridgeImplementation.UDP;
+
     public String[] getAuthorisedController() {
         return authorisedController;
     }
