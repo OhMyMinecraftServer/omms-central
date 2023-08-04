@@ -49,7 +49,6 @@ class SimpleGuiSkikoView : SkikoView {
     fun onMouseScroll(e: MouseWheelEvent) {
         val scroll = e.wheelRotation
         this.scrolledLines -= scroll
-        val i: Int = this.visibleLogs.size
         if (scrolledLines >= GlobalVariable.logCache.size- visibleLineCount)
             scrolledLines = GlobalVariable.logCache.size - visibleLineCount
         if (scrolledLines <= 0) {
