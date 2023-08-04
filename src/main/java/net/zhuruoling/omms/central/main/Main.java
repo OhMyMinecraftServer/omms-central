@@ -33,7 +33,7 @@ public class Main {
             }
         }, "ShutdownHook"));
         System.out.println("Starting net.zhuruoling.omms.central.main.MainKt");
-        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+        //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         CentralServer.main(args);
     }
 }

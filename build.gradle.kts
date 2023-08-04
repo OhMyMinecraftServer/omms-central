@@ -36,10 +36,6 @@ tasks{
     }
 }
 
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions.jvmTarget = "17"
-//}
-
 application {
     mainClass.set("net.zhuruoling.omms.central.main.Main")
 }
@@ -68,7 +64,26 @@ repositories {
     maven{
         url = uri("https://jcenter.bintray.com/")
     }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
+
+val osName = System.getProperty("os.name")
+val targetOs = when {
+    osName == "Mac OS X" -> "macos"
+    osName.startsWith("Win") -> "windows"
+    osName.startsWith("Linux") -> "linux"
+    else -> error("Unsupported OS: $osName")
+}
+
+val osArch = System.getProperty("os.arch")
+var targetArch = when (osArch) {
+    "x86_64", "amd64" -> "x64"
+    "aarch64" -> "arm64"
+    else -> error("Unsupported arch: $osArch")
+}
+
+val versionSkiko = "0.7.9" // or any more recent version
+val target = "${targetOs}-${targetArch}"
 
 dependencies {
     implementation("io.ktor:ktor-server-auth:2.0.2")
@@ -111,7 +126,8 @@ dependencies {
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     implementation("org.apache.groovy:groovy:4.0.10")
     implementation("io.socket:socket.io-client:2.1.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.7.10")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
 }
 
 task("generateProperties"){

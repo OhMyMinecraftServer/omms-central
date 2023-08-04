@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.main
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.GlobalVariable.experimental
 import net.zhuruoling.omms.central.GlobalVariable.httpServer
+import net.zhuruoling.omms.central.GlobalVariable.noGui
 import net.zhuruoling.omms.central.GlobalVariable.noPlugins
 import net.zhuruoling.omms.central.GlobalVariable.normalShutdown
 import net.zhuruoling.omms.central.GlobalVariable.receiver
@@ -15,6 +16,7 @@ import net.zhuruoling.omms.central.config.ConfigReader
 import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
+import net.zhuruoling.omms.central.graphics.guiMain
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
@@ -30,8 +32,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -43,22 +43,27 @@ object CentralServer {
     @Throws(IOException::class)
     @JvmStatic
     fun main(args: Array<String>) {
-        ConsoleInputHandler.INSTANCE.prepareTerminal()
         val timeStart = System.currentTimeMillis()
-        GlobalVariable.launchTime = timeStart
-        printRuntimeEnv()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             noPlugins = argList.contains("--noplugin")
             experimental = argList.contains("--experimental")
+            noGui = argList.contains("--nogui")
         }
+        ConsoleInputHandler.INSTANCE.prepareTerminal()
+        if (!noGui){
+            guiMain()
+        }
+        GlobalVariable.launchTime = timeStart
+        printRuntimeEnv()
+
         logger.info("Hello World!")
         logger.info("Loading Config.")
         (Arrays.stream(Util.DATA_FOLDERS).map { File(Util.getWorkingDir() + File.separator + it) }
             .filter { !(it.isDirectory or it.exists()) }.toList() to
                 !Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")).run {
             first.run {
-                if (!isEmpty()) {
+                if (isNotEmpty()) {
                     logger.info("Preparing for data folders.")
                     forEach {
                         Util.createFolder(it.path, logger)

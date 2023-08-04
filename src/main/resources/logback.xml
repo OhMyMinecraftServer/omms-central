@@ -5,6 +5,9 @@
     <property name="LOG_HOME" value="logs"/>
     <conversionRule conversionWord="customColor"
                    converterClass="net.zhuruoling.omms.central.util.logging.LogbackCustomColor"/>
+    <appender name="memoryAppender" class="net.zhuruoling.omms.central.util.logging.MemoryAppender">
+
+    </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -33,6 +36,7 @@
     </appender>
 
     <root level="debug">
+        <appender-ref ref="memoryAppender"/>
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
