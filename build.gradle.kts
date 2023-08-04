@@ -127,7 +127,12 @@ dependencies {
     implementation("org.apache.groovy:groovy:4.0.10")
     implementation("io.socket:socket.io-client:2.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
+    implementation("top.colter.skiko:skiko-layout:0.0.1"){
+        exclude(group = "org.jetbrains.skiko")
+    }
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.2.3")
+
 }
 
 task("generateProperties"){

@@ -10,14 +10,23 @@ import java.util.Date;
 
 public class MemoryAppender<E extends ILoggingEvent> extends UnsynchronizedAppenderBase<E> {
 
+    private static final int maxLineWidthChars = 220;
+
     @Override
     protected void append(ILoggingEvent eventObject) {
-        if (GlobalVariable.INSTANCE.getNoGui())return;
+        if (GlobalVariable.INSTANCE.getNoGui()) return;
         var res = MessageFormat.format("[{0}] [{1}/{2}] ({3}): {4}",
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date())
                 , eventObject.getThreadName(), eventObject.getLevel().levelStr, eventObject.getLoggerName(), eventObject.getFormattedMessage());
         for (String s : res.split("\n")) {
-            GlobalVariable.INSTANCE.getLogCache().add(s);
+            var len = s.length();
+            var beginIndex = 0;
+            while (len > maxLineWidthChars) {
+                GlobalVariable.INSTANCE.getLogCache().add(s.substring(beginIndex, beginIndex + maxLineWidthChars));
+                len -= maxLineWidthChars;
+                beginIndex += maxLineWidthChars;
+            }
+            GlobalVariable.INSTANCE.getLogCache().add(s.substring(beginIndex));
         }
 
     }

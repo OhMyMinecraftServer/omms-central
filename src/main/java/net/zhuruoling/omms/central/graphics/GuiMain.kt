@@ -8,6 +8,11 @@ import org.jetbrains.skia.Paint
 import org.jetbrains.skiko.GenericSkikoView
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
+import org.slf4j.LoggerFactory
+import top.colter.skiko.*
+import top.colter.skiko.layout.Column
+import top.colter.skiko.layout.Row
+import top.colter.skiko.layout.View
 import java.awt.Dimension
 import java.awt.event.MouseWheelEvent
 import java.lang.management.ManagementFactory
@@ -16,6 +21,8 @@ import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import javax.swing.WindowConstants
 import kotlin.math.max
+
+private val logger = LoggerFactory.getLogger("GuiMain")
 
 fun Canvas.drawStringWithReturn(s: String, x: Float, y: Float, font: Font, paint: Paint) {
     if (s.contains("\n")) {
@@ -39,17 +46,18 @@ class SimpleGuiSkikoView : SkikoView {
     private val fontHeight = font.metrics.height
     private val dx = 10f
     private val dy = 10f
-    private val visibleLineCount = 30
+    private val visibleLineCount = 40
     private val fontMaxWidth = font.metrics.maxCharWidth
     private val paint = Paint().apply {
         color = Color.WHITE
+        this.isAntiAlias = true
     }
     private var visibleLogs = CopyOnWriteArrayList<String>()
     private var scrolledLines = 0
     fun onMouseScroll(e: MouseWheelEvent) {
         val scroll = e.wheelRotation
-        this.scrolledLines -= scroll
-        if (scrolledLines >= GlobalVariable.logCache.size- visibleLineCount)
+        this.scrolledLines -= if (e.isControlDown) scroll * 3 else scroll
+        if (scrolledLines >= GlobalVariable.logCache.size - visibleLineCount)
             scrolledLines = GlobalVariable.logCache.size - visibleLineCount
         if (scrolledLines <= 0) {
             scrolledLines = 0
@@ -103,16 +111,17 @@ class SimpleGuiSkikoView : SkikoView {
             "FPS: ${1000 / frameTime}\nFrameTime: ${frameTime}ms\nUptime: $upTime\nMemory: ${getMemoryUsageString()}"
         canvas.drawStringWithReturn(infoString, 10F, fontHeight + 10, Font(), paint)
         var logOffsetY = measureString(infoString).height + dy + fontHeight + 10
+        //drawBox(visibleLogs.joinToString("\n"), dx,logOffsetY, canvas)
         visibleLogs.forEach {
             canvas.drawString(it.replace("\t", "    "), dx, logOffsetY, font, paint)
-            logOffsetY += fontHeight
+            logOffsetY += fontHeight + 2
         }
         lastFrameTime = nanoTime
     }
 
 }
 
-lateinit var window:JFrame
+lateinit var window: JFrame
 
 fun guiMain() {
     val skiaLayer = SkiaLayer()
@@ -130,5 +139,10 @@ fun guiMain() {
         skiaLayer.needRedraw()
         window.pack()
         window.isVisible = true
+        logger.debug("RenderInfo: ")
+        skiaLayer.renderInfo.split("\n").forEach {
+            if (it.isEmpty()) return@forEach
+            logger.debug("\t - $it")
+        }
     }
 }
