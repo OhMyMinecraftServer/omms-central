@@ -6,7 +6,6 @@ import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
-import java.util.logging.Logger
 import kotlin.io.path.Path
 
 object ControllerCrashReportManager : Manager() {
@@ -28,7 +27,7 @@ object ControllerCrashReportManager : Manager() {
 
     fun save(crashReport: CrashReportStorage) {
         logger.debug("controller : ${crashReport.controllerId}")
-        logger.debug("content:")
+        logger.debug("content: ")
         crashReport.content.forEach(logger::debug)
         val fileName = storagePath.resolve(Util.randomStringGen(16) + ".json")
         fileName.toFile().writer().use {

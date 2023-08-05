@@ -1,5 +1,6 @@
 package net.zhuruoling.omms.central.main
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.GlobalVariable.experimental
 import net.zhuruoling.omms.central.GlobalVariable.httpServer
@@ -33,6 +34,8 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.locks.LockSupport
+import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 object CentralServer {
@@ -129,10 +132,26 @@ object CentralServer {
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\".")
         initialized = true
-        while (true) {
-            val handler = ConsoleInputHandler.INSTANCE
-            handler.handle()
+        thread(name = "ConsoleThread"){
+            while (true) {
+                val handler = ConsoleInputHandler.INSTANCE
+                handler.handle()
+            }
         }
+        while (true){
+            while (GlobalVariable.taskQueue.isNotEmpty()) {
+                try{
+                    GlobalVariable.taskQueue.poll()()
+                }catch (e:Exception){
+                    logger.error("Error occurred while executing tasks",e)
+                }
+            }
+            LockSupport.parkNanos(10)
+        }
+    }
+
+    fun runOnMainThread(fn: () -> Unit){
+        GlobalVariable.taskQueue.add(fn)
     }
 
     @JvmStatic

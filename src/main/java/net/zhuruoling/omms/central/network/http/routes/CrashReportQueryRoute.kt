@@ -26,6 +26,7 @@ fun Route.crashReportQueryRoute() {
                     val storage = ControllerManager.controllers[controller]!!.convertCrashReport(content)
                     ControllerCrashReportManager.save(storage)
                 }
+                return@post call.respondText(status = HttpStatusCode.OK) { "" }
             } else {
                 return@post call.respondText(status = HttpStatusCode.BadRequest) {
                     "Controller $controller does not exist on this central server."

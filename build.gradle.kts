@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
 
@@ -30,11 +31,7 @@ publishing{
 }
 
 
-tasks{
-    shadowJar {
-        archiveClassifier.set("full")
-    }
-}
+
 
 application {
     mainClass.set("net.zhuruoling.omms.central.main.Main")
@@ -85,6 +82,13 @@ var targetArch = when (osArch) {
 val versionSkiko = "0.7.9" // or any more recent version
 val target = "${targetOs}-${targetArch}"
 
+
+tasks{
+    shadowJar {
+        archiveClassifier.set("$target-full")
+    }
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-auth:2.0.2")
     implementation("io.ktor:ktor-server-auth-jvm:2.0.2")
@@ -124,15 +128,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
-    implementation("org.apache.groovy:groovy:4.0.10")
     implementation("io.socket:socket.io-client:2.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
-    implementation("top.colter.skiko:skiko-layout:0.0.1"){
-        exclude(group = "org.jetbrains.skiko")
-    }
+    implementation("top.colter.skiko:skiko-layout:0.0.1"){ exclude(group = "org.jetbrains.skiko") }
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.2.3")
-
 }
 
 task("generateProperties"){

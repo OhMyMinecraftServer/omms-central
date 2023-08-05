@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class MemoryAppender<E extends ILoggingEvent> extends UnsynchronizedAppenderBase<E> {
 
-    private static final int maxLineWidthChars = 220;
+    private static final int maxLineWidthChars = 160;
 
     @Override
     protected void append(ILoggingEvent eventObject) {

@@ -9,6 +9,7 @@ import net.zhuruoling.omms.central.permission.Permission
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import java.nio.channels.FileLock
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
 
 
@@ -30,6 +31,7 @@ object GlobalVariable {
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
     val logCache = CopyOnWriteArrayList<String>()
+    val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var args = mutableListOf<String>()
         private set
     fun setArgs(args:Array<String>){
