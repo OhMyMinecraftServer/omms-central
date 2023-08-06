@@ -131,7 +131,6 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     implementation("io.socket:socket.io-client:2.1.0")
-    implementation ("io.socket:socket.io-server:4.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     implementation("top.colter.skiko:skiko-layout:0.0.1") {
         exclude(group = "org.jetbrains.skiko")
