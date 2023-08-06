@@ -19,6 +19,10 @@ public class Main {
             return;
         }
         GlobalVariable.INSTANCE.setArgs(args);
+        var env = System.getenv();
+        if (env.containsKey("omms.consoleFont")){
+            GlobalVariable.INSTANCE.setConsoleFont(env.get("omms.consoleFont"));
+        }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
                 System.out.println("Stopping!");

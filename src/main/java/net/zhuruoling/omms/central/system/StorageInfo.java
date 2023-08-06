@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StorageInfo { // TODO: 2022/9/10
+public class StorageInfo {
     @SerializedName("storages")
     List<Storage> storageList = new ArrayList<>();
 

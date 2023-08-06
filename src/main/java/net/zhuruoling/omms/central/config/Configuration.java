@@ -24,7 +24,7 @@ public class Configuration {
     String serverName;
     @SerializedName("authorised_controller")
     String @NotNull [] authorisedController = new String[]{};
-    @SerializedName("chatbridge_impl")
+    @SerializedName(value = "chatbridge_impl", alternate = "chatbridgeImplementation")
     @NotNull
     ChatbridgeImplementation chatbridgeImplementation = ChatbridgeImplementation.UDP;
 

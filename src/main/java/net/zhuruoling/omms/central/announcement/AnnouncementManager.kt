@@ -2,7 +2,10 @@ package net.zhuruoling.omms.central.announcement
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import me.xdrop.fuzzywuzzy.FuzzySearch
+import me.xdrop.fuzzywuzzy.Ratio
 import net.zhuruoling.omms.central.util.Manager
+import net.zhuruoling.omms.central.util.SearchResult
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -57,7 +60,7 @@ object AnnouncementManager: Manager() {
             fileWriter.write(jsonStr)
             fileWriter.flush()
             fileWriter.close()
-            logger.info("Successfully created announcement ${announcement.title}, reloading.")
+            logger.info("Created announcement ${announcement.title}, reloading.")
             this.init()
         }
         catch (e: Exception){
@@ -73,13 +76,18 @@ object AnnouncementManager: Manager() {
         return announcementMap[id]
     }
 
-    fun searchForTitle(keyWord: String): List<Announcement>? {// TODO: (
-        val result = mutableListOf<Announcement>()
-
-        return if (result.isEmpty()) {
-            null
-        } else {
-            result
+    fun searchForTitle(keyWord: String, relevantThreshold: Int = 70): List<AnnouncementSearchResult> {
+        synchronized(this.announcementMap){
+            val result = mutableListOf<AnnouncementSearchResult>()
+            val tiMap = this.announcementMap.map { it.key to it.value.title }.toMap()
+            tiMap.forEach { (t, u) ->
+                val r = FuzzySearch.tokenSortPartialRatio(keyWord, u)
+                if (r > relevantThreshold) {
+                    result += AnnouncementSearchResult(announcementMap[t]!!, r)
+                }
+            }
+            result.sort()
+            return result
         }
     }
 
@@ -99,3 +107,6 @@ object AnnouncementManager: Manager() {
         return announcement
     }
 }
+
+
+class AnnouncementSearchResult(announcement: Announcement, ratio: Int): SearchResult<Announcement>(announcement, ratio)

@@ -9,7 +9,7 @@ import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.system.runner.RunnerManager;
 import org.jetbrains.annotations.NotNull;
 
-public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {// TODO: 2023/1/14 add to register
+public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {
 
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {

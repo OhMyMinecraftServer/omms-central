@@ -1,20 +1,15 @@
 package net.zhuruoling.omms.central.foo
 
+import net.zhuruoling.omms.central.config.Configuration
+import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import cn.korostudio.interaction.base.BaseClient
-import cn.korostudio.interaction.base.data.Server
-import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 val logger: Logger = LoggerFactory.getLogger("Test")
 
 fun main() {
-    SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
-    val server = Server().apply {
-        port = 50001
-        id = "omms-central"
-        address = "localhost"
-    }
-    val client = BaseClient.init(server)
+    val pattern = Pattern.compile("")
 }
 

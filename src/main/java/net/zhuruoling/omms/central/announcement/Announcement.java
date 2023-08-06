@@ -17,6 +17,14 @@ public class Announcement {
     @Nullable
     ContentType contentType = ContentType.STRING;
 
+    public Announcement(String id, long timeMillis, String title, String[] content, @Nullable ContentType contentType) {
+        this.id = id;
+        this.timeMillis = timeMillis;
+        this.title = title;
+        this.content = content;
+        this.contentType = contentType;
+    }
+
     public Announcement(String id, long timeMillis, String title, String[] content) {
         this.id = id;
         this.timeMillis = timeMillis;

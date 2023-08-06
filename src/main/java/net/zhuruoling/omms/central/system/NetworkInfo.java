@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkInfo {  // TODO: 2022/9/10
+public class NetworkInfo {
     private List<NetworkInterface> networkInterfaceList = new ArrayList<>();
     private String hostName;
     private String domainName;

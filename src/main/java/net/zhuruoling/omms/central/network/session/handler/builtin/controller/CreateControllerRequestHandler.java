@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class CreateControllerRequestHandler extends BuiltinRequestHandler {//todo
     @Override
     public Response handle(Request request, SessionContext session) {
-        return new Response().withResponseCode(Result.CONTROLLER_CREATED);
+        return null;
     }
 
     @Override

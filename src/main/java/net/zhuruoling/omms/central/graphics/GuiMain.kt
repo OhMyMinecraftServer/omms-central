@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.graphics
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.command.CommandManager
 import net.zhuruoling.omms.central.command.CommandSourceStack
+import net.zhuruoling.omms.central.file.FileUtils
 import net.zhuruoling.omms.central.main.CentralServer
 import net.zhuruoling.omms.central.util.BuildProperties
 import net.zhuruoling.omms.central.util.Util
@@ -44,7 +45,7 @@ data class Rectangle(val height: Float, val width: Float)
 
 class SimpleGuiSkikoView : SkikoView {
     private var lastFrameTime = 1L
-    private val font = Font(Typeface.makeFromName("Consolas", FontStyle.NORMAL), 14.0f)
+    private val font: Font = Font(Typeface.makeFromName(GlobalVariable.consoleFont, FontStyle.NORMAL), 14.0f)
     private val runtime = ManagementFactory.getRuntimeMXBean()
     private val linePadding = 4f
     private val fontHeightWithPadding = font.measureText("[(1919810g]}").height + linePadding
@@ -133,7 +134,7 @@ class SimpleGuiSkikoView : SkikoView {
             val frameTime = ((nanoTime - lastFrameTime) / 1e6)
             val upTime = runtime.uptime / 1000.0
             val infoString =
-                "FPS: ${1000 / frameTime}\nFrameTime: ${frameTime}ms\nUptime: $upTime\nMemory: ${getMemoryUsageString()}"
+                "FPS: ${String.format("%.2f",1000 / frameTime)}\nFrameTime: ${String.format("%.3f",frameTime)}ms\nUptime: $upTime\nMemory: ${getMemoryUsageString()}"
             //render status and logs
             canvas.drawRect(Rect(dx, dy - 3, dx + 40 * fontWidth, dy + 4 * fontHeightWithPadding + 5), backgroundPaint)
             canvas.drawStringWithReturn(infoString, dx + fontWidth, fontHeightWithPadding + dy - 3, font, foregroundPaint)
@@ -292,7 +293,7 @@ fun guiMain() {
     SwingUtilities.invokeLater {
         window = JFrame("${Util.PRODUCT_NAME} ${BuildProperties["version"]}").apply {
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-            preferredSize = Dimension(1280, 720)
+            preferredSize = Dimension( if (FileUtils.IS_MACOS) 1600 else 1280, if (FileUtils.IS_MACOS) 800 else 720)
         }
         skiaLayer.attachTo(window.contentPane)
         skiaLayer.needRedraw()
