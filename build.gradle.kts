@@ -19,7 +19,7 @@ group = "com.github.ZhuRuoLing"
 version = properties["version"]!!
 
 
-publishing{
+publishing {
     repositories {
         mavenLocal()
     }
@@ -40,7 +40,7 @@ application {
 description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-tasks.withType<KotlinCompile>{
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
 
@@ -58,10 +58,12 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
-    maven{
+    maven {
         url = uri("https://jcenter.bintray.com/")
     }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://source.korostudio.cn/repository/maven-releases/")
+    maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
 }
 
 val osName = System.getProperty("os.name")
@@ -83,7 +85,7 @@ val versionSkiko = "0.7.9" // or any more recent version
 val target = "${targetOs}-${targetArch}"
 
 
-tasks{
+tasks {
     shadowJar {
         archiveClassifier.set("$target-full")
     }
@@ -129,40 +131,47 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     implementation("io.socket:socket.io-client:2.1.0")
+    implementation ("io.socket:socket.io-server:4.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
-    implementation("top.colter.skiko:skiko-layout:0.0.1"){ exclude(group = "org.jetbrains.skiko") }
+    implementation("top.colter.skiko:skiko-layout:0.0.1") {
+        exclude(group = "org.jetbrains.skiko")
+    }
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
+    implementation("cn.korostudio:interaction-base:1.1.1") {
+        exclude(group = "ch.qos.logback")
+        exclude(group = "cn.hutool")
+    }
 }
 
-task("generateProperties"){
+task("generateProperties") {
     doLast {
         generateProperties()
     }
 }
 
-tasks.getByName("processResources"){
+tasks.getByName("processResources") {
     dependsOn("generateProperties")
 }
 
-fun generateProperties(){
+fun generateProperties() {
     val propertiesFile = file("./src/main/resources/build.properties")
     if (propertiesFile.exists()) {
         propertiesFile.delete()
     }
     propertiesFile.createNewFile()
     val m = mutableMapOf<String, String>()
-    propertiesFile.printWriter().use {writer ->
+    propertiesFile.printWriter().use { writer ->
         properties.forEach {
             val str = it.value.toString()
-            if ("@" in str || "(" in str || ")" in str || "extension" in str || "null" == str || "\'" in str || "\\" in str || "/" in str)return@forEach
-            if ("PROJECT" in str.toUpperCaseAsciiOnly() || "PROJECT" in it.key.toUpperCaseAsciiOnly() || " " in str)return@forEach
-            if ("GRADLE" in it.key.toUpperCaseAsciiOnly() || "GRADLE" in str.toUpperCaseAsciiOnly() || "PROP" in it.key.toUpperCaseAsciiOnly())return@forEach
-            if("." in it.key || "TEST" in it.key.toUpperCaseAsciiOnly())return@forEach
-            if(it.value.toString().length <= 2)return@forEach
+            if ("@" in str || "(" in str || ")" in str || "extension" in str || "null" == str || "\'" in str || "\\" in str || "/" in str) return@forEach
+            if ("PROJECT" in str.toUpperCaseAsciiOnly() || "PROJECT" in it.key.toUpperCaseAsciiOnly() || " " in str) return@forEach
+            if ("GRADLE" in it.key.toUpperCaseAsciiOnly() || "GRADLE" in str.toUpperCaseAsciiOnly() || "PROP" in it.key.toUpperCaseAsciiOnly()) return@forEach
+            if ("." in it.key || "TEST" in it.key.toUpperCaseAsciiOnly()) return@forEach
+            if (it.value.toString().length <= 2) return@forEach
             m += it.key to str
         }
         m += "buildTime" to System.currentTimeMillis().toString()
-        m.toSortedMap().forEach{
+        m.toSortedMap().forEach {
             writer.println("${it.key} = ${it.value}")
         }
     }

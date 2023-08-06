@@ -4,7 +4,7 @@ import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.PluginCommand
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
-import net.zhuruoling.omms.central.network.old.session.server.SessionLoginServer
+import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.permission.Permission
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory

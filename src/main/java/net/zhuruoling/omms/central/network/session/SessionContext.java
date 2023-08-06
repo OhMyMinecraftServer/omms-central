@@ -1,8 +1,7 @@
-package net.zhuruoling.omms.central.network.old.session;
+package net.zhuruoling.omms.central.network.session;
 
 import net.zhuruoling.omms.central.controller.console.ControllerConsole;
-import net.zhuruoling.omms.central.network.old.session.server.SessionServer;
-import net.zhuruoling.omms.central.network.old.session.server.SessionServer;
+import net.zhuruoling.omms.central.network.session.server.SessionServer;
 import net.zhuruoling.omms.central.permission.Permission;
 import org.jetbrains.annotations.NotNull;
 

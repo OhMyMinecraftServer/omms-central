@@ -1,6 +1,5 @@
 package net.zhuruoling.omms.central.main
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.GlobalVariable.experimental
 import net.zhuruoling.omms.central.GlobalVariable.httpServer
@@ -22,7 +21,7 @@ import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
-import net.zhuruoling.omms.central.network.old.session.server.SessionLoginServer
+import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.network.session.request.RequestManager
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
