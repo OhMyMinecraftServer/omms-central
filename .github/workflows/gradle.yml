@@ -67,7 +67,7 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew shadowJar
+        run: ./gradlew --no-daemon shadowJar
       - name: Create Dev Build
         run: |
           mkdir omms-central
