@@ -5,7 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.omms.central.controller.ControllerManager
-import net.zhuruoling.omms.central.system.SystemUtil
+import net.zhuruoling.omms.central.system.info.SystemInfoUtil
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 
@@ -14,7 +14,7 @@ fun Route.controllerStatusQueryRouting() {
     route("/status"){
         get{
             call.respondText(contentType = ContentType.Text.Plain, status = HttpStatusCode.OK) {
-                Util.toJson(SystemUtil.getSystemInfo())
+                Util.toJson(SystemInfoUtil.getSystemInfo())
             }
         }
         get ("controllers"){

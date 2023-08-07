@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.system;
+package net.zhuruoling.omms.central.system.info;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
@@ -10,8 +10,7 @@ import java.util.List;
 public class FileSystemInfo {
 
     @SerializedName("filesystems")
-    final
-    List<FileSystem> fileSystemList = new ArrayList<>();
+    final List<FileSystem> fileSystemList = new ArrayList<>();
     public record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType){
 
     }

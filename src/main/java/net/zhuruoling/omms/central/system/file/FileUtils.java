@@ -1,8 +1,7 @@
-package net.zhuruoling.omms.central.file;
+package net.zhuruoling.omms.central.system.file;
 
+import net.zhuruoling.omms.central.system.OperatingSystem;
 import org.jetbrains.annotations.NotNull;
-import oshi.PlatformEnum;
-import oshi.SystemInfo;
 
 import java.nio.file.FileStore;
 import java.nio.file.FileSystems;
@@ -12,31 +11,14 @@ import java.util.List;
 
 public class FileUtils {
 
-    public static boolean IS_WINDOWS;
-    public static boolean IS_LINUX;
-
-    public static boolean IS_MACOS;
-
-    private static final PlatformEnum platformEnum;
-
-    static {
-        platformEnum = SystemInfo.getCurrentPlatform();
-        IS_WINDOWS = platformEnum == PlatformEnum.WINDOWS;
-        IS_LINUX = platformEnum == PlatformEnum.LINUX || platformEnum == PlatformEnum.ANDROID;
-        IS_MACOS = platformEnum == PlatformEnum.MACOS;
-        if (!IS_WINDOWS && !IS_LINUX && !IS_MACOS) {
-            throw new UnsupportedOperationException("Operating system not supported: " + platformEnum.getName());
-        }
-    }
-
     public static @NotNull List<FileSystemDescriptor> getAllFileSystemDescriptors() {
         List<FileSystemDescriptor> fileSystemDescriptors = new ArrayList<>();
-        switch (platformEnum) {
+        switch (OperatingSystem.platformEnum) {
             case WINDOWS -> windowsListFileSystemDescriptorImpl(fileSystemDescriptors);
             case LINUX, ANDROID -> linuxListFileSystemDescriptorImpl(fileSystemDescriptors);
             case MACOS -> macOSListFileSystemDescriptorImpl(fileSystemDescriptors);
             default ->
-                    throw new UnsupportedOperationException("Operating system not supported: " + platformEnum.getName());
+                    throw new UnsupportedOperationException("Operating system not supported: " + OperatingSystem.platformEnum.getName());
         }
         return fileSystemDescriptors;
     }

@@ -1,18 +1,15 @@
 package net.zhuruoling.omms.central.graphics
 
-import net.zhuruoling.omms.central.system.SystemUtil
+import net.zhuruoling.omms.central.system.info.SystemInfoUtil
 import net.zhuruoling.omms.central.util.Util
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
-import java.awt.Image
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
-import java.awt.image.BufferedImageOp
-import java.awt.image.RescaleOp
 import java.io.File
 import java.lang.management.ManagementFactory
 import java.nio.file.Path
@@ -72,7 +69,7 @@ fun renderBottomCard(image: Graphics2D){
 
 fun info() {
     println("Creating image")
-    val info = SystemUtil.getSystemInfo()
+    val info = SystemInfoUtil.getSystemInfo()
     val strings = mutableListOf<String>()
     strings.add("Operating system:${info.osName} ${info.osVersion} ${info.osArch}")
     strings.add("Processor: ${info.processorInfo.processorName.trimEnd()} x${info.processorInfo.physicalCPUCount}")

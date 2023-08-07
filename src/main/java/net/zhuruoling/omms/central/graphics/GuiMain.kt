@@ -3,8 +3,8 @@ package net.zhuruoling.omms.central.graphics
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.command.CommandManager
 import net.zhuruoling.omms.central.command.CommandSourceStack
-import net.zhuruoling.omms.central.file.FileUtils
 import net.zhuruoling.omms.central.main.CentralServer
+import net.zhuruoling.omms.central.system.OperatingSystem
 import net.zhuruoling.omms.central.util.BuildProperties
 import net.zhuruoling.omms.central.util.Util
 import org.jetbrains.skia.*
@@ -293,7 +293,7 @@ fun guiMain() {
     SwingUtilities.invokeLater {
         window = JFrame("${Util.PRODUCT_NAME} ${BuildProperties["version"]}").apply {
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-            preferredSize = Dimension( if (FileUtils.IS_MACOS) 1600 else 1280, if (FileUtils.IS_MACOS) 800 else 720)
+            preferredSize = Dimension( if (OperatingSystem.IS_MACOS) 1600 else 1280, if (OperatingSystem.IS_MACOS) 800 else 720)
         }
         skiaLayer.attachTo(window.contentPane)
         skiaLayer.needRedraw()

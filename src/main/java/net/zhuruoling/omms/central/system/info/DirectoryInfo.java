@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.system;
+package net.zhuruoling.omms.central.system.info;
 
 import org.jetbrains.annotations.Nullable;
 

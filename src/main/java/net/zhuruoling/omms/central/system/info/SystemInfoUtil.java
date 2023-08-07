@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.system;
+package net.zhuruoling.omms.central.system.info;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.lang.management.OperatingSystemMXBean;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class SystemUtil {
+public class SystemInfoUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
     private static final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
     public static String getSystemVersion(){
@@ -28,8 +28,8 @@ public class SystemUtil {
         return os.getArch();
     }
 
-    public static net.zhuruoling.omms.central.system.@NotNull SystemInfo getSystemInfo(){
-        return new net.zhuruoling.omms.central.system.SystemInfo(SystemUtil.getSystemName(),SystemUtil.getSystemVersion(), SystemUtil.getSystemArch(),SystemUtil.getFileSystemInfo(), SystemUtil.getMemoryInfo(), SystemUtil.getNetworkInfo(), SystemUtil.getProcessorInfo(), SystemUtil.getStorageInfo());
+    public static net.zhuruoling.omms.central.system.info.@NotNull SystemInfo getSystemInfo(){
+        return new net.zhuruoling.omms.central.system.info.SystemInfo(SystemInfoUtil.getSystemName(), SystemInfoUtil.getSystemVersion(), SystemInfoUtil.getSystemArch(), SystemInfoUtil.getFileSystemInfo(), SystemInfoUtil.getMemoryInfo(), SystemInfoUtil.getNetworkInfo(), SystemInfoUtil.getProcessorInfo(), SystemInfoUtil.getStorageInfo());
     }
 
     public static @NotNull DirectoryInfo listDir(@NotNull String path){
@@ -101,7 +101,7 @@ public class SystemUtil {
                 .getFileSystem()
                 .getFileStores()
                 .forEach(osFileStore ->
-                        fileSystemInfo.fileSystemList.add(
+                        fileSystemInfo.getFileSystemList().add(
                                 new FileSystemInfo.FileSystem(
                                         osFileStore.getFreeSpace(),
                                         osFileStore.getTotalSpace(),
