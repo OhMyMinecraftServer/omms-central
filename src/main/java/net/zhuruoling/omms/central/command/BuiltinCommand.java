@@ -216,7 +216,7 @@ public class BuiltinCommand {
                                             .addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
                                     case WS -> WebsocketRouteKt.sendToAllWS(broadcast);
                                 }
-                                Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
+                                //Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).addToQueue(Util.TARGET_CHAT, new Gson().toJson(broadcast, Broadcast.class));
                                 return 1;
                             }
                     )

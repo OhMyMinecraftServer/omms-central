@@ -1,6 +1,5 @@
 package net.zhuruoling.omms.central.network.http.plugins
 
-import com.sun.jna.platform.win32.Netapi32Util.User
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
