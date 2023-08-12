@@ -170,7 +170,7 @@ public class BuiltinCommand {
                                 }
                                 try {
                                     WhitelistManager.INSTANCE.createWhitelist(name);
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     src.sendError(ExceptionUtil.stacktraceToString(e));
                                 }
                                 src.sendFeedback("Done.");
@@ -267,7 +267,7 @@ public class BuiltinCommand {
             if (thread.isDaemon()) {
                 context.getSource().sendFeedback("\t+ %s %d DAEMON %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
                 continue;
-                }
+            }
             context.getSource().sendFeedback("\t+ %s %d %s".formatted(thread.getName(), thread.getId(), thread.getState().name()));
         }
 
@@ -286,8 +286,6 @@ public class BuiltinCommand {
         }
         return 0;
     });
-
-
 
 
     static LiteralArgumentBuilder<CommandSourceStack> banCommand = LiteralArgumentBuilder.<CommandSourceStack>literal("ban").then(
@@ -453,8 +451,13 @@ public class BuiltinCommand {
                                             ControllerManager.INSTANCE.getControllers().forEach((controllerId, controllerInstance) -> {
                                                 commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerId));
                                                 var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.getName(), command);
-                                                for (String line : output) {
-                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
+                                                if (output.getStatus()) {
+                                                    for (String line : output.getResult()) {
+                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
+                                                    }
+                                                } else {
+                                                    logger.warn("Controller reported a command exception: " + output.getExceptionMessage());
+                                                    logger.debug("Controller command exception detail: " + output.getExceptionDetail());
                                                 }
                                             });
                                             return 0;
@@ -462,8 +465,13 @@ public class BuiltinCommand {
                                         if (controller != null) {
                                             commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerName));
                                             var out = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
-                                            for (String line : out) {
-                                                commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerName, line));
+                                            if (out.getStatus()) {
+                                                for (String line : out.getResult()) {
+                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(out.getControllerId(), line));
+                                                }
+                                            } else {
+                                                logger.warn("Controller reported a command exception: " + out.getExceptionMessage());
+                                                logger.debug("Controller command exception detail: " + out.getExceptionDetail());
                                             }
                                             return 0;
                                         }

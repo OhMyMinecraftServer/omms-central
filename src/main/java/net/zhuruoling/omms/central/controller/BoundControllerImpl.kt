@@ -9,7 +9,7 @@ class BoundControllerImpl(val config: ControllerBindingConfig) : ControllerImpl(
         return config.controllers[config.controllerForStatus]!!.isStatusQueryable
     }
 
-    override fun sendCommand(command: String): MutableList<String> {
+    override fun sendCommand(command: String): CommandExecutionResult? {
         val controllerForMCDR = config.controllers[config.controllerForMCDRCommandExec]!!
         return if (command.startsWith(controllerForMCDR.mcdrCommandPrefix))
             controllerForMCDR.sendCommand(command)

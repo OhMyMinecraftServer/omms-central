@@ -17,16 +17,27 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
     public Response handle(@NotNull Request request, SessionContext session) {
         Response response = new Response();
         var name = request.getContent("controller");
-        var command  = request.getContent("command");
+        var command = request.getContent("command");
         var controller = ControllerManager.INSTANCE.getControllerByName(name);
-        if (controller == null){
+        if (controller == null) {
             return response.withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
         }
         try {
             var result = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
-            response.withResponseCode(Result.CONTROLLER_COMMAND_SENT).withContentPair("controllerId", name).withContentPair("output", UtilKt.joinToString(result));
+            if (result.getStatus()) {
+                response.withResponseCode(Result.CONTROLLER_COMMAND_SENT)
+                        .withContentPair("controllerId", name)
+                        .withContentPair("status", String.valueOf(result.getStatus()))
+                        .withContentPair("output", UtilKt.joinToString(result.getResult()));
+            }else {
+                response.withResponseCode(Result.CONTROLLER_COMMAND_SENT)
+                        .withContentPair("controllerId", name)
+                        .withContentPair("status", String.valueOf(result.getStatus()))
+                        .withContentPair("output", result.getExceptionMessage())
+                        .withContentPair("errorDetail", result.getExceptionDetail());
+            }
             return response;
-        }catch (RequestUnauthorisedException e){
+        } catch (RequestUnauthorisedException e) {
             return response.withResponseCode(Result.CONTROLLER_AUTH_FAILED).withContentPair("controllerId", name);
         }
 

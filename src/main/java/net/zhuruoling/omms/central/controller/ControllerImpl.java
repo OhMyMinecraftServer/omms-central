@@ -7,11 +7,10 @@ import net.zhuruoling.omms.central.controller.console.output.PrintTarget;
 import net.zhuruoling.omms.central.controller.console.input.InputSource;
 import net.zhuruoling.omms.central.controller.crashreport.CrashReportStorage;
 import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
-import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ControllerImpl extends Controller {
     String name;
@@ -38,8 +37,9 @@ public class ControllerImpl extends Controller {
     }
 
     @Override
-    public @NotNull List<String> sendCommand(@NotNull String command) {
-        return controllerHttpClient.sendCommand(command);
+    public CommandExecutionResult sendCommand(@NotNull String command) throws Exception {
+        var future = controllerHttpClient.sendCommand(command);
+        return future.get();
     }
 
     @Override

@@ -9,11 +9,13 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
-import net.zhuruoling.omms.central.controller.CommandOutputData
+import net.zhuruoling.omms.central.controller.CommandExecutionResult
 import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
+import java.lang.RuntimeException
+import java.util.concurrent.CompletableFuture
 
 fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
 
@@ -57,32 +59,28 @@ class ControllerHttpClient(val controllerImpl: ControllerImpl) {
 
     private fun makeUrl(path: String) = baseUrl + path
 
-    fun sendCommand(command: String): MutableList<String> {
-        val result = mutableListOf<String>()
+    fun sendCommand(command: String): CompletableFuture<CommandExecutionResult> {
+        val result = CompletableFuture<CommandExecutionResult>()
         runBlocking {
             try {
                 val response = post("runCommand", command)
                 val text = String(response.readBytes())
-                val data = when (response.status) {
+                when (response.status) {
                     HttpStatusCode.OK -> {
-                        Util.fromJson(text, CommandOutputData::class.javaObjectType)
+                        result.complete(Util.fromJson(text, CommandExecutionResult::class.javaObjectType))
                     }
 
                     HttpStatusCode.Unauthorized -> {
-                        throw RequestUnauthorisedException("ControllerName", controllerImpl.name)
+                        result.completeExceptionally(RequestUnauthorisedException("ControllerName", controllerImpl.name))
                     }
 
                     else -> {
-                        null
+                        result.completeExceptionally(RuntimeException("Unexpected result: ${response.status}"))
                     }
                 }
-                if (data != null) {
-                    result.addAll(data.output.split("\n"))
-                }
+
             } catch (e: Exception) {
-                if (e is RequestUnauthorisedException) {
-                    throw e
-                }
+                result.completeExceptionally(e)
                 logger.warn(e.toString())
             }
         }

@@ -15,7 +15,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
 
-data class CommandOutputData(val controllerId: String, val command: String, val output: String)
+//data class CommandOutputData(val controllerId: String, val command: String, val output: String)
 object ControllerManager : Manager() {
     val controllers = mutableMapOf<String, Controller>()
     private val controllerConnector = mutableMapOf<String, ControllerHttpClient>()
@@ -84,7 +84,7 @@ object ControllerManager : Manager() {
         controllers[controller.name] = controller
     }
 
-    fun sendCommand(controllerName: String, command: String): List<String> {
+    fun sendCommand(controllerName: String, command: String): CommandExecutionResult {
         if (controllerName in controllers) {
             try {
                 return this[controllerName]!!.sendCommand(command)

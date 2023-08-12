@@ -9,7 +9,7 @@ import java.util.List;
 
 abstract public class Controller {
     public abstract boolean isStatusQueryable();
-    public abstract List<String> sendCommand(String command);
+    public abstract CommandExecutionResult sendCommand(String command) throws Exception;
     public abstract ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?,ControllerConsole> printTarget, String id);
     public abstract Status queryControllerStatus();
     public abstract CrashReportStorage convertCrashReport(String raw);
