@@ -21,7 +21,7 @@ import net.zhuruoling.omms.central.controller.console.ControllerConsole;
 import net.zhuruoling.omms.central.controller.console.input.StdinInputSource;
 import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget;
 import net.zhuruoling.omms.central.main.CentralServer;
-import net.zhuruoling.omms.central.network.broadcast.Broadcast;
+import net.zhuruoling.omms.central.network.chatbridge.Broadcast;
 import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
 import net.zhuruoling.omms.central.network.pair.PairManager;
 import net.zhuruoling.omms.central.permission.Permission;
@@ -450,28 +450,38 @@ public class BuiltinCommand {
                                         if (controllerName.equals("all")) {
                                             ControllerManager.INSTANCE.getControllers().forEach((controllerId, controllerInstance) -> {
                                                 commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerId));
-                                                var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.getName(), command);
-                                                if (output.getStatus()) {
-                                                    for (String line : output.getResult()) {
-                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
+                                                try {
+                                                    var output = ControllerManager.INSTANCE.sendCommand(controllerInstance.getName(), command);
+                                                    if (output.getStatus()) {
+                                                        for (String line : output.getResult()) {
+                                                            commandContext.getSource().sendFeedback("[%s] %s".formatted(controllerId, line));
+                                                        }
+                                                    } else {
+                                                        logger.warn("Controller reported a command exception: " + output.getExceptionMessage());
+                                                        logger.debug("Controller command exception detail: " + output.getExceptionDetail());
                                                     }
-                                                } else {
-                                                    logger.warn("Controller reported a command exception: " + output.getExceptionMessage());
-                                                    logger.debug("Controller command exception detail: " + output.getExceptionDetail());
+                                                }catch (Exception e){
+                                                    logger.error("Cannot send command to controller: " + e.getLocalizedMessage());
+                                                    logger.debug("Exception details: ", e);
                                                 }
                                             });
                                             return 0;
                                         }
                                         if (controller != null) {
                                             commandContext.getSource().sendFeedback("Sending command %s to %s.".formatted(command, controllerName));
-                                            var out = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
-                                            if (out.getStatus()) {
-                                                for (String line : out.getResult()) {
-                                                    commandContext.getSource().sendFeedback("[%s] %s".formatted(out.getControllerId(), line));
+                                            try {
+                                                var out = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
+                                                if (out.getStatus()) {
+                                                    for (String line : out.getResult()) {
+                                                        commandContext.getSource().sendFeedback("[%s] %s".formatted(out.getControllerId(), line));
+                                                    }
+                                                } else {
+                                                    logger.warn("Controller reported a command exception: " + out.getExceptionMessage());
+                                                    logger.debug("Controller command exception detail: " + out.getExceptionDetail());
                                                 }
-                                            } else {
-                                                logger.warn("Controller reported a command exception: " + out.getExceptionMessage());
-                                                logger.debug("Controller command exception detail: " + out.getExceptionDetail());
+                                            }catch (Exception e){
+                                                logger.error("Cannot send command to controller: " + e.getLocalizedMessage());
+                                                logger.debug("Exception details: ", e);
                                             }
                                             return 0;
                                         }
@@ -506,6 +516,7 @@ public class BuiltinCommand {
                                         var controller = controllers.get(0);
                                         if (!ControllerManager.INSTANCE.contains(controller)) {
                                             commandContext.getSource().sendFeedback("Controller %s not found.".formatted(controller));
+                                            return 1;
                                         }
                                         commandContext.getSource().sendFeedback("Attatching console to controller, exit console using \":q\"");
                                         SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();

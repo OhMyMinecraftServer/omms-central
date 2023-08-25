@@ -18,8 +18,8 @@ import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.graphics.guiMain
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
-import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastReceiver
-import net.zhuruoling.omms.central.network.broadcast.UdpBroadcastSender
+import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastReceiver
+import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.http.launchHttpServerAsync
 import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.network.session.request.RequestManager

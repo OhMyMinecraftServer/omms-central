@@ -80,6 +80,13 @@ object ControllerManager : Manager() {
         controllers += controller.name to controller
     }
 
+    fun removeController(controller: Controller){
+        if (controller.name !in controllers){
+            throw ControllerNotExistException(controller.name)
+        }
+        controllers.remove(controller.name)
+    }
+
     fun replaceController(controller: Controller){
         controllers[controller.name] = controller
     }

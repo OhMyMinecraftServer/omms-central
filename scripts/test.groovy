@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
-import net.zhuruoling.omms.central.network.broadcast.Broadcast
+import net.zhuruoling.omms.central.network.chatbridge.Broadcast
 import net.zhuruoling.omms.central.network.session.request.Request
 import net.zhuruoling.omms.central.network.session.response.Response
 import net.zhuruoling.omms.central.script.LifecycleOperationInterface

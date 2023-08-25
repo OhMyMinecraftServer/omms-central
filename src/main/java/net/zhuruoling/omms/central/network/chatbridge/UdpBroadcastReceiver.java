@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.network.broadcast;
+package net.zhuruoling.omms.central.network.chatbridge;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

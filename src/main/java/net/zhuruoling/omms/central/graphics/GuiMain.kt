@@ -120,6 +120,10 @@ class SimpleGuiSkikoView : SkikoView {
         }
     }
 
+    fun scrollToEnd(){
+        scrolledLines = 0
+    }
+
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
         try {
@@ -244,20 +248,20 @@ class SimpleGuiSkikoView : SkikoView {
     fun onMouseClicked(e: MouseEvent) {
         if (e.button == MouseEvent.BUTTON1) {
             val p = e.point
-            println("$textFieldOffsetX $textFieldOffsetY ${textFieldOffsetX + textFieldWidth} ${textFieldOffsetY + textFieldHeight}")
-            println("${isClickInTextField(p.x, p.y)} ${e.point}")
+//            println("$textFieldOffsetX $textFieldOffsetY ${textFieldOffsetX + textFieldWidth} ${textFieldOffsetY + textFieldHeight}")
+//            println("${isClickInTextField(p.x, p.y)} ${e.point}")
             if (isClickInTextField(p.x, p.y)) {
-                println("wdnmd")
+//                println("wdnmd")
             }
         }
     }
 }
 
 lateinit var window: JFrame
-
+lateinit var view: SimpleGuiSkikoView
 fun guiMain() {
     val skiaLayer = SkiaLayer()
-    val view = SimpleGuiSkikoView()
+    view = SimpleGuiSkikoView()
     skiaLayer.addMouseWheelListener {
         view.onMouseScroll(it)
     }

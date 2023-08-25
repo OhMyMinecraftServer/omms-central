@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.network.broadcast;
+package net.zhuruoling.omms.central.network.chatbridge;
 
 import net.zhuruoling.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;

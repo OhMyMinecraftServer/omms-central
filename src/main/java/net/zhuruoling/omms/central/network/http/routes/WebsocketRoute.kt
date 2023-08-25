@@ -7,8 +7,8 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import net.zhuruoling.omms.central.network.broadcast.Broadcast
-import net.zhuruoling.omms.central.network.broadcast.buildToJson
+import net.zhuruoling.omms.central.network.chatbridge.Broadcast
+import net.zhuruoling.omms.central.network.chatbridge.buildToJson
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 

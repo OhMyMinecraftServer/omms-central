@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.util.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import net.zhuruoling.omms.central.GlobalVariable;
+import net.zhuruoling.omms.central.graphics.GuiMainKt;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ public class MemoryAppender<E extends ILoggingEvent> extends UnsynchronizedAppen
             var beginIndex = 0;
             while (len > maxLineWidthChars) {
                 GlobalVariable.INSTANCE.getLogCache().add(s.substring(beginIndex, beginIndex + maxLineWidthChars));
+                GuiMainKt.view.scrollToEnd();
                 len -= maxLineWidthChars;
                 beginIndex += maxLineWidthChars;
             }
