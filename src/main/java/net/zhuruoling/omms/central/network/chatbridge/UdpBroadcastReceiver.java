@@ -16,6 +16,7 @@ public class UdpBroadcastReceiver extends Thread {
 
     @Override
     public void run() {
+        System.out.println();
         String oldId = "";
         int port = 10086;
         String address = "224.114.51.4"; // 224.114.51.4:10086
