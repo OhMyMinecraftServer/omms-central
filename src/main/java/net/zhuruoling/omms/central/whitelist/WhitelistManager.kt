@@ -114,17 +114,14 @@ object WhitelistManager : Manager() {
     }
 
     @Synchronized
-    fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult>? {
-        val whitelist = whitelistMap[whitelistName] ?: return null
+    fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult> {
+        val whitelist = whitelistMap[whitelistName] ?: throw WhitelistNotExistException("Whitelist $whitelistName not found.")
         val result = mutableListOf<SearchResult>()
         whitelist.players.forEach {
             val ratio = FuzzySearch.tokenSortPartialRatio(it, playerName)
             if (ratio >= 70) {
                 result.add(SearchResult(ratio, it))
             }
-        }
-        if (result.isEmpty()) {
-            return null
         }
         result.sortBy {
             it.ratio

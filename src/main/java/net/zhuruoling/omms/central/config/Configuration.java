@@ -43,8 +43,7 @@ public class Configuration {
     public int getRateLimit() {
         return rateLimit;
     }
-    public @Nullable ChatbridgeImplementation getChatbridgeImplementation() {
-        if (chatbridgeImplementation == null)return null;
+    public @NotNull ChatbridgeImplementation getChatbridgeImplementation() {
         return chatbridgeImplementation;
     }
 

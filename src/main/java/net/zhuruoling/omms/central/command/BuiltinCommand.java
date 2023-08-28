@@ -118,7 +118,7 @@ public class BuiltinCommand {
                                                 String player = getString(commandContext, "player");
                                                 try {
                                                     WhitelistManager.INSTANCE.removeFromWhiteList(whitelist, player);
-                                                    commandContext.getSource().sendFeedback("Successfully added %s to %s".formatted(player, whitelist));
+                                                    commandContext.getSource().sendFeedback("Successfully removed %s from %s".formatted(player, whitelist));
                                                     return 0;
                                                 } catch (PlayerNotFoundException e) {
                                                     commandContext.getSource().sendError("Player %s not exist.".formatted(e.getPlayer()));
