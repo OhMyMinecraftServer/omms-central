@@ -7,24 +7,26 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 
-fun CommandContext<CommandSourceStack>.sendFeedback(component: String) {
+typealias Source = CommandSourceStack
+
+fun CommandContext<Source>.sendFeedback(component: String) {
     this.source.sendFeedback(component)
 }
 
-fun CommandContext<CommandSourceStack>.sendError(component: String) {
+fun CommandContext<Source>.sendError(component: String) {
     this.source.sendError(component)
 }
 
-fun CommandContext<CommandSourceStack>.getStringArgument(name: String): String = StringArgumentType.getString(this, name)
-fun CommandContext<CommandSourceStack>.getIntegerArgument(name: String) = IntegerArgumentType.getInteger(this, name)
+fun CommandContext<Source>.getStringArgument(name: String): String = StringArgumentType.getString(this, name)
+fun CommandContext<Source>.getIntegerArgument(name: String) = IntegerArgumentType.getInteger(this, name)
 
 
 class LiteralCommand(root: String) {
-    val node: LiteralArgumentBuilder<CommandSourceStack> = LiteralArgumentBuilder.literal(root)
+    val node: LiteralArgumentBuilder<Source> = LiteralArgumentBuilder.literal(root)
 }
 
 class ArgumentCommand<T>(name: String, argumentType: ArgumentType<T>) {
-    val node: RequiredArgumentBuilder<CommandSourceStack, T> =
+    val node: RequiredArgumentBuilder<Source, T> =
         RequiredArgumentBuilder.argument(name, argumentType)
 }
 
@@ -37,13 +39,13 @@ fun LiteralCommand.literal(literal: String, function: LiteralCommand.() -> Unit)
     this.node.then(LiteralCommand(literal).apply(function).node)
 }
 
-fun LiteralCommand.execute(function: CommandContext<CommandSourceStack>.() -> Int) {
+fun LiteralCommand.execute(function: CommandContext<Source>.() -> Int) {
     this.node.executes {
         function(it)
     }
 }
 
-fun LiteralCommand.requires(function: CommandSourceStack.() -> Boolean): LiteralCommand {
+fun LiteralCommand.requires(function: Source.() -> Boolean): LiteralCommand {
     this.node.requires(function)
     return this
 }
@@ -57,13 +59,13 @@ fun <T> ArgumentCommand<T>.literal(literal: String, function: LiteralCommand.() 
     this.node.then(LiteralCommand(literal).apply(function).node)
 }
 
-fun <T> ArgumentCommand<T>.execute(function: CommandContext<CommandSourceStack>.() -> Int) {
+fun <T> ArgumentCommand<T>.execute(function: CommandContext<Source>.() -> Int) {
     this.node.executes {
         function(it)
     }
 }
 
-fun <T> ArgumentCommand<T>.requires(function: CommandSourceStack.() -> Boolean): ArgumentCommand<T> {
+fun <T> ArgumentCommand<T>.requires(function: Source.() -> Boolean): ArgumentCommand<T> {
     this.node.requires(function)
     return this
 }
