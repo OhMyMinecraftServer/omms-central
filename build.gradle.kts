@@ -133,10 +133,6 @@ dependencies {
     implementation("io.socket:socket.io-client:2.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
-    implementation("cn.korostudio:interaction-base:1.1.1") {
-        exclude(group = "ch.qos.logback")
-        exclude(group = "cn.hutool")
-    }
 }
 
 task("generateProperties") {

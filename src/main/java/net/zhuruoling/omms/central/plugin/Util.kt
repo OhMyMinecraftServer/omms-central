@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.plugin
 
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.zhuruoling.omms.central.plugin.depedency.PluginDependency
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
@@ -34,7 +35,7 @@ object PluginMetadataExclusionStrategy: ExclusionStrategy {
     }
 }
 
-val gsonForPluginMetadata = GsonBuilder()
+val gsonForPluginMetadata: Gson = GsonBuilder()
     .addDeserializationExclusionStrategy(PluginMetadataExclusionStrategy)
     .addSerializationExclusionStrategy(PluginMetadataExclusionStrategy)
     .create()

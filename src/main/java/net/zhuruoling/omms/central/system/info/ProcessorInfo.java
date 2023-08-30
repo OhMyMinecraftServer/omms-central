@@ -56,4 +56,16 @@ public class ProcessorInfo {
     public void setProcessorId(String processorId) {
         this.processorId = processorId;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessorInfo{" +
+                "physicalCPUCount=" + physicalCPUCount +
+                ", logicalProcessorCount=" + logicalProcessorCount +
+                ", processorName='" + processorName + '\'' +
+                ", cpuLoadAvg=" + cpuLoadAvg +
+                ", processorId='" + processorId + '\'' +
+                ", cpuTemp=" + cpuTemp +
+                '}';
+    }
 }

@@ -5,13 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
+import oshi.hardware.ComputerSystem;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.Firmware;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.UUID;
 
 public class SystemInfoUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
@@ -64,6 +67,7 @@ public class SystemInfoUtil {
         OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
         double cpu = osMxBean.getSystemLoadAverage();//equals -1 if os == windows (Windows doesn't have loadavg)
         processorInfo.setProcessorId(processor.getProcessorIdentifier().getProcessorID());
+        System.out.println(processor.getProcessorIdentifier().getIdentifier());
         processorInfo.setProcessorName(processor.getProcessorIdentifier().getName());
         processorInfo.setPhysicalCPUCount(processor.getPhysicalPackageCount());
         processorInfo.setLogicalProcessorCount(processor.getLogicalProcessorCount());
@@ -132,6 +136,4 @@ public class SystemInfoUtil {
         });
         return networkInfo;
     }
-
-
 }
