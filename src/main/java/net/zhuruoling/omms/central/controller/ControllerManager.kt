@@ -15,10 +15,8 @@ import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
 
-//data class CommandOutputData(val controllerId: String, val command: String, val output: String)
 object ControllerManager : Manager() {
     val controllers = mutableMapOf<String, Controller>()
-    private val controllerConnector = mutableMapOf<String, ControllerHttpClient>()
     val logger: Logger = LoggerFactory.getLogger("ControllerManager")
     val gson: Gson = GsonBuilder().setExclusionStrategies(object : ExclusionStrategy {
         override fun shouldSkipField(p0: FieldAttributes?): Boolean {
@@ -46,19 +44,8 @@ object ControllerManager : Manager() {
                     val controllerImpl: ControllerImpl =
                         gson.fromJson(FileReader(Util.joinFilePaths("./controllers/", it)), ControllerImpl::class.java)
                     logger.debug(controllerImpl.toString())
-                    try {
-                        controllerImpl.fixFields()
-                        controllers[controllerImpl.name] = controllerImpl
-                        controllerConnector[controllerImpl.name] = ControllerHttpClient(controllerImpl)
-                    } catch (e: IllegalArgumentException) {
-                        logger.error(
-                            "Cannot resolve controller type symbol: %s".format(controllerImpl.type),
-                            IllegalControllerTypeException(
-                                "Cannot resolve controller type symbol: %s".format(controllerImpl.type),
-                                e
-                            )
-                        )
-                    }
+                    controllerImpl.fixFields()
+                    controllers[controllerImpl.name] = controllerImpl
                 }
             }
         } else {
@@ -80,14 +67,14 @@ object ControllerManager : Manager() {
         controllers += controller.name to controller
     }
 
-    fun removeController(controller: Controller){
-        if (controller.name !in controllers){
+    fun removeController(controller: Controller) {
+        if (controller.name !in controllers) {
             throw ControllerNotExistException(controller.name)
         }
         controllers.remove(controller.name)
     }
 
-    fun replaceController(controller: Controller){
+    fun replaceController(controller: Controller) {
         controllers[controller.name] = controller
     }
 

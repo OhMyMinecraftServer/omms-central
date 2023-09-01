@@ -30,6 +30,7 @@ fun Application.configureRouting() {
         if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.WS) {
             authenticate("omms-controller-auth") {
                 websocketRoute()
+                identityQueryRoute()
             }
         }
         HttpServerLoadCallback.INSTANCE.invokeAll(this@configureRouting)

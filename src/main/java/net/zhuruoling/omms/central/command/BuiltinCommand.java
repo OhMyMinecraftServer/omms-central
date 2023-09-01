@@ -626,12 +626,8 @@ public class BuiltinCommand {
 
     private static void searchWhitelist(@NotNull String player, @NotNull String s, @NotNull CommandContext<? extends CommandSourceStack> context) {
         var result = WhitelistManager.INSTANCE.searchInWhitelist(s, player);
-        if (result == null) {
-            context.getSource().sendFeedback("No valid results in whitelist %s.".formatted(s));
-        } else {
-            context.getSource().sendFeedback("Search result in whitelist %s:".formatted(s));
-            result.forEach(searchResult -> context.getSource().sendFeedback("\t%s".formatted(searchResult.getPlayerName())));
-        }
+        context.getSource().sendFeedback("Search result in whitelist %s:".formatted(s));
+        result.forEach(searchResult -> context.getSource().sendFeedback("\t%s".formatted(searchResult.getPlayerName())));
     }
 
 

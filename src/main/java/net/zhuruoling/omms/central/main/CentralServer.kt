@@ -159,12 +159,12 @@ object CentralServer {
         try {
             logger.info("Stopping!")
             normalShutdown = true
-            Objects.requireNonNull(httpServer)?.interrupt()
+            httpServer?.interrupt()
             if (GlobalVariable.config?.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
-                Objects.requireNonNull(receiver)?.interrupt()
-                Objects.requireNonNull(udpBroadcastSender)?.isStopped = true
+                receiver?.interrupt()
+                udpBroadcastSender?.isStopped = true
             }
-            Objects.requireNonNull(socketServer)?.interrupt()
+            socketServer?.interrupt()
             logger.info("Bye")
             if (normalShutdown) {
                 exitProcess(0)

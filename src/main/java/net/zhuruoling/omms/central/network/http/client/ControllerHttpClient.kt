@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture
 
 fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
 
-class ControllerHttpClient(val controllerImpl: ControllerImpl) {
+class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
     val client: HttpClient
     private val baseUrl: String
     private val logger: org.slf4j.Logger

@@ -24,6 +24,8 @@ fun main() {
     val hal = systemInfo.hardware
     val sn = hal.computerSystem.serialNumber
     val uuid = hal.computerSystem.hardwareUUID
+    println(sn)
+    println(uuid)
     val networkIfId = hal.networkIFs.run {
         var res = ""
         forEach {

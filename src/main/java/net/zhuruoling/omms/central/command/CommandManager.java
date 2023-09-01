@@ -52,7 +52,8 @@ public class CommandManager extends Manager {
         scriptRegisteredCommandMap.forEach((s, literalArgumentBuilders) -> {
             literalArgumentBuilders.forEach(commandDispatcher::register);
         });
-        BuiltinCommand.registerBuiltinCommand(commandDispatcher);
+        //BuiltinCommand.registerBuiltinCommand(commandDispatcher);
+        BuiltinCommandKt.registerBuiltinCommand(commandDispatcher);
         CommandRegistrationCallback.INSTANCE.invokeAll(this);
     }
 

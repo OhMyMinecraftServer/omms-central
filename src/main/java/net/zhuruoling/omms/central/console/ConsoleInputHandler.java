@@ -17,9 +17,7 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 
-public class ConsoleInputHandler {
-
-
+public class ConsoleInputHandler extends Thread {
     private Terminal terminal;
 
     public void prepareTerminal(){
@@ -29,7 +27,6 @@ public class ConsoleInputHandler {
             throw new RuntimeException(e);
         }
     }
-
     ConsoleInputHandler() {
 
     }
