@@ -1,6 +1,8 @@
 package net.zhuruoling.omms.central.controller.crashreport
 
 import cn.hutool.core.io.FileUtil
+import net.zhuruoling.omms.central.controller.ControllerManager
+import net.zhuruoling.omms.central.plugin.callback.RecievedControllerCrashReportCallback
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
@@ -25,10 +27,12 @@ object ControllerCrashReportManager : Manager() {
         }
     }
 
-    fun save(crashReport: CrashReportStorage) {
+    fun createNewCrashReport(controller: String, content: String) {
+        val crashReport = ControllerManager.controllers[controller]!!.convertCrashReport(content)
         logger.debug("controller : ${crashReport.controllerId}")
         logger.debug("content: ")
         crashReport.content.forEach(logger::debug)
+        RecievedControllerCrashReportCallback.INSTANCE.invokeAll(crashReport)
         val fileName = storagePath.resolve(Util.randomStringGen(16) + ".json")
         fileName.toFile().writer().use {
             Util.gson.toJson(crashReport, it)

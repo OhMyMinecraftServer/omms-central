@@ -5,7 +5,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.controller.crashreport.ControllerCrashReportManager
@@ -23,8 +22,7 @@ fun Route.crashReportQueryRoute() {
             if (controller in ControllerManager.controllers) {
                 logger.info("Got crash report from controller $controller")
                 launch {
-                    val storage = ControllerManager.controllers[controller]!!.convertCrashReport(content)
-                    ControllerCrashReportManager.save(storage)
+                    ControllerCrashReportManager.createNewCrashReport(controller, content)
                 }
                 return@post call.respondText(status = HttpStatusCode.OK) { "" }
             } else {

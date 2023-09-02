@@ -27,8 +27,8 @@ import java.util.*;
 public class Util {
 
 
-    public static final String PRODUCT_NAME = "Oh My Minecraft Server Central";
-    public static final String PRODUCT_NAME_SHORT = "OMMS Central";
+    public static final String PRODUCT_NAME = "Oh My Minecraft Server Central Server";
+    public static final String PRODUCT_NAME_SHORT = "OMMS Central Server";
     public static final String LOCK_NAME = "omms.lck";
 
     public static final Target TARGET_CHAT = new Target("224.114.51.4", 10086);
