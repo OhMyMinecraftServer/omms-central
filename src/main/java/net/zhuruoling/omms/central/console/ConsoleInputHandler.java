@@ -114,13 +114,17 @@ public class ConsoleInputHandler {
         var completer = new BrigadierCommandCompleter();
         //console complete may not work in intellij idea console
         try {
-            LineReader lineReader = LineReaderBuilder.builder().history(GlobalVariable.INSTANCE.getConsoleHistory()).terminal(terminal).completer(completer).build();
+            CommandManager.INSTANCE.reload();
+            LineReader lineReader = LineReaderBuilder.builder()
+                    .history(GlobalVariable.INSTANCE.getConsoleHistory())
+                    .terminal(terminal)
+                    .completer(completer)
+                    .build();
             String line = lineReader.readLine();
             line = line.strip().stripIndent().stripLeading().stripTrailing();
             if (line.isEmpty()) {
                 return;
             }
-            CommandManager.INSTANCE.reload();
             CommandManager.INSTANCE.dispatchCommand(line, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         } catch (UserInterruptException | EndOfFileException ignored) {
 

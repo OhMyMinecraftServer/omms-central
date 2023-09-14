@@ -37,11 +37,15 @@ public class WhitelistArgumentType implements ArgumentType<Whitelist> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         var s = builder.getRemainingLowerCase();
-        WhitelistManager.INSTANCE.getWhitelists()
-                .stream()
-                .map(Whitelist::getName)
-                .filter( it -> it.startsWith(s))
-                .forEach(builder::suggest);
+        if (s.isEmpty()){
+            WhitelistManager.INSTANCE.getWhitelistNames()
+                    .forEach(builder::suggest);
+        }else {
+            WhitelistManager.INSTANCE.getWhitelistNames()
+                    .stream()
+                    .filter( it -> it.startsWith(s))
+                    .forEach(builder::suggest);
+        }
         return builder.buildFuture();
     }
 

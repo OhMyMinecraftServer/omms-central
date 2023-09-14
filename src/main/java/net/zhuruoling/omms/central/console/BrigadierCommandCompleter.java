@@ -11,7 +11,6 @@ import org.jline.reader.ParsedLine;
 import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class BrigadierCommandCompleter implements Completer {
     @Override
@@ -21,13 +20,12 @@ public class BrigadierCommandCompleter implements Completer {
                 CommandManager.INSTANCE.getCommandDispatcher()
                         .parse(s, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         var ftr = CommandManager.INSTANCE.getCommandDispatcher().getCompletionSuggestions(parseResult);
-        try {
-            var result = ftr.get().getList().stream().map(Suggestion::getText).toList();
-            new StringsCompleter(result).complete(reader, line, candidates);
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println(e);
-            new StringsCompleter().complete(reader, line, candidates);
-        }
-
+        ftr.thenAccept(suggestions -> {
+            if (suggestions.isEmpty()){
+                new StringsCompleter().complete(reader, line, candidates);
+            }else {
+                new StringsCompleter(suggestions.getList().stream().map(Suggestion::getText).toList()).complete(reader, line, candidates);
+            }
+        });
     }
 }

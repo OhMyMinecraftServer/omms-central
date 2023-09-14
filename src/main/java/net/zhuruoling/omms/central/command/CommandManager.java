@@ -65,7 +65,7 @@ public class CommandManager extends Manager {
         scriptRegisteredCommandMap.remove(pluginId);
     }
 
-    public CommandDispatcher<CommandSourceStack> getCommandDispatcher() {
+    public @NotNull CommandDispatcher<CommandSourceStack> getCommandDispatcher() {
         return commandDispatcher;
     }
 }

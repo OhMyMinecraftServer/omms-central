@@ -33,14 +33,10 @@ import java.lang.management.ManagementFactory
 
 val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
-        wordArgument("whitelist") {
+        argument("whitelist", WhitelistArgumentType.whitelist()) {
             execute {
-                val name = getStringArgument("whitelist")
-                val w = WhitelistManager.getWhitelist(name) ?: run {
-                    sendError("Whitelist $name does not exist.")
-                    return@execute 0
-                }
-                sendFeedback("Whitelist $name")
+                val w =  WhitelistArgumentType.getWhitelist(this,"whitelist")
+                sendFeedback("Whitelist ${w.name}")
                 w.players.forEach {
                     sendFeedback("\t- $it")
                 }
