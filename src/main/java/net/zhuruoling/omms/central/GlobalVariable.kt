@@ -1,15 +1,11 @@
 package net.zhuruoling.omms.central
 
 import net.zhuruoling.omms.central.config.Configuration
-import net.zhuruoling.omms.central.console.PluginCommand
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
 import net.zhuruoling.omms.central.permission.Permission
 import org.jline.reader.impl.history.DefaultHistory
-import org.slf4j.LoggerFactory
-import java.nio.channels.FileLock
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
 
 
@@ -36,13 +32,6 @@ object GlobalVariable {
     fun setArgs(args:Array<String>){
         this.args = args.toMutableList()
     }
-
-    @JvmField
-    val publicLogger: org.slf4j.Logger = LoggerFactory.getLogger("PublicLogger")
-
-    @JvmField
-    var pluginCommandHashMap = ArrayList<PluginCommand>()
-
     init {
         Permission.values().forEach {
             permissionNames.add(it.name)

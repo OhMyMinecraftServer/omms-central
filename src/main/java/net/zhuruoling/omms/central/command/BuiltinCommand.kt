@@ -7,6 +7,7 @@ import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
+import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.main.CentralServer
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
@@ -33,7 +34,7 @@ import java.lang.management.ManagementFactory
 
 val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
-        argument("whitelist", WhitelistArgumentType.whitelist()) {
+        whitelistArgument("whitelist") {
             execute {
                 val w =  WhitelistArgumentType.getWhitelist(this,"whitelist")
                 sendFeedback("Whitelist ${w.name}")
@@ -67,18 +68,15 @@ val whitelistCommand = LiteralCommand("whitelist") {
         }
     }
     literal("add") {
-        wordArgument("whitelist") {
+        whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = getStringArgument("whitelist")
+                    val whitelist = WhitelistArgumentType.getWhitelist(this,"whitelist")
                     val player = getStringArgument("player")
                     try {
-                        addToWhiteList(whitelist, player)
+                        addToWhiteList(whitelist.name, player)
                         sendFeedback("Successfully added $player to $whitelist")
                         0
-                    } catch (e: WhitelistNotExistException) {
-                        sendError("Whitelist ${e.whitelistName} not exist")
-                        1
                     } catch (e: PlayerAlreadyExistsException) {
                         sendError("Player ${e.player} already added to ${e.whitelist} exist")
                         1
@@ -88,18 +86,15 @@ val whitelistCommand = LiteralCommand("whitelist") {
         }
     }
     literal("remove") {
-        wordArgument("whitelist") {
+        whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = getStringArgument("whitelist")
+                    val whitelist = WhitelistArgumentType.getWhitelist(this,"whitelist")
                     val player = getStringArgument("player")
                     try {
-                        WhitelistManager.removeFromWhiteList(whitelist, player)
+                        WhitelistManager.removeFromWhiteList(whitelist.name, player)
                         sendFeedback("Successfully removed $player from $whitelist")
                         0
-                    } catch (e: WhitelistNotExistException) {
-                        sendError("Whitelist ${e.whitelistName} not exist")
-                        1
                     } catch (e: PlayerNotFoundException) {
                         sendError("Player ${e.player} not exist.")
                         1

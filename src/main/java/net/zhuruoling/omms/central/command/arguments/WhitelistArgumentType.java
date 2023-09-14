@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.command;
+package net.zhuruoling.omms.central.command.arguments;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;
@@ -36,7 +36,7 @@ public class WhitelistArgumentType implements ArgumentType<Whitelist> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        var s = builder.getRemainingLowerCase();
+        var s = builder.getRemaining();
         if (s.isEmpty()){
             WhitelistManager.INSTANCE.getWhitelistNames()
                     .forEach(builder::suggest);

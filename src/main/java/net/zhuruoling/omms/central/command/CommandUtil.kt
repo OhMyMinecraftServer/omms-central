@@ -6,6 +6,8 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
+import net.zhuruoling.omms.central.whitelist.Whitelist
 
 typealias S = CommandSourceStack
 
@@ -115,6 +117,14 @@ fun ArgumentCommand<String>.wordArgument(
     this.node.then(ArgumentCommand(name, StringArgumentType.word()).apply(function).node)
 }
 
+fun ArgumentCommand<String>.whitelistArgument(
+    name: String,
+    function: ArgumentCommand<Whitelist>.() -> Unit
+) {
+    this.node.then(ArgumentCommand(name, WhitelistArgumentType.whitelist()).apply(function).node)
+}
+
+
 fun ArgumentCommand<String>.greedyStringArgument(
     name: String,
     function: ArgumentCommand<String>.() -> Unit
@@ -138,6 +148,14 @@ fun LiteralCommand.wordArgument(
 ) {
     this.node.then(ArgumentCommand(name, StringArgumentType.word()).apply(function).node)
 }
+
+fun LiteralCommand.whitelistArgument(
+    name: String,
+    function: ArgumentCommand<Whitelist>.() -> Unit
+) {
+    this.node.then(ArgumentCommand(name, WhitelistArgumentType.whitelist()).apply(function).node)
+}
+
 
 fun LiteralCommand.greedyStringArgument(
     name: String,
