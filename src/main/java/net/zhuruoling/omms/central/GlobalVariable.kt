@@ -15,7 +15,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 object GlobalVariable {
     var noGui: Boolean = false
-    var lock: FileLock? = null
     var noPlugins: Boolean = false
     var test: Boolean = false
     var udpBroadcastSender: UdpBroadcastSender? = null
@@ -27,11 +26,9 @@ object GlobalVariable {
     var config: Configuration? = null
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
-    val startupLock = Object()
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
     val logCache = CopyOnWriteArrayList<String>()
-    val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var consoleFontOverride = false
     var consoleFont = "Consolas"
     var args = mutableListOf<String>()

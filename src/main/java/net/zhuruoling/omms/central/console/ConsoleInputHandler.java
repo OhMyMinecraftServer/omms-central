@@ -17,7 +17,7 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 
-public class ConsoleInputHandler extends Thread {
+public class ConsoleInputHandler {
     private Terminal terminal;
 
     public void prepareTerminal(){
@@ -34,83 +34,84 @@ public class ConsoleInputHandler extends Thread {
     public static @NotNull ConsoleInputHandler INSTANCE = new ConsoleInputHandler();
 
     public void handle() {
-        WhitelistCompleter whitelistCompleter = new WhitelistCompleter();
-        PlayerNameCompleter playerNameCompleter = new PlayerNameCompleter();
-        PermissionCodeCompleter permissionCodeCompleter = new PermissionCodeCompleter();
-        PermissionNameCompleter permissionNameCompleter = new PermissionNameCompleter();
-
-        var completer = new AggregateCompleter(
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("list", "query"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("get", "add", "search"),
-                        whitelistCompleter,
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("whitelist"),
-                        new StringsCompleter("remove"),
-                        whitelistCompleter,
-                        playerNameCompleter,
-                        NullCompleter.INSTANCE
-                ),
-
-
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("grant", "remove"),
-                        permissionCodeCompleter,
-                        permissionNameCompleter
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("list", "create", "save"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("permission"),
-                        new StringsCompleter("get", "delete"),
-                        permissionCodeCompleter,
-                        NullCompleter.INSTANCE
-                ),
-
-
-                new ArgumentCompleter(
-                        new StringsCompleter("stop"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("broadcast"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("status"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("help"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("reload"),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new StringsCompleter("controller"),
-                        new StringsCompleter("execute", "status", "console"),
-                        new ControllerCompleter(),
-                        NullCompleter.INSTANCE
-                ),
-                new ArgumentCompleter(
-                        new PluginCommandCompleter(),
-                        NullCompleter.INSTANCE
-                )
-
-        );
+//        WhitelistCompleter whitelistCompleter = new WhitelistCompleter();
+//        PlayerNameCompleter playerNameCompleter = new PlayerNameCompleter();
+//        PermissionCodeCompleter permissionCodeCompleter = new PermissionCodeCompleter();
+//        PermissionNameCompleter permissionNameCompleter = new PermissionNameCompleter();
+//
+//        var completer = new AggregateCompleter(
+//                new ArgumentCompleter(
+//                        new StringsCompleter("whitelist"),
+//                        new StringsCompleter("list", "query"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("whitelist"),
+//                        new StringsCompleter("get", "add", "search"),
+//                        whitelistCompleter,
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("whitelist"),
+//                        new StringsCompleter("remove"),
+//                        whitelistCompleter,
+//                        playerNameCompleter,
+//                        NullCompleter.INSTANCE
+//                ),
+//
+//
+//                new ArgumentCompleter(
+//                        new StringsCompleter("permission"),
+//                        new StringsCompleter("grant", "remove"),
+//                        permissionCodeCompleter,
+//                        permissionNameCompleter
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("permission"),
+//                        new StringsCompleter("list", "create", "save"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("permission"),
+//                        new StringsCompleter("get", "delete"),
+//                        permissionCodeCompleter,
+//                        NullCompleter.INSTANCE
+//                ),
+//
+//
+//                new ArgumentCompleter(
+//                        new StringsCompleter("stop"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("broadcast"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("status"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("help"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("reload"),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new StringsCompleter("controller"),
+//                        new StringsCompleter("execute", "status", "console"),
+//                        new ControllerCompleter(),
+//                        NullCompleter.INSTANCE
+//                ),
+//                new ArgumentCompleter(
+//                        new PluginCommandCompleter(),
+//                        NullCompleter.INSTANCE
+//                )
+//
+//        );
+        var completer = new BrigadierCommandCompleter();
         //console complete may not work in intellij idea console
         try {
             LineReader lineReader = LineReaderBuilder.builder().history(GlobalVariable.INSTANCE.getConsoleHistory()).terminal(terminal).completer(completer).build();

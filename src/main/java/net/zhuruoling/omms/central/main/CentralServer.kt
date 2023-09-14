@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.LockSupport
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
@@ -40,6 +41,7 @@ import kotlin.system.exitProcess
 object CentralServer {
     private val logger: Logger = LoggerFactory.getLogger("Main")
     private var config: Configuration? = null
+    val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var initialized = false
 
     @Throws(IOException::class)
@@ -138,9 +140,9 @@ object CentralServer {
             }
         }
         while (true){
-            while (GlobalVariable.taskQueue.isNotEmpty()) {
+            while (taskQueue.isNotEmpty()) {
                 try{
-                    GlobalVariable.taskQueue.poll()()
+                    taskQueue.poll()()
                 }catch (e:Exception){
                     logger.error("Error occurred while executing tasks",e)
                 }
@@ -150,7 +152,7 @@ object CentralServer {
     }
 
     fun runOnMainThread(fn: () -> Unit){
-        GlobalVariable.taskQueue.add(fn)
+        taskQueue.add(fn)
     }
 
     @JvmStatic

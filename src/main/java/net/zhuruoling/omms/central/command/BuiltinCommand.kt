@@ -373,3 +373,4 @@ private fun searchWhitelist(player: String, s: String, context: CommandContext<C
 private fun joinToDependencyString(pluginDependencyRequirements: List<PluginDependencyRequirement>): String {
     return pluginDependencyRequirements.joinToString(separator = " ") { it.toString() }
 }
+

@@ -17,21 +17,5 @@ import java.util.concurrent.CompletableFuture;
 
 public class Bar {
     public static void main(String[] args) {
-        CommandManager.INSTANCE.init();
-        BuiltinCommand.registerBuiltinCommand(CommandManager.INSTANCE.getCommandDispatcher());
-        var dispatcher = CommandManager.INSTANCE.getCommandDispatcher();
-        var command = "permissio";
-        var src = new CommandSourceStack(CommandSourceStack.Source.CONSOLE);
-        var result = dispatcher.parse(command, src);
-        dispatcher.getCompletionSuggestions(result).thenAccept(suggestions -> {
-            suggestions.getList().forEach(suggestion -> {
-                System.out.println(suggestion.toString());
-            });
-        });
-        for (String s : dispatcher.getAllUsage(dispatcher.getRoot(), src, false)) {
-            System.out.println(s);
-        }
-
     }
-
 }
