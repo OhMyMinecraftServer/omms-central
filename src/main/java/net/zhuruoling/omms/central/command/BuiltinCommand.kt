@@ -7,6 +7,8 @@ import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
+import net.zhuruoling.omms.central.command.arguments.PermissionCodeArgumentType
+import net.zhuruoling.omms.central.command.arguments.PermissionNameArgumentType
 import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.main.CentralServer
@@ -196,7 +198,6 @@ val broadcastCommand = LiteralCommand("broadcast") {
                     Util.TARGET_CHAT,
                     Gson().toJson(broadcast, Broadcast::class.java)
                 )
-
                 ChatbridgeImplementation.WS -> sendToAllWS(broadcast)
             }
             1
@@ -277,7 +278,52 @@ val helpCommand = LiteralCommand("help") {
 }
 
 val permissionCommand = LiteralCommand("permission") {
+    literal("list") {
+        execute {
 
+            1
+        }
+    }
+    literal("create") {
+        integerArgument("code"){
+            execute {
+
+                1
+            }
+        }
+
+    }
+    literal("remove") {
+        integerArgument("code"){
+            execute {
+
+                1
+            }
+        }
+    }
+    literal("modify"){
+        argument("code", PermissionCodeArgumentType.code()){
+            literal("allow"){
+                argument("permission", PermissionNameArgumentType.permission()){
+                    execute {
+                        1
+                    }
+                }
+            }
+            literal("deny"){
+                argument("permission", PermissionNameArgumentType.permission()){
+                    execute {
+                        1
+                    }
+                }
+            }
+        }
+    }
+    literal("apply"){
+        execute {
+            1
+        }
+    }
 }
 
 val controllerCommand = LiteralCommand("controller") {

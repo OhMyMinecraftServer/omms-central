@@ -8,6 +8,10 @@ import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 fun whitelistPrettyPrinting(whitelistImpl: Whitelist): String {
     return """
@@ -52,13 +56,19 @@ fun printRuntimeEnv() {
     val os = ManagementFactory.getOperatingSystemMXBean()
     val runtime = ManagementFactory.getRuntimeMXBean()
     val version = BuildProperties["version"]
-    logger.info("${Util.PRODUCT_NAME} $version is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}",)
+    val buildTimeMillis = BuildProperties["buildTime"]?.toLong() ?: 0L
+    val buildTime = Date(buildTimeMillis)
+    val versionInfoString = "${Util.PRODUCT_NAME} $version (${BuildProperties["branch"]}:${
+        BuildProperties["commitId"]?.substring(0, 7)
+    } $buildTime)"
+    logger.info("$versionInfoString is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}")
 }
 
 fun getOrCreateControllerHistroy(controllerId: String): DefaultHistory {
     return GlobalVariable.controllerConsoleHistory[controllerId]
         ?: DefaultHistory().run { GlobalVariable.controllerConsoleHistory[controllerId] = this;this }
 }
+
 /**
  * copied from Kotlin Native
  */
@@ -70,6 +80,7 @@ object NativeBase64Encoder {
     private val BASE64_INVERSE_ALPHABET = IntArray(256) {
         BASE64_ALPHABET.indexOf(it.toChar())
     }
+
     private fun Int.toBase64(): Char = BASE64_ALPHABET[this]
 
     fun encode(src: ByteArray): ByteArray {

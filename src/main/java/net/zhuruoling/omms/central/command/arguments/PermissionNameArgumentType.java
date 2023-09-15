@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class PermissionNameArgumentType implements ArgumentType<Permission> {
+
+    private PermissionNameArgumentType(){}
+
     @Override
     public Permission parse(StringReader stringReader) throws CommandSyntaxException {
         var word = stringReader.readUnquotedString();
@@ -30,10 +33,19 @@ public class PermissionNameArgumentType implements ArgumentType<Permission> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         var prefix = builder.getRemaining();
-        Arrays.stream(Permission.values()).map(Enum::name)
-                .filter(perm -> perm.startsWith(prefix))
-                .forEach(builder::suggest);
-        return ArgumentType.super.listSuggestions(context, builder);
+        if (!prefix.isEmpty()) {
+            Arrays.stream(Permission.values()).map(Enum::name)
+                    .filter(perm -> perm.startsWith(prefix))
+                    .forEach(builder::suggest);
+        } else {
+            Arrays.stream(Permission.values()).map(Enum::name)
+                    .forEach(builder::suggest);
+        }
+        return builder.buildFuture();
+    }
+
+    public static PermissionNameArgumentType permission(){
+        return new PermissionNameArgumentType();
     }
 
     @Override

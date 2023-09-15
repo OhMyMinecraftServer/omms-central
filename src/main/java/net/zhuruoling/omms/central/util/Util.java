@@ -140,13 +140,12 @@ public class Util {
     }
 
     public static void createConfig(@NotNull Logger logger) {
-        logger.warn("CONFIG NOT EXIST,creating.");
+        logger.warn("Config not found, creating default.");
         try {
             if (!new Util().createFile(Util.getWorkingDir() + File.separator + "config.json")) {
                 logger.error("Unable to create file:" + Util.getWorkingDir() + File.separator + "config.json");
                 System.exit(-1);
             }
-            logger.info("Created Config,writing default config.");
             Gson gson = new GsonBuilder().serializeNulls().create();
             String cont = gson.toJson(new Configuration(50000, "OMMS-Central", 50001));
             File fp = new File(Util.getWorkingDir() + File.separator + "config.json");
@@ -155,7 +154,7 @@ public class Util {
             writer.append(cont);
             writer.close();
             stream.close();
-            logger.info("Created Config.");
+            logger.info("Created default Config.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -184,14 +183,12 @@ public class Util {
     }
 
     public static void listAllByCommandSource(@NotNull CommandSourceStack logger) {
-        logger.sendFeedback("Listing controllers");
         ControllerManager.INSTANCE.getControllers().forEach((s, controllerInstance) -> {
             for (String s1 : UtilKt.controllerPrettyPrinting(controllerInstance).split("\n")) {
                 logger.sendFeedback(s1);
             }
         });
         logger.sendFeedback("%d controllers added to this server.".formatted(ControllerManager.INSTANCE.getControllers().size()));
-        logger.sendFeedback("Listing Whitelist contents:");
         if (!WhitelistManager.INSTANCE.isNoWhitelist()) {
             WhitelistManager.INSTANCE.forEach(entry -> {
                 for (String s : UtilKt.whitelistPrettyPrinting(entry.getValue()).split("\n")) {

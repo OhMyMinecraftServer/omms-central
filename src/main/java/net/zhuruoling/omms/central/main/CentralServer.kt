@@ -68,7 +68,7 @@ object CentralServer {
                 !Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")).run {
             first.run {
                 if (isNotEmpty()) {
-                    logger.info("Preparing for data folders.")
+                    logger.info("Preparing data folders.")
                     forEach {
                         Util.createFolder(it.path, logger)
                     }
