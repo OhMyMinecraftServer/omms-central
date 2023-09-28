@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm") version "1.9.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
@@ -50,11 +50,9 @@ repositories {
     maven {
         url = uri("https://libraries.minecraft.net")
     }
-
     maven {
         url = uri("https://repo.opencollab.dev/maven-releases/")
     }
-
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }

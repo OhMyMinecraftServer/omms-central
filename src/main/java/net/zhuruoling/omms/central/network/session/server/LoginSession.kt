@@ -33,7 +33,7 @@ class LoginSession(socket: Socket) :
         val date = LocalDateTime.now()
         var key = date.format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"))
         key = Util.base64Encode(Util.base64Encode(key!!))
-        logger.debug("key:$key")
+        logger.debug("key: $key")
         encryptedConnector = EncryptedSocket(inputReader, out, key)
         logger.info("Client: " + socket.getInetAddress() + ":" + socket.getPort() + " connected.")
         this.socket = socket

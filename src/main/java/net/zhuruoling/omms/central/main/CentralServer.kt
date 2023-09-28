@@ -174,6 +174,5 @@ object CentralServer {
         } catch (e: java.lang.Exception) {
             logger.error("Cannot stop server.", e)
         }
-
     }
 }

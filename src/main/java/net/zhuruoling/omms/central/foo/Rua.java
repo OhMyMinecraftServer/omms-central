@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rua {
     private static final Logger logger = LoggerFactory.getLogger("Rua");
-    public static void main(String[] args) throws Throwable {
 
+    public static void main(String[] args) throws Throwable {
     }
 }
