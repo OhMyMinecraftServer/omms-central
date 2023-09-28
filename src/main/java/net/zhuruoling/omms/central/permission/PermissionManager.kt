@@ -61,7 +61,7 @@ object PermissionManager : Manager() {
     }
 
 
-    private fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
+    fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
 
         val code: Int = components.permission
         val list: ArrayList<Permission> = ArrayList()
@@ -355,6 +355,4 @@ object PermissionManager : Manager() {
             }
         }
     }
-
-
 }

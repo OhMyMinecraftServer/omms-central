@@ -3,16 +3,20 @@ package net.zhuruoling.omms.central.network.session.server
 import net.zhuruoling.omms.central.permission.Permission
 import net.zhuruoling.omms.central.permission.PermissionManager.getPermission
 import net.zhuruoling.omms.central.util.Util
+import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-fun doAuth(remote: String): List<Permission>?{
+private val logger = LoggerFactory.getLogger("Auth")
+
+fun doAuth(remote: String): Pair<Long,List<Permission>?>{
     val authKey = String(Base64.getDecoder().decode(Base64.getDecoder().decode(remote)))
     val date = Util.getTimeCode().toLong()
     val key = authKey.toLong()
     val permCode = key xor date
-    return getPermission(permCode.toInt())
+    logger.debug("Got permission code: $permCode")
+    return permCode to getPermission(permCode.toInt())
 }
 
 fun getTimeBasedKey():String{

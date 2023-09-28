@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.command
 
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
@@ -38,7 +39,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
         whitelistArgument("whitelist") {
             execute {
-                val w =  WhitelistArgumentType.getWhitelist(this,"whitelist")
+                val w = WhitelistArgumentType.getWhitelist(this, "whitelist")
                 sendFeedback("Whitelist ${w.name}")
                 w.players.forEach {
                     sendFeedback("\t- $it")
@@ -73,7 +74,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
         whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = WhitelistArgumentType.getWhitelist(this,"whitelist")
+                    val whitelist = WhitelistArgumentType.getWhitelist(this, "whitelist")
                     val player = getStringArgument("player")
                     try {
                         addToWhiteList(whitelist.name, player)
@@ -91,7 +92,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
         whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = WhitelistArgumentType.getWhitelist(this,"whitelist")
+                    val whitelist = WhitelistArgumentType.getWhitelist(this, "whitelist")
                     val player = getStringArgument("player")
                     try {
                         WhitelistManager.removeFromWhiteList(whitelist.name, player)
@@ -198,6 +199,7 @@ val broadcastCommand = LiteralCommand("broadcast") {
                     Util.TARGET_CHAT,
                     Gson().toJson(broadcast, Broadcast::class.java)
                 )
+
                 ChatbridgeImplementation.WS -> sendToAllWS(broadcast)
             }
             1
@@ -285,7 +287,7 @@ val permissionCommand = LiteralCommand("permission") {
         }
     }
     literal("create") {
-        integerArgument("code"){
+        integerArgument("code") {
             execute {
 
                 1
@@ -294,24 +296,24 @@ val permissionCommand = LiteralCommand("permission") {
 
     }
     literal("remove") {
-        integerArgument("code"){
+        integerArgument("code") {
             execute {
 
                 1
             }
         }
     }
-    literal("modify"){
-        argument("code", PermissionCodeArgumentType.code()){
-            literal("allow"){
-                argument("permission", PermissionNameArgumentType.permission()){
+    literal("modify") {
+        argument("code", PermissionCodeArgumentType.code()) {
+            literal("allow") {
+                argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
                         1
                     }
                 }
             }
-            literal("deny"){
-                argument("permission", PermissionNameArgumentType.permission()){
+            literal("deny") {
+                argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
                         1
                     }
@@ -319,7 +321,7 @@ val permissionCommand = LiteralCommand("permission") {
             }
         }
     }
-    literal("apply"){
+    literal("apply") {
         execute {
             1
         }
@@ -410,4 +412,6 @@ private fun searchWhitelist(player: String, s: String, context: CommandContext<C
 private fun joinToDependencyString(pluginDependencyRequirements: List<PluginDependencyRequirement>): String {
     return pluginDependencyRequirements.joinToString(separator = " ") { it.toString() }
 }
+fun foo(){
 
+}

@@ -17,18 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rua {
     private static final Logger logger = LoggerFactory.getLogger("Rua");
-
-
-    public static List<String> prependNumber(List<String> list) {
-        AtomicInteger i = new AtomicInteger(1);
-        return list.stream().map(s -> i.getAndAdd(1) + ": " + s).toList();
-    }
-
-    public static boolean endsWith(String a, String b){
-        return a.endsWith(b);
-    }
-
     public static void main(String[] args) throws Throwable {
-        prependNumber(new ArrayList<>(List.of("a","b","c"))).forEach(System.out::println);
+
     }
 }

@@ -53,8 +53,9 @@ class LoginSession(socket: Socket) :
                         break
                     }
                     val stringToken = request.getContent("token")
-                    val permissions = doAuth(stringToken)
-                    val isCodeExist = permissions == null
+                    val (code,permissions) = doAuth(stringToken)
+                    logger.debug("$code has following permissions: ${permissions?.joinToString(", ")}")
+                    val isCodeExist = permissions != null
                     if (isCodeExist) {
                         val randomKey = Util.randomStringGen(32)
                         encryptedConnector.send(
@@ -71,6 +72,7 @@ class LoginSession(socket: Socket) :
                         session.start()
                         break
                     } else {
+                        logger.warn("Permission code $code not exist")
                         encryptedConnector.send(
                             Response.serialize(Response().withResponseCode(Result.PERMISSION_DENIED))
                         )
