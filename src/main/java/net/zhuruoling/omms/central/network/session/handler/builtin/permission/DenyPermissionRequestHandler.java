@@ -5,6 +5,7 @@ import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;
 import net.zhuruoling.omms.central.network.session.response.Result;
 import net.zhuruoling.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
+import net.zhuruoling.omms.central.permission.Operation;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
@@ -20,7 +21,7 @@ public class DenyPermissionRequestHandler extends BuiltinRequestHandler {
         try {
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
-                            PermissionChange.Operation.DENY
+                            Operation.DENY
                             , Integer.parseInt(request.getContent("code"))
                             , Arrays.asList(Util.gson.fromJson(request.getContent("permissions"), Permission[].class))
                     )

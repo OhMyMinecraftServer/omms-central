@@ -24,6 +24,7 @@ import net.zhuruoling.omms.central.main.CentralServer;
 import net.zhuruoling.omms.central.network.chatbridge.Broadcast;
 import net.zhuruoling.omms.central.network.http.routes.WebsocketRouteKt;
 import net.zhuruoling.omms.central.network.pair.PairManager;
+import net.zhuruoling.omms.central.permission.Operation;
 import net.zhuruoling.omms.central.permission.Permission;
 import net.zhuruoling.omms.central.permission.PermissionChange;
 import net.zhuruoling.omms.central.permission.PermissionManager;
@@ -316,20 +317,20 @@ public class BuiltinCommand {
                             x.getSource().sendFeedback("\tcode %d has got those permissions:".formatted(i));
                             p.forEach(permission -> x.getSource().sendFeedback("\t\t- %s".formatted(permission.name())));
                         });
-                        if (!PermissionManager.INSTANCE.getChangesTable().isEmpty()) {
+                        if (!PermissionManager.INSTANCE.getChanges().isEmpty()) {
                             x.getSource().sendFeedback("Changes listed below will be applied to permission files.");
-                            var changes = PermissionManager.INSTANCE.getChangesTable();
+                            var changes = PermissionManager.INSTANCE.getChanges();
                             changes.forEach(permissionChange -> {
-                                switch (permissionChange.getOperation()) {
+                                switch (permissionChange.operation) {
                                     case GRANT ->
-                                            x.getSource().sendFeedback("\tThose permissions will be added to code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
+                                            x.getSource().sendFeedback("\tThose permissions will be added to code %d: %s".formatted(permissionChange.code, buildChangesString(permissionChange)));
                                     case CREATE ->
-                                            x.getSource().sendFeedback("\tPermission code %d will be created.".formatted(permissionChange.getCode()));
+                                            x.getSource().sendFeedback("\tPermission code %d will be created.".formatted(permissionChange.code));
                                     case DELETE ->
-                                            x.getSource().sendFeedback("\tPermission code %d will be deleted.".formatted(permissionChange.getCode()));
+                                            x.getSource().sendFeedback("\tPermission code %d will be deleted.".formatted(permissionChange.code));
                                     case DENY -> {
                                         buildChangesString(permissionChange);
-                                        x.getSource().sendFeedback("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.getCode(), buildChangesString(permissionChange)));
+                                        x.getSource().sendFeedback("\tThose permissions will be removed from code %d: %s".formatted(permissionChange.code, buildChangesString(permissionChange)));
 
                                     }
                                     default -> {
@@ -361,7 +362,7 @@ public class BuiltinCommand {
                                                     }
                                                 });
                                                 if (!checkedPermissions.isEmpty()) {
-                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.DENY, code, checkedPermissions));
+                                                    PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(Operation.DENY, code, checkedPermissions));
                                                 } else {
                                                     x.getSource().sendFeedback("No changes will be made.");
                                                 }
@@ -408,7 +409,7 @@ public class BuiltinCommand {
                                                             }
                                                         });
                                                         if (!checkedPermissions.isEmpty()) {
-                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(PermissionChange.Operation.GRANT, code, checkedPermissions));
+                                                            PermissionManager.INSTANCE.submitPermissionChanges(new PermissionChange(Operation.GRANT, code, checkedPermissions));
                                                         } else {
                                                             x.getSource().sendFeedback("No changes will be made.");
                                                         }
@@ -638,7 +639,7 @@ public class BuiltinCommand {
     }
 
     private static @NotNull String buildChangesString(@NotNull PermissionChange permissionChange) {
-        return CollectionsKt.joinToString(permissionChange.getChanges(), ", ", "", "", 2147483647, "", null);
+        return CollectionsKt.joinToString(permissionChange.changes, ", ", "", "", 2147483647, "", null);
     }
 
     @NotNull

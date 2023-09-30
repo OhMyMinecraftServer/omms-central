@@ -21,6 +21,7 @@ fun getBIOS(): String {
 }
 
 fun main() {
+    println(1145141919810.0 + 1)
 }
 
 //operator fun <T, R> T.invoke(fn: T.() -> R) = fn(this)

@@ -78,6 +78,10 @@ object ControllerManager : Manager() {
         controllers[controller.name] = controller
     }
 
+    fun sendCommand(controller: Controller, command: String): CommandExecutionResult {
+        return controller.sendCommand(command)
+    }
+
     fun sendCommand(controllerName: String, command: String): CommandExecutionResult {
         if (controllerName in controllers) {
             try {

@@ -2,20 +2,24 @@ package net.zhuruoling.omms.central.command
 
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
+import net.zhuruoling.omms.central.command.arguments.ControllerArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionCodeArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionNameArgumentType
 import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
+import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.main.CentralServer
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.chatbridge.Broadcast
 import net.zhuruoling.omms.central.network.http.routes.sendToAllWS
+import net.zhuruoling.omms.central.permission.Operation
+import net.zhuruoling.omms.central.permission.Permission
+import net.zhuruoling.omms.central.permission.PermissionChange
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
@@ -281,24 +285,45 @@ val helpCommand = LiteralCommand("help") {
 
 val permissionCommand = LiteralCommand("permission") {
     literal("list") {
-        execute {
-
-            1
+        literal("changes") {
+            execute {
+                PermissionManager.changes.forEachIndexed { index, it ->
+                    sendFeedback("[$index] $it")
+                }
+                1
+            }
+        }
+        literal("permissions") {
+            execute {
+                PermissionManager.permissionTable.forEach { t, u ->
+                    sendFeedback("Permission Code: $t has those following permissions:")
+                    u.forEach {
+                        sendFeedback("    - ${it.name}")
+                    }
+                }
+                1
+            }
         }
     }
     literal("create") {
         integerArgument("code") {
             execute {
-
+                val c = getIntegerArgument("code")
+                val change = PermissionChange(Operation.CREATE, c, mutableListOf())
+                PermissionManager.submitPermissionChanges(change)
+                sendFeedback("Submitted permission change: $change")
                 1
             }
         }
 
     }
-    literal("remove") {
-        integerArgument("code") {
+    literal("delete") {
+        argument("code", PermissionCodeArgumentType.code()) {
             execute {
-
+                val c = getArgument("code", Int::class.java)
+                val change = PermissionChange(Operation.DELETE, c, mutableListOf())
+                PermissionManager.submitPermissionChanges(change)
+                sendFeedback("Submitted permission change: $change")
                 1
             }
         }
@@ -308,6 +333,14 @@ val permissionCommand = LiteralCommand("permission") {
             literal("allow") {
                 argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
+                        val c = getArgument("code", Int::class.java)
+                        val change = PermissionChange(
+                            Operation.GRANT,
+                            c,
+                            mutableListOf(getArgument("permission", Permission::class.java))
+                        )
+                        PermissionManager.submitPermissionChanges(change)
+                        sendFeedback("Submitted permission change: $change")
                         1
                     }
                 }
@@ -315,6 +348,14 @@ val permissionCommand = LiteralCommand("permission") {
             literal("deny") {
                 argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
+                        val c = getArgument("code", Int::class.java)
+                        val change = PermissionChange(
+                            Operation.DENY,
+                            c,
+                            mutableListOf(getArgument("permission", Permission::class.java))
+                        )
+                        PermissionManager.submitPermissionChanges(change)
+                        sendFeedback("Submitted permission change: $change")
                         1
                     }
                 }
@@ -323,13 +364,44 @@ val permissionCommand = LiteralCommand("permission") {
     }
     literal("apply") {
         execute {
+            PermissionManager.applyChanges(this)
             1
         }
     }
 }
 
 val controllerCommand = LiteralCommand("controller") {
+    literal("execute") {
+        argument("controller", ControllerArgumentType()) {
+            greedyStringArgument("command") {
+                execute {
+                    val controller = getArgument("controller", Controller::class.java)
+                    val command = getStringArgument("command")
+                    ControllerManager.sendCommand(controller,command)
 
+                    1
+                }
+            }
+        }
+    }
+    literal("list"){
+        execute {
+            1
+        }
+    }
+    literal("console"){
+        execute {
+
+            1
+        }
+    }
+    literal("status"){
+        argument("controller", ControllerArgumentType()) {
+            execute {
+                1
+            }
+        }
+    }
 }
 
 val announcementCommand = LiteralCommand("announcement") {
@@ -411,7 +483,4 @@ private fun searchWhitelist(player: String, s: String, context: CommandContext<C
 
 private fun joinToDependencyString(pluginDependencyRequirements: List<PluginDependencyRequirement>): String {
     return pluginDependencyRequirements.joinToString(separator = " ") { it.toString() }
-}
-fun foo(){
-
 }

@@ -1,6 +1,10 @@
 package net.zhuruoling.omms.central.permission
 
 import com.google.gson.GsonBuilder
+import com.mojang.brigadier.context.CommandContext
+import net.zhuruoling.omms.central.command.CommandSourceStack
+import net.zhuruoling.omms.central.command.sendError
+import net.zhuruoling.omms.central.command.sendFeedback
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.Logger
@@ -16,7 +20,7 @@ object PermissionManager : Manager() {
     var permissionTable: HashMap<Int, MutableList<Permission>> = hashMapOf()
     val logger: Logger = LoggerFactory.getLogger("Main")
     var tableHash: Int = 0
-    val changesTable: MutableList<PermissionChange> = mutableListOf()
+    val changes: MutableList<PermissionChange> = mutableListOf()
 
     data class PermissionStorage(
         val permissions: List<PermissionEntry>
@@ -268,8 +272,8 @@ object PermissionManager : Manager() {
         logger.info("Saving modified buffer.")
         synchronized(permissionTable) {
             val perm: PermissionStorage
-            synchronized(changesTable) {
-                changesTable.forEach {
+            synchronized(changes) {
+                changes.forEach {
                     applyChangeToMap(it)
                 }
                 val list: MutableList<PermissionEntry> = mutableListOf()
@@ -277,7 +281,7 @@ object PermissionManager : Manager() {
                     list.add(makePermissionEntry(it.key, it.value))
                 }
                 perm = PermissionStorage(list)
-                changesTable.clear()
+                changes.clear()
                 logger.info("Permissions saved in memory:")
                 permissionTable.forEach {
                     logger.info("${it.key} -> ${it.value}")
@@ -296,13 +300,11 @@ object PermissionManager : Manager() {
         if (change.code in permissionTable.keys) {
             logger.info("Applying change $change")
             when (change.operation) {
-                PermissionChange.Operation.GRANT -> permissionTable[change.code]!!.addAll(change.changes)
-                PermissionChange.Operation.DENY -> permissionTable[change.code]!!.removeIf { it in change.changes }
-                PermissionChange.Operation.DELETE -> permissionTable.remove(change.code)
-                PermissionChange.Operation.CREATE -> permissionTable[change.code] =
-                    mutableListOf(*change.changes.toTypedArray())
-
-                null -> permissionTable//do nothing
+                Operation.GRANT -> permissionTable[change.code]!!.addAll(change.changes)
+                Operation.DENY -> permissionTable[change.code]!!.removeIf { it in change.changes }
+                Operation.DELETE -> permissionTable.remove(change.code)
+                Operation.CREATE -> permissionTable[change.code] = change.changes.toMutableList()
+                else -> {}
             }
         } else {
             throw java.lang.IllegalArgumentException("Permission Code ${change.code} not exist.($change)")
@@ -321,10 +323,10 @@ object PermissionManager : Manager() {
 
 
     fun submitPermissionChanges(permissionChange: PermissionChange) {
-        if (changesTable.contains(permissionChange)) {
+        if (changes.contains(permissionChange)) {
             throw RuntimeException("This change operation in permissions already exists!")
         }
-        changesTable.add(permissionChange)
+        changes.add(permissionChange)
     }
 
     @JvmStatic
@@ -355,4 +357,60 @@ object PermissionManager : Manager() {
             }
         }
     }
+
+    fun applyChanges(src: CommandContext<CommandSourceStack>) {
+        synchronized(changes) {
+            val removed = mutableListOf<PermissionChange>()
+            changes.forEach {
+                src.sendFeedback("Applying change: \"$it\"")
+                if (it.operation == Operation.CREATE) {
+                    if (it.code !in permissionTable) {
+                        permissionTable[it.code] = it.changes.toMutableList()
+                    }else{
+                        src.sendError("Permission code ${it.code} already exists.")
+                    }
+                    return@forEach
+                }
+                if (it.code in permissionTable) {
+                    when (it.operation) {
+                        Operation.GRANT -> permissionTable[it.code]!!.addAll(it.changes)
+                        Operation.DENY -> permissionTable[it.code]!!.removeIf { i -> i in it.changes }
+                        Operation.DELETE -> permissionTable.remove(it.code)
+                        else -> {}
+                    }
+                } else {
+                    src.sendError("Permission code ${it.code} not exist.")
+                }
+
+                removed += it
+            }
+            changes.removeAll(removed)
+        }
+        src.sendFeedback("Saving modified buffer")
+        synchronized(permissionTable) {
+            val perm: PermissionStorage
+            synchronized(changes) {
+                changes.forEach {
+                    applyChangeToMap(it)
+                }
+                val list: MutableList<PermissionEntry> = mutableListOf()
+                permissionTable.forEach {
+                    list.add(makePermissionEntry(it.key, it.value))
+                }
+                perm = PermissionStorage(list)
+                changes.clear()
+                src.sendFeedback("Permissions saved in memory:")
+                permissionTable.forEach {
+                    src.sendFeedback("${it.key} -> ${it.value}")
+                }
+            }
+            Files.deleteIfExists(Path.of(Util.joinFilePaths("permissions.json")))
+            Files.createFile(Path.of(Util.joinFilePaths("permissions.json")))
+            val writer = FileWriter(Util.joinFilePaths("permissions.json"))
+            writer.write(Util.toJson(perm))
+            writer.close()
+            reload()
+        }
+    }
+
 }
