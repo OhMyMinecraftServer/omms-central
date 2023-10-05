@@ -30,7 +30,6 @@ public class Util {
     public static final String PRODUCT_NAME = "Oh My Minecraft Server Central Server";
     public static final String PRODUCT_NAME_SHORT = "OMMS Central Server";
     public static final String LOCK_NAME = "omms.lck";
-
     public static final Target TARGET_CHAT = new Target("224.114.51.4", 10086);
     public static final String[] DATA_FOLDERS = {
             "controllers",
@@ -41,7 +40,7 @@ public class Util {
     };
 
 
-    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x05;
+    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x06;
 
     public static final Gson gson = new GsonBuilder()
             .addDeserializationExclusionStrategy(new GlobalExclusionStrategy())

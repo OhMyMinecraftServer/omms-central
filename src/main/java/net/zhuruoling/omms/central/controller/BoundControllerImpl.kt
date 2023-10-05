@@ -33,20 +33,12 @@ class BoundControllerImpl(val config: ControllerBindingConfig) : ControllerImpl(
         return config.controllerForName
     }
 
-    override fun getExecutable(): String {
-        return config.controllers[config.controllerForName]!!.executable
+    override fun getDisplayName(): String {
+        return config.controllers.values.joinToString(separator = "+"){it.displayName}
     }
 
     override fun getType(): String {
         return config.controllers[config.controllerForName]!!.getType()
-    }
-
-    override fun getLaunchParams(): String {
-        return config.controllers[config.controllerForName]!!.launchParams
-    }
-
-    override fun getWorkingDir(): String {
-        return config.controllers[config.controllerForName]!!.workingDir
     }
 
     override fun getHttpQueryAddress(): String {

@@ -14,19 +14,10 @@ import java.util.concurrent.ExecutionException;
 
 public class ControllerImpl extends Controller {
     String name;
-
-    String executable;
-
+    String displayName;
     String type;
-
-    String launchParams;
-
-    String workingDir;
-
     String httpQueryAddress;
-
     boolean statusQueryable;
-
     String mcdrCommandPrefix = "!!";
 
     @Expose(serialize = false, deserialize = false)
@@ -68,12 +59,9 @@ public class ControllerImpl extends Controller {
         }
     }
 
-    public ControllerImpl(String name, String executable, String type, String launchCommand, String workingDir) {
+    public ControllerImpl(String name, String type) {
         this.name = name;
-        this.executable = executable;
         this.type = type;
-        this.launchParams = launchCommand;
-        this.workingDir = workingDir;
         this.controllerHttpClient = new ControllerHttpClient(this);
     }
 
@@ -82,13 +70,15 @@ public class ControllerImpl extends Controller {
     }
 
     @Override
-    public @NotNull String toString() {
-        return "Controller{" +
+    public String toString() {
+        return "ControllerImpl{" +
                 "name='" + name + '\'' +
-                ", executable='" + executable + '\'' +
+                ", displayName='" + displayName + '\'' +
                 ", type='" + type + '\'' +
-                ", launchCommand='" + launchParams + '\'' +
-                ", workingDir='" + workingDir + '\'' +
+                ", httpQueryAddress='" + httpQueryAddress + '\'' +
+                ", statusQueryable=" + statusQueryable +
+                ", mcdrCommandPrefix='" + mcdrCommandPrefix + '\'' +
+                ", controllerHttpClient=" + controllerHttpClient +
                 '}';
     }
 
@@ -96,24 +86,16 @@ public class ControllerImpl extends Controller {
         this.name = name;
     }
 
-    public String getExecutable() {
-        return executable;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public String getLaunchParams() {
-        return launchParams;
-    }
-
-    public String getWorkingDir() {
-        return workingDir;
     }
 
     public String getHttpQueryAddress() {
         return httpQueryAddress;
     }
 
+    @Override
+    public String getDisplayName() {
+        return displayName == null ? name : displayName;
+    }
 }

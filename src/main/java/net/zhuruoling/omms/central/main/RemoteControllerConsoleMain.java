@@ -35,7 +35,7 @@ public class RemoteControllerConsoleMain {
 //        StdOutPrintTarget stdOutPrintTarget = ;
 //        ControllerConsole controllerConsole = new ControllerConsole(controllerImpl, controllerId, stdOutPrintTarget, new StdinInputSource());
         String id = "MAIN";
-        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource().withHistory(UtilKt.getOrCreateControllerHistroy(controllerId)),new StdOutPrintTarget(), id);
+        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource().withHistory(UtilKt.getOrCreateControllerHistory(controllerId)),new StdOutPrintTarget(), id);
         controllerConsoleImpl.start();
         while (controllerConsoleImpl.isAlive()) {
             Thread.yield();

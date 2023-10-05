@@ -17,5 +17,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class Bar {
     public static void main(String[] args) {
+
     }
 }

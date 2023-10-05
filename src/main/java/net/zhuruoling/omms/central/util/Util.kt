@@ -8,8 +8,6 @@ import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,9 +24,6 @@ fun controllerPrettyPrinting(controller: Controller): String {
         - Controller: ${controller.name}
             isStatusQueryable: ${controller.isStatusQueryable}
             type: ${controller.type}
-            executable: ${controller.executable}
-            launchParameters: ${controller.launchParams}
-            workingDirectory: ${controller.workingDir}
     """.trimIndent()
     else
         return """
@@ -64,7 +59,7 @@ fun printRuntimeEnv() {
     logger.info("$versionInfoString is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}")
 }
 
-fun getOrCreateControllerHistroy(controllerId: String): DefaultHistory {
+fun getOrCreateControllerHistory(controllerId: String): DefaultHistory {
     return GlobalVariable.controllerConsoleHistory[controllerId]
         ?: DefaultHistory().run { GlobalVariable.controllerConsoleHistory[controllerId] = this;this }
 }

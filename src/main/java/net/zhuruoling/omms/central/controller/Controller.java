@@ -15,6 +15,8 @@ abstract public class Controller {
     public abstract CrashReportStorage convertCrashReport(String raw);
 
     public abstract String getName();
-
+    public String getDisplayName(){
+        return getName();
+    }
     public abstract String getType();
 }

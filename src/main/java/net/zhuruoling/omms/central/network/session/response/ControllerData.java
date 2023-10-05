@@ -8,6 +8,7 @@ public class ControllerData {
     private ControllerData(){}
     private String name;
     private String type;
+    private String displayName;
     private boolean statusQueryable;
     public static @NotNull ControllerData fromController(@NotNull Controller controller){
         var data = new ControllerData();
@@ -23,6 +24,10 @@ public class ControllerData {
 
     public String getType() {
         return type;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public boolean isStatusQueryable() {
