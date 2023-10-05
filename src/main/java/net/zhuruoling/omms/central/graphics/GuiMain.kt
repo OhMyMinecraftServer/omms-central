@@ -78,6 +78,8 @@ class SimpleGuiSkikoView : SkikoView {
     private val textFieldOffsetX = textFieldTextOffsetX - textFieldPadding
     private val textFieldOffsetY = textFieldTextOffsetY - fontHeightWithPadding
     private val cursorThickness = 2f
+    private val commandHistory = mutableListOf<String>()
+    private var currentCommandHistory: Int = 0
 
     fun onMouseScroll(e: MouseWheelEvent) {
         val scroll = e.wheelRotation
@@ -204,7 +206,6 @@ class SimpleGuiSkikoView : SkikoView {
 
     private fun processEnter() {
         cursorPos = 0
-        println(textFieldString)
         var command = ""
         textFieldString.forEach {
             command += it
@@ -216,6 +217,7 @@ class SimpleGuiSkikoView : SkikoView {
                 CommandSourceStack(CommandSourceStack.Source.CONSOLE)
             )
         }
+        //commandHistory.add(currentCommandHistory + 1, command)
         textFieldString = String()
     }
 

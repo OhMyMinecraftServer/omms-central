@@ -2,7 +2,7 @@ package net.zhuruoling.omms.central.network.session.handler.builtin.controller;
 
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.http.UtilKt;
-import net.zhuruoling.omms.central.network.http.client.RequestUnauthorisedException;
+import net.zhuruoling.omms.central.controller.RequestUnauthorisedException;
 import net.zhuruoling.omms.central.network.session.SessionContext;
 import net.zhuruoling.omms.central.network.session.request.Request;
 import net.zhuruoling.omms.central.network.session.response.Response;

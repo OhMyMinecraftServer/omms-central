@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.network.http.client
+package net.zhuruoling.omms.central.controller
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -9,9 +9,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
-import net.zhuruoling.omms.central.controller.CommandExecutionResult
-import net.zhuruoling.omms.central.controller.ControllerImpl
-import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.lang.RuntimeException
@@ -58,6 +55,18 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
     }
 
     private fun makeUrl(path: String) = baseUrl + path
+
+    fun queryControllerMapping(){
+        runBlocking {
+            try {
+                val response = get("controllerMapping")
+                val content = String(response.readBytes())
+
+            }catch (e:Exception){
+
+            }
+        }
+    }
 
     fun sendCommand(command: String): CompletableFuture<CommandExecutionResult> {
         val result = CompletableFuture<CommandExecutionResult>()

@@ -4,7 +4,6 @@ import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient
 import net.zhuruoling.omms.central.plugin.callback.ControllerLoadCallback
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util

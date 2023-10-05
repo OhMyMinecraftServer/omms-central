@@ -6,11 +6,9 @@ import net.zhuruoling.omms.central.controller.console.ControllerConsoleImpl;
 import net.zhuruoling.omms.central.controller.console.output.PrintTarget;
 import net.zhuruoling.omms.central.controller.console.input.InputSource;
 import net.zhuruoling.omms.central.controller.crashreport.CrashReportStorage;
-import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 
 public class ControllerImpl extends Controller {
     String name;

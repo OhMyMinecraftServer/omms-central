@@ -11,7 +11,7 @@ import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.chatbridge.Target;
-import net.zhuruoling.omms.central.network.http.client.ControllerHttpClient;
+import net.zhuruoling.omms.central.controller.ControllerHttpClient;
 import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;

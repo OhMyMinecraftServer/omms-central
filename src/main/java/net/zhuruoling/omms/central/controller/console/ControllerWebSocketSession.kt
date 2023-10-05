@@ -14,7 +14,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.zhuruoling.omms.central.controller.ControllerImpl
-import net.zhuruoling.omms.central.network.http.client.asSalted
+import net.zhuruoling.omms.central.controller.asSalted
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession(
