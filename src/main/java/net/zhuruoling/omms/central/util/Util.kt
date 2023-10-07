@@ -19,14 +19,15 @@ fun whitelistPrettyPrinting(whitelistImpl: Whitelist): String {
 }
 
 fun controllerPrettyPrinting(controller: Controller): String {
-    if (controller is ControllerImpl)
-        return """
+    return if (controller is ControllerImpl)
+        """
         - Controller: ${controller.name}
             isStatusQueryable: ${controller.isStatusQueryable}
+            displayName: ${controller.displayName}
             type: ${controller.type}
     """.trimIndent()
     else
-        return """
+        """
         - Controller: ${controller.name}
             type: ${controller.type}
             isStatusQueryable: ${controller.isStatusQueryable}

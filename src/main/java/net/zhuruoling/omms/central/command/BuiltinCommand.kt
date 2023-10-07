@@ -2,7 +2,6 @@ package net.zhuruoling.omms.central.command
 
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
@@ -12,6 +11,7 @@ import net.zhuruoling.omms.central.command.arguments.ControllerArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionCodeArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionNameArgumentType
 import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
+import net.zhuruoling.omms.central.console.printControllerStatus
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.main.CentralServer
@@ -25,6 +25,7 @@ import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
 import net.zhuruoling.omms.central.util.Util
+import net.zhuruoling.omms.central.util.controllerPrettyPrinting
 import net.zhuruoling.omms.central.util.printRuntimeEnv
 import net.zhuruoling.omms.central.util.whitelistPrettyPrinting
 import net.zhuruoling.omms.central.whitelist.PlayerAlreadyExistsException
@@ -38,7 +39,10 @@ import net.zhuruoling.omms.central.whitelist.WhitelistManager.hasWhitelist
 import net.zhuruoling.omms.central.whitelist.WhitelistManager.queryInAllWhitelist
 import net.zhuruoling.omms.central.whitelist.WhitelistManager.searchInWhitelist
 import net.zhuruoling.omms.central.whitelist.WhitelistNotExistException
+import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
+
+private val logger = LoggerFactory.getLogger("BuiltinCommand")
 
 val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
@@ -387,18 +391,30 @@ val controllerCommand = LiteralCommand("controller") {
     }
     literal("list") {
         execute {
+            sendFeedback("")
+            ControllerManager.controllers.forEach {
+                sendFeedback(controllerPrettyPrinting(it.value))
+            }
             1
         }
     }
     literal("console") {
         execute {
-
+            sendFeedback("TODO")
             1
         }
     }
     literal("status") {
         argument("controller", ControllerArgumentType()) {
             execute {
+                val controller = this.getArgument("controller", Controller::class.java)
+                try{
+                    val status = controller.queryControllerStatus()
+                    printControllerStatus(this.source, controller.name, status)
+                }catch (e:Exception){
+                    sendError("Error occurred while querying controller status: $e")
+                    logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")
+                }
                 1
             }
         }
