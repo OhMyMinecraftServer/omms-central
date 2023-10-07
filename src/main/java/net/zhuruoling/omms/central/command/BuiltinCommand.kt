@@ -2,6 +2,7 @@ package net.zhuruoling.omms.central.command
 
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
@@ -377,25 +378,25 @@ val controllerCommand = LiteralCommand("controller") {
                 execute {
                     val controller = getArgument("controller", Controller::class.java)
                     val command = getStringArgument("command")
-                    ControllerManager.sendCommand(controller,command)
+                    ControllerManager.sendCommand(controller, command)
 
                     1
                 }
             }
         }
     }
-    literal("list"){
+    literal("list") {
         execute {
             1
         }
     }
-    literal("console"){
+    literal("console") {
         execute {
 
             1
         }
     }
-    literal("status"){
+    literal("status") {
         argument("controller", ControllerArgumentType()) {
             execute {
                 1

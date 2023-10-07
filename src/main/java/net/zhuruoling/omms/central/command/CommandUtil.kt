@@ -93,15 +93,15 @@ fun <T> ArgumentCommand<T>.requires(function: S.() -> Boolean): ArgumentCommand<
     return this
 }
 
-fun <T> ArgumentCommand<T>.argument(
+fun <T,K> ArgumentCommand<T>.argument(
     name: String,
-    argumentType: ArgumentType<T>,
-    function: ArgumentCommand<T>.() -> Unit
+    argumentType: ArgumentType<K>,
+    function: ArgumentCommand<K>.() -> Unit
 ) {
     this.node.then(ArgumentCommand(name, argumentType).apply(function).node)
 }
 
-fun ArgumentCommand<Int>.integerArgument(
+fun <T> ArgumentCommand<T>.integerArgument(
     name: String,
     min: Int = Int.MIN_VALUE,
     max: Int = Int.MAX_VALUE,
@@ -110,14 +110,14 @@ fun ArgumentCommand<Int>.integerArgument(
     this.node.then(ArgumentCommand(name, IntegerArgumentType.integer(min, max)).apply(function).node)
 }
 
-fun ArgumentCommand<String>.wordArgument(
+fun <T> ArgumentCommand<T>.wordArgument(
     name: String,
     function: ArgumentCommand<String>.() -> Unit
 ) {
     this.node.then(ArgumentCommand(name, StringArgumentType.word()).apply(function).node)
 }
 
-fun ArgumentCommand<String>.whitelistArgument(
+fun <T> ArgumentCommand<T>.whitelistArgument(
     name: String,
     function: ArgumentCommand<Whitelist>.() -> Unit
 ) {
@@ -125,7 +125,7 @@ fun ArgumentCommand<String>.whitelistArgument(
 }
 
 
-fun ArgumentCommand<String>.greedyStringArgument(
+fun <T> ArgumentCommand<T>.greedyStringArgument(
     name: String,
     function: ArgumentCommand<String>.() -> Unit
 ) {
