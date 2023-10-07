@@ -14,6 +14,7 @@ public class ControllerData {
         var data = new ControllerData();
         data.name = controller.getName();
         data.statusQueryable = controller.isStatusQueryable();
+        data.displayName = controller.getDisplayName();
         data.type = controller.getType();
         return data;
     }

@@ -67,7 +67,6 @@ public class SystemInfoUtil {
         OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
         double cpu = osMxBean.getSystemLoadAverage();//equals -1 if os == windows (Windows doesn't have loadavg)
         processorInfo.setProcessorId(processor.getProcessorIdentifier().getProcessorID());
-        System.out.println(processor.getProcessorIdentifier().getIdentifier());
         processorInfo.setProcessorName(processor.getProcessorIdentifier().getName());
         processorInfo.setPhysicalCPUCount(processor.getPhysicalPackageCount());
         processorInfo.setLogicalProcessorCount(processor.getLogicalProcessorCount());
