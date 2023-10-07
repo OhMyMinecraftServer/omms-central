@@ -408,10 +408,10 @@ val controllerCommand = LiteralCommand("controller") {
         argument("controller", ControllerArgumentType()) {
             execute {
                 val controller = this.getArgument("controller", Controller::class.java)
-                try{
+                try {
                     val status = controller.queryControllerStatus()
                     printControllerStatus(this.source, controller.name, status)
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     sendError("Error occurred while querying controller status: $e")
                     logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")
                 }
@@ -424,7 +424,12 @@ val controllerCommand = LiteralCommand("controller") {
 val announcementCommand = LiteralCommand("announcement") {
     literal("list") {
         execute {
-
+            AnnouncementManager.announcementMap.forEach { entry ->
+                sendFeedback("Announcement: ${entry.value.title} (id: ${entry.value.id})")
+                entry.value.content.forEach {
+                    sendFeedback("    $it")
+                }
+            }
             1
         }
     }
