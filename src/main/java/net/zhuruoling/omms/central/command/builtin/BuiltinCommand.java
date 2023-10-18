@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.command;
+package net.zhuruoling.omms.central.command.builtin;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.google.gson.Gson;
@@ -14,6 +14,8 @@ import kotlin.collections.CollectionsKt;
 import net.zhuruoling.omms.central.GlobalVariable;
 import net.zhuruoling.omms.central.announcement.Announcement;
 import net.zhuruoling.omms.central.announcement.AnnouncementManager;
+import net.zhuruoling.omms.central.command.CommandManager;
+import net.zhuruoling.omms.central.command.CommandSourceStack;
 import net.zhuruoling.omms.central.console.ConsoleUtil;
 import net.zhuruoling.omms.central.console.ConsoleUtilKt;
 import net.zhuruoling.omms.central.controller.ControllerManager;

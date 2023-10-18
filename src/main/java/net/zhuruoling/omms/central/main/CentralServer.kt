@@ -17,6 +17,7 @@ import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.graphics.guiMain
+import net.zhuruoling.omms.central.identity.IdentityProvider
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastSender
@@ -101,6 +102,7 @@ object CentralServer {
             ControllerManager.init()
             AnnouncementManager.init()
             WhitelistManager.init()
+            IdentityProvider.init()
             CommandManager.INSTANCE.init()
             RequestManager.init()
         } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package net.zhuruoling.omms.central.command
+package net.zhuruoling.omms.central.command.builtin
 
 import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
@@ -7,6 +7,7 @@ import net.zhuruoling.omms.central.GlobalVariable.args
 import net.zhuruoling.omms.central.GlobalVariable.config
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
+import net.zhuruoling.omms.central.command.*
 import net.zhuruoling.omms.central.command.arguments.ControllerArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionCodeArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionNameArgumentType
@@ -375,6 +376,8 @@ val permissionCommand = LiteralCommand("permission") {
     }
 }
 
+
+
 val controllerCommand = LiteralCommand("controller") {
     literal("execute") {
         argument("controller", ControllerArgumentType()) {
@@ -382,8 +385,10 @@ val controllerCommand = LiteralCommand("controller") {
                 execute {
                     val controller = getArgument("controller", Controller::class.java)
                     val command = getStringArgument("command")
-                    ControllerManager.sendCommand(controller, command)
-
+                    val result = ControllerManager.sendCommand(controller, command)
+                    result.result.forEach {
+                        sendFeedback("[${result.controllerId}] $it")
+                    }
                     1
                 }
             }

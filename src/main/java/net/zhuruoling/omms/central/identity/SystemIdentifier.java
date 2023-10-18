@@ -1,6 +1,5 @@
 package net.zhuruoling.omms.central.identity;
 
-import io.netty.buffer.Unpooled;
 import oshi.SystemInfo;
 
 public class SystemIdentifier {
@@ -15,5 +14,9 @@ public class SystemIdentifier {
     public static SystemIdentifier create() {
         var computerSystem = new SystemInfo().getHardware().getComputerSystem();
         return new SystemIdentifier(computerSystem.getSerialNumber(), computerSystem.getHardwareUUID());
+    }
+
+    public boolean anyEquals(SystemIdentifier systemIdentifier) {
+        return this.serialNumber.equals(systemIdentifier.serialNumber) || this.hardwareUuid.equals(systemIdentifier.hardwareUuid);
     }
 }

@@ -3,6 +3,7 @@ package net.zhuruoling.omms.central.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.zhuruoling.omms.central.command.builtin.BuiltinCommandKt;
 import net.zhuruoling.omms.central.plugin.callback.CommandRegistrationCallback;
 import net.zhuruoling.omms.central.util.Manager;
 import org.jetbrains.annotations.NotNull;

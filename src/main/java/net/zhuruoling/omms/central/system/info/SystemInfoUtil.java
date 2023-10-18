@@ -89,7 +89,6 @@ public class SystemInfoUtil {
     }
 
     public static @NotNull StorageInfo getStorageInfo(){
-
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         StorageInfo storageInfo = new StorageInfo();
