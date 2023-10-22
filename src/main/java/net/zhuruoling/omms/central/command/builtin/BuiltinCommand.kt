@@ -15,6 +15,8 @@ import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
 import net.zhuruoling.omms.central.console.printControllerStatus
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerManager
+import net.zhuruoling.omms.central.controller.console.input.StdinInputSource
+import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget
 import net.zhuruoling.omms.central.main.CentralServer
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.chatbridge.Broadcast
@@ -25,10 +27,7 @@ import net.zhuruoling.omms.central.permission.PermissionChange
 import net.zhuruoling.omms.central.permission.PermissionManager
 import net.zhuruoling.omms.central.plugin.PluginManager
 import net.zhuruoling.omms.central.plugin.metadata.PluginDependencyRequirement
-import net.zhuruoling.omms.central.util.Util
-import net.zhuruoling.omms.central.util.controllerPrettyPrinting
-import net.zhuruoling.omms.central.util.printRuntimeEnv
-import net.zhuruoling.omms.central.util.whitelistPrettyPrinting
+import net.zhuruoling.omms.central.util.*
 import net.zhuruoling.omms.central.whitelist.PlayerAlreadyExistsException
 import net.zhuruoling.omms.central.whitelist.PlayerNotFoundException
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
@@ -41,7 +40,10 @@ import net.zhuruoling.omms.central.whitelist.WhitelistManager.queryInAllWhitelis
 import net.zhuruoling.omms.central.whitelist.WhitelistManager.searchInWhitelist
 import net.zhuruoling.omms.central.whitelist.WhitelistNotExistException
 import org.slf4j.LoggerFactory
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 import java.lang.management.ManagementFactory
+import java.util.concurrent.locks.LockSupport
+import kotlin.collections.mutableListOf
 
 private val logger = LoggerFactory.getLogger("BuiltinCommand")
 
@@ -404,10 +406,24 @@ val controllerCommand = LiteralCommand("controller") {
         }
     }
     literal("console") {
-        execute {
-            sendFeedback("TODO")
-            1
+        argument("controller", ControllerArgumentType()){
+            execute {
+                val controller = this.getArgument("controller", Controller::class.java)
+                val inputSource = StdinInputSource().withHistory(getOrCreateControllerHistory(controller.name))
+                val outputTarget = StdOutPrintTarget()
+                sendFeedback("Attaching console to controller, use \":q\" to exit console.")
+                SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J()
+                val console = controller.startControllerConsole(inputSource, outputTarget, "console")
+                console.start()
+                while (console.isAlive){
+                    LockSupport.parkNanos(10)
+                }
+                sendFeedback("Exiting console.")
+                SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
+                1
+            }
         }
+
     }
     literal("status") {
         argument("controller", ControllerArgumentType()) {
