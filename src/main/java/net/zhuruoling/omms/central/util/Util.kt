@@ -1,11 +1,13 @@
 package net.zhuruoling.omms.central.util
 
+import net.bytebuddy.agent.ByteBuddyAgent
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerImpl
 import net.zhuruoling.omms.central.whitelist.Whitelist
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
+import java.lang.instrument.Instrumentation
 import java.lang.management.ManagementFactory
 import java.net.URL
 import java.util.*
@@ -98,5 +100,11 @@ object NativeBase64Encoder {
         }
 
         return result.toByteArray()
+    }
+}
+
+object InstrumentationAccess{
+    val instrumentation: Instrumentation by lazy {
+        ByteBuddyAgent.install()
     }
 }

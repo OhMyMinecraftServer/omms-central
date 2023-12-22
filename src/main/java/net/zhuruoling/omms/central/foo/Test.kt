@@ -1,28 +1,42 @@
 package net.zhuruoling.omms.central.foo
 
 import io.ktor.util.*
+import net.zhuruoling.omms.central.plugin.JarClassLoader
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import net.zhuruoling.omms.central.whitelist.WhitelistManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import oshi.SystemInfo
+import java.nio.file.Path
 import java.util.Base64
 import java.util.regex.Pattern
+import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.pathString
 
 val logger: Logger = LoggerFactory.getLogger("Test")
 
-fun getBIOS(): String {
-    val si = SystemInfo()
-    val hal = si.hardware
-    val cs = hal.computerSystem
-    val firmware = cs.firmware
-    return firmware.version
-}
+object C
 
 fun main() {
-    println(1145141919810.0 + 1)
+    val cl = JarClassLoader(C::class.java.classLoader)
+    val jars = Path(Util.joinFilePaths("jars"))
+        .listDirectoryEntries()
+        .filter { it.pathString.endsWith(".jar") }
+        .map(Path::toFile)
+    println(jars)
+    jars.forEach {
+        cl.loadJar(it)
+    }
+    val className = "com.test.Test"
+    val clazz = cl.loadClass(className)
+    println(clazz)
+    clazz.getDeclaredConstructor(java.lang.String::class.java).newInstance("wdnmd")
+    println("replace jar plz")
+    readln()
+    cl.reloadClass(className)
+    clazz.getDeclaredConstructor(java.lang.String::class.java).newInstance("wdnmd")
 }
 
-//operator fun <T, R> T.invoke(fn: T.() -> R) = fn(this)
 

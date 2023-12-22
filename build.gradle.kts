@@ -129,6 +129,7 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
     implementation("org.jetbrains.pty4j:pty4j:0.12.10")
     implementation("io.socket:socket.io-client:2.1.0")
+    implementation("net.bytebuddy:byte-buddy-agent:1.14.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
 }
