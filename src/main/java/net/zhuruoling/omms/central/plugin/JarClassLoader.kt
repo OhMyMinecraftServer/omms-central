@@ -52,12 +52,6 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
         }
     }
 
-    private fun removeLoadedClass(name: String) {
-        if (name !in loadedClassesFromJar && name !in jarClassEntriesByClassName)
-            throw IllegalStateException("class $name is not loaded from current JarClassLoader")
-
-    }
-
     fun reloadClass(name: String): Class<*> {
         if (name !in loadedClassesFromJar && name !in jarClassEntriesByClassName)
             throw IllegalStateException("class $name is not loaded from current JarClassLoader")
@@ -65,8 +59,10 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
             return loadClass(name, false)
         }
         InstrumentationAccess.instrumentation.apply {
-            addTransformer(ReloadClassTransformer(this@JarClassLoader, name), true)
+            val tr = ReloadClassTransformer(this@JarClassLoader, name)
+            addTransformer(tr, true)
             retransformClasses(loadedClassesFromJar[name])
+            removeTransformer(tr)
         }
         return loadedClassesFromJar[name]!!
     }
