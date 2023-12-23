@@ -36,6 +36,7 @@ fun main() {
     println("replace jar plz")
     readln()
     cl.reloadClass(className)
+    cl.reloadAllClasses()
     clazz.getDeclaredConstructor(java.lang.String::class.java).newInstance("wdnmd")
 }
 

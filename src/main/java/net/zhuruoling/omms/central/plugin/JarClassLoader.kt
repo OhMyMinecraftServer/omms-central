@@ -52,19 +52,42 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
         }
     }
 
+    @Synchronized
+    fun reloadAllClasses() {
+        val classes = mutableMapOf<File, MutableMap<String, String>>()
+        loadedClassesFromJar.forEach {
+            val (entryName, f) = jarClassEntriesByClassName[it.key]!!
+            if(f !in classes) classes[f] = mutableMapOf()
+            classes[f]!![it.key] = entryName
+        }
+        classes.forEach { (file, map) ->
+            ZipFile(file).use {
+                val entries = it.entries().toList().map { it.name }
+                map.forEach { (className, entryName) ->
+                    if (entryName !in entries){
+                        throw IllegalStateException("Removal of class ($className).")
+                    }
+                }
+            }
+            map.keys.forEach(::reloadClass)
+        }
+    }
+
     fun reloadClass(name: String): Class<*> {
-        if (name !in loadedClassesFromJar && name !in jarClassEntriesByClassName)
-            throw IllegalStateException("class $name is not loaded from current JarClassLoader")
-        if (name !in loadedClassesFromJar) {
-            return loadClass(name, false)
+        synchronized(classLoadingLock) {
+            if (name !in loadedClassesFromJar && name !in jarClassEntriesByClassName)
+                throw IllegalStateException("class $name is not loaded from current JarClassLoader")
+            if (name !in loadedClassesFromJar) {
+                return loadClass(name, false)
+            }
+            InstrumentationAccess.instrumentation.apply {
+                val tr = ReloadClassTransformer(this@JarClassLoader, name)
+                addTransformer(tr, true)
+                retransformClasses(loadedClassesFromJar[name])
+                removeTransformer(tr)
+            }
+            return loadedClassesFromJar[name]!!
         }
-        InstrumentationAccess.instrumentation.apply {
-            val tr = ReloadClassTransformer(this@JarClassLoader, name)
-            addTransformer(tr, true)
-            retransformClasses(loadedClassesFromJar[name])
-            removeTransformer(tr)
-        }
-        return loadedClassesFromJar[name]!!
     }
 
     override fun loadClass(name: String, resolve: Boolean): Class<*> {
@@ -92,15 +115,16 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
     }
 
     private fun getClassBytes(className: String): ByteArray {
-        if (className !in jarClassEntriesByClassName) throw IllegalArgumentException("class $className is not loaded from current JarClassLoader")
-        val (path, file) = jarClassEntriesByClassName[className]!!
-        val it = ZipFile(file)
-        val entry = it.getEntry(path)
-        val stream = it.getInputStream(entry)
-        val bytes = stream.readAllBytes()
-        println("getbytes ${entry.name}")
-        it.close()
-        return bytes
+        synchronized(fileLoadingLock) {
+            if (className !in jarClassEntriesByClassName) throw IllegalArgumentException("class $className is not loaded from current JarClassLoader")
+            val (path, file) = jarClassEntriesByClassName[className]!!
+            val it = ZipFile(file)
+            val entry = it.getEntry(path)
+            val stream = it.getInputStream(entry)
+            val bytes = stream.readAllBytes()
+            it.close()
+            return bytes
+        }
     }
 
     class ReloadClassTransformer(
@@ -119,7 +143,6 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
             if (this.className != name) return classfileBuffer
             if (reloaded.get()) return classfileBuffer
             reloaded.set(true)
-            println("reloading!")
             return jarClassLoader.getClassBytes(name)
         }
     }
