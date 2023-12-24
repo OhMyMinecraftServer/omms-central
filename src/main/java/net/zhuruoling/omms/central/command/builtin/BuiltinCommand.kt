@@ -487,6 +487,16 @@ val pluginCommand = LiteralCommand("plugin") {
             1
         }
     }
+    literal("reload"){
+        requires({it.source != CommandSourceStack.Source.REMOTE}){
+            execute {
+                logger.warn("Plugin reloading is highly experimental, in some cases it can cause severe problems.")
+                logger.info("Reloading all plugins!")
+                PluginManager.reloadAll()
+                0
+            }
+        }
+    }
 }
 
 

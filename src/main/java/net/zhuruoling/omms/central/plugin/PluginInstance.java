@@ -31,10 +31,10 @@ public class PluginInstance {
     private final Map<String, PluginRequestHandler> pluginRequestHandlers = new LinkedHashMap<>();
     private final @NotNull URL pluginPathUrl;
     private final @NotNull Path pluginPath;
-    private final URLClassLoader classLoader;
+    private final JarClassLoader classLoader;
 
 
-    public PluginInstance(URLClassLoader classLoader, @NotNull Path jarPath) throws MalformedURLException {
+    public PluginInstance(JarClassLoader classLoader, @NotNull Path jarPath) throws MalformedURLException {
         pluginPathUrl = new URL("file://" + jarPath.toAbsolutePath());
         pluginPath = jarPath;
         this.classLoader = classLoader;

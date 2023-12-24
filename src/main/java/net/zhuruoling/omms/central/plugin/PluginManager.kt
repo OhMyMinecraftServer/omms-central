@@ -17,10 +17,10 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 
-object PluginManager : Manager(), Iterable<PluginInstance>{
+object PluginManager : Manager(), Iterable<PluginInstance> {
     private var pluginMap = LinkedHashMap<String, PluginInstance>()
     private var pluginFileList = arrayListOf<String>()
-    private lateinit var classLoader: URLClassLoader
+    private lateinit var classLoader: JarClassLoader
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
         if (GlobalVariable.noPlugins) {
@@ -33,7 +33,9 @@ object PluginManager : Manager(), Iterable<PluginInstance>{
             .filter { it.toFile().extension == "jar" }.forEach {
                 pluginFileList += it.absolutePathString()
             }
-        classLoader = URLClassLoader(pluginFileList.stream().map { File(it).toURI().toURL() }.toList().toTypedArray())
+        classLoader = JarClassLoader(this::class.java.classLoader).apply {
+            pluginFileList.map { File(it) }.forEach(this::loadJar)
+        }
         pluginFileList.forEach {
             PluginInstance(classLoader, Path(it)).run {
                 loadJar()
@@ -62,6 +64,21 @@ object PluginManager : Manager(), Iterable<PluginInstance>{
     operator fun get(id: String): PluginInstance? {
         return pluginMap[id]
     }
+
+    fun reloadAll(){
+        synchronized(pluginMap){
+            pluginMap.values.forEach {
+                logger.debug("preOnReload ${it.pluginMetadata.id}")
+                it.pluginMain.preOnReload()
+            }
+            classLoader.reloadAllClasses()
+            pluginMap.values.forEach {
+                logger.debug("postOnReload ${it.pluginMetadata.id}")
+                it.pluginMain.postOnReload()
+            }
+        }
+    }
+
     private fun checkRequirements() {
         val dependencies = mutableListOf<PluginDependency>()
         dependencies += PluginDependency(
