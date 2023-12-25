@@ -497,6 +497,14 @@ val pluginCommand = LiteralCommand("plugin") {
             }
         }
     }
+    literal("refresh"){
+        execute {
+            logger.warn("Plugin refreshing is highly experimental, in some cases it can cause severe problems.")
+            logger.info("Refreshing plugins!")
+            PluginManager.refreshPlugins()
+            0
+        }
+    }
 }
 
 

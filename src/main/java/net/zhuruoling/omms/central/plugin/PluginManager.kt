@@ -11,7 +11,6 @@ import net.zhuruoling.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.lang.module.ModuleDescriptor
-import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -37,19 +36,23 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
             pluginFileList.map { File(it) }.forEach(this::loadJar)
         }
         pluginFileList.forEach {
-            PluginInstance(classLoader, Path(it)).run {
-                loadJar()
-                if (pluginState != PluginState.PRE_LOAD) return@forEach
-                this
-            }.run {
-                if (pluginMetadata.id in pluginMap) {
-                    logger.error("Plugin $it has a same id with plugin ${pluginMap[pluginMetadata.id]!!.pluginPathUrl.path}")
-                    return@forEach
-                }
-                loadPluginClasses()
-                if (pluginState == PluginState.ERROR) return@forEach
-                this.pluginMetadata.id to this
-            }.apply { pluginMap += this }
+            loadPluginFromFile(Path(it))?.apply { pluginMap += this }
+        }
+    }
+
+    private fun loadPluginFromFile(it: Path): Pair<String, PluginInstance>? {
+        return PluginInstance(classLoader, it).run {
+            loadJar()
+            if (pluginState != PluginState.PRE_LOAD) return null
+            this
+        }.run {
+            if (pluginMetadata.id in pluginMap) {
+                logger.error("Plugin $it has a same id with plugin ${pluginMap[pluginMetadata.id]!!.pluginPathUrl.path}")
+                return null
+            }
+            loadPluginClasses()
+            if (pluginState == PluginState.ERROR) return null
+            this.pluginMetadata.id to this
         }
     }
 
@@ -61,12 +64,36 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         }
     }
 
+    fun refreshPlugins() {
+        val beforeFiles = pluginFileList
+        val afterFiles = buildList {
+            Files.list(Path.of(Util.joinFilePaths("plugins")))
+                .filter { it.toFile().extension == "jar" }.forEach {
+                    this += it.absolutePathString()
+                }
+        }
+        beforeFiles.forEach {
+            if (it !in afterFiles) throw UnsupportedOperationException("Cannot remove plugins.")
+        }
+        pluginFileList.clear()
+        pluginFileList += afterFiles
+        val newFiles = (afterFiles - beforeFiles.toSet()).map { File(it) }
+        newFiles.forEach(this.classLoader::loadJar)
+        newFiles.forEach {
+            loadPluginFromFile(it.toPath())?.apply {
+                pluginMap += this
+                checkRequirements()
+                this.second.onInitialize()
+            }
+        }
+    }
+
     operator fun get(id: String): PluginInstance? {
         return pluginMap[id]
     }
 
-    fun reloadAll(){
-        synchronized(pluginMap){
+    fun reloadAll() {
+        synchronized(pluginMap) {
             pluginMap.values.forEach {
                 logger.debug("preOnReload ${it.pluginMetadata.id}")
                 it.pluginMain.preOnReload()
