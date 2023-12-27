@@ -7,14 +7,12 @@ import java.util.List;
 
 public class Status {
     boolean isAlive = false;
-
     boolean isQueryable = false;
     String name;
     String type = "";
     int playerCount = 0;
     int maxPlayerCount = 0;
     List<String> players = new ArrayList<>();
-
 
     public Status() {
     }

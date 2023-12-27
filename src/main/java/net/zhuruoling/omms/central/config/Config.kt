@@ -1,5 +1,9 @@
 package net.zhuruoling.omms.central.config
 
+import io.ktor.network.tls.*
+import io.ktor.server.sessions.*
+import io.ktor.util.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,17 +16,18 @@ object Config {
     private val json = Json {
         this.prettyPrint = true
         encodeDefaults = true
+        ignoreUnknownKeys = true
     }
     private val file = Path(Util.getWorkingDir()) / "config.json"
     lateinit var config: ConfigStorage
     private val logger = LoggerFactory.getLogger("Config")
 
     fun load():Boolean{
-        var ret = false
+        var ret = true
         if (file.notExists()){
             logger.info("Writing default config file.")
             writeConfig(ConfigStorage())
-            ret = true
+            ret = false
         }
         return try {
             config = json.decodeFromString<ConfigStorage>(file.readText())
@@ -47,11 +52,13 @@ object Config {
     }
 }
 
+@Serializable
 data class ConfigStorage(
     val port: Int = 50000,
     val serverName: String = "OMMS-Central",
     val httpPort: Int = 50001,
     val rateLimit: Int = 1000,
     val authorisedController: List<String> = listOf(),
-    var chatbridgeImplementation: ChatbridgeImplementation = ChatbridgeImplementation.UDP
+    val chatbridgeImplementation: ChatbridgeImplementation = ChatbridgeImplementation.UDP,
+    val apiAccessKey: String = "XX" + Util.generateRandomString(30)
 )

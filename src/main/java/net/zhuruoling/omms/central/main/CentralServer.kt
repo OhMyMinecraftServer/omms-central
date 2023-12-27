@@ -40,7 +40,7 @@ import kotlin.system.exitProcess
 
 object CentralServer {
     private val logger: Logger = LoggerFactory.getLogger("Main")
-    val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
+    private val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var initialized = false
 
     @Throws(IOException::class)
@@ -84,6 +84,7 @@ object CentralServer {
         logger.info("\tAuthorisedController: ${config.authorisedController}")
         logger.info("\tRequestRateLimit: ${config.rateLimit}")
         logger.info("\tChatbridgeImplementation: ${config.chatbridgeImplementation}")
+        logger.info("\tApiAccessKey: ${config.apiAccessKey.substring(0..5) + "*".repeat(26)}")
         logger.info("Setting up managers.")
         try {
             PluginManager.init()
@@ -118,7 +119,7 @@ object CentralServer {
             val sender = UdpBroadcastSender()
             sender.start()
             udpBroadcastSender = sender
-            udpBroadcastSender?.createMulticastSocketCache(Util.TARGET_CHAT)
+            udpBroadcastSender.createMulticastSocketCache(Util.TARGET_CHAT)
         }
 
         val timeComplete = System.currentTimeMillis()
@@ -153,12 +154,12 @@ object CentralServer {
         try {
             logger.info("Stopping!")
             normalShutdown = true
-            httpServer?.interrupt()
+            httpServer.interrupt()
             if (Config.config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
-                receiver?.interrupt()
-                udpBroadcastSender?.isStopped = true
+                receiver.interrupt()
+                udpBroadcastSender.isStopped = true
             }
-            socketServer?.interrupt()
+            socketServer.interrupt()
             logger.info("Bye")
             if (normalShutdown) {
                 exitProcess(0)

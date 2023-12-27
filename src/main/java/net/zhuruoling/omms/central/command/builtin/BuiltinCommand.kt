@@ -20,6 +20,8 @@ import net.zhuruoling.omms.central.controller.console.output.StdOutPrintTarget
 import net.zhuruoling.omms.central.main.CentralServer
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.chatbridge.Broadcast
+import net.zhuruoling.omms.central.network.chatbridge.buildBroadcast
+import net.zhuruoling.omms.central.network.chatbridge.sendBroadcast
 import net.zhuruoling.omms.central.network.http.routes.sendToAllWS
 import net.zhuruoling.omms.central.permission.Operation
 import net.zhuruoling.omms.central.permission.Permission
@@ -202,24 +204,15 @@ val broadcastCommand = LiteralCommand("broadcast") {
             }
             val text = getStringArgument("text")
             sendFeedback("Sending message:$text")
-            val broadcast = Broadcast()
-            broadcast.setChannel("GLOBAL")
-            broadcast.setContent(text)
-            broadcast.setPlayer(Util.generateRandomString(8))
-            broadcast.setServer("OMMS CENTRAL")
-            when (config.chatbridgeImplementation) {
-                ChatbridgeImplementation.UDP -> udpBroadcastSender!!.addToQueue(
-                    Util.TARGET_CHAT,
-                    Gson().toJson(broadcast, Broadcast::class.java)
-                )
-
-                ChatbridgeImplementation.WS -> sendToAllWS(broadcast)
-                ChatbridgeImplementation.DISABLE -> {}
-            }
+            val broadcast = buildBroadcast("GLOBAL", text)
+            sendBroadcast(broadcast)
             1
         }
     }
 }
+
+
+
 val stopCommand = LiteralCommand("stop") {
     execute {
         CentralServer.stop()

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.LockSupport;
 
 public class UdpBroadcastSender extends Thread {
 
@@ -50,7 +51,7 @@ public class UdpBroadcastSender extends Thread {
                 if (!queue.isEmpty()) {
                     queue.forEach(this::send);
                 }
-                sleep(10);
+                LockSupport.parkNanos(10);
             }catch (Exception e){
                 e.printStackTrace();
             }

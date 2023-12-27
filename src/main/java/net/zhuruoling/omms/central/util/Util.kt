@@ -1,9 +1,12 @@
 package net.zhuruoling.omms.central.util
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.bytebuddy.agent.ByteBuddyAgent
 import net.zhuruoling.omms.central.GlobalVariable
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerImpl
+import net.zhuruoling.omms.central.controller.Status
 import net.zhuruoling.omms.central.whitelist.Whitelist
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
@@ -11,7 +14,6 @@ import java.lang.instrument.Instrumentation
 import java.lang.management.ManagementFactory
 import java.net.URL
 import java.util.*
-import kotlin.collections.ArrayList
 
 fun whitelistPrettyPrinting(whitelistImpl: Whitelist): String {
     return """
@@ -49,16 +51,20 @@ fun <T> mutableListOf(vararg elements: T): MutableList<T> {
     return kotlin.collections.mutableListOf(*elements)
 }
 
+val versionInfoString: String
+    get() {
+        val version = BuildProperties["version"]
+        val buildTimeMillis = BuildProperties["buildTime"]?.toLong() ?: 0L
+        val buildTime = Date(buildTimeMillis)
+        return "${Util.PRODUCT_NAME} $version (${BuildProperties["branch"]}:${
+            BuildProperties["commitId"]?.substring(0, 7)
+        } $buildTime)"
+    }
+
 fun printRuntimeEnv() {
     val logger = LoggerFactory.getLogger("Util")
     val os = ManagementFactory.getOperatingSystemMXBean()
     val runtime = ManagementFactory.getRuntimeMXBean()
-    val version = BuildProperties["version"]
-    val buildTimeMillis = BuildProperties["buildTime"]?.toLong() ?: 0L
-    val buildTime = Date(buildTimeMillis)
-    val versionInfoString = "${Util.PRODUCT_NAME} $version (${BuildProperties["branch"]}:${
-        BuildProperties["commitId"]?.substring(0, 7)
-    } $buildTime)"
     logger.info("$versionInfoString is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}")
 }
 
@@ -103,8 +109,29 @@ object NativeBase64Encoder {
     }
 }
 
-object InstrumentationAccess{
+object InstrumentationAccess {
     val instrumentation: Instrumentation by lazy {
         ByteBuddyAgent.install()
+    }
+}
+
+//fun Any.toStringMap():Map<String,String>{
+//    return buildMap {
+//        this@toStringMap::class.members.filterIsInstance<KProperty<*>>().forEach { p ->
+//                println(p.getter.parameters.joinToString { it.toString() })
+//                this[p.name] = p.getter.call(this@toStringMap).toString()
+//            }
+//    }
+//}
+
+fun Status.toStringMap(): Map<String, String> {
+    return buildMap {
+        this["isAlive"] = isAlive.toString()
+        this["isQueryable"] = isQueryable.toString()
+        this["name"] = name
+        this["type"] = type
+        this["playerCount"] = playerCount.toString()
+        this["maxPlayerCount"] = maxPlayerCount.toString()
+        this["players"] = Json.encodeToString<List<String>>(players)
     }
 }

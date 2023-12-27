@@ -71,7 +71,7 @@ object RequestManager : Manager(){
     fun unRegisterPluginRequest(pluginId: String, request: String) {
         if (requestTable.containsKey(request)) {
             pluginRequestTable.forEach {
-                if (it.a == pluginId && it.b == request) {
+                if (it.a() == pluginId && it.b() == request) {
                     pluginRequestTable.remove(it)
                     requestTable.remove(request)
                     return
@@ -83,9 +83,9 @@ object RequestManager : Manager(){
     fun unRegisterPluginRequest(pluginId: String) {
         val deleted = mutableListOf<StringPair>()
         pluginRequestTable.forEach {
-            if (it.a == pluginId) {
+            if (it.a() == pluginId) {
                 deleted.add(it)
-                requestTable.remove(it.b)
+                requestTable.remove(it.b())
                 return@forEach
             }
         }

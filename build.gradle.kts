@@ -8,11 +8,12 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.9.10"
+    kotlin("jvm") version "1.9.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
     id("maven-publish")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.21"
 }
 
 group = "com.github.ZhuRuoLing"
@@ -106,7 +107,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("ch.qos.logback:logback-core:1.2.11")
     implementation("org.jetbrains:annotations:23.0.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
     implementation("io.netty:netty-all:4.1.77.Final")
     implementation("com.github.oshi:oshi-core:6.1.6")
     implementation("net.java.dev.jna:jna:5.11.0")

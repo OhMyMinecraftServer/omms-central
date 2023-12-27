@@ -83,11 +83,7 @@ object ControllerManager : Manager() {
 
     fun sendCommand(controllerName: String, command: String): CommandExecutionResult {
         if (controllerName in controllers) {
-            try {
-                return this[controllerName]!!.sendCommand(command)
-            } catch (e: Exception) {
-                throw e
-            }
+            return this[controllerName]!!.sendCommand(command)
         } else {
             throw ControllerNotExistException(controllerName)
         }
