@@ -6,8 +6,11 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.*
-import net.zhuruoling.omms.central.GlobalVariable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.security.HttpAuthUtil
 
 
@@ -24,7 +27,7 @@ fun testAuth(name: String, command: String){
         }
     }
     GlobalScope.launch(Dispatchers.IO) {
-        val response = client.post("http://localhost:${GlobalVariable.config?.httpPort}/command/run") {
+        val response = client.post("http://localhost:${config.httpPort}/command/run") {
             headers.append(HttpHeaders.UserAgent, "omms controller")
             setBody(command)
         }

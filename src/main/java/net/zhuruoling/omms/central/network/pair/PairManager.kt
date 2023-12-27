@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.ktor.util.*
 import net.zhuruoling.omms.central.command.CommandSourceStack
-import net.zhuruoling.omms.central.GlobalVariable
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.util.Manager
 import net.zhuruoling.omms.central.util.Util
 import java.io.FileReader
@@ -32,7 +32,7 @@ object PairManager : Manager() {
             val writer = FileWriter(path.toFile())
             val pairConfig = PairConfig(
                 true, PreloadControllerConfig(
-                    "localhost:${GlobalVariable.config!!.httpPort}",
+                    "localhost:${config.httpPort}",
                     "GLOBAL",
                     "bot_",
                     "_bot",
@@ -54,7 +54,7 @@ object PairManager : Manager() {
 
 
     fun create(controllerId: String, usesWhitelist: String): String {
-        val pairCode = Util.randomStringGen(5, false, false).toUpperCasePreservingASCIIRules()
+        val pairCode = Util.generateRandomString(5, false, false).toUpperCasePreservingASCIIRules()
         val controllerConfig = ControllerConfig(controllerId, usesWhitelist, preloadConfig)
         this.pairCodeMap[pairCode] = controllerConfig
         return pairCode

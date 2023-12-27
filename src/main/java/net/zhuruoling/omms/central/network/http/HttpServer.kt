@@ -3,7 +3,7 @@ package net.zhuruoling.omms.central.network.http
 import io.ktor.server.application.*
 import io.ktor.server.netty.*
 import io.ktor.server.websocket.*
-import net.zhuruoling.omms.central.GlobalVariable
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.http.plugins.configureAuthentication
 import net.zhuruoling.omms.central.network.http.plugins.configureRouting
@@ -13,7 +13,7 @@ import java.time.Duration
 fun httpServerMain(args: Array<String>) = EngineMain.main(args)
 
 fun launchHttpServerAsync(args: Array<String>): Thread {
-    val arguments = args + "-port=${GlobalVariable.config?.httpPort}"
+    val arguments = args + "-port=${config.httpPort}"
     val thread = Thread {
         try {
             httpServerMain(arguments)
@@ -27,7 +27,7 @@ fun launchHttpServerAsync(args: Array<String>): Thread {
 
 @Suppress("unused")
 fun Application.module() {
-    if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.WS) {
+    if (config.chatbridgeImplementation == ChatbridgeImplementation.WS) {
         install(WebSockets) {
             pingPeriod = Duration.ofSeconds(1)
             timeout = Duration.ofSeconds(3)

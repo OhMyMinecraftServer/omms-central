@@ -59,10 +59,10 @@ fun test(len: Int) {
         it.color = Color.BLACK
         val h = it.fontMetrics.height
         for (i in 1..len) {
-            it.drawString(Util.randomStringGen(i), 0, (i) * h)
+            it.drawString(Util.generateRandomString(i), 0, (i) * h)
         }
     }
-    saveImage(Path(Util.joinFilePaths("image", "${Util.randomStringGen(8)}.png")), image)
+    saveImage(Path(Util.joinFilePaths("image", "${Util.generateRandomString(8)}.png")), image)
 }
 
 fun info() {

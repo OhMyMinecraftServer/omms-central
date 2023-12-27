@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class CreateAnnouncementRequestHandler extends BuiltinRequestHandler {
     @Override
     public @Nullable Response handle(@NotNull Request request, SessionContext session) {
-        String id = request.getContent("id") != null ? request.getContent("id") : Util.randomStringGen(16);
+        String id = request.getContent("id") != null ? request.getContent("id") : Util.generateRandomString(16);
         long time = request.getContent("time") != null ? Long.parseLong(request.getContent("time")) : System.currentTimeMillis();
         var typeString = request.getContent("type");
         if (typeString == null)typeString = ContentType.STRING.name();

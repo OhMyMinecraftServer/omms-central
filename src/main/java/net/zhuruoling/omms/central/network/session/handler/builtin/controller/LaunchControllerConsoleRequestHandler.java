@@ -26,7 +26,7 @@ public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler
         if (controller == null){
             return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", controllerName);
         }
-        String id = Util.randomStringGen(16);
+        String id = Util.generateRandomString(16);
         ControllerConsole controllerConsoleImpl =  controller.startControllerConsole(new SessionInputSource(),new EncryptedSocketPrintTarget(session.getServer()), id);
         controllerConsoleImpl.start();
         session.getControllerConsoleMap().put(id, controllerConsoleImpl);

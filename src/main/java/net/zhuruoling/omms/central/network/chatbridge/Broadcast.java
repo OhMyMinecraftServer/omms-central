@@ -10,7 +10,7 @@ public class Broadcast {
     public String content;
     public String id;
     public Broadcast(){
-        this.id = Util.randomStringGen(16);
+        this.id = Util.generateRandomString(16);
     }
 
     public Broadcast(String channel, String server, String player, String content) {
@@ -18,7 +18,7 @@ public class Broadcast {
         this.server = server;
         this.player = player;
         this.content = content;
-        this.id = Util.randomStringGen(16);
+        this.id = Util.generateRandomString(16);
     }
 
     @Override

@@ -6,6 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.zhuruoling.omms.central.GlobalVariable
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.network.ChatbridgeImplementation
 import net.zhuruoling.omms.central.network.http.routes.*
 import net.zhuruoling.omms.central.plugin.callback.HttpServerLoadCallback
@@ -27,7 +28,7 @@ fun Application.configureRouting() {
             controllerStatusQueryRouting()
             managementQueryRouting()
         }
-        if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.WS) {
+        if (config.chatbridgeImplementation == ChatbridgeImplementation.WS) {
             authenticate("omms-controller-auth") {
                 websocketRoute()
                 identityQueryRoute()

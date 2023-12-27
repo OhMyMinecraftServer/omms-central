@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import net.zhuruoling.omms.central.GlobalVariable.args
-import net.zhuruoling.omms.central.GlobalVariable.config
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.command.*
@@ -12,6 +11,7 @@ import net.zhuruoling.omms.central.command.arguments.ControllerArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionCodeArgumentType
 import net.zhuruoling.omms.central.command.arguments.PermissionNameArgumentType
 import net.zhuruoling.omms.central.command.arguments.WhitelistArgumentType
+import net.zhuruoling.omms.central.config.Config
 import net.zhuruoling.omms.central.console.printControllerStatus
 import net.zhuruoling.omms.central.controller.Controller
 import net.zhuruoling.omms.central.controller.ControllerManager
@@ -46,6 +46,7 @@ import java.util.concurrent.locks.LockSupport
 import kotlin.collections.mutableListOf
 
 private val logger = LoggerFactory.getLogger("BuiltinCommand")
+private val config = Config.config
 
 val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
@@ -195,7 +196,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
 val broadcastCommand = LiteralCommand("broadcast") {
     greedyStringArgument("text") {
         execute {
-            if (config?.chatbridgeImplementation == null) {
+            if (config.chatbridgeImplementation == ChatbridgeImplementation.DISABLE) {
                 sendFeedback("Chatbridge disabled.")
                 return@execute 0
             }
@@ -204,15 +205,16 @@ val broadcastCommand = LiteralCommand("broadcast") {
             val broadcast = Broadcast()
             broadcast.setChannel("GLOBAL")
             broadcast.setContent(text)
-            broadcast.setPlayer(Util.randomStringGen(8))
+            broadcast.setPlayer(Util.generateRandomString(8))
             broadcast.setServer("OMMS CENTRAL")
-            when (config!!.chatbridgeImplementation) {
+            when (config.chatbridgeImplementation) {
                 ChatbridgeImplementation.UDP -> udpBroadcastSender!!.addToQueue(
                     Util.TARGET_CHAT,
                     Gson().toJson(broadcast, Broadcast::class.java)
                 )
 
                 ChatbridgeImplementation.WS -> sendToAllWS(broadcast)
+                ChatbridgeImplementation.DISABLE -> {}
             }
             1
         }

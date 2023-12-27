@@ -12,8 +12,7 @@ import net.zhuruoling.omms.central.GlobalVariable.test
 import net.zhuruoling.omms.central.GlobalVariable.udpBroadcastSender
 import net.zhuruoling.omms.central.announcement.AnnouncementManager
 import net.zhuruoling.omms.central.command.CommandManager
-import net.zhuruoling.omms.central.config.ConfigReader
-import net.zhuruoling.omms.central.config.Configuration
+import net.zhuruoling.omms.central.config.Config
 import net.zhuruoling.omms.central.console.ConsoleInputHandler
 import net.zhuruoling.omms.central.controller.ControllerManager
 import net.zhuruoling.omms.central.graphics.guiMain
@@ -41,7 +40,6 @@ import kotlin.system.exitProcess
 
 object CentralServer {
     private val logger: Logger = LoggerFactory.getLogger("Main")
-    private var config: Configuration? = null
     val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var initialized = false
 
@@ -56,7 +54,7 @@ object CentralServer {
             noGui = argList.contains("--nogui")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
-        if (!noGui){
+        if (!noGui) {
             guiMain()
         }
         GlobalVariable.launchTime = timeStart
@@ -64,36 +62,28 @@ object CentralServer {
 
         logger.info("Hello World!")
         logger.info("Loading Config.")
-        (Arrays.stream(Util.DATA_FOLDERS).map { File(Util.getWorkingDir() + File.separator + it) }
-            .filter { !(it.isDirectory or it.exists()) }.toList() to
-                !Util.fileExists(Util.getWorkingDir() + File.separator + "config.json")).run {
-            first.run {
+        (Util.DATA_FOLDERS.map { File(Util.getWorkingDir() + File.separator + it) }
+            .filter { !(it.isDirectory or it.exists()) }.toList())
+            .run {
                 if (isNotEmpty()) {
                     logger.info("Preparing data folders.")
                     forEach {
                         Util.createFolder(it.path, logger)
                     }
                 }
+                if (isNotEmpty()) exitProcess(0)
             }
-            if (second) {
-                Util.createConfig(logger)
-            }
-            if (first.isNotEmpty() or second) exitProcess(0)
-        }
-
-        config = ConfigReader.read()
-        if (config == null) {
-            logger.error("Empty CONFIG.")
+        if (!Config.load()) {
             exitProcess(1)
         }
-        GlobalVariable.config = config
+        val config = Config.config
         logger.info("Config:")
-        logger.info("\tServerName: ${config?.serverName}")
-        logger.info("\tSocketPort: ${config?.port}")
-        logger.info("\tHttpPort: ${config?.httpPort}")
-        logger.info("\tAuthorisedController: ${Arrays.toString(config?.authorisedController)}")
-        logger.info("\tRequestRateLimit: ${config?.rateLimit}")
-        logger.info("\tChatbridgeImplementation: ${config?.chatbridgeImplementation}")
+        logger.info("\tServerName: ${config.serverName}")
+        logger.info("\tSocketPort: ${config.port}")
+        logger.info("\tHttpPort: ${config.httpPort}")
+        logger.info("\tAuthorisedController: ${config.authorisedController}")
+        logger.info("\tRequestRateLimit: ${config.rateLimit}")
+        logger.info("\tChatbridgeImplementation: ${config.chatbridgeImplementation}")
         logger.info("Setting up managers.")
         try {
             PluginManager.init()
@@ -115,7 +105,7 @@ object CentralServer {
         val socketServer = SessionLoginServer()
         socketServer.start()
         GlobalVariable.socketServer = socketServer
-        if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
+        if (config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
             val receiver = UdpBroadcastReceiver()
             receiver.start()
             GlobalVariable.receiver = receiver
@@ -124,7 +114,7 @@ object CentralServer {
         val httpServer = launchHttpServerAsync(args)
         GlobalVariable.httpServer = httpServer
 
-        if (GlobalVariable.config!!.chatbridgeImplementation == ChatbridgeImplementation.UDP){
+        if (config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
             val sender = UdpBroadcastSender()
             sender.start()
             udpBroadcastSender = sender
@@ -135,25 +125,25 @@ object CentralServer {
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\".")
         initialized = true
-        thread(name = "ConsoleThread"){
+        thread(name = "ConsoleThread") {
             while (true) {
                 val handler = ConsoleInputHandler.INSTANCE
                 handler.handle()
             }
         }
-        while (true){
+        while (true) {
             while (taskQueue.isNotEmpty()) {
-                try{
+                try {
                     taskQueue.poll()()
-                }catch (e:Exception){
-                    logger.error("Error occurred while executing tasks",e)
+                } catch (e: Exception) {
+                    logger.error("Error occurred while executing tasks", e)
                 }
             }
             LockSupport.parkNanos(10)
         }
     }
 
-    fun runOnMainThread(fn: () -> Unit){
+    fun runOnMainThread(fn: () -> Unit) {
         taskQueue.add(fn)
     }
 
@@ -164,7 +154,7 @@ object CentralServer {
             logger.info("Stopping!")
             normalShutdown = true
             httpServer?.interrupt()
-            if (GlobalVariable.config?.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
+            if (Config.config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
                 receiver?.interrupt()
                 udpBroadcastSender?.isStopped = true
             }

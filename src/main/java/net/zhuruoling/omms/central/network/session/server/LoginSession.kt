@@ -1,7 +1,7 @@
 package net.zhuruoling.omms.central.network.session.server
 
 import com.google.gson.GsonBuilder
-import net.zhuruoling.omms.central.GlobalVariable.config
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.network.EncryptedSocket
 import net.zhuruoling.omms.central.network.session.Session
 import net.zhuruoling.omms.central.network.session.request.LoginRequest
@@ -57,12 +57,12 @@ class LoginSession(socket: Socket) :
                     logger.debug("$code has following permissions: ${permissions?.joinToString(", ")}")
                     val isCodeExist = permissions != null
                     if (isCodeExist) {
-                        val randomKey = Util.randomStringGen(32)
+                        val randomKey = Util.generateRandomString(32)
                         encryptedConnector.send(
                             Response.serialize(
                                 Response().withResponseCode(Result.OK)
                                     .withContentPair("key", randomKey)
-                                    .withContentPair("serverName", config!!.serverName)
+                                    .withContentPair("serverName", config.serverName)
                             )
                         )
                         logger.info("Starting SessionServer for #${socket.getInetAddress()}:${socket.port}")

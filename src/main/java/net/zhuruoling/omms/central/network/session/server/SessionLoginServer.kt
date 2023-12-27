@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.server
 
-import net.zhuruoling.omms.central.GlobalVariable.config
+import net.zhuruoling.omms.central.config.Config.config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
@@ -15,7 +15,7 @@ class SessionLoginServer : Thread() {
 
     override fun run() {
         try {
-            ServerSocket(config!!.port).use { server ->
+            ServerSocket(config.port).use { server ->
                 logger.info("Started SessionLoginServer.")
                 while (true) {
                     val socket = server.accept()

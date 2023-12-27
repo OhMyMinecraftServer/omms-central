@@ -40,7 +40,7 @@ public class Announcement {
     }
 
     public Announcement(String title, String[] content) {
-        this.id = Util.randomStringGen(16);
+        this.id = Util.generateRandomString(16);
         this.timeMillis = System.currentTimeMillis();
         this.title = title;
         this.content = content;

@@ -4,20 +4,17 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.brigadier.tree.CommandNode;
 import kotlin.Unit;
-import net.zhuruoling.omms.central.config.Configuration;
-import net.zhuruoling.omms.central.command.CommandManager;
 import net.zhuruoling.omms.central.command.CommandSourceStack;
+import net.zhuruoling.omms.central.controller.ControllerHttpClient;
 import net.zhuruoling.omms.central.controller.ControllerManager;
 import net.zhuruoling.omms.central.network.chatbridge.Target;
-import net.zhuruoling.omms.central.controller.ControllerHttpClient;
 import net.zhuruoling.omms.central.network.session.request.LoginRequest;
 import net.zhuruoling.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -65,7 +62,7 @@ public class Util {
         int i = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(date));
         int j = Integer.parseInt(new SimpleDateFormat("hhmm").format(date));
         int k = new SimpleDateFormat("yyyyMMddhhmm").format(date).hashCode();
-        return resloveToken(token, password, i, j, k);
+        return resolveToken(token, password, i, j, k);
     }
 
 
@@ -77,7 +74,7 @@ public class Util {
         return token;
     }
 
-    public static boolean resloveToken(int token, int password, int i, int j, int k) {
+    public static boolean resolveToken(int token, int password, int i, int j, int k) {
         int t = token;
         int var1 = t ^ password;
 
@@ -87,28 +84,24 @@ public class Util {
 
 
     public static boolean fileExists(@NotNull String fileName) {
-        try {
-            new FileReader(fileName);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return new File(fileName).exists();
     }
+
     public static @NotNull String getWorkingDir() {
         File directory = new File("");
         return directory.getAbsolutePath();
     }
 
-    public static @NotNull String randomStringGen(int len){
-        return randomStringGen(len, true, true);
+    public static @NotNull String generateRandomString(int len) {
+        return generateRandomString(len, true, true);
     }
 
-    public static @NotNull String randomStringGen(int len, boolean hasInteger, boolean hasUpperLetter) {
+    public static @NotNull String generateRandomString(int len, boolean hasInteger, boolean hasUpperLetter) {
         String ch = "abcdefghijklmnopqrstuvwxyz" + (hasUpperLetter ? "ABCDEFGHIGKLMNOPQRSTUVWXYZ" : "") + (hasInteger ? "0123456789" : "");
         StringBuilder stringBuffer = new StringBuilder();
         for (int i = 0; i < len; i++) {
             Random random = new Random(System.nanoTime());
-            int num = random.nextInt(ch.length()-1);
+            int num = random.nextInt(ch.length() - 1);
             stringBuffer.append(ch.charAt(num));
         }
         return stringBuffer.toString();
@@ -136,27 +129,6 @@ public class Util {
 
     public static String base64Encode(@NotNull String content) {
         return Base64.getEncoder().encodeToString(content.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static void createConfig(@NotNull Logger logger) {
-        logger.warn("Config not found, creating default.");
-        try {
-            if (!new Util().createFile(Util.getWorkingDir() + File.separator + "config.json")) {
-                logger.error("Unable to create file:" + Util.getWorkingDir() + File.separator + "config.json");
-                System.exit(-1);
-            }
-            Gson gson = new GsonBuilder().serializeNulls().create();
-            String cont = gson.toJson(new Configuration(50000, "OMMS-Central", 50001));
-            File fp = new File(Util.getWorkingDir() + File.separator + "config.json");
-            FileOutputStream stream = new FileOutputStream(fp);
-            OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
-            writer.append(cont);
-            writer.close();
-            stream.close();
-            logger.info("Created default Config.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void listAll(@NotNull Logger logger) {
@@ -201,34 +173,13 @@ public class Util {
         }
     }
 
-    public static @NotNull ArrayList<String> genCommandTree() {
-        var root = CommandManager.INSTANCE.getCommandDispatcher().getRoot();
-        ArrayList<String> lines = new ArrayList<>();
-        walkCommandTree(root, 0, lines);
-        return lines;
-    }
-
-    private static void walkCommandTree(@NotNull CommandNode<CommandSourceStack> node, int depth, @NotNull ArrayList<String> lines) {
-        if (node.getChildren().isEmpty()) {
-            lines.add("  ".repeat(depth) + "-" + node);
-        } else {
-            lines.add("  ".repeat(depth) + "+" + node);
-            node.getChildren().forEach(node1 -> walkCommandTree(node1, depth + 1, lines));
-        }
-    }
-
-    public static <WDNMD> WDNMD fromJson(String content, Class<WDNMD> clazz) {
+    public static <T> T fromJson(String content, Class<T> clazz) {
         return gson.fromJson(content, clazz);
     }
 
 
-
     public static String toJson(@NotNull Object obj) {
         return gson.toJson(obj, obj.getClass());
-    }
-
-    public boolean createFile(@NotNull String filePath) throws IOException {
-        return new File(filePath).createNewFile();
     }
 
     public static class GlobalExclusionStrategy implements ExclusionStrategy {

@@ -50,7 +50,7 @@ object RunnerManager :Manager() {
         return null
     }
 
-    private fun generateRunnerId() = Util.randomStringGen(8)
+    private fun generateRunnerId() = Util.generateRandomString(8)
 
     fun runnerExists(id: String): Boolean = runnerMap.containsKey(id)
 

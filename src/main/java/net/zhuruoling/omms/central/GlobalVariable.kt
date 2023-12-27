@@ -1,6 +1,5 @@
 package net.zhuruoling.omms.central
 
-import net.zhuruoling.omms.central.config.Configuration
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastReceiver
 import net.zhuruoling.omms.central.network.chatbridge.UdpBroadcastSender
 import net.zhuruoling.omms.central.network.session.server.SessionLoginServer
@@ -13,13 +12,12 @@ object GlobalVariable {
     var noGui: Boolean = false
     var noPlugins: Boolean = false
     var test: Boolean = false
-    var udpBroadcastSender: UdpBroadcastSender? = null
+    lateinit var udpBroadcastSender: UdpBroadcastSender
     var launchTime: Long = 0L
-    var socketServer: SessionLoginServer? = null
-    var httpServer: Thread? = null
-    var receiver: UdpBroadcastReceiver? = null
+    lateinit var socketServer: SessionLoginServer
+    lateinit var httpServer: Thread
+    lateinit var receiver: UdpBroadcastReceiver
     val permissionNames: MutableList<String> = mutableListOf()
-    var config: Configuration? = null
     var normalShutdown: Boolean = false
     var experimental: Boolean = false
     val consoleHistory = DefaultHistory()
@@ -29,6 +27,7 @@ object GlobalVariable {
     var consoleFont = "Consolas"
     var args = mutableListOf<String>()
         private set
+
     fun setArgs(args:Array<String>){
         this.args = args.toMutableList()
     }

@@ -3,7 +3,7 @@ package net.zhuruoling.omms.central.controller
 import net.zhuruoling.omms.central.util.Util
 
 class ControllerBindingConfig {
-    val bindId = Util.randomStringGen(16)
+    val bindId = Util.generateRandomString(16)
     val controllers = mutableMapOf<String, ControllerImpl>()
     var controllerForName = ""
     var controllerForCommandExec = ""

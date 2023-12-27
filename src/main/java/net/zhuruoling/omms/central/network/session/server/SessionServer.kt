@@ -1,6 +1,6 @@
 package net.zhuruoling.omms.central.network.session.server
 
-import net.zhuruoling.omms.central.GlobalVariable.config
+import net.zhuruoling.omms.central.config.Config.config
 import net.zhuruoling.omms.central.controller.console.ControllerConsole
 import net.zhuruoling.omms.central.network.EncryptedSocket
 import net.zhuruoling.omms.central.network.session.FuseEncryptedSocket
@@ -43,7 +43,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     session.key
                 )
             )
-            fuseEncryptedSocket = FuseEncryptedSocket.of(encryptedConnector, config!!.rateLimit)
+            fuseEncryptedSocket = FuseEncryptedSocket.of(encryptedConnector, config.rateLimit)
         } catch (e: IOException) {
             e.printStackTrace()
         }

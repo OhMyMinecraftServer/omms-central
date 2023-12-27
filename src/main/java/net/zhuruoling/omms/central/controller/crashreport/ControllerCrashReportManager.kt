@@ -33,7 +33,7 @@ object ControllerCrashReportManager : Manager() {
         logger.debug("content: ")
         crashReport.content.forEach(logger::debug)
         RecievedControllerCrashReportCallback.INSTANCE.invokeAll(crashReport)
-        val fileName = storagePath.resolve(Util.randomStringGen(16) + ".json")
+        val fileName = storagePath.resolve(Util.generateRandomString(16) + ".json")
         fileName.toFile().writer().use {
             Util.gson.toJson(crashReport, it)
         }
