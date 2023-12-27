@@ -65,7 +65,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
     }
 
     fun refreshPlugins() {
-        val beforeFiles = pluginFileList
+        val beforeFiles = ArrayList(pluginFileList)
         val afterFiles = buildList {
             Files.list(Path.of(Util.joinFilePaths("plugins")))
                 .filter { it.toFile().extension == "jar" }.forEach {
@@ -80,9 +80,11 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         val newFiles = (afterFiles - beforeFiles.toSet()).map { File(it) }
         newFiles.forEach(this.classLoader::loadJar)
         newFiles.forEach {
+            logger.info("Loading plugin from $it")
             loadPluginFromFile(it.toPath())?.apply {
                 pluginMap += this
                 checkRequirements()
+                logger.info("Initializing plugin ${this.second.pluginMetadata.id}")
                 this.second.onInitialize()
             }
         }
