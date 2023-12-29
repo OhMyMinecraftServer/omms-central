@@ -115,7 +115,8 @@ object WhitelistManager : Manager() {
 
     @Synchronized
     fun searchInWhitelist(whitelistName: String, playerName: String): List<SearchResult> {
-        val whitelist = whitelistMap[whitelistName] ?: throw WhitelistNotExistException("Whitelist $whitelistName not found.")
+        val whitelist =
+            whitelistMap[whitelistName] ?: throw WhitelistNotExistException("Whitelist $whitelistName not found.")
         val result = mutableListOf<SearchResult>()
         whitelist.players.forEach {
             val ratio = FuzzySearch.tokenSortPartialRatio(it, playerName)
@@ -136,12 +137,12 @@ object WhitelistManager : Manager() {
 
     @Synchronized
     @Throws(WhitelistNotExistException::class, PlayerAlreadyExistsException::class)
-    fun addToWhiteList(whitelistName: String, value: String) {
+    fun addToWhiteList(whitelistName: String, value: String, flush: Boolean = true) {
         val whitelist = this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)
         synchronized(whitelist) {
             whitelist.addPlayer(value)
         }
-        whitelist.saveModifiedBuffer()
+        if (flush) whitelist.saveModifiedBuffer()
     }
 
     private operator fun get(whitelistName: String): Whitelist? {
@@ -157,9 +158,15 @@ object WhitelistManager : Manager() {
         }
         whitelist.saveModifiedBuffer()
     }
+
+    @Synchronized
+    fun flush(whitelistName: String){
+        (this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)).saveModifiedBuffer()
+    }
+
     @Throws(WhitelistAlreadyExistsException::class)
     fun createWhitelist(name: String) {
-        if (name in whitelistMap)throw WhitelistAlreadyExistsException(name)
+        if (name in whitelistMap) throw WhitelistAlreadyExistsException(name)
         val whitelist = WhitelistImpl(mutableListOf(), name)
         whitelistMap += name to whitelist
         whitelist.saveModifiedBuffer()

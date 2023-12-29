@@ -107,7 +107,7 @@ object ControllerManager : Manager() {
         val map = mutableMapOf<String, Status>()
         controllerList.forEach {
             if (it !in controllers) {
-                throw java.lang.IllegalArgumentException("Controller not exist")
+                throw java.lang.IllegalArgumentException("Controller $it not exist")
             } else {
                 map[it] = Status()
                 map[it]!!.run {

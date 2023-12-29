@@ -6,6 +6,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.zhuruoling.omms.central.command.CommandManager
 import net.zhuruoling.omms.central.command.CommandSourceStack
 import net.zhuruoling.omms.central.controller.ControllerManager
@@ -13,6 +15,7 @@ import net.zhuruoling.omms.central.network.chatbridge.Broadcast
 import net.zhuruoling.omms.central.network.chatbridge.sendBroadcast
 import net.zhuruoling.omms.central.network.http.*
 import net.zhuruoling.omms.central.util.toStringMap
+import net.zhuruoling.omms.central.whitelist.*
 
 fun Route.httpApiQueryRouting() {
     route("/api") {
@@ -30,27 +33,34 @@ fun Route.httpApiQueryRouting() {
                         }
                     ))
                 } catch (e: Exception) {
-                    return@post call.respond(HttpResponseData(
-                        status = RequestStatus.REFUSED,
-                        content = "",
-                        refuseReason = e.toString()
-                    ))
+                    return@post call.respond(
+                        HttpResponseData(
+                            status = RequestStatus.REFUSED,
+                            content = "",
+                            refuseReason = e.toString()
+                        )
+                    )
                 }
             }
             get("status") {
                 val request = call.receive<ControllerQueryData>()
                 try {
-                    val result = ControllerManager.getControllerStatus(mutableListOf(request.controllerId))[request.controllerId]!!
-                    return@get call.respond(HttpResponseData(
-                        content = "",
-                        extra = result.toStringMap()
-                    ))
+                    val result =
+                        ControllerManager.getControllerStatus(mutableListOf(request.controllerId))[request.controllerId]!!
+                    return@get call.respond(
+                        HttpResponseData(
+                            content = "",
+                            extra = result.toStringMap()
+                        )
+                    )
                 } catch (e: Exception) {
-                    return@get call.respond(HttpResponseData(
-                        status = RequestStatus.REFUSED,
-                        content = "",
-                        refuseReason = e.toString()
-                    ))
+                    return@get call.respond(
+                        HttpResponseData(
+                            status = RequestStatus.REFUSED,
+                            content = "",
+                            refuseReason = e.toString()
+                        )
+                    )
                 }
             }
         }
@@ -58,21 +68,73 @@ fun Route.httpApiQueryRouting() {
             post("add") {
                 //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()
-
+                if (request.whitelistName !in WhitelistManager.getWhitelistNames()) {
+                    return@post call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not found")
+                    )
+                }
+                val resultMap = mapOf(
+                    "success" to mutableListOf<String>(),
+                    "failure" to mutableListOf<String>()
+                )
+                request.players.forEach {
+                    try {
+                        WhitelistManager.addToWhiteList(request.whitelistName, it)
+                        resultMap["success"]!! += it
+                    }catch (_:PlayerAlreadyExistsException){
+                        resultMap["failure"]!! += it
+                    }
+                }
+                call.respond(HttpResponseData(
+                    extra = resultMap.mapValues { Json.encodeToString(it.value) }
+                ))
             }
             post("remove") {
                 //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()
+                if (request.whitelistName !in WhitelistManager.getWhitelistNames()) {
+                    return@post call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not found")
+                    )
+                }
+                val resultMap = mapOf(
+                    "success" to mutableListOf<String>(),
+                    "failure" to mutableListOf<String>()
+                )
+                request.players.forEach {
+                    try {
+                        WhitelistManager.removeFromWhiteList(request.whitelistName, it)
+                        resultMap["success"]!! += it
+                    }catch (_:PlayerNotFoundException){
+                        resultMap["failure"]!! += it
+                    }
+                }
+                call.respond(HttpResponseData(
+                    extra = resultMap.mapValues { Json.encodeToString(it.value) }
+                ))
             }
             post("create") {
                 //whitelistName
                 val request = call.receive<WhitelistQueryData>()
+                try {
+                    WhitelistManager.createWhitelist(request.whitelistName)
+                    call.respond(HttpResponseData())
+                }catch (_:WhitelistAlreadyExistsException){
+                    call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist exists"))
+                }
             }
             delete("delete") {
                 //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()
+                try {
+                    WhitelistManager.deleteWhiteList(request.whitelistName)
+                    call.respond(HttpResponseData())
+                }catch (_:WhitelistNotExistException){
+                    call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not exist"))
+                }
             }
-
         }
         route("/announcement") {
             get("list") {
