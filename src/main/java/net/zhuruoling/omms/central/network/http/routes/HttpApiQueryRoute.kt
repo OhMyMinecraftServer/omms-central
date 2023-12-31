@@ -80,12 +80,13 @@ fun Route.httpApiQueryRouting() {
                 )
                 request.players.forEach {
                     try {
-                        WhitelistManager.addToWhiteList(request.whitelistName, it)
+                        WhitelistManager.addToWhiteList(request.whitelistName, it, false)
                         resultMap["success"]!! += it
                     }catch (_:PlayerAlreadyExistsException){
                         resultMap["failure"]!! += it
                     }
                 }
+                WhitelistManager.flush(request.whitelistName)
                 call.respond(HttpResponseData(
                     extra = resultMap.mapValues { Json.encodeToString(it.value) }
                 ))

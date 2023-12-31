@@ -18,7 +18,8 @@ public class AddToWhitelistRequestHandler extends BuiltinRequestHandler {
         try {
             WhitelistManager.INSTANCE.addToWhiteList(
                     request.getContent("whitelist"),
-                    request.getContent("player")
+                    request.getContent("player"),
+                    true
             );
         } catch (PlayerAlreadyExistsException e) {
             result = Result.PLAYER_ALREADY_EXISTS;
