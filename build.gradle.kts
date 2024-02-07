@@ -35,7 +35,7 @@ publishing {
 
 
 application {
-    mainClass.set("net.zhuruoling.omms.central.main.Main")
+    mainClass.set("icu.takeneko.omms.central.main.Main")
 }
 
 description = "omms-central"

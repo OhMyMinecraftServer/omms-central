@@ -4,8 +4,8 @@
     <contextName>omms-central</contextName>
     <property name="LOG_HOME" value="logs"/>
     <conversionRule conversionWord="customColor"
-                   converterClass="net.zhuruoling.omms.central.util.logging.LogbackCustomColor"/>
-    <appender name="memoryAppender" class="net.zhuruoling.omms.central.util.logging.MemoryAppender">
+                   converterClass="icu.takeneko.omms.central.util.logging.LogbackCustomColor"/>
+    <appender name="memoryAppender" class="icu.takeneko.omms.central.util.logging.MemoryAppender">
 
     </appender>
 
