@@ -19,7 +19,6 @@ plugins {
 group = "com.github.ZhuRuoLing"
 version = properties["version"]!!
 
-
 publishing {
     repositories {
         mavenLocal()
@@ -30,9 +29,6 @@ publishing {
         }
     }
 }
-
-
-
 
 application {
     mainClass.set("icu.takeneko.omms.central.main.Main")

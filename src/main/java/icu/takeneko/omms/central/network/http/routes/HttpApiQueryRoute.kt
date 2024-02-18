@@ -19,7 +19,7 @@ import icu.takeneko.omms.central.whitelist.*
 
 fun Route.httpApiQueryRouting() {
     route("/api") {
-        route("/controller") {
+        route("controller") {
             post("run") {
                 val request = call.receive<ControllerQueryData>()
                 try {
@@ -64,7 +64,7 @@ fun Route.httpApiQueryRouting() {
                 }
             }
         }
-        route("/whitelist") {
+        route("whitelist") {
             post("add") {
                 //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()

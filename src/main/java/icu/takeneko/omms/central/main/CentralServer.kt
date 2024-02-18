@@ -96,8 +96,8 @@ object CentralServer {
             IdentityProvider.init()
             CommandManager.INSTANCE.init()
             RequestManager.init()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: Throwable) {
+            logger.error("Initialization error", e)
             exitProcess(2)
         }
         Util.listAll(logger)

@@ -9,3 +9,11 @@
 /permissions.json
 .idea/workspace.xml
 /.idea/
+/image
+/plugins
+/scripts
+/config
+/config.json
+/*.db
+/*.json
+
