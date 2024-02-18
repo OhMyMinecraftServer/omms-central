@@ -1,5 +1,8 @@
 package icu.takeneko.omms.central.network.http.routes
 
+import icu.takeneko.omms.central.network.chatbridge.Broadcast
+import icu.takeneko.omms.central.network.chatbridge.buildToJson
+import icu.takeneko.omms.central.util.Util
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.utils.io.*
@@ -7,9 +10,6 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import icu.takeneko.omms.central.network.chatbridge.Broadcast
-import icu.takeneko.omms.central.network.chatbridge.buildToJson
-import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
 
 val list = mutableListOf<DefaultWebSocketSession>()
@@ -35,7 +35,7 @@ fun Route.websocketRoute() {
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val received = frame.readText()
-                    if (received == "PING")this.send("PONG@${System.currentTimeMillis()}")
+                    if (received == "PING") this.send("PONG@${System.currentTimeMillis()}")
                     try {
                         val broadcast = Util.fromJson(received, Broadcast::class.java)
                         logger.info("[${broadcast.channel}] [${broadcast.server}] <${broadcast.player}> ${broadcast.content}")

@@ -50,12 +50,13 @@ class LoginSession(socket: Socket) :
                         encryptedConnector.send(
                             Response.serialize(
                                 Response()
-                                    .withResponseCode(Result.VERSION_NOT_MATCH))
+                                    .withResponseCode(Result.VERSION_NOT_MATCH)
+                            )
                         )
                         break
                     }
                     val stringToken = request.getContent("token")
-                    val (code,permissions) = doAuth(stringToken)
+                    val (code, permissions) = doAuth(stringToken)
                     logger.debug("$code has following permissions: ${permissions?.joinToString(", ")}")
                     val isCodeExist = permissions != null
                     if (isCodeExist) {
@@ -75,7 +76,8 @@ class LoginSession(socket: Socket) :
                                 Session(
                                     socket,
                                     randomKey.toByteArray(StandardCharsets.UTF_8)
-                                ), permissions!!)
+                                ), permissions!!
+                            )
                         session.start()
                         break
                     } else {
@@ -83,7 +85,8 @@ class LoginSession(socket: Socket) :
                         encryptedConnector.send(
                             Response.serialize(
                                 Response()
-                                    .withResponseCode(Result.PERMISSION_DENIED))
+                                    .withResponseCode(Result.PERMISSION_DENIED)
+                            )
                         )
                     }
                     break

@@ -1,5 +1,6 @@
 package icu.takeneko.omms.central.controller
 
+import icu.takeneko.omms.central.util.Util
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
@@ -9,9 +10,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
-import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
-import java.lang.RuntimeException
 import java.util.concurrent.CompletableFuture
 
 fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
@@ -56,13 +55,13 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
 
     private fun makeUrl(path: String) = baseUrl + path
 
-    fun queryControllerMapping(){
+    fun queryControllerMapping() {
         runBlocking {
             try {
                 val response = get("controllerMapping")
                 val content = String(response.readBytes())
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
         }
@@ -80,7 +79,12 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
                     }
 
                     HttpStatusCode.Unauthorized -> {
-                        result.completeExceptionally(RequestUnauthorisedException("ControllerName", controllerImpl.name))
+                        result.completeExceptionally(
+                            RequestUnauthorisedException(
+                                "ControllerName",
+                                controllerImpl.name
+                            )
+                        )
                     }
 
                     else -> {

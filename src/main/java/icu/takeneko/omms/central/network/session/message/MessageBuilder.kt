@@ -1,8 +1,8 @@
 package icu.takeneko.omms.central.network.session.message
 
 import com.google.gson.GsonBuilder
-import org.jetbrains.annotations.NotNull
 import icu.takeneko.omms.central.network.session.response.Result
+import org.jetbrains.annotations.NotNull
 
 
 @NotNull
@@ -13,13 +13,13 @@ fun build(result: Result): String? {
 }
 
 @NotNull
-fun  build(result: Result, load: Array<String?>?): String? {
+fun build(result: Result, load: Array<String?>?): String? {
     val gson = GsonBuilder().serializeNulls().create()
     return gson.toJson(Message(result.name, load))
 }
 
 @NotNull
-fun  build(result: Result, load: List<String>): String? {
+fun build(result: Result, load: List<String>): String? {
     val gson = GsonBuilder().serializeNulls().create()
     return gson.toJson(
         Message(
@@ -30,7 +30,7 @@ fun  build(result: Result, load: List<String>): String? {
 }
 
 @NotNull
-fun  build(result: Result, load: Set<String>): String? {
+fun build(result: Result, load: Set<String>): String? {
     val gson = GsonBuilder().serializeNulls().create()
     return gson.toJson(
         Message(

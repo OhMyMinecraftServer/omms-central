@@ -21,7 +21,7 @@ public class StorageInfo {
         this.storageList = storageList;
     }
 
-    public static String asJsonString(StorageInfo storageInfo){
+    public static String asJsonString(StorageInfo storageInfo) {
         return new GsonBuilder().serializeNulls().create().toJson(storageInfo);
     }
 }

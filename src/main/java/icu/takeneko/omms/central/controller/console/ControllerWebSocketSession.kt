@@ -1,5 +1,7 @@
 package icu.takeneko.omms.central.controller.console
 
+import icu.takeneko.omms.central.controller.ControllerImpl
+import icu.takeneko.omms.central.controller.asSalted
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
@@ -13,8 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import icu.takeneko.omms.central.controller.ControllerImpl
-import icu.takeneko.omms.central.controller.asSalted
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession(

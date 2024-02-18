@@ -2,7 +2,7 @@ package icu.takeneko.omms.central.controller.console.input;
 
 import java.util.Stack;
 
-public class SessionInputSource extends InputSource{
+public class SessionInputSource extends InputSource {
 
     final Stack<String> cache = new Stack<>();
 
@@ -12,13 +12,13 @@ public class SessionInputSource extends InputSource{
             synchronized (cache) {
                 return cache.pop();
             }
-        }else {
+        } else {
             return "";
         }
     }
 
-    public void put(String item){
-        synchronized (cache){
+    public void put(String item) {
+        synchronized (cache) {
             cache.push(item);
         }
     }

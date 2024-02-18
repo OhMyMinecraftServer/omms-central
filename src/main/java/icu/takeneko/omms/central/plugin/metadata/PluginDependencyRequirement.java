@@ -1,8 +1,6 @@
 package icu.takeneko.omms.central.plugin.metadata;
 
 import com.google.gson.annotations.SerializedName;
-import icu.takeneko.omms.central.plugin.depedency.PluginDependency;
-import icu.takeneko.omms.central.plugin.exception.PluginException;
 import icu.takeneko.omms.central.plugin.UtilKt;
 import icu.takeneko.omms.central.plugin.depedency.PluginDependency;
 import icu.takeneko.omms.central.plugin.exception.PluginException;
@@ -25,7 +23,7 @@ public class PluginDependencyRequirement {
             throw new PluginException("No `id` provided for PluginDependencyRequirement.");
         }
         if (requirement == null) requirement = "*";
-        if (requirement.equals("*")){
+        if (requirement.equals("*")) {
             symbol = "*";
             parsedVersion = null;
             return;

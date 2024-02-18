@@ -1,19 +1,16 @@
 package icu.takeneko.omms.central.controller.console;
 
 import icu.takeneko.omms.central.controller.Controller;
+import icu.takeneko.omms.central.controller.ControllerImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import kotlin.Unit;
-import icu.takeneko.omms.central.controller.Controller;
-import icu.takeneko.omms.central.controller.ControllerImpl;
-import icu.takeneko.omms.central.controller.console.output.PrintTarget;
-import icu.takeneko.omms.central.controller.console.input.InputSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ControllerConsoleImpl extends Thread implements ControllerConsole{
+public class ControllerConsoleImpl extends Thread implements ControllerConsole {
     private final Controller controller;
 
     public Controller getController() {
@@ -61,8 +58,8 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole{
     }
 
     public void input(@Nullable String line) {
-        if (line == null)return;
-        if(line.isEmpty())return;
+        if (line == null) return;
+        if (line.isEmpty()) return;
         if (line.startsWith(":")) {
             if (line.equals(":q")) {
                 info("Disconnecting.");
@@ -73,7 +70,6 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole{
             session.inputLine(line);
         }
     }
-
 
 
     @Override

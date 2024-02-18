@@ -9,7 +9,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.permission.Permission;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +16,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class PermissionNameArgumentType implements ArgumentType<Permission> {
 
-    private PermissionNameArgumentType(){}
+    private PermissionNameArgumentType() {
+    }
 
     @Override
     public Permission parse(StringReader stringReader) throws CommandSyntaxException {
@@ -45,7 +45,7 @@ public class PermissionNameArgumentType implements ArgumentType<Permission> {
         return builder.buildFuture();
     }
 
-    public static PermissionNameArgumentType permission(){
+    public static PermissionNameArgumentType permission() {
         return new PermissionNameArgumentType();
     }
 

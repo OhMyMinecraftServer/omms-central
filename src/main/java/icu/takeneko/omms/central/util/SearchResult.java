@@ -2,7 +2,7 @@ package icu.takeneko.omms.central.util;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SearchResult<T> implements Comparable<SearchResult<T>>{
+public class SearchResult<T> implements Comparable<SearchResult<T>> {
     private final T result;
     private final int ratio;
 

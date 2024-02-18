@@ -6,23 +6,22 @@ import icu.takeneko.omms.central.network.session.handler.builtin.announcement.Cr
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
+import icu.takeneko.omms.central.network.session.handler.builtin.controller.*
+import icu.takeneko.omms.central.network.session.handler.builtin.permission.*
 import icu.takeneko.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.system.GetRunnerOutputRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.controller.*
-import icu.takeneko.omms.central.network.session.handler.builtin.permission.*
 import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.StringPair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.Hashtable
-import java.util.NoSuchElementException
+import java.util.*
 
 
-object RequestManager : Manager(){
+object RequestManager : Manager() {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
     private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
     private val pluginRequestTable: MutableList<StringPair> = mutableListOf()

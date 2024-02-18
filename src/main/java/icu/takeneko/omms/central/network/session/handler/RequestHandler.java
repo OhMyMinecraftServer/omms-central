@@ -1,10 +1,7 @@
 package icu.takeneko.omms.central.network.session.handler;
 
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.SessionContext;
+import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.permission.Permission;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +21,10 @@ public abstract class RequestHandler {
     }
 
     private String register;
+
     abstract public @Nullable Response handle(Request request, SessionContext session);
 
     abstract public @Nullable Permission requiresPermission();
-
 
 
 }

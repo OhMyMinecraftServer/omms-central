@@ -10,9 +10,10 @@ public class Request {
     public Request() {
     }
 
-    public Request(String req){
+    public Request(String req) {
         this.request = req;
     }
+
     @SerializedName("request")
     String request = "";
 
@@ -36,8 +37,8 @@ public class Request {
     }
 
 
-    public @NotNull Request withContentKeyPair(String key, String pair){
-        content.put(key,pair);
+    public @NotNull Request withContentKeyPair(String key, String pair) {
+        content.put(key, pair);
         return this;
     }
 

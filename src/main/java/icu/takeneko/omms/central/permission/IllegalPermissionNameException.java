@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.permission;
 
-public class IllegalPermissionNameException extends RuntimeException{
+public class IllegalPermissionNameException extends RuntimeException {
     public IllegalPermissionNameException(String message) {
         super(message);
     }
@@ -9,7 +9,7 @@ public class IllegalPermissionNameException extends RuntimeException{
         super(cause);
     }
 
-    public IllegalPermissionNameException(String permissionName, Throwable cause){
+    public IllegalPermissionNameException(String permissionName, Throwable cause) {
         super("%s is not a valid permission name.".formatted(permissionName), cause);
     }
 }

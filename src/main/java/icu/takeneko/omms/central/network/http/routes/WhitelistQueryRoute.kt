@@ -1,13 +1,13 @@
 package icu.takeneko.omms.central.network.http.routes
 
 import icu.takeneko.omms.central.network.session.response.Result
+import icu.takeneko.omms.central.util.Util
+import icu.takeneko.omms.central.whitelist.WhitelistManager
+import icu.takeneko.omms.central.whitelist.WhitelistNotExistException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import icu.takeneko.omms.central.util.Util
-import icu.takeneko.omms.central.whitelist.WhitelistManager
-import icu.takeneko.omms.central.whitelist.WhitelistNotExistException
 import org.slf4j.LoggerFactory
 
 data class HttpResponse(val result: Result, val data: MutableList<String>)
@@ -57,9 +57,9 @@ fun Route.whitelistQueryRouting() {
             try {
                 val result = WhitelistManager.queryWhitelist(name, playerName)
                 call.respondText(status = HttpStatusCode.OK) {
-                    "{\"result\":\"${if(result) Result.OK else Result.PLAYER_NOT_EXIST}\"}"
+                    "{\"result\":\"${if (result) Result.OK else Result.PLAYER_NOT_EXIST}\"}"
                 }
-            }catch (e: WhitelistNotExistException){
+            } catch (e: WhitelistNotExistException) {
                 call.respondText(status = HttpStatusCode.OK) {
                     "{\"result\":\"${Result.WHITELIST_NOT_EXIST}\"}"
                 }

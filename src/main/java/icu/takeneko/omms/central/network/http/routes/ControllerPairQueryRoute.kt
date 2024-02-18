@@ -1,13 +1,12 @@
 package icu.takeneko.omms.central.network.http.routes
 
+import icu.takeneko.omms.central.network.pair.PairManager
+import icu.takeneko.omms.central.util.Util
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import icu.takeneko.omms.central.network.pair.PairManager
-import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 
 fun Route.controllerPairQueryRoute() {
     val logger = LoggerFactory.getLogger("ControllerPairQueryRoute")

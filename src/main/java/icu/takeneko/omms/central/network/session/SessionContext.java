@@ -3,9 +3,6 @@ package icu.takeneko.omms.central.network.session;
 import icu.takeneko.omms.central.controller.console.ControllerConsole;
 import icu.takeneko.omms.central.network.session.server.SessionServer;
 import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.controller.console.ControllerConsole;
-import icu.takeneko.omms.central.network.session.server.SessionServer;
-import icu.takeneko.omms.central.permission.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

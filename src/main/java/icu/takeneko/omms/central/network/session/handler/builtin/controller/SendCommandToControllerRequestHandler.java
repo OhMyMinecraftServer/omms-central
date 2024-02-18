@@ -1,17 +1,13 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.controller;
 
 import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.network.http.UtilKt;
 import icu.takeneko.omms.central.controller.RequestUnauthorisedException;
+import icu.takeneko.omms.central.network.http.UtilKt;
 import icu.takeneko.omms.central.network.session.SessionContext;
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.permission.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +29,7 @@ public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler
                         .withContentPair("controllerId", name)
                         .withContentPair("status", String.valueOf(result.getStatus()))
                         .withContentPair("output", UtilKt.joinToString(result.getResult()));
-            }else {
+            } else {
                 response.withResponseCode(Result.CONTROLLER_COMMAND_SENT)
                         .withContentPair("controllerId", name)
                         .withContentPair("status", String.valueOf(result.getStatus()))

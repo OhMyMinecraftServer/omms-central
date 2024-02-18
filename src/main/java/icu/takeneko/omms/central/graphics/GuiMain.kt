@@ -13,11 +13,7 @@ import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
-import java.awt.event.MouseWheelEvent
+import java.awt.event.*
 import java.lang.management.ManagementFactory
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.swing.JFrame
@@ -110,7 +106,7 @@ class SimpleGuiSkikoView : SkikoView {
 
     private fun measureString(s: String): Rectangle {
         return if (s.contains("\n")) {
-            val l = s.split("\n");
+            val l = s.split("\n")
             val height = (l.size) * fontHeightWithPadding
             var width = 0f
             l.forEach {
@@ -122,7 +118,7 @@ class SimpleGuiSkikoView : SkikoView {
         }
     }
 
-    fun scrollToEnd(){
+    fun scrollToEnd() {
         scrolledLines = 0
     }
 
@@ -140,10 +136,21 @@ class SimpleGuiSkikoView : SkikoView {
             val frameTime = ((nanoTime - lastFrameTime) / 1e6)
             val upTime = runtime.uptime / 1000.0
             val infoString =
-                "FPS: ${String.format("%.2f",1000 / frameTime)}\nFrameTime: ${String.format("%.3f",frameTime)}ms\nUptime: $upTime\nMemory: ${getMemoryUsageString()}"
+                "FPS: ${String.format("%.2f", 1000 / frameTime)}\nFrameTime: ${
+                    String.format(
+                        "%.3f",
+                        frameTime
+                    )
+                }ms\nUptime: $upTime\nMemory: ${getMemoryUsageString()}"
             //render status and logs
             canvas.drawRect(Rect(dx, dy - 3, dx + 40 * fontWidth, dy + 4 * fontHeightWithPadding + 5), backgroundPaint)
-            canvas.drawStringWithReturn(infoString, dx + fontWidth, fontHeightWithPadding + dy - 3, font, foregroundPaint)
+            canvas.drawStringWithReturn(
+                infoString,
+                dx + fontWidth,
+                fontHeightWithPadding + dy - 3,
+                font,
+                foregroundPaint
+            )
             var logOffsetY = measureString(infoString).height + dy + fontHeightWithPadding + 10
             visibleLogs.forEach {
                 canvas.drawString(it.replace("\t", "    "), dx, logOffsetY, font, paint)
@@ -163,7 +170,7 @@ class SimpleGuiSkikoView : SkikoView {
             canvas.drawString("> $textFieldString", textFieldTextOffsetX, textFieldTextOffsetY, font, foregroundPaint)
             val cursorL = (cursorPos + 2) * fontWidth + textFieldTextOffsetX
             val cursorR = (cursorPos + 3) * fontWidth + textFieldTextOffsetX
-            for (i in 0 .. cursorThickness.roundToInt()){
+            for (i in 0..cursorThickness.roundToInt()) {
                 canvas.drawLine(
                     x0 = cursorL,
                     y0 = 2 + textFieldTextOffsetY + i,
@@ -186,6 +193,7 @@ class SimpleGuiSkikoView : SkikoView {
         if (cursorPos <= 0) cursorPos = 0
         println("CursorPos = $cursorPos")
     }
+
     private fun processKeyType(char: Char?) {
         if (char == null) {
             if (textFieldString.isEmpty() or (cursorPos == 0)) return
@@ -299,7 +307,8 @@ fun guiMain() {
     SwingUtilities.invokeLater {
         window = JFrame("${Util.PRODUCT_NAME} ${BuildProperties["version"]}").apply {
             defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-            preferredSize = Dimension( if (OperatingSystem.IS_MACOS) 1600 else 1280, if (OperatingSystem.IS_MACOS) 800 else 720)
+            preferredSize =
+                Dimension(if (OperatingSystem.IS_MACOS) 1600 else 1280, if (OperatingSystem.IS_MACOS) 800 else 720)
         }
         skiaLayer.attachTo(window.contentPane)
         skiaLayer.needRedraw()

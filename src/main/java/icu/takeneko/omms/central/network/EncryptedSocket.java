@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.network;
 
 import icu.takeneko.omms.central.security.CryptoUtil;
-import icu.takeneko.omms.central.security.CryptoUtil;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

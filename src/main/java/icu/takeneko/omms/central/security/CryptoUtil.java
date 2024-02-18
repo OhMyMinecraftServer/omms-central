@@ -81,9 +81,9 @@ public class CryptoUtil {
         return Util.base64Encode(out.toString());
     }
 
-    public static @Nullable String gzipDecompress(@NotNull String source){
+    public static @Nullable String gzipDecompress(@NotNull String source) {
         ByteArrayInputStream in = new ByteArrayInputStream(Base64.getDecoder().decode(source.getBytes(StandardCharsets.UTF_8)));
-        try (GZIPInputStream stream = new GZIPInputStream(in)){
+        try (GZIPInputStream stream = new GZIPInputStream(in)) {
             return new String(stream.readAllBytes());
         } catch (IOException e) {
             e.printStackTrace();

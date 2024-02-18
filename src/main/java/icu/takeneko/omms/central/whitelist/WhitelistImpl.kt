@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.whitelist
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.Serializable
 import icu.takeneko.omms.central.util.Util
 import java.io.File
 import java.nio.charset.Charset

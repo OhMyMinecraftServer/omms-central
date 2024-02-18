@@ -1,14 +1,11 @@
 package icu.takeneko.omms.central.config
 
-import io.ktor.network.tls.*
-import io.ktor.server.sessions.*
-import io.ktor.util.*
+import icu.takeneko.omms.central.network.ChatbridgeImplementation
+import icu.takeneko.omms.central.util.Util
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import icu.takeneko.omms.central.network.ChatbridgeImplementation
-import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import kotlin.io.path.*
 
@@ -22,9 +19,9 @@ object Config {
     lateinit var config: ConfigStorage
     private val logger = LoggerFactory.getLogger("Config")
 
-    fun load():Boolean{
+    fun load(): Boolean {
         var ret = true
-        if (file.notExists()){
+        if (file.notExists()) {
             logger.info("Writing default config file.")
             writeConfig(ConfigStorage())
             ret = false
@@ -33,7 +30,7 @@ object Config {
             config = json.decodeFromString<ConfigStorage>(file.readText())
             save()
             ret
-        }catch (e:Exception){
+        } catch (e: Exception) {
             logger.error("Read config failed.", e)
             logger.info("Writing default config file.")
             writeConfig(ConfigStorage())
@@ -41,13 +38,13 @@ object Config {
         }
     }
 
-    private inline fun <reified T> writeConfig(obj:T){
+    private inline fun <reified T> writeConfig(obj: T) {
         file.deleteIfExists()
         file.createFile()
         file.writeText(json.encodeToString<T>(obj))
     }
 
-    fun save(){
+    fun save() {
         writeConfig(config)
     }
 }

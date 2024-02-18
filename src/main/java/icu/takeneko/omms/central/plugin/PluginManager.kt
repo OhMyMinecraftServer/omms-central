@@ -115,7 +115,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
             BuildProperties["applicationName"]!!
         )
         pluginMap.forEach {
-            dependencies += icu.takeneko.omms.central.plugin.depedency.PluginDependency(
+            dependencies += PluginDependency(
                 ModuleDescriptor.Version.parse(it.value.pluginMetadata.version),
                 it.key
             )

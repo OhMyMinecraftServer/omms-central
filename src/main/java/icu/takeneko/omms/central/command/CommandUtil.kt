@@ -15,11 +15,12 @@ fun CommandContext<S>.sendFeedback(component: String) {
     this.source.sendFeedback(component)
 }
 
-fun CommandContext<S>.sendFeedback(format: String, vararg obj:Any) {
-    this.source.sendFeedback(String.format(format,*obj))
+fun CommandContext<S>.sendFeedback(format: String, vararg obj: Any) {
+    this.source.sendFeedback(String.format(format, *obj))
 }
-fun CommandContext<S>.sendError(format: String, vararg obj:Any) {
-    this.source.sendError(String.format(format,*obj))
+
+fun CommandContext<S>.sendError(format: String, vararg obj: Any) {
+    this.source.sendError(String.format(format, *obj))
 }
 
 fun CommandContext<S>.sendError(component: String) {
@@ -48,14 +49,14 @@ fun LiteralCommand.literal(literal: String, function: LiteralCommand.() -> Unit)
     this.node.then(LiteralCommand(literal).apply(function).node)
 }
 
-fun LiteralCommand.requires(predicate:(S) ->Boolean, function: LiteralCommand.() -> Unit){
+fun LiteralCommand.requires(predicate: (S) -> Boolean, function: LiteralCommand.() -> Unit) {
     this.apply {
         node.requires(predicate)
         function(this)
     }
 }
 
-fun <T> ArgumentCommand<T>.requires(predicate: (S) -> Boolean, function: ArgumentCommand<T>.() -> Unit){
+fun <T> ArgumentCommand<T>.requires(predicate: (S) -> Boolean, function: ArgumentCommand<T>.() -> Unit) {
     this.apply {
         node.requires(predicate)
         function(this)
@@ -93,7 +94,7 @@ fun <T> ArgumentCommand<T>.requires(function: S.() -> Boolean): ArgumentCommand<
     return this
 }
 
-fun <T,K> ArgumentCommand<T>.argument(
+fun <T, K> ArgumentCommand<T>.argument(
     name: String,
     argumentType: ArgumentType<K>,
     function: ArgumentCommand<K>.() -> Unit

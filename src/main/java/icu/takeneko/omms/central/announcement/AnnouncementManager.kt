@@ -2,11 +2,10 @@ package icu.takeneko.omms.central.announcement
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import me.xdrop.fuzzywuzzy.FuzzySearch
-import me.xdrop.fuzzywuzzy.Ratio
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.SearchResult
 import icu.takeneko.omms.central.util.Util
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.FileReader
@@ -15,7 +14,7 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 
-object AnnouncementManager: Manager() {
+object AnnouncementManager : Manager() {
 
     val announcementMap = mutableMapOf<String, Announcement>()
     val gson: Gson = GsonBuilder().serializeNulls().create()
@@ -32,7 +31,7 @@ object AnnouncementManager: Manager() {
         fileList.forEach {
             try {
                 val announcement = gson.fromJson(FileReader(it), Announcement::class.java)
-                if (announcementMap.containsKey(announcement.id)){
+                if (announcementMap.containsKey(announcement.id)) {
                     logger.warn("Duplicated id(${announcement.id}) in file $it, ignoring.")
                     return
                 }
@@ -40,15 +39,14 @@ object AnnouncementManager: Manager() {
                     announcement.contentType = ContentType.STRING
                 }
                 announcementMap[announcement.id] = announcement
-            }
-            catch (e: Throwable){
+            } catch (e: Throwable) {
                 logger.error("Cannot read announcement file($it).")
             }
         }
     }
 
     fun create(announcement: Announcement) {
-        try{
+        try {
             val jsonStr: String = announcement.toJson()
             val path = Path(Util.joinFilePaths("announcements", "${announcement.id.hashCode()}.json"))
             if (Files.exists(path)) {
@@ -62,8 +60,7 @@ object AnnouncementManager: Manager() {
             fileWriter.close()
             logger.info("Created announcement ${announcement.title}, reloading.")
             this.init()
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             logger.error("Cannot create announcement file.", RuntimeException(e))
         }
     }
@@ -77,7 +74,7 @@ object AnnouncementManager: Manager() {
     }
 
     fun searchForTitle(keyWord: String, relevantThreshold: Int = 70): List<AnnouncementSearchResult> {
-        synchronized(this.announcementMap){
+        synchronized(this.announcementMap) {
             val result = mutableListOf<AnnouncementSearchResult>()
             val tiMap = this.announcementMap.map { it.key to it.value.title }.toMap()
             tiMap.forEach { (t, u) ->
@@ -92,15 +89,15 @@ object AnnouncementManager: Manager() {
     }
 
     fun getLatest(): Announcement? {
-        if (announcementMap.size == 1){
+        if (announcementMap.size == 1) {
             return announcementMap.values.elementAt(0)
         }
-        if (announcementMap.isEmpty()){
+        if (announcementMap.isEmpty()) {
             return null
         }
         var announcement: Announcement = announcementMap.values.elementAt(0)
-        announcementMap.values.forEach{
-            if (announcement.timeMillis < it.timeMillis){
+        announcementMap.values.forEach {
+            if (announcement.timeMillis < it.timeMillis) {
                 announcement = it
             }
         }
@@ -109,4 +106,4 @@ object AnnouncementManager: Manager() {
 }
 
 
-class AnnouncementSearchResult(announcement: Announcement, ratio: Int): SearchResult<Announcement>(announcement, ratio)
+class AnnouncementSearchResult(announcement: Announcement, ratio: Int) : SearchResult<Announcement>(announcement, ratio)

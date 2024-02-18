@@ -5,11 +5,6 @@ import icu.takeneko.omms.central.controller.ControllerManager;
 import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
 import icu.takeneko.omms.central.controller.console.input.StdinInputSource;
 import icu.takeneko.omms.central.controller.console.output.StdOutPrintTarget;
-import icu.takeneko.omms.central.controller.Controller;
-import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
-import icu.takeneko.omms.central.controller.console.output.StdOutPrintTarget;
-import icu.takeneko.omms.central.controller.console.input.StdinInputSource;
 import icu.takeneko.omms.central.util.UtilKt;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -40,7 +35,7 @@ public class RemoteControllerConsoleMain {
 //        StdOutPrintTarget stdOutPrintTarget = ;
 //        ControllerConsole controllerConsole = new ControllerConsole(controllerImpl, controllerId, stdOutPrintTarget, new StdinInputSource());
         String id = "MAIN";
-        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource().withHistory(UtilKt.getOrCreateControllerHistory(controllerId)),new StdOutPrintTarget(), id);
+        ControllerConsoleImpl controllerConsoleImpl = (ControllerConsoleImpl) controllerImpl.startControllerConsole(new StdinInputSource().withHistory(UtilKt.getOrCreateControllerHistory(controllerId)), new StdOutPrintTarget(), id);
         controllerConsoleImpl.start();
         while (controllerConsoleImpl.isAlive()) {
             Thread.yield();

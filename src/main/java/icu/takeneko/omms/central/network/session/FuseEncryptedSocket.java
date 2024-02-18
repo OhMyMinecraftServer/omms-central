@@ -1,7 +1,5 @@
 package icu.takeneko.omms.central.network.session;
 
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.network.EncryptedSocket;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
@@ -36,10 +34,10 @@ public class FuseEncryptedSocket {
     public Request receiveRequest() throws NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         var line = this.encryptedSocket.readLine();
         if (enable) {
-            if (System.currentTimeMillis() - time >= 1000L){
+            if (System.currentTimeMillis() - time >= 1000L) {
                 time = System.currentTimeMillis();
                 count = 1;
-            }else {
+            } else {
                 count++;
                 if (count > rateLimit) {
                     throw new RateExceedException("Current speed limit exceeded");

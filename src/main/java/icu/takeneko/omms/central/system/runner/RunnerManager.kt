@@ -19,10 +19,18 @@ object RunnerManager : Manager() {
         command: String, workingDir: String, description: String,
         onRunnerOutputLine: (String) -> Unit = {},
         processOutputLineFormatter: (String) -> String = { it },
-        shouldRecordProcessOutputLine:(String) -> Boolean = {true}
+        shouldRecordProcessOutputLine: (String) -> Boolean = { true }
     ): RunnerDaemon {
         val id = generateRunnerId()
-        val runner = RunnerDaemon(id, command, workingDir, description, onRunnerOutputLine, processOutputLineFormatter, shouldRecordProcessOutputLine)
+        val runner = RunnerDaemon(
+            id,
+            command,
+            workingDir,
+            description,
+            onRunnerOutputLine,
+            processOutputLineFormatter,
+            shouldRecordProcessOutputLine
+        )
         runnerMap[id] = runner
         return runner
     }

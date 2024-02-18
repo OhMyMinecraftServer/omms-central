@@ -34,7 +34,8 @@ object IdentityProvider : Manager() {
         }
     }
 
-    fun checkIfBanned(identifier: SystemIdentifier) = banned.any { it.value.anyEquals(identifier) || it.key == generateIdentityCode(identifier) }
+    fun checkIfBanned(identifier: SystemIdentifier) =
+        banned.any { it.value.anyEquals(identifier) || it.key == generateIdentityCode(identifier) }
 
     fun recalculateAllIdentityCode() {
         this.banned = banned.values.associateBy { generateIdentityCode(it) }.toMutableMap()

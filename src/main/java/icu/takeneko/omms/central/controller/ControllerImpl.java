@@ -6,11 +6,6 @@ import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.crashreport.CrashReportStorage;
-import icu.takeneko.omms.central.controller.console.ControllerConsole;
-import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
-import icu.takeneko.omms.central.controller.console.output.PrintTarget;
-import icu.takeneko.omms.central.controller.console.input.InputSource;
-import icu.takeneko.omms.central.controller.crashreport.CrashReportStorage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -55,9 +50,9 @@ public class ControllerImpl extends Controller {
     public ControllerImpl() {
     }
 
-    public void fixFields(){
+    public void fixFields() {
         this.controllerHttpClient = new ControllerHttpClient(this);
-        if (this.mcdrCommandPrefix == null){
+        if (this.mcdrCommandPrefix == null) {
             this.mcdrCommandPrefix = "!!";
         }
     }

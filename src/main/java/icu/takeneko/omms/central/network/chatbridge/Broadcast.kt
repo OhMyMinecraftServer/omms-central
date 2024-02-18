@@ -7,9 +7,11 @@ import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.http.routes.sendToAllWS
 import icu.takeneko.omms.central.util.Util
 
-fun buildFromJson(content: String?): Broadcast? = GsonBuilder().serializeNulls().create().fromJson(content, Broadcast::class.java)
+fun buildFromJson(content: String?): Broadcast? =
+    GsonBuilder().serializeNulls().create().fromJson(content, Broadcast::class.java)
 
-fun buildToJson(broadcast: Broadcast?): String? = GsonBuilder().serializeNulls().create().toJson(broadcast, Broadcast::class.java)
+fun buildToJson(broadcast: Broadcast?): String? =
+    GsonBuilder().serializeNulls().create().toJson(broadcast, Broadcast::class.java)
 
 fun sendBroadcast(broadcast: Broadcast) {
     when (config.chatbridgeImplementation) {
@@ -25,10 +27,10 @@ fun sendBroadcast(broadcast: Broadcast) {
     }
 }
 
-fun buildBroadcast(channel:String, content: String) =  Broadcast()
+fun buildBroadcast(channel: String, content: String) = Broadcast()
     .apply {
-    setChannel(channel)
-    setContent(content)
-    setPlayer("********")
-    setServer("OMMS CENTRAL")
-}
+        setChannel(channel)
+        setContent(content)
+        setPlayer("********")
+        setServer("OMMS CENTRAL")
+    }

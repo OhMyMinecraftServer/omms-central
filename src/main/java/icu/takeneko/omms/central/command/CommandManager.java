@@ -22,7 +22,7 @@ public class CommandManager extends Manager {
     private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
 
     @Override
-    public void init(){
+    public void init() {
 
     }
 

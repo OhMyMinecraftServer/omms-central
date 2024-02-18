@@ -1,13 +1,5 @@
 package icu.takeneko.omms.central.network.http.routes
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.controller.ControllerManager
@@ -16,6 +8,14 @@ import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
 import icu.takeneko.omms.central.network.http.*
 import icu.takeneko.omms.central.util.toStringMap
 import icu.takeneko.omms.central.whitelist.*
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun Route.httpApiQueryRouting() {
     route("/api") {
@@ -82,7 +82,7 @@ fun Route.httpApiQueryRouting() {
                     try {
                         WhitelistManager.addToWhiteList(request.whitelistName, it, false)
                         resultMap["success"]!! += it
-                    }catch (_: PlayerAlreadyExistsException){
+                    } catch (_: PlayerAlreadyExistsException) {
                         resultMap["failure"]!! += it
                     }
                 }
@@ -108,7 +108,7 @@ fun Route.httpApiQueryRouting() {
                     try {
                         WhitelistManager.removeFromWhiteList(request.whitelistName, it)
                         resultMap["success"]!! += it
-                    }catch (_: PlayerNotFoundException){
+                    } catch (_: PlayerNotFoundException) {
                         resultMap["failure"]!! += it
                     }
                 }
@@ -122,7 +122,7 @@ fun Route.httpApiQueryRouting() {
                 try {
                     WhitelistManager.createWhitelist(request.whitelistName)
                     call.respond(HttpResponseData())
-                }catch (_:WhitelistAlreadyExistsException){
+                } catch (_: WhitelistAlreadyExistsException) {
                     call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist exists"))
                 }
             }
@@ -132,7 +132,7 @@ fun Route.httpApiQueryRouting() {
                 try {
                     WhitelistManager.deleteWhiteList(request.whitelistName)
                     call.respond(HttpResponseData())
-                }catch (_:WhitelistNotExistException){
+                } catch (_: WhitelistNotExistException) {
                     call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not exist"))
                 }
             }

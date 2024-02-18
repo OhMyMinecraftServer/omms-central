@@ -1,14 +1,10 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.system;
 
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.network.session.SessionContext;
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.system.runner.RunnerManager;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +21,8 @@ public class RunSystemCommandRequestHandler extends BuiltinRequestHandler {
             var id = daemon.getRunnerId();
             RunnerManager.INSTANCE.launchRunner(id);
             return new Response().withResponseCode(Result.RUNNER_LAUNCHED).withContentPair("runnerId", id);
-        }catch (Exception e){
-            return new Response().withResponseCode(Result.FAIL).withContentPair("exception",e.toString());
+        } catch (Exception e) {
+            return new Response().withResponseCode(Result.FAIL).withContentPair("exception", e.toString());
         }
     }
 

@@ -1,11 +1,11 @@
 package icu.takeneko.omms.central.network.http.plugins
 
+import icu.takeneko.omms.central.controller.ControllerManager
+import icu.takeneko.omms.central.security.HttpAuthUtil
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
-import icu.takeneko.omms.central.controller.ControllerManager
-import icu.takeneko.omms.central.security.HttpAuthUtil
 
 fun Application.configureAuthentication() {
     authentication {

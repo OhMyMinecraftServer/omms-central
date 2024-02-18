@@ -34,7 +34,7 @@ class BoundControllerImpl(val config: ControllerBindingConfig) : ControllerImpl(
     }
 
     override fun getDisplayName(): String {
-        return config.controllers.values.joinToString(separator = "+"){it.displayName}
+        return config.controllers.values.joinToString(separator = "+") { it.displayName }
     }
 
     override fun getType(): String {

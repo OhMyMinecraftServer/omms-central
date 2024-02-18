@@ -97,13 +97,13 @@ object DatabaseConnection {
 
     }
 
-    fun checkPlayerExists(player:String):Boolean{
+    fun checkPlayerExists(player: String): Boolean {
         val command = "select * from \"omms-player\" where name = '$player'"
         val result = execute(command).second
         return result.next()
     }
 
-    fun checkGroupExists(group: String):Boolean{
+    fun checkGroupExists(group: String): Boolean {
         val command = "select * from \"omms-player\" where name = '$group'"
         val result = execute(command).second
         return result.next()

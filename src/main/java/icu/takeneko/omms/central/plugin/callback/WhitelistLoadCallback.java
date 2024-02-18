@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.plugin.callback;
 
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
-import icu.takeneko.omms.central.whitelist.WhitelistManager;
 
 import java.util.function.Consumer;
 

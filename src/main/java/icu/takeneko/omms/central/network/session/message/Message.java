@@ -5,10 +5,11 @@ import kotlinx.serialization.Serializable;
 
 @Serializable
 public class Message {
-    public Message(String msg, String[] load){
+    public Message(String msg, String[] load) {
         this.msg = msg;
         this.load = load;
     }
+
     @SerializedName("msg")
     String msg;
     @SerializedName("load")

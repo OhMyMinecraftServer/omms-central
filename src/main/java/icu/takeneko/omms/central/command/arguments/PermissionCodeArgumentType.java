@@ -9,7 +9,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import icu.takeneko.omms.central.permission.PermissionManager;
-import icu.takeneko.omms.central.permission.PermissionManager;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -17,12 +16,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class PermissionCodeArgumentType implements ArgumentType<Integer> {
 
-    private PermissionCodeArgumentType(){}
+    private PermissionCodeArgumentType() {
+    }
 
     @Override
     public Integer parse(StringReader stringReader) throws CommandSyntaxException {
         var i = stringReader.readInt();
-        if (PermissionManager.INSTANCE.getPermission(i) == null){
+        if (PermissionManager.INSTANCE.getPermission(i) == null) {
             throw new DynamicCommandExceptionType(o ->
                     new LiteralMessage("Permission code " + o + " not exist.")
             ).createWithContext(stringReader, i);
@@ -50,11 +50,11 @@ public class PermissionCodeArgumentType implements ArgumentType<Integer> {
         return builder.buildFuture();
     }
 
-    public static PermissionCodeArgumentType code(){
+    public static PermissionCodeArgumentType code() {
         return new PermissionCodeArgumentType();
     }
 
-    public static <S> int getPermissionCode(CommandContext<S> context, String name){
+    public static <S> int getPermissionCode(CommandContext<S> context, String name) {
         return context.getArgument(name, Integer.class);
     }
 

@@ -10,8 +10,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import icu.takeneko.omms.central.whitelist.Whitelist;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
-import icu.takeneko.omms.central.whitelist.Whitelist;
-import icu.takeneko.omms.central.whitelist.WhitelistManager;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,13 +37,13 @@ public class WhitelistArgumentType implements ArgumentType<Whitelist> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         var s = builder.getRemaining();
-        if (s.isEmpty()){
+        if (s.isEmpty()) {
             WhitelistManager.INSTANCE.getWhitelistNames()
                     .forEach(builder::suggest);
-        }else {
+        } else {
             WhitelistManager.INSTANCE.getWhitelistNames()
                     .stream()
-                    .filter( it -> it.startsWith(s))
+                    .filter(it -> it.startsWith(s))
                     .forEach(builder::suggest);
         }
         return builder.buildFuture();
@@ -65,7 +63,7 @@ public class WhitelistArgumentType implements ArgumentType<Whitelist> {
         return new WhitelistArgumentType();
     }
 
-    public static <S> Whitelist getWhitelist(CommandContext<S> context, String name){
+    public static <S> Whitelist getWhitelist(CommandContext<S> context, String name) {
         return context.getArgument(name, Whitelist.class);
     }
 }

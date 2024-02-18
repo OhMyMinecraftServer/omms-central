@@ -11,7 +11,7 @@ public abstract class Callback<T> {
 
     abstract public void register(Consumer<T> consumer);
 
-    public void invokeAll(T t){
+    public void invokeAll(T t) {
         for (Consumer<T> consumer : consumers) {
             consumer.accept(t);
         }

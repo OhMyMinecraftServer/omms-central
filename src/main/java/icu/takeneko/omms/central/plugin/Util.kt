@@ -13,7 +13,7 @@ val versionNamePattern: Pattern = Pattern.compile("([><=]=?)([0-9A-Za-z.]+)")
 
 fun requirementMatches(self: PluginDependencyRequirement, dependency: PluginDependency): Boolean {
     if (self.id != dependency.id) return false
-    if (self.symbol == "*")return true
+    if (self.symbol == "*") return true
     return when (self.symbol) {
         ">=" -> self.parsedVersion <= dependency.version
         "<=" -> self.parsedVersion >= dependency.version
@@ -24,7 +24,7 @@ fun requirementMatches(self: PluginDependencyRequirement, dependency: PluginDepe
     }
 }
 
-object PluginMetadataExclusionStrategy: ExclusionStrategy {
+object PluginMetadataExclusionStrategy : ExclusionStrategy {
     override fun shouldSkipField(fieldAttributes: FieldAttributes): Boolean {
         return fieldAttributes.name == "symbol" || fieldAttributes.name == "parsedVersion" || fieldAttributes.declaredClass == ModuleDescriptor.Version::class.java
     }

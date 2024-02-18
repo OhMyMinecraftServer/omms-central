@@ -1,28 +1,24 @@
 package icu.takeneko.omms.central.main;
 
-import icu.takeneko.omms.central.network.ChatbridgeImplementation;
 import icu.takeneko.omms.central.GlobalVariable;
 import icu.takeneko.omms.central.config.Config;
 import icu.takeneko.omms.central.network.ChatbridgeImplementation;
-import icu.takeneko.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Main {
     public static void main(String @NotNull [] args) throws IOException {
-        if (Arrays.stream(args).toList().contains("--controllerConsole")){
+        if (Arrays.stream(args).toList().contains("--controllerConsole")) {
             RemoteControllerConsoleMain.main(args);
             return;
         }
         GlobalVariable.INSTANCE.setArgs(args);
         var env = System.getenv();
-        if (env.containsKey("omms.consoleFont")){
+        if (env.containsKey("omms.consoleFont")) {
             GlobalVariable.INSTANCE.setConsoleFont(env.get("omms.consoleFont"));
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

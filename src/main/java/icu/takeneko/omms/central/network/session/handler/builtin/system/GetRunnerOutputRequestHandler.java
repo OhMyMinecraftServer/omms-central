@@ -1,18 +1,14 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.system;
 
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.permission.Permission;
-import kotlin.collections.CollectionsKt;
 import icu.takeneko.omms.central.network.session.SessionContext;
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
 import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.system.runner.RunnerManager;
 import icu.takeneko.omms.central.util.Util;
+import kotlin.collections.CollectionsKt;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintWriter;
@@ -28,12 +24,12 @@ public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
         var runnerId = request.getContent("runnerId");
         var outputResult = RunnerManager.INSTANCE.runIfRunnerExists(runnerId, ((runnerManager, s, runnerDaemon) -> {
             List<String> list = CollectionsKt.mutableListOf();
-            if (runnerDaemon.getProcessStarted()){
-                if (runnerDaemon.getProcessStarted()){
+            if (runnerDaemon.getProcessStarted()) {
+                if (runnerDaemon.getProcessStarted()) {
                     list.addAll(Objects.requireNonNull(runnerDaemon.getReader()).getAllLines());
-                }else {
+                } else {
                     list.add("An exception occurred while Runner attempt to launch a process.");
-                    if (runnerDaemon.getStartFailReason() != null){
+                    if (runnerDaemon.getStartFailReason() != null) {
                         var ex = runnerDaemon.getStartFailReason();
                         StringWriter writer = new StringWriter();
                         ex.printStackTrace(new PrintWriter(writer));
@@ -45,7 +41,7 @@ public class GetRunnerOutputRequestHandler extends BuiltinRequestHandler {
         }));
         if (outputResult != null) {
             return new Response().withResponseCode(Result.RUNNER_OUTPUT_GOT).withContentPair("output", Util.toJson(outputResult));
-        }else {
+        } else {
             return new Response().withResponseCode(Result.RUNNER_NOT_EXIST);
         }
     }

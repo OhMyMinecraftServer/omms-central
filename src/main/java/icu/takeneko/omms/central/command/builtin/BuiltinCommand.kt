@@ -1,10 +1,8 @@
 package icu.takeneko.omms.central.command.builtin
 
-import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.omms.central.GlobalVariable.args
-import icu.takeneko.omms.central.GlobalVariable.udpBroadcastSender
 import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.*
 import icu.takeneko.omms.central.command.arguments.ControllerArgumentType
@@ -19,10 +17,8 @@ import icu.takeneko.omms.central.controller.console.input.StdinInputSource
 import icu.takeneko.omms.central.controller.console.output.StdOutPrintTarget
 import icu.takeneko.omms.central.main.CentralServer
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
-import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.chatbridge.buildBroadcast
 import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
-import icu.takeneko.omms.central.network.http.routes.sendToAllWS
 import icu.takeneko.omms.central.permission.Operation
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.permission.PermissionChange
@@ -212,7 +208,6 @@ val broadcastCommand = LiteralCommand("broadcast") {
 }
 
 
-
 val stopCommand = LiteralCommand("stop") {
     execute {
         CentralServer.stop()
@@ -278,8 +273,10 @@ val helpCommand = LiteralCommand("help") {
     execute {
         val dispatcher = CommandManager.INSTANCE.commandDispatcher
         val usages =
-            dispatcher.getAllUsage(dispatcher.root,
-                CommandSourceStack(CommandSourceStack.Source.INTERNAL), false)
+            dispatcher.getAllUsage(
+                dispatcher.root,
+                CommandSourceStack(CommandSourceStack.Source.INTERNAL), false
+            )
         for (usage in usages) {
             sendFeedback(usage)
         }
@@ -375,7 +372,6 @@ val permissionCommand = LiteralCommand("permission") {
 }
 
 
-
 val controllerCommand = LiteralCommand("controller") {
     literal("execute") {
         argument("controller", ControllerArgumentType()) {
@@ -402,7 +398,7 @@ val controllerCommand = LiteralCommand("controller") {
         }
     }
     literal("console") {
-        argument("controller", ControllerArgumentType()){
+        argument("controller", ControllerArgumentType()) {
             execute {
                 val controller = this.getArgument("controller", Controller::class.java)
                 val inputSource = StdinInputSource()
@@ -413,7 +409,7 @@ val controllerCommand = LiteralCommand("controller") {
                 SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J()
                 val console = controller.startControllerConsole(inputSource, outputTarget, "console")
                 console.start()
-                while (console.isAlive){
+                while (console.isAlive) {
                     LockSupport.parkNanos(10)
                 }
                 sendFeedback("Exiting console.")
@@ -485,8 +481,8 @@ val pluginCommand = LiteralCommand("plugin") {
             1
         }
     }
-    literal("reload"){
-        requires({it.source != CommandSourceStack.Source.REMOTE}){
+    literal("reload") {
+        requires({ it.source != CommandSourceStack.Source.REMOTE }) {
             execute {
                 logger.warn("Plugin reloading is highly experimental, in some cases it can cause severe problems.")
                 logger.info("Reloading all plugins!")
@@ -495,7 +491,7 @@ val pluginCommand = LiteralCommand("plugin") {
             }
         }
     }
-    literal("refresh"){
+    literal("refresh") {
         execute {
             logger.warn("Plugin refreshing is highly experimental, in some cases it can cause severe problems.")
             logger.info("Refreshing plugins!")

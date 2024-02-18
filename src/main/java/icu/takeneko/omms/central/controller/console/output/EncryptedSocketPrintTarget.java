@@ -16,8 +16,8 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
     }
 
 
-    @NotNull Response responseBuilder(String content, String id){
-        return new Response().withResponseCode(Result.CONTROLLER_LOG).withContentPair("consoleId", id).withContentPair("content",content);
+    @NotNull Response responseBuilder(String content, String id) {
+        return new Response().withResponseCode(Result.CONTROLLER_LOG).withContentPair("consoleId", id).withContentPair("content", content);
     }
 
     @Override
@@ -25,8 +25,8 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
         try {
             logger.debug(content);
             target.sendResponseAsync(responseBuilder(content, console.getConsoleId()));
-        }catch (Exception e){
-            throw new RuntimeException("Error occurred while sending log to client.",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while sending log to client.", e);
         }
     }
 }

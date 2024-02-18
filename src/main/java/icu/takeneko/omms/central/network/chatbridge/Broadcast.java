@@ -9,7 +9,8 @@ public class Broadcast {
     public String player;
     public String content;
     public String id;
-    public Broadcast(){
+
+    public Broadcast() {
         this.id = Util.generateRandomString(16);
     }
 

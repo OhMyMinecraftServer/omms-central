@@ -2,8 +2,8 @@ package icu.takeneko.omms.central.network.session.handler.builtin
 
 
 //hard-coded request registering(
-    //do something mojang does
-    // codegen
+//do something mojang does
+// codegen
 //    RequestManager.registerRequest("WHITELIST_CREATE", CreateWhitelistRequestHandler())
 //    RequestManager.registerRequest("WHITELIST_LIST", ListWhitelistRequestHandler())
 //    RequestManager.registerRequest("WHITELIST_GET", GetWhitelistRequestHandler())
@@ -41,11 +41,11 @@ package icu.takeneko.omms.central.network.session.handler.builtin
 //
 //    RequestManager.registerRequest("END", EndRequestHandler())
 
-    //草
-    //wjat
-    // big problem
-    //allright(
-    // This action is not yet implemented in JetBrains Client
+//草
+//wjat
+// big problem
+//allright(
+// This action is not yet implemented in JetBrains Client
 //    Util.BUILTIN_COMMANDS.forEach {
 //        val array = it.split('_').reversed()
 //        val reduce = array

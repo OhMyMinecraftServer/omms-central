@@ -69,8 +69,7 @@ val targetOs = when {
     else -> error("Unsupported OS: $osName")
 }
 
-val osArch = System.getProperty("os.arch")
-var targetArch = when (osArch) {
+var targetArch = when (val osArch = System.getProperty("os.arch")) {
     "x86_64", "amd64" -> "x64"
     "aarch64" -> "arm64"
     else -> error("Unsupported arch: $osArch")

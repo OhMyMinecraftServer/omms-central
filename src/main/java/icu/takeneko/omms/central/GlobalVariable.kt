@@ -28,9 +28,10 @@ object GlobalVariable {
     var args = mutableListOf<String>()
         private set
 
-    fun setArgs(args:Array<String>){
+    fun setArgs(args: Array<String>) {
         GlobalVariable.args = args.toMutableList()
     }
+
     init {
         Permission.entries.forEach {
             permissionNames.add(it.name)

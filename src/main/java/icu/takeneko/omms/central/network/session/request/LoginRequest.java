@@ -2,16 +2,17 @@ package icu.takeneko.omms.central.network.session.request;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LoginRequest extends Request{
+public class LoginRequest extends Request {
     long version = VERSION_BASE + 0xffffL;
 
     public static final long VERSION_BASE = 0xc0000000L;
+
     public LoginRequest(long version) {
         super("PING");
         this.version = version;
     }
 
-    public LoginRequest(@NotNull Request request, long version){
+    public LoginRequest(@NotNull Request request, long version) {
         super();
         this.request = request.getRequest();
         this.content = request.content;

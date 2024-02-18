@@ -7,9 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import icu.takeneko.omms.central.controller.Controller;
-import icu.takeneko.omms.central.controller.Controller;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ControllerArgumentType implements ArgumentType<Controller> {

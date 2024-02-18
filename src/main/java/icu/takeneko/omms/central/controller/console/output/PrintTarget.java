@@ -7,8 +7,8 @@ public abstract class PrintTarget<T, K> {
         this.target = target;
     }
 
-    public void println(String content, K context){
-        synchronized (this){
+    public void println(String content, K context) {
+        synchronized (this) {
             println(target, context, content);
         }
     }

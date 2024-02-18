@@ -25,7 +25,7 @@ public class StdinInputSource extends InputSource {
                                 "give", "ban", "ban-ip",
                                 "tp", "teleport", "summon",
                                 "tell", "tellraw", "clear",
-                                "experience", "xp", "experience","pardon","pardon-ip","stop"),
+                                "experience", "xp", "experience", "pardon", "pardon-ip", "stop"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
@@ -44,7 +44,7 @@ public class StdinInputSource extends InputSource {
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("weather"),
-                        new StringsCompleter("clear","rain","thunder"),
+                        new StringsCompleter("clear", "rain", "thunder"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
@@ -54,7 +54,7 @@ public class StdinInputSource extends InputSource {
                 ),
                 new ArgumentCompleter(
                         new StringsCompleter("data"),
-                        new StringsCompleter("merge","get","remove","modify"),
+                        new StringsCompleter("merge", "get", "remove", "modify"),
                         NullCompleter.INSTANCE
                 ),
                 new ArgumentCompleter(
@@ -81,12 +81,13 @@ public class StdinInputSource extends InputSource {
     }
 
     @NotNull LineReader lineReader = LineReaderBuilder.builder().completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
+
     @Override
     public String getLine() {
         return lineReader.readLine().stripTrailing();
     }
 
-    public @NotNull StdinInputSource withHistory(DefaultHistory history){
+    public @NotNull StdinInputSource withHistory(DefaultHistory history) {
         lineReader = LineReaderBuilder.builder().history(history).completer(simpleMinecraftServerCompleter).terminal(ConsoleInputHandler.INSTANCE.getTerminal()).build();
         return this;
     }

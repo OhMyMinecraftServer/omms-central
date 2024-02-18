@@ -16,7 +16,7 @@ object ControllerBindingManager : Manager() {
     }
 
     override fun init() {
-        val filePath = Util.joinFilePaths( "bindConfig.json")
+        val filePath = Util.joinFilePaths("bindConfig.json")
         if (!Util.fileExists(filePath)) {
             Files.createFile(Path(filePath))
             File(filePath).writer().use {
@@ -28,7 +28,7 @@ object ControllerBindingManager : Manager() {
             storage.clear()
             storage += map
         }
-        storage.forEach{
+        storage.forEach {
             ControllerManager.replaceController(BoundControllerImpl(it.value))
         }
     }

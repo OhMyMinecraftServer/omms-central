@@ -68,9 +68,12 @@ public class NetworkInfo {
     public void setIpv6DefaultGateway(String ipv6DefaultGateway) {
         this.ipv6DefaultGateway = ipv6DefaultGateway;
     }
-    public record NetworkInterface(String name, String displayName, String macAddress, long mtu, long speed, String[] ipv4Address, String[] ipv6Address){}
 
-    public static String toJsonString(NetworkInfo networkInfo){
+    public record NetworkInterface(String name, String displayName, String macAddress, long mtu, long speed,
+                                   String[] ipv4Address, String[] ipv6Address) {
+    }
+
+    public static String toJsonString(NetworkInfo networkInfo) {
         return new GsonBuilder().serializeNulls().create().toJson(networkInfo);
     }
 }

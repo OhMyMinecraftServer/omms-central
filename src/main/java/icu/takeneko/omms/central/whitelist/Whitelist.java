@@ -4,7 +4,9 @@ import java.util.List;
 
 public abstract class Whitelist {
     abstract public String getName();
+
     abstract public void init();
+
     abstract public boolean contains(String player);
 
     abstract public List<String> getPlayers();

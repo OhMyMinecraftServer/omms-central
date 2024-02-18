@@ -105,7 +105,8 @@ class SessionServer(private val session: Session, private var permissions: List<
                     if (permission != null && !permissions.contains(permission)) {
                         sendResponseAsync(
                             Response()
-                                .withResponseCode(Result.PERMISSION_DENIED))
+                                .withResponseCode(Result.PERMISSION_DENIED)
+                        )
                         continue
                     }
                     var response: Response?
@@ -115,7 +116,8 @@ class SessionServer(private val session: Session, private var permissions: List<
                             logger.info("Session terminated.")
                             fuseEncryptedSocket.sendResponse(
                                 Response()
-                                    .withResponseCode(Result.DISCONNECT))
+                                    .withResponseCode(Result.DISCONNECT)
+                            )
                             session.socket.close()
                             break
                         }
@@ -136,7 +138,8 @@ class SessionServer(private val session: Session, private var permissions: List<
                 } catch (e: RateExceedException) {
                     sendResponseAsync(
                         Response()
-                            .withResponseCode(Result.RATE_LIMIT_EXCEEDED))
+                            .withResponseCode(Result.RATE_LIMIT_EXCEEDED)
+                    )
                     logger.warn("Rate limit exceeded.")
                     break
                 } catch (e: Exception) {

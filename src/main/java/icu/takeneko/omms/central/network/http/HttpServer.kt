@@ -1,13 +1,13 @@
 package icu.takeneko.omms.central.network.http
 
-import io.ktor.server.application.*
-import io.ktor.server.netty.*
-import io.ktor.server.websocket.*
 import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.http.plugins.configureAuthentication
 import icu.takeneko.omms.central.network.http.plugins.configureRouting
 import icu.takeneko.omms.central.network.http.plugins.configureSerialization
+import io.ktor.server.application.*
+import io.ktor.server.netty.*
+import io.ktor.server.websocket.*
 import java.time.Duration
 
 fun httpServerMain(args: Array<String>) = EngineMain.main(args)

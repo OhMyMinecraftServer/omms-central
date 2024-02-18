@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ public class UdpBroadcastSender extends Thread {
         }
     }
 
-    public void clearMulticastSocketCache(){
+    public void clearMulticastSocketCache() {
         multicastSocketCache.clear();
     }
 
@@ -52,7 +54,7 @@ public class UdpBroadcastSender extends Thread {
                     queue.forEach(this::send);
                 }
                 LockSupport.parkNanos(10);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -72,14 +74,14 @@ public class UdpBroadcastSender extends Thread {
     }
 
     private void send(@NotNull Target target, byte @NotNull [] content) {
-        queue.remove(target,content);
+        queue.remove(target, content);
         MulticastSocket socket;
         try {
             if (multicastSocketCache.containsKey(target)) {
                 socket = multicastSocketCache.get(target);
             } else {
                 socket = createMulticastSocket(target.getAddress(), target.getPort());
-                multicastSocketCache.put(target,socket);
+                multicastSocketCache.put(target, socket);
             }
             DatagramPacket packet = new DatagramPacket(content, content.length, InetAddress.getByName(target.getAddress()), target.getPort());
 
@@ -90,7 +92,6 @@ public class UdpBroadcastSender extends Thread {
                     , e);
         }
     }
-
 
 
 }

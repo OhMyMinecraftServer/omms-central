@@ -11,7 +11,8 @@ public class FileSystemInfo {
 
     @SerializedName("filesystems")
     final List<FileSystem> fileSystemList = new ArrayList<>();
-    public record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType){
+
+    public record FileSystem(long free, long total, String volume, String mountPoint, String fileSystemType) {
 
     }
 
@@ -19,7 +20,7 @@ public class FileSystemInfo {
         return fileSystemList;
     }
 
-    public static String asJsonString(FileSystemInfo fileSystemInfo){
+    public static String asJsonString(FileSystemInfo fileSystemInfo) {
         return new GsonBuilder().serializeNulls().create().toJson(fileSystemInfo);
     }
 }

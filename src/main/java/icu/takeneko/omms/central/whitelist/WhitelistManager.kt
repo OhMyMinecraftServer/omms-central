@@ -2,10 +2,10 @@ package icu.takeneko.omms.central.whitelist
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
-import me.xdrop.fuzzywuzzy.FuzzySearch
 import icu.takeneko.omms.central.plugin.callback.WhitelistLoadCallback
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.Util
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -13,7 +13,6 @@ import java.io.FileReader
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.jvm.Throws
 
 @SuppressWarnings("all")
 object WhitelistManager : Manager() {
@@ -160,7 +159,7 @@ object WhitelistManager : Manager() {
     }
 
     @Synchronized
-    fun flush(whitelistName: String){
+    fun flush(whitelistName: String) {
         (this[whitelistName] ?: throw WhitelistNotExistException(whitelistName)).saveModifiedBuffer()
     }
 

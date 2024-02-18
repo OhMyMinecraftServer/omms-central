@@ -9,10 +9,6 @@ import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.completer.AggregateCompleter;
-import org.jline.reader.impl.completer.ArgumentCompleter;
-import org.jline.reader.impl.completer.NullCompleter;
-import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
@@ -21,12 +17,12 @@ import java.io.IOException;
 public class ConsoleInputHandler {
     private Terminal terminal;
 
-    public void prepareTerminal(){
+    public void prepareTerminal() {
         try {
             terminal = TerminalBuilder.builder().system(true).dumb(true).signalHandler(new Terminal.SignalHandler() {
                 @Override
                 public void handle(Terminal.Signal signal) {
-                    if (signal == Terminal.Signal.INT){
+                    if (signal == Terminal.Signal.INT) {
                         CentralServer.stop();
                     }
                 }
@@ -35,6 +31,7 @@ public class ConsoleInputHandler {
             throw new RuntimeException(e);
         }
     }
+
     ConsoleInputHandler() {
 
     }

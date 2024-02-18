@@ -11,12 +11,6 @@ import icu.takeneko.omms.central.network.chatbridge.Target;
 import icu.takeneko.omms.central.network.session.request.LoginRequest;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
 import kotlin.Unit;
-import icu.takeneko.omms.central.command.CommandSourceStack;
-import icu.takeneko.omms.central.controller.ControllerHttpClient;
-import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.network.chatbridge.Target;
-import icu.takeneko.omms.central.network.session.request.LoginRequest;
-import icu.takeneko.omms.central.whitelist.WhitelistManager;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -25,7 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Random;
 
 public class Util {
 

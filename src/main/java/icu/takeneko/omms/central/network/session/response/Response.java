@@ -2,8 +2,9 @@
 package icu.takeneko.omms.central.network.session.response;
 
 import com.google.gson.GsonBuilder;
-import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class Response {
     private @NotNull Result responseCode;

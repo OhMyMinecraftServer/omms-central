@@ -5,48 +5,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
-import oshi.hardware.ComputerSystem;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Firmware;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.UUID;
 
 public class SystemInfoUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
     private static final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-    public static String getSystemVersion(){
+
+    public static String getSystemVersion() {
         return os.getVersion();
     }
 
-    public static String getSystemName(){
+    public static String getSystemName() {
         return os.getName();
     }
 
-    public static String getSystemArch(){
+    public static String getSystemArch() {
         return os.getArch();
     }
 
-    public static icu.takeneko.omms.central.system.info.@NotNull SystemInfo getSystemInfo(){
+    public static icu.takeneko.omms.central.system.info.@NotNull SystemInfo getSystemInfo() {
         return new icu.takeneko.omms.central.system.info.SystemInfo(SystemInfoUtil.getSystemName(), SystemInfoUtil.getSystemVersion(), SystemInfoUtil.getSystemArch(), SystemInfoUtil.getFileSystemInfo(), SystemInfoUtil.getMemoryInfo(), SystemInfoUtil.getNetworkInfo(), SystemInfoUtil.getProcessorInfo(), SystemInfoUtil.getStorageInfo());
     }
 
-    public static @NotNull DirectoryInfo listDir(@NotNull String path){
+    public static @NotNull DirectoryInfo listDir(@NotNull String path) {
         DirectoryInfo info = new DirectoryInfo();
         File file = new File(path);
-        if (file.isFile()){
+        if (file.isFile()) {
             info.setResult(SystemResult.NOT_A_FOLDER);
-        }
-        else {
+        } else {
             var files = file.listFiles();
             HashSet<String> fileSet = new HashSet<>();
             HashSet<String> folderSet = new HashSet<>();
             for (File f : Objects.requireNonNull(files)) {
-                if (f.isFile()){
+                if (f.isFile()) {
                     fileSet.add(f.getName());
                     continue;
                 }
@@ -59,7 +56,7 @@ public class SystemInfoUtil {
     }
 
 
-    public static @NotNull ProcessorInfo getProcessorInfo(){
+    public static @NotNull ProcessorInfo getProcessorInfo() {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hal = systemInfo.getHardware();
         CentralProcessor processor = hal.getProcessor();
@@ -76,7 +73,7 @@ public class SystemInfoUtil {
         return processorInfo;
     }
 
-    public static @NotNull MemoryInfo getMemoryInfo(){
+    public static @NotNull MemoryInfo getMemoryInfo() {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         var memory = hardwareAbstractionLayer.getMemory();
@@ -88,7 +85,7 @@ public class SystemInfoUtil {
         return memoryInfo;
     }
 
-    public static @NotNull StorageInfo getStorageInfo(){
+    public static @NotNull StorageInfo getStorageInfo() {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         StorageInfo storageInfo = new StorageInfo();
@@ -96,7 +93,7 @@ public class SystemInfoUtil {
         return storageInfo;
     }
 
-    public static @NotNull FileSystemInfo getFileSystemInfo(){
+    public static @NotNull FileSystemInfo getFileSystemInfo() {
         SystemInfo systemInfo = new SystemInfo();
         FileSystemInfo fileSystemInfo = new FileSystemInfo();
         systemInfo.getOperatingSystem()
@@ -115,7 +112,7 @@ public class SystemInfoUtil {
         return fileSystemInfo;
     }
 
-    public static @NotNull NetworkInfo getNetworkInfo(){
+    public static @NotNull NetworkInfo getNetworkInfo() {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardwareAbstractionLayer = systemInfo.getHardware();
         var networkParams = systemInfo.getOperatingSystem().getNetworkParams();

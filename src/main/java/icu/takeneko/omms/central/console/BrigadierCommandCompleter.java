@@ -21,9 +21,9 @@ public class BrigadierCommandCompleter implements Completer {
                         .parse(s, new CommandSourceStack(CommandSourceStack.Source.CONSOLE));
         var ftr = CommandManager.INSTANCE.getCommandDispatcher().getCompletionSuggestions(parseResult);
         ftr.thenAccept(suggestions -> {
-            if (suggestions.isEmpty()){
+            if (suggestions.isEmpty()) {
                 new StringsCompleter().complete(reader, line, candidates);
-            }else {
+            } else {
                 new StringsCompleter(suggestions.getList().stream().map(Suggestion::getText).toList()).complete(reader, line, candidates);
             }
         });

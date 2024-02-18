@@ -1,11 +1,10 @@
 package icu.takeneko.omms.central.network.http.routes
 
+import icu.takeneko.omms.central.announcement.AnnouncementManager
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import icu.takeneko.omms.central.announcement.AnnouncementManager
-import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
 
 fun Route.announcementQueryRouting() {
@@ -27,8 +26,8 @@ fun Route.announcementQueryRouting() {
             call.respondText(announcement.toJson(), status = HttpStatusCode.OK)
         }
         get("list") {
-            val map = mutableMapOf<String,String>()
-            AnnouncementManager.announcementMap.forEach{
+            val map = mutableMapOf<String, String>()
+            AnnouncementManager.announcementMap.forEach {
                 map[it.key] = it.value.title
             }
             call.respond(map)

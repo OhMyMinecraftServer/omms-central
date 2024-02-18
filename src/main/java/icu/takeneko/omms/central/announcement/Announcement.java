@@ -2,11 +2,12 @@
 package icu.takeneko.omms.central.announcement;
 
 import com.google.gson.GsonBuilder;
-import java.util.Arrays;
-import kotlinx.serialization.Serializable;
 import icu.takeneko.omms.central.util.Util;
+import kotlinx.serialization.Serializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 @Serializable
 public class Announcement {

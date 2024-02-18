@@ -1,13 +1,10 @@
 @file:Suppress("UNUSED")
+
 package icu.takeneko.omms.central.graphics
 
 import icu.takeneko.omms.central.system.info.SystemInfoUtil
 import icu.takeneko.omms.central.util.Util
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Font
-import java.awt.Graphics2D
-import java.awt.RenderingHints
+import java.awt.*
 import java.awt.geom.AffineTransform
 import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
@@ -79,7 +76,7 @@ fun info() {
     val nonHeapMemoryUsage = memoryMXBean.nonHeapMemoryUsage
     val maxMemory = (heapMemoryUsage.max + nonHeapMemoryUsage.max) / 1024.0 / 1024.0
     val usedMemory = (heapMemoryUsage.used + nonHeapMemoryUsage.used) / 1024.0 / 1024.0
-    strings.add(String.format("JVM Memory usage: %.3fMiB/%.3fMiB",usedMemory, maxMemory))
+    strings.add(String.format("JVM Memory usage: %.3fMiB/%.3fMiB", usedMemory, maxMemory))
     strings.add(
         "RAM: ${info.memoryInfo.memoryUsed / 1024 / 1024}MB/${info.memoryInfo.memoryTotal / 1024 / 1024}MB(${
             String.format(

@@ -2,11 +2,11 @@ package icu.takeneko.omms.central.network.pair
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.ktor.util.*
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.Util
+import io.ktor.util.*
 import java.io.FileReader
 import java.io.FileWriter
 import java.nio.file.Files
@@ -67,7 +67,7 @@ object PairManager : Manager() {
         return controllerConfig
     }
 
-    fun consoleMakePair(commandSourceStack: CommandSourceStack){
+    fun consoleMakePair(commandSourceStack: CommandSourceStack) {
 
     }
 }

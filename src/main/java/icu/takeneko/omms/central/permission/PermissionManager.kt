@@ -366,7 +366,7 @@ object PermissionManager : Manager() {
                 if (it.operation == Operation.CREATE) {
                     if (it.code !in permissionTable) {
                         permissionTable[it.code] = it.changes.toMutableList()
-                    }else{
+                    } else {
                         src.sendError("Permission code ${it.code} already exists.")
                     }
                     return@forEach

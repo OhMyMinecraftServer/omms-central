@@ -24,22 +24,22 @@ public class CommandSourceStack {
         this.source = source;
     }
 
-    public enum Source{
+    public enum Source {
         CONSOLE, PLUGIN, INTERNAL, REMOTE
     }
 
-    public void sendFeedback(String feedback){
-        if (source == Source.CONSOLE){
+    public void sendFeedback(String feedback) {
+        if (source == Source.CONSOLE) {
             logger.info(feedback);
-        }else {
+        } else {
             feedbackLines.add(feedback);
         }
     }
 
-    public void sendError(String message){
-        if (source == Source.CONSOLE){
+    public void sendError(String message) {
+        if (source == Source.CONSOLE) {
             logger.error(message);
-        }else {
+        } else {
             feedbackLines.add("E: " + message);
         }
     }

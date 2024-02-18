@@ -10,7 +10,7 @@ import java.util.*
 
 private val logger = LoggerFactory.getLogger("Auth")
 
-fun doAuth(remote: String): Pair<Long,List<Permission>?>{
+fun doAuth(remote: String): Pair<Long, List<Permission>?> {
     val authKey = String(Base64.getDecoder().decode(Base64.getDecoder().decode(remote)))
     val date = Util.getTimeCode().toLong()
     val key = authKey.toLong()
@@ -19,7 +19,7 @@ fun doAuth(remote: String): Pair<Long,List<Permission>?>{
     return permCode to getPermission(permCode.toInt())
 }
 
-fun getTimeBasedKey():String{
+fun getTimeBasedKey(): String {
     val date = LocalDateTime.now()
     val key = date.format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"))
     return Util.base64Encode(Util.base64Encode(key!!))

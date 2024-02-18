@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.plugin.callback;
 
 import icu.takeneko.omms.central.network.session.request.RequestManager;
-import icu.takeneko.omms.central.network.session.request.RequestManager;
 
 import java.util.function.Consumer;
 

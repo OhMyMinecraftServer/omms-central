@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.plugin.callback;
 
 import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.controller.ControllerManager;
 
 import java.util.function.Consumer;
 
