@@ -38,6 +38,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         pluginFileList.forEach {
             loadPluginFromFile(Path(it))?.apply { pluginMap += this }
         }
+        Thread.currentThread().contextClassLoader = classLoader
     }
 
     private fun loadPluginFromFile(it: Path): Pair<String, PluginInstance>? {

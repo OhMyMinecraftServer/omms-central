@@ -7,7 +7,11 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.lang.instrument.ClassFileTransformer
+import java.net.URL
+import java.net.URLClassLoader
+import java.net.URLDecoder
 import java.security.ProtectionDomain
+import java.util.Objects
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.zip.ZipFile
 
@@ -16,6 +20,7 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
     private val jarEntries = mutableMapOf<String, File>()
     private val jarClassEntriesByClassName = mutableMapOf<String, Pair<String, File>>()
     private val loadedClassesFromJar = mutableMapOf<String, Class<*>>()
+    private val jarUrlByResourcePath = mutableMapOf<String, URL>()
     private val classLoadingLock = Any()
     private val fileLoadingLock = Any()
     private val logger = LoggerFactory.getLogger("JarClassLoader")
@@ -26,10 +31,12 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
                 logger.debug("Add jar({}) to classloader.", file)
                 if (!file.exists()) throw FileNotFoundException(file.toString())
                 jarFiles += file
+                val entries = mutableListOf<String>()
                 ZipFile(file).use {
                     for (entry in it.entries()) {
                         if (!entry.isDirectory) {
                             jarEntries += entry.name to file
+                            entries += entry.name
                             if (entry.name.endsWith(".class")) {
                                 jarClassEntriesByClassName[entry.name.replace("/", ".").removeSuffix(".class")] =
                                     entry.name to file
@@ -38,6 +45,12 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
                         }
                     }
                 }
+                val urlClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()), this)
+                entries.map { it to urlClassLoader.getResource(it) }.forEach { (s, u) ->
+                    if (Objects.equals(u, null)) return@forEach
+                    jarUrlByResourcePath[s] = u!!
+                }
+                urlClassLoader.close()
             }
         }
     }
@@ -135,6 +148,13 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
             val bytes = stream.readAllBytes()
             it.close()
             return bytes
+        }
+    }
+
+    override fun getResource(name: String): URL? {
+        synchronized(classLoadingLock) {
+            if (name !in jarEntries) return null
+            return jarUrlByResourcePath[name] ?: return super.getResource(name)
         }
     }
 
