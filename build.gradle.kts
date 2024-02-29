@@ -145,6 +145,7 @@ fun getGitBranch(): String {
     exec {
         commandLine("git", "symbolic-ref", "--short", "-q", "HEAD")
         standardOutput = stdout
+        isIgnoreExitValue = true
     }
     return stdout.toString(Charsets.UTF_8).trim()
 }
@@ -154,6 +155,7 @@ fun getCommitId(): String {
     exec {
         commandLine("git", "rev-parse", "HEAD")
         standardOutput = stdout
+        isIgnoreExitValue = true
     }
     return stdout.toString(Charsets.UTF_8).trim()
 }
