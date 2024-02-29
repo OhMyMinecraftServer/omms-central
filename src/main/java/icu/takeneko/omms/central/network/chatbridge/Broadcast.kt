@@ -19,13 +19,14 @@ fun sendBroadcast(broadcast: Broadcast) {
             Util.TARGET_CHAT,
             Util.toJson(broadcast)
         )
-
         ChatbridgeImplementation.WS -> sendToAllWS(broadcast)
         ChatbridgeImplementation.DISABLE -> {
 
         }
     }
 }
+
+fun chatbridgeAvailable() = config.chatbridgeImplementation != ChatbridgeImplementation.DISABLE
 
 fun buildBroadcast(channel: String, content: String) = Broadcast()
     .apply {

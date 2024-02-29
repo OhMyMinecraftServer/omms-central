@@ -16,7 +16,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.21"
 }
 
-group = "com.github.ZhuRuoLing"
+group = "icu.takeneko"
 version = properties["version"]!!
 
 publishing {
@@ -117,14 +117,14 @@ dependencies {
     implementation("io.ktor:ktor-client-auth-jvm:2.1.2")
     implementation("io.ktor:ktor-client-auth:2.1.2")
     implementation("commons-io:commons-io:2.11.0")
-    implementation("cn.hutool:hutool-all:5.8.11")
+//    implementation("cn.hutool:hutool-all:5.8.11")
     implementation("io.ktor:ktor-http:2.2.3")
     implementation("com.github.gotson:sqlite-jdbc:3.32.3.8")
     implementation("io.ktor:ktor-client-serialization:2.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
-    implementation("org.jetbrains.pty4j:pty4j:0.12.10")
-    implementation("io.socket:socket.io-client:2.1.0")
+//    implementation("org.jetbrains.pty4j:pty4j:0.12.10")
+//    implementation("io.socket:socket.io-client:2.1.0")
     implementation("net.bytebuddy:byte-buddy-agent:1.14.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")

@@ -1,5 +1,6 @@
 package icu.takeneko.omms.central.network.chatbridge;
 
+import icu.takeneko.omms.central.plugin.callback.ChatbridgeBroadcastReceivedCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ public class UdpBroadcastReceiver extends Thread {
                             packet.getLength(), StandardCharsets.UTF_8);
                     var broadcast = BroadcastKt.buildFromJson(msg);
                     if (broadcast != null && !oldId.equals(broadcast.getId())) {
+                        ChatbridgeBroadcastReceivedCallback.INSTANCE.invokeAll(broadcast);
                         logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getChannel(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
                     }
                 } catch (Exception e) {

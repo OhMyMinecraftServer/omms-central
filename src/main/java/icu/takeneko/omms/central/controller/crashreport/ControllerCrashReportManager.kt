@@ -1,14 +1,14 @@
 package icu.takeneko.omms.central.controller.crashreport
 
-import cn.hutool.core.io.FileUtil
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.plugin.callback.RecievedControllerCrashReportCallback
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.reader
 
 object ControllerCrashReportManager : Manager() {
     private val storagePath = Path(Util.joinFilePaths("crashReport"))
@@ -20,9 +20,9 @@ object ControllerCrashReportManager : Manager() {
         if (!storagePath.toFile().exists()) {
             Files.createDirectory(storagePath)
         }
-        FileUtil.listFileNames(storagePath.toAbsolutePath().toString()).forEach {
-            File(it).reader().use {
-                crashReports += Util.gson.fromJson(it, CrashReportStorage::class.java)
+        storagePath.toAbsolutePath().listDirectoryEntries().forEach {
+            it.reader().use {reader ->
+                crashReports += Util.gson.fromJson(reader, CrashReportStorage::class.java)
             }
         }
     }
