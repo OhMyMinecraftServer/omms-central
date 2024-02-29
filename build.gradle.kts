@@ -117,7 +117,7 @@ dependencies {
     implementation("io.ktor:ktor-client-auth-jvm:2.1.2")
     implementation("io.ktor:ktor-client-auth:2.1.2")
     implementation("commons-io:commons-io:2.11.0")
-//    implementation("cn.hutool:hutool-all:5.8.11")
+    implementation("cn.hutool:hutool-all:5.8.11")
     implementation("io.ktor:ktor-http:2.2.3")
     implementation("com.github.gotson:sqlite-jdbc:3.32.3.8")
     implementation("io.ktor:ktor-client-serialization:2.2.3")
