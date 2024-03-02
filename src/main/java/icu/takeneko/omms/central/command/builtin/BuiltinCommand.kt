@@ -89,10 +89,10 @@ val whitelistCommand = LiteralCommand("whitelist") {
                     val player = getStringArgument("player")
                     try {
                         addToWhiteList(whitelist.name, player)
-                        sendFeedback("Successfully added $player to $whitelist")
+                        sendFeedback("Successfully added $player to ${whitelist.name}")
                         0
                     } catch (e: PlayerAlreadyExistsException) {
-                        sendError("Player ${e.player} already added to ${e.whitelist} exist")
+                        sendError("Player ${e.player} already added to ${whitelist.name}")
                         1
                     }
                 }
@@ -374,7 +374,7 @@ val permissionCommand = LiteralCommand("permission") {
 
 val controllerCommand = LiteralCommand("controller") {
     literal("execute") {
-        argument("controller", ControllerArgumentType()) {
+        argument("controller", ControllerArgumentType.queryable()) {
             greedyStringArgument("command") {
                 execute {
                     val controller = getArgument("controller", Controller::class.java)
@@ -398,7 +398,7 @@ val controllerCommand = LiteralCommand("controller") {
         }
     }
     literal("console") {
-        argument("controller", ControllerArgumentType()) {
+        argument("controller", ControllerArgumentType.queryable()) {
             execute {
                 val controller = this.getArgument("controller", Controller::class.java)
                 val inputSource = StdinInputSource()
@@ -420,7 +420,7 @@ val controllerCommand = LiteralCommand("controller") {
 
     }
     literal("status") {
-        argument("controller", ControllerArgumentType()) {
+        argument("controller", ControllerArgumentType.queryable()) {
             execute {
                 val controller = this.getArgument("controller", Controller::class.java)
                 try {
@@ -429,6 +429,20 @@ val controllerCommand = LiteralCommand("controller") {
                 } catch (e: Exception) {
                     sendError("Error occurred while querying controller status: $e")
                     logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")
+                }
+                1
+            }
+        }
+        literal("all"){
+            execute {
+                ControllerManager.controllers.values.filter(Controller::isStatusQueryable).forEach {
+                    try {
+                        val status = it.queryControllerStatus()
+                        printControllerStatus(this.source, it.name, status)
+                    } catch (e: Exception) {
+                        sendError("Error occurred while querying controller status: $e")
+                        logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")
+                    }
                 }
                 1
             }
@@ -536,6 +550,6 @@ private fun searchWhitelist(player: String, s: String, context: CommandContext<C
     }
 }
 
-private fun joinToDependencyString(pluginDependencyRequirements: List<PluginDependencyRequirement>): String {
-    return pluginDependencyRequirements.joinToString(separator = " ") { it.toString() }
+private fun joinToDependencyString(requirements: List<PluginDependencyRequirement>): String {
+    return requirements.joinToString(separator = " ") { it.toString() }
 }

@@ -8,19 +8,29 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import icu.takeneko.omms.central.controller.Controller;
 import icu.takeneko.omms.central.whitelist.Whitelist;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 public class WhitelistArgumentType implements ArgumentType<Whitelist> {
 
     private static final Collection<String> EXAMPLES = List.of("whitelist_name");
 
+    private final Predicate<Whitelist> filter;
+
     private WhitelistArgumentType() {
+        filter = WhitelistArgumentType::emptyFilter;
     }
+
+    public WhitelistArgumentType(Predicate<Whitelist> filter) {
+        this.filter = filter;
+    }
+
 
     @Override
     public Whitelist parse(StringReader stringReader) throws CommandSyntaxException {
@@ -63,7 +73,14 @@ public class WhitelistArgumentType implements ArgumentType<Whitelist> {
         return new WhitelistArgumentType();
     }
 
+    public static WhitelistArgumentType filtered(Predicate<Whitelist> filter){return new WhitelistArgumentType(filter);}
+
     public static <S> Whitelist getWhitelist(CommandContext<S> context, String name) {
         return context.getArgument(name, Whitelist.class);
     }
+
+    public static boolean emptyFilter(Whitelist whitelist){
+        return true;
+    }
+
 }

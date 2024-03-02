@@ -74,17 +74,17 @@ fun Route.whitelistQueryRouting() {
             logger.debug("Querying player $playerName in all whitelists.")
             if (WhitelistManager.isNoWhitelist()) {
                 logger.warn("Querying player $playerName in all whitelists, but no whitelist was found.")
-                call.respondText("[]", status = HttpStatusCode.OK)
+                call.respond(listOf<String>())
             }
             val result = WhitelistManager.queryInAllWhitelist(playerName)
-            call.respondText(status = HttpStatusCode.OK) {
-                if (result.isEmpty()) {
+            call.respond(
+                status = HttpStatusCode.OK, if (result.isEmpty()) {
                     logger.warn("Querying player $playerName in all whitelists, but this player was not found in any whitelist.")
-                    "[]"
+                    listOf()
                 } else {
-                    Util.toJson(result)
+                    result
                 }
-            }
+            )
         }
     }
 }
