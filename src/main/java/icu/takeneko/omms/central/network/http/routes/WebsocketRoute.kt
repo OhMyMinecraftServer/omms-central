@@ -1,6 +1,7 @@
 package icu.takeneko.omms.central.network.http.routes
 
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
+import icu.takeneko.omms.central.network.chatbridge.ChatMessageCache
 import icu.takeneko.omms.central.network.chatbridge.buildToJson
 import icu.takeneko.omms.central.plugin.callback.ChatbridgeBroadcastReceivedCallback
 import icu.takeneko.omms.central.util.Util
@@ -41,6 +42,7 @@ fun Route.websocketRoute() {
                         val broadcast = Util.fromJson(received, Broadcast::class.java)
                         logger.info("[${broadcast.channel}] [${broadcast.server}] <${broadcast.player}> ${broadcast.content}")
                         ChatbridgeBroadcastReceivedCallback.INSTANCE.invokeAll(broadcast)
+                        ChatMessageCache += broadcast
                         synchronized(list) {
                             for (session in list) {
                                 if (session == this) continue

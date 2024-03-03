@@ -36,6 +36,9 @@ public class Request {
         this.request = request;
     }
 
+    public boolean containsKey(String key){
+        return content.containsKey(key);
+    }
 
     public @NotNull Request withContentKeyPair(String key, String pair) {
         content.put(key, pair);

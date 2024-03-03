@@ -100,7 +100,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     if (session.socket.isClosed) break
                     val request = fuseEncryptedSocket.receiveRequest()
                     logger.debug("Received {}", request)
-                    val handler = getRequestHandler(Objects.requireNonNull(request).request) ?: continue
+                    val handler = getRequestHandler(request.request) ?: continue
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
                         sendResponseAsync(
