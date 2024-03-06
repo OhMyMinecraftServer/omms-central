@@ -49,8 +49,7 @@ class LoginSession(socket: Socket) :
                     if (request.version != Util.PROTOCOL_VERSION) {
                         encryptedConnector.send(
                             Response.serialize(
-                                Response()
-                                    .withResponseCode(Result.VERSION_NOT_MATCH)
+                                Response().withResponseCode(Result.VERSION_NOT_MATCH).withContentPair("version", Util.PROTOCOL_VERSION.toString())
                             )
                         )
                         break
