@@ -5,12 +5,13 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Response {
     private @NotNull Result responseCode;
-    private HashMap<String, String> content;
+    private Map<String, String> content;
 
-    public Response(@NotNull Result result, HashMap<String, String> content) {
+    public Response(@NotNull Result result, Map<String, String> content) {
         this.responseCode = result;
         this.content = content;
     }
@@ -37,11 +38,11 @@ public class Response {
         this.responseCode = responseCode;
     }
 
-    public HashMap<String, String> getContent() {
+    public Map<String, String> getContent() {
         return this.content;
     }
 
-    public void setContent(HashMap<String, String> content) {
+    public void setContent(Map<String, String> content) {
         this.content = content;
     }
 

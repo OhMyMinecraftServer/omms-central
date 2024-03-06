@@ -13,6 +13,7 @@ public class SessionContext {
     Session session;
     SessionServer server;
     List<Permission> permissions;
+    boolean chatMessagePassthroughEnabled = false;
     @NotNull HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
 
     public SessionContext(SessionServer server, FuseEncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
@@ -56,5 +57,13 @@ public class SessionContext {
 
     public void setServer(SessionServer server) {
         this.server = server;
+    }
+
+    public boolean isChatMessagePassthroughEnabled() {
+        return chatMessagePassthroughEnabled;
+    }
+
+    public void setChatMessagePassthroughEnabled(boolean chatMessagePassthroughEnabled) {
+        this.chatMessagePassthroughEnabled = chatMessagePassthroughEnabled;
     }
 }

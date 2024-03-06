@@ -1,5 +1,6 @@
 package icu.takeneko.omms.central.network.chatbridge
 
+import icu.takeneko.omms.central.network.session.server.SessionServer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,6 +10,9 @@ object ChatMessageCache {
     private var maxCapacity: Int = 50
 
     fun add(broadcast: Broadcast) {
+        SessionServer.sessions.forEach {
+            it.sendBroadcastMessage(broadcast)
+        }
         synchronized(list) {
             if (list.size + 1 > maxCapacity) {
                 list.removeAt(0)
@@ -33,7 +37,7 @@ object ChatMessageCache {
     fun serialize():String = Json.encodeToString<MessageCache>(toMessageCache())
 
     @Serializable
-    data class MessageCache(val maxCapacity: Int, val contents: List<Message>)
+    data class MessageCache(val maxCapacity: Int, val messages: List<Message>)
 
     @Serializable
     data class Message(
