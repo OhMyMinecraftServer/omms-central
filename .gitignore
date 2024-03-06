@@ -16,4 +16,5 @@
 /config.json
 /*.db
 /*.json
-
+/run/
+/bootstrap/run/

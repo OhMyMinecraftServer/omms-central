@@ -6,6 +6,9 @@ import icu.takeneko.omms.central.network.session.handler.builtin.announcement.Cr
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
+import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.SetChatMessagePassthroughRequestHandler
+import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatHistoryRequestHandler
+import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.SendBroadcastRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.controller.*
 import icu.takeneko.omms.central.network.session.handler.builtin.permission.*
 import icu.takeneko.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler
@@ -126,5 +129,9 @@ val builtinRequestMap = mutableMapOf(
     "PERMISSION_LIST" to ListPermissionRequestHandler(),
     "CONTROLLER_LAUNCH_CONSOLE" to LaunchControllerConsoleRequestHandler(),
     "CONTROLLER_END_CONSOLE" to EndControllerConsoleRequestHandler(),
-    "CONTROLLER_INPUT_CONSOLE" to SendControllerConsoleInputRequestHandler()
+    "CONTROLLER_INPUT_CONSOLE" to SendControllerConsoleInputRequestHandler(),
+
+    "SEND_BROADCAST" to SendBroadcastRequestHandler,
+    "GET_CHAT_HISTORY" to GetChatHistoryRequestHandler,
+    "SET_CHAT_PASSTHROUGH_STATE" to SetChatMessagePassthroughRequestHandler
 )

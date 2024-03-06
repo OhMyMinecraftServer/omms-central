@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.com.google.gson.Gson
+import org.jetbrains.kotlin.com.google.gson.GsonBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
+import org.jetbrains.kotlin.utils.addToStdlib.butIf
 import java.io.ByteArrayOutputStream
 
 /*
@@ -82,6 +85,14 @@ val target = "${targetOs}-${targetArch}"
 tasks {
     shadowJar {
         archiveClassifier.set("$target-full")
+        doLast {
+            val classpath = listOf(this@shadowJar.archiveFileName.get())
+            val mainClass = application.mainClass.get()
+            val bootstrapMeta = mapOf("classpath" to classpath, "mainClass" to mainClass)
+            project.buildDir.resolve("libs").resolve("${project.name}-$target-${project.version}-meta.json").apply {
+                this.writeText(GsonBuilder().setPrettyPrinting().create().toJson(bootstrapMeta))
+            }
+        }
     }
 }
 
@@ -123,8 +134,6 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:2.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("io.ktor:ktor-server-websockets-jvm:2.0.2")
-//    implementation("org.jetbrains.pty4j:pty4j:0.12.10")
-//    implementation("io.socket:socket.io-client:2.1.0")
     implementation("net.bytebuddy:byte-buddy-agent:1.14.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")

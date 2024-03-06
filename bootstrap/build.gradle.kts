@@ -12,11 +12,17 @@ application {
 tasks {
     shadowJar {
         archiveClassifier.set("full")
+        relocate("com.google.gson","icu.takeneko.deps.gson")
     }
 }
 
-dependencies {
+repositories{
+    mavenCentral()
+    mavenLocal()
+}
 
+dependencies {
+    implementation("com.google.code.gson:gson:2.9.0")
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17

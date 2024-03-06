@@ -40,6 +40,7 @@ public class UdpBroadcastReceiver extends Thread {
                     var broadcast = BroadcastKt.buildFromJson(msg);
                     if (broadcast != null && !oldId.equals(broadcast.getId())) {
                         ChatbridgeBroadcastReceivedCallback.INSTANCE.invokeAll(broadcast);
+                        ChatMessageCache.INSTANCE.add(broadcast);
                         logger.info(String.format("%s <%s[%s]> %s", Objects.requireNonNull(broadcast).getChannel(), broadcast.getPlayer(), broadcast.getServer(), broadcast.getContent()));
                     }
                 } catch (Exception e) {

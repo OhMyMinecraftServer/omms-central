@@ -3,6 +3,7 @@ package icu.takeneko.omms.central.network.session.server
 import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.controller.console.ControllerConsole
 import icu.takeneko.omms.central.network.EncryptedSocket
+import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.session.FuseEncryptedSocket
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
@@ -11,22 +12,17 @@ import icu.takeneko.omms.central.network.session.request.RequestManager.getReque
 import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.network.session.response.Result
 import icu.takeneko.omms.central.permission.Permission
+import icu.takeneko.omms.central.util.Util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.net.SocketException
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
-import java.util.*
 import java.util.concurrent.Executors
-import javax.crypto.BadPaddingException
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.NoSuchPaddingException
 
 class SessionServer(private val session: Session, private var permissions: List<Permission>) : Thread() {
     private lateinit var fuseEncryptedSocket: FuseEncryptedSocket
     private val logger: Logger = LoggerFactory.getLogger("SessionServer")
-    private var sessionContext: SessionContext? = null
+    private lateinit var sessionContext: SessionContext
     private val executorService = Executors.newSingleThreadExecutor()
 
     init {
@@ -56,23 +52,11 @@ class SessionServer(private val session: Session, private var permissions: List<
         executorService.submit(runnable)
     }
 
-    fun sendResponseAsync(response: Response?) {
+    fun sendResponseAsync(response: Response) {
         runOnNetworkThread {
             try {
-                fuseEncryptedSocket.sendResponse(response!!)
-            } catch (e: NoSuchPaddingException) {
-                logger.error("Error while sending response.", e)
-                throw RuntimeException(e)
-            } catch (e: IllegalBlockSizeException) {
-                logger.error("Error while sending response.", e)
-                throw RuntimeException(e)
-            } catch (e: NoSuchAlgorithmException) {
-                logger.error("Error while sending response.", e)
-                throw RuntimeException(e)
-            } catch (e: BadPaddingException) {
-                logger.error("Error while sending response.", e)
-                throw RuntimeException(e)
-            } catch (e: InvalidKeyException) {
+                fuseEncryptedSocket.sendResponse(response)
+            } catch (e: Throwable) {
                 logger.error("Error while sending response.", e)
                 throw RuntimeException(e)
             }
@@ -80,14 +64,21 @@ class SessionServer(private val session: Session, private var permissions: List<
     }
 
     private fun cleanUp() {
-        sessionContext!!.controllerConsoleMap.forEach { (s: String?, controllerConsole: ControllerConsole) ->
+        sessionContext.controllerConsoleMap.forEach { (s: String?, controllerConsole: ControllerConsole) ->
             logger.info("Closing controller console $s")
             controllerConsole.close()
         }
     }
 
+    fun sendBroadcastMessage(broadcast: Broadcast) {
+        sendResponseAsync(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
+            this["broadcast"] = Util.toJson(broadcast)
+        }))
+    }
+
     override fun run() {
         logger.info("$name started.")
+        sessions += this
         sessionContext = SessionContext(
             this,
             fuseEncryptedSocket,
@@ -100,7 +91,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     if (session.socket.isClosed) break
                     val request = fuseEncryptedSocket.receiveRequest()
                     logger.debug("Received {}", request)
-                    val handler = getRequestHandler(Objects.requireNonNull(request).request) ?: continue
+                    val handler = getRequestHandler(request.request) ?: continue
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
                         sendResponseAsync(
@@ -129,7 +120,9 @@ class SessionServer(private val session: Session, private var permissions: List<
                     if (session.socket.isClosed) {
                         break
                     }
-                    sendResponseAsync(response)
+                    if (response != null) {
+                        sendResponseAsync(response)
+                    }
                 } catch (e: NullPointerException) {
                     break
                 } catch (e: SocketException) {
@@ -152,5 +145,10 @@ class SessionServer(private val session: Session, private var permissions: List<
             RuntimeException(e).printStackTrace()
         }
         cleanUp()
+        sessions -= this
+    }
+
+    companion object{
+        val sessions = mutableListOf<SessionServer>()
     }
 }

@@ -62,6 +62,9 @@ object CentralServer {
 
         logger.info("Hello World!")
         logger.info("Loading Config.")
+        if (!Config.load()) {
+            exitProcess(1)
+        }
         (Util.DATA_FOLDERS.map { File(Util.getWorkingDir() + File.separator + it) }
             .filter { !(it.isDirectory or it.exists()) }.toList())
             .run {
@@ -73,9 +76,6 @@ object CentralServer {
                 }
                 if (isNotEmpty()) exitProcess(0)
             }
-        if (!Config.load()) {
-            exitProcess(1)
-        }
         val config = Config.config
         logger.info("Config:")
         logger.info("\tServerName: ${config.serverName}")
