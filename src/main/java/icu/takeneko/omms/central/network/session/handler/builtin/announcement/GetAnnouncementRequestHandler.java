@@ -15,9 +15,10 @@ import java.util.Objects;
 public class GetAnnouncementRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        var announcement = AnnouncementManager.INSTANCE.get(request.getContent("id"));
+        String id = request.getContent("id");
+        var announcement = AnnouncementManager.INSTANCE.get(id);
         if (Objects.isNull(announcement)) {
-            return new Response().withResponseCode(Result.ANNOUNCEMENT_NOT_EXIST);
+            return new Response().withResponseCode(Result.ANNOUNCEMENT_NOT_EXIST).withContentPair("announcement", id);
         }
         return new Response()
                 .withResponseCode(Result.ANNOUNCEMENT_GOT)

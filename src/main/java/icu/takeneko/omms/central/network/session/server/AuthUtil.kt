@@ -1,5 +1,7 @@
 package icu.takeneko.omms.central.network.session.server
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.permission.PermissionManager.getPermission
 import icu.takeneko.omms.central.util.Util
@@ -9,6 +11,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 private val logger = LoggerFactory.getLogger("Auth")
+val gson: Gson = GsonBuilder().serializeNulls().create()
 
 fun doAuth(remote: String): Pair<Long, List<Permission>?> {
     val authKey = String(Base64.getDecoder().decode(Base64.getDecoder().decode(remote)))

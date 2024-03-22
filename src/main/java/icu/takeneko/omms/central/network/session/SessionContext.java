@@ -9,26 +9,22 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SessionContext {
-    FuseEncryptedSocket encryptedConnector;
+    EncryptedMessageChannel messageChannel;
     Session session;
     SessionServer server;
     List<Permission> permissions;
     boolean chatMessagePassthroughEnabled = false;
     @NotNull HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
 
-    public SessionContext(SessionServer server, FuseEncryptedSocket encryptedConnector, Session session, List<Permission> permissions) {
-        this.encryptedConnector = encryptedConnector;
+    public SessionContext(SessionServer sessionServer, EncryptedMessageChannel sessionChannel, Session session, List<Permission> permissions) {
+        this.messageChannel = sessionChannel;
         this.session = session;
         this.permissions = permissions;
-        this.server = server;
+        this.server = sessionServer;
     }
 
-    public FuseEncryptedSocket getEncryptedConnector() {
-        return encryptedConnector;
-    }
-
-    public void setEncryptedConnector(FuseEncryptedSocket encryptedConnector) {
-        this.encryptedConnector = encryptedConnector;
+    public EncryptedMessageChannel getChannel() {
+        return messageChannel;
     }
 
     public Session getSession() {
@@ -43,11 +39,7 @@ public class SessionContext {
         return permissions;
     }
 
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
-    public HashMap<String, ControllerConsole> getControllerConsoleMap() {
+    public @NotNull HashMap<String, ControllerConsole> getControllerConsoleMap() {
         return controllerConsoleMap;
     }
 

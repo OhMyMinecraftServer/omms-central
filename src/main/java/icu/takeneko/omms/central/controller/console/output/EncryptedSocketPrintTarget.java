@@ -24,7 +24,7 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
     void println(@NotNull SessionServer target, @NotNull ControllerConsole console, String content) {
         try {
             logger.debug(content);
-            target.sendResponseAsync(responseBuilder(content, console.getConsoleId()));
+            target.sendResponseBlocking(responseBuilder(content, console.getConsoleId()));
         } catch (Exception e) {
             throw new RuntimeException("Error occurred while sending log to client.", e);
         }

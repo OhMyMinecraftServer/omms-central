@@ -1,10 +1,7 @@
 package icu.takeneko.omms.central.network.session.server
 
-import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.controller.console.ControllerConsole
-import icu.takeneko.omms.central.network.EncryptedSocket
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
-import icu.takeneko.omms.central.network.session.FuseEncryptedSocket
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.SessionContext
@@ -13,53 +10,21 @@ import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.network.session.response.Result
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.util.Util
+import io.ktor.network.sockets.*
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.*
 import java.net.SocketException
-import java.util.concurrent.Executors
 
-class SessionServer(private val session: Session, private var permissions: List<Permission>) : Thread() {
-    private lateinit var fuseEncryptedSocket: FuseEncryptedSocket
+class SessionServer(private val session: Session, private var permissions: List<Permission>) {
+    private val sessionChannel = session.createChannel()
     private val logger: Logger = LoggerFactory.getLogger("SessionServer")
     private lateinit var sessionContext: SessionContext
-    private val executorService = Executors.newSingleThreadExecutor()
 
     init {
         val socket = session.socket
-        setName(String.format("SessionServer#%s:%d", socket.getInetAddress().hostAddress, socket.getPort()))
-        try {
-            val encryptedConnector = EncryptedSocket(
-                BufferedReader(
-                    InputStreamReader(session.socket.getInputStream())
-                ),
-                PrintWriter(
-                    OutputStreamWriter(session.socket.getOutputStream())
-                ), String(
-                    session.key
-                )
-            )
-            fuseEncryptedSocket = FuseEncryptedSocket.of(encryptedConnector, config.rateLimit)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
         if (socket.isClosed) {
             throw RuntimeException()
-        }
-    }
-
-    private fun runOnNetworkThread(runnable: Runnable) {
-        executorService.submit(runnable)
-    }
-
-    fun sendResponseAsync(response: Response) {
-        runOnNetworkThread {
-            try {
-                fuseEncryptedSocket.sendResponse(response)
-            } catch (e: Throwable) {
-                logger.error("Error while sending response.", e)
-                throw RuntimeException(e)
-            }
         }
     }
 
@@ -71,17 +36,19 @@ class SessionServer(private val session: Session, private var permissions: List<
     }
 
     fun sendBroadcastMessage(broadcast: Broadcast) {
-        sendResponseAsync(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
-            this["broadcast"] = Util.toJson(broadcast)
-        }))
+        runBlocking {
+           sessionChannel.sendResponse(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
+                this["broadcast"] = Util.toJson(broadcast)
+            }))
+        }
     }
 
-    override fun run() {
-        logger.info("$name started.")
+    suspend fun handleRequest() {
+        logger.info("SessionServer started.")
         sessions += this
         sessionContext = SessionContext(
             this,
-            fuseEncryptedSocket,
+            sessionChannel,
             session,
             permissions
         )
@@ -89,12 +56,12 @@ class SessionServer(private val session: Session, private var permissions: List<
             while (true) {
                 try {
                     if (session.socket.isClosed) break
-                    val request = fuseEncryptedSocket.receiveRequest()
+                    val request = sessionChannel.receiveRequest() ?: continue
                     logger.debug("Received {}", request)
                     val handler = getRequestHandler(request.request) ?: continue
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
-                        sendResponseAsync(
+                        sessionChannel.sendResponse(
                             Response()
                                 .withResponseCode(Result.PERMISSION_DENIED)
                         )
@@ -105,11 +72,10 @@ class SessionServer(private val session: Session, private var permissions: List<
                         response = handler.handle(request, sessionContext)
                         if (response == null) {
                             logger.info("Session terminated.")
-                            fuseEncryptedSocket.sendResponse(
+                            sessionChannel.sendResponse(
                                 Response()
                                     .withResponseCode(Result.DISCONNECT)
                             )
-                            session.socket.close()
                             break
                         }
                     } catch (t: Throwable) {
@@ -121,7 +87,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                         break
                     }
                     if (response != null) {
-                        sendResponseAsync(response)
+                        sessionChannel.sendResponse(response)
                     }
                 } catch (e: NullPointerException) {
                     break
@@ -129,9 +95,8 @@ class SessionServer(private val session: Session, private var permissions: List<
                     logger.warn(e.toString())
                     break
                 } catch (e: RateExceedException) {
-                    sendResponseAsync(
-                        Response()
-                            .withResponseCode(Result.RATE_LIMIT_EXCEEDED)
+                    sessionChannel.sendResponse(
+                        Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED)
                     )
                     logger.warn("Rate limit exceeded.")
                     break
@@ -148,7 +113,13 @@ class SessionServer(private val session: Session, private var permissions: List<
         sessions -= this
     }
 
-    companion object{
+    fun sendResponseBlocking(response: Response) {
+        runBlocking {
+            sessionChannel.sendResponse(response)
+        }
+    }
+
+    companion object {
         val sessions = mutableListOf<SessionServer>()
     }
 }

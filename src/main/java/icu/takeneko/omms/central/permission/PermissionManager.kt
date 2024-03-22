@@ -149,9 +149,10 @@ object PermissionManager : Manager() {
                 }
             }
         }
-        if (list.isEmpty()) {
-            throw java.lang.RuntimeException("Empty permission table at $components")
-        }
+//        if (list.isEmpty()) {
+//            return emptyList<>()
+//            throw java.lang.RuntimeException("Empty permission table at $components")
+//        }
         return list
     }
 
