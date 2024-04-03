@@ -43,7 +43,7 @@ class WhitelistImpl(
     }
 
     override fun saveModifiedBuffer() {
-        val file = File(Util.joinFilePaths("whitelists", "$name.json"))
+        val file = Util.fileOf("whitelists", "$name.json")
         if (file.exists()) {
             file.delete()
         }
@@ -56,7 +56,7 @@ class WhitelistImpl(
     }
 
     override fun deleteWhitelist() {
-        val file = File(Util.joinFilePaths("whitelists", "$name.json"))
+        val file = Util.fileOf("whitelists", "$name.json")
         if (file.exists()) {
             file.delete()
         }

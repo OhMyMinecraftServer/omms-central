@@ -22,7 +22,7 @@ object WhitelistManager : Manager() {
     private val logger = LoggerFactory.getLogger("WhitelistManager")
     override fun init() {
         whitelistMap.clear()
-        val folder = File(Util.joinFilePaths("whitelists"))
+        val folder = Util.fileOf("whitelists")
         val files = mutableListOf<Path>()
         val gson = GsonBuilder().serializeNulls().create()
         Files.list(folder.toPath()).forEach {
@@ -61,7 +61,7 @@ object WhitelistManager : Manager() {
         val whitelistImpl = gson.fromJson(reader, WhitelistImpl::class.javaObjectType)
         reader.close()
         val newFileName = whitelistImpl.name + ".json"
-        FileUtils.moveFile(filePath.toFile(), File(Util.joinFilePaths("whitelists", newFileName)))
+        FileUtils.moveFile(filePath.toFile(), Util.fileOf("whitelists", newFileName))
     }
 
     fun addWhitelist(whitelist: Whitelist) {

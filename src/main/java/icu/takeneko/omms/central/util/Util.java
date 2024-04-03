@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
@@ -88,7 +88,7 @@ public class Util {
         return new File(fileName).exists();
     }
 
-    public static @NotNull String getWorkingDir() {
+    public static @NotNull String getWorkingDirString() {
         File directory = new File("");
         return directory.getAbsolutePath();
     }
@@ -108,15 +108,16 @@ public class Util {
         return stringBuffer.toString();
     }
 
-    public static @NotNull String joinFilePaths(String @NotNull ... pathComponent) {
-        var paths = pathComponent.clone();
-        var path = new StringBuilder();
-        path.append(Util.getWorkingDir());
-        Arrays.stream(paths).toList().forEach(x -> {
-            path.append(File.separator);
-            path.append(x);
-        });
-        return path.toString();
+    public static @NotNull File fileOf(String @NotNull ... pathComponent) {
+        return absolutePath(pathComponent).toFile();
+    }
+
+    public static Path absolutePath(String @NotNull ... pathComponent){
+        Path path = Path.of(".");
+        for (String s : pathComponent) {
+            path = path.resolve(s);
+        }
+        return path;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

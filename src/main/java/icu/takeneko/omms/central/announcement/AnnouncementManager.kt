@@ -21,7 +21,7 @@ object AnnouncementManager : Manager() {
     val logger: Logger = LoggerFactory.getLogger("AM")
     override fun init() {
         announcementMap.clear()
-        val files = Files.list(Path(Util.joinFilePaths("announcements")))
+        val files = Files.list(Util.absolutePath("announcements"))
         val fileList = mutableListOf<String>()
         files.forEach {
             if (it.toFile().extension == "json") {
@@ -48,7 +48,7 @@ object AnnouncementManager : Manager() {
     fun create(announcement: Announcement) {
         try {
             val jsonStr: String = announcement.toJson()
-            val path = Path(Util.joinFilePaths("announcements", "${announcement.id.hashCode()}.json"))
+            val path = Util.absolutePath("announcements", "${announcement.id.hashCode()}.json")
             if (Files.exists(path)) {
                 throw RuntimeException("Cannot create announcement file.")
             } else {

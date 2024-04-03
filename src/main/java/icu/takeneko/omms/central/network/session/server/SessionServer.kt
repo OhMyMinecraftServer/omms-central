@@ -11,7 +11,10 @@ import icu.takeneko.omms.central.network.session.response.Result
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.util.Util
 import io.ktor.network.sockets.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.SocketException
@@ -20,6 +23,7 @@ class SessionServer(private val session: Session, private var permissions: List<
     private val sessionChannel = session.createChannel()
     private val logger: Logger = LoggerFactory.getLogger("SessionServer")
     private lateinit var sessionContext: SessionContext
+    private var shouldKeepRunning = true
 
     init {
         val socket = session.socket
@@ -37,10 +41,15 @@ class SessionServer(private val session: Session, private var permissions: List<
 
     fun sendBroadcastMessage(broadcast: Broadcast) {
         runBlocking {
-           sessionChannel.sendResponse(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
+            sessionChannel.sendResponse(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
                 this["broadcast"] = Util.toJson(broadcast)
             }))
         }
+    }
+
+    fun requestSessionTermination() {
+        shouldKeepRunning = false
+        logger.info("Requested session termination")
     }
 
     suspend fun handleRequest() {
@@ -53,41 +62,43 @@ class SessionServer(private val session: Session, private var permissions: List<
             permissions
         )
         try {
-            while (true) {
+            while (shouldKeepRunning) {
                 try {
                     if (session.socket.isClosed) break
                     val request = sessionChannel.receiveRequest() ?: continue
+                    if (!shouldKeepRunning) break
                     logger.debug("Received {}", request)
                     val handler = getRequestHandler(request.request) ?: continue
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
                         sessionChannel.sendResponse(
-                            Response()
-                                .withResponseCode(Result.PERMISSION_DENIED)
+                            Response().withResponseCode(Result.PERMISSION_DENIED)
                         )
                         continue
                     }
-                    var response: Response?
-                    try {
-                        response = handler.handle(request, sessionContext)
-                        if (response == null) {
-                            logger.info("Session terminated.")
-                            sessionChannel.sendResponse(
-                                Response()
-                                    .withResponseCode(Result.DISCONNECT)
-                            )
-                            break
+                    withContext(Dispatchers.IO) {
+                        launch {
+                            val response: Response? = try {
+                                handler.handle(request, sessionContext)
+                            } catch (t: Throwable) {
+                                t.printStackTrace()
+                                Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString())
+                            } ?: run {
+                                logger.info("Session terminated.")
+                                sessionChannel.sendResponse(
+                                    Response()
+                                        .withResponseCode(Result.DISCONNECT)
+                                )
+                                requestSessionTermination()
+                                null
+                            }
+                            if (response != null) {
+                                sessionChannel.sendResponse(response)
+                            }
                         }
-                    } catch (t: Throwable) {
-                        t.printStackTrace()
-                        response = Response()
-                            .withResponseCode(Result.FAIL).withContentPair("error", t.toString())
                     }
                     if (session.socket.isClosed) {
                         break
-                    }
-                    if (response != null) {
-                        sessionChannel.sendResponse(response)
                     }
                 } catch (e: NullPointerException) {
                     break

@@ -28,7 +28,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         }
         pluginMap.clear()
         pluginFileList.clear()
-        Files.list(Path.of(Util.joinFilePaths("plugins")))
+        Files.list(Util.absolutePath("plugins"))
             .filter { it.toFile().extension == "jar" }.forEach {
                 pluginFileList += it.absolutePathString()
             }
@@ -68,7 +68,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
     fun refreshPlugins() {
         val beforeFiles = ArrayList(pluginFileList)
         val afterFiles = buildList {
-            Files.list(Path.of(Util.joinFilePaths("plugins")))
+            Files.list(Util.absolutePath("plugins"))
                 .filter { it.toFile().extension == "jar" }.forEach {
                     this += it.absolutePathString()
                 }
