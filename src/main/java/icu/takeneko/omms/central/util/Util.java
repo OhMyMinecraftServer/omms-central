@@ -83,11 +83,6 @@ public class Util {
         return var1 == 114514;
     }
 
-
-    public static boolean fileExists(@NotNull String fileName) {
-        return new File(fileName).exists();
-    }
-
     public static @NotNull String getWorkingDirString() {
         File directory = new File("");
         return directory.getAbsolutePath();
