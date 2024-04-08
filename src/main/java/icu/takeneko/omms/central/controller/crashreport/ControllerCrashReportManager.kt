@@ -11,7 +11,7 @@ import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.reader
 
 object ControllerCrashReportManager : Manager() {
-    private val storagePath = Path(Util.joinFilePaths("crashReport"))
+    private val storagePath = Util.absolutePath("crashReport")
     private val logger = LoggerFactory.getLogger("ControllerCrashReportManager")
     private val crashReports = mutableListOf<CrashReportStorage>()
 

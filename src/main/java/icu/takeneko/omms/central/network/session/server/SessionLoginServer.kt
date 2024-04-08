@@ -1,10 +1,13 @@
 package icu.takeneko.omms.central.network.session.server
 
 import icu.takeneko.omms.central.config.Config.config
+import io.ktor.network.selector.*
+import io.ktor.network.sockets.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.IOException
-import java.net.ServerSocket
 
 class SessionLoginServer : Thread() {
     val logger: Logger = LoggerFactory.getLogger("SessionLoginServer")
@@ -14,20 +17,25 @@ class SessionLoginServer : Thread() {
     }
 
     override fun run() {
-        try {
-            ServerSocket(config.port).use { server ->
-                logger.info("Started SessionLoginServer.")
-                while (true) {
-                    val socket = server.accept()
-                    logger.debug(socket.getKeepAlive().toString())
-                    socket.setKeepAlive(true)
-                    val session =
-                        LoginSession(socket)
-                    session.start()
+        runBlocking {
+            val selectorManager = SelectorManager(Dispatchers.IO)
+            val serverSocket = aSocket(selectorManager).tcp().bind("0.0.0.0", config.port)
+
+            while (true) {
+                val socket = serverSocket.accept()
+                launch {
+                    try {
+                        val receiveChannel = socket.openReadChannel()
+                        val sendChannel = socket.openWriteChannel(autoFlush = true)
+                        val session = LoginSession(socket, receiveChannel, sendChannel)
+                        val sessionServer = session.processLogin() ?: return@launch
+                        sessionServer.handleRequest()
+                    } catch (e: Throwable) {
+                        logger.error("Unable to handle incoming connection.", e)
+                        socket.close()
+                    }
                 }
             }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
         }
     }
 }

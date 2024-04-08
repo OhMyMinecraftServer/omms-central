@@ -65,7 +65,7 @@ object CentralServer {
         if (!Config.load()) {
             exitProcess(1)
         }
-        (Util.DATA_FOLDERS.map { File(Util.getWorkingDir() + File.separator + it) }
+        (Util.DATA_FOLDERS.map { File(Util.getWorkingDirString() + File.separator + it) }
             .filter { !(it.isDirectory or it.exists()) }.toList())
             .run {
                 if (isNotEmpty()) {

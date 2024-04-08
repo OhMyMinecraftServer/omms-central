@@ -16,14 +16,14 @@ object ControllerBindingManager : Manager() {
     }
 
     override fun init() {
-        val filePath = Util.joinFilePaths("bindConfig.json")
-        if (!Util.fileExists(filePath)) {
-            Files.createFile(Path(filePath))
-            File(filePath).writer().use {
+        val filePath = Util.absolutePath("bindConfig.json").toFile()
+        if (!filePath.exists()) {
+            filePath.createNewFile()
+            filePath.writer().use {
                 it.append("{}")
             }
         }
-        File(filePath).reader().use {
+        filePath.reader().use {
             val map = Util.gson.fromJson(it, storage::class.java)
             storage.clear()
             storage += map

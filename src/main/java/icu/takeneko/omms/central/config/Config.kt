@@ -15,7 +15,7 @@ object Config {
         encodeDefaults = true
         ignoreUnknownKeys = true
     }
-    private val file = Path(Util.getWorkingDir()) / "config.json"
+    private val file = Path(Util.getWorkingDirString()) / "config.json"
     lateinit var config: ConfigStorage
     private val logger = LoggerFactory.getLogger("Config")
 

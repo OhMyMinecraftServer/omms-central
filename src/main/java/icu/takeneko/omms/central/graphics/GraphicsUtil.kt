@@ -12,7 +12,6 @@ import java.io.File
 import java.lang.management.ManagementFactory
 import java.nio.file.Path
 import javax.imageio.ImageIO
-import kotlin.io.path.Path
 
 
 fun createImage(width: Int, height: Int): BufferedImage {
@@ -44,7 +43,7 @@ fun main() {
     img.withGraphics {
         //renderBottomCard(it)
     }
-    saveImage(Path(Util.joinFilePaths("image", "jrrp.png")), img)
+    saveImage(Util.absolutePath("image", "jrrp.png"), img)
 }
 
 fun test(len: Int) {
@@ -59,7 +58,7 @@ fun test(len: Int) {
             it.drawString(Util.generateRandomString(i), 0, (i) * h)
         }
     }
-    saveImage(Path(Util.joinFilePaths("image", "${Util.generateRandomString(8)}.png")), image)
+    saveImage(Util.absolutePath("image", "${Util.generateRandomString(8)}.png"), image)
 }
 
 fun info() {
@@ -144,7 +143,7 @@ fun info() {
         ).height * strings.size).plus(64).toInt()
     )
     clearImage(image)
-    val background = ImageIO.read(File(Util.joinFilePaths("image", "background.JPG")))
+    val background = ImageIO.read(Util.fileOf("image", "background.JPG"))
     val zoom = image.width.toDouble() / background.width
     image.withGraphics {
         it.drawImage(
@@ -162,5 +161,5 @@ fun info() {
             it.drawString(" " + strings[i], 0, (i + 1) * h)
         }
     }
-    saveImage(Path(Util.joinFilePaths("image", "system_info.png")), image)
+    saveImage(Util.absolutePath("image", "system_info.png"), image)
 }

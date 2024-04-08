@@ -30,7 +30,7 @@ object ControllerManager : Manager() {
 
     override fun init() {
         controllers.clear()
-        val path = File(Util.joinFilePaths("controllers"))
+        val path = Util.fileOf("controllers")
         val files =
             path.list(FilenameFilter { _, name -> return@FilenameFilter name.split(".")[name.split(".").size - 1] == "json" })
         if (files != null) {
@@ -41,7 +41,7 @@ object ControllerManager : Manager() {
                 files.forEach {
                     logger.debug("controller: $it")
                     val controllerImpl: ControllerImpl =
-                        gson.fromJson(FileReader(Util.joinFilePaths("./controllers/", it)), ControllerImpl::class.java)
+                        gson.fromJson(FileReader(Util.fileOf("./controllers/", it)), ControllerImpl::class.java)
                     logger.debug(controllerImpl.toString())
                     controllerImpl.fixFields()
                     controllers[controllerImpl.name] = controllerImpl

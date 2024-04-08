@@ -124,6 +124,7 @@ class SimpleGuiSkikoView : SkikoView {
 
 
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
+
         try {
             val totalCount = GlobalVariable.logCache.size
             var l = totalCount - scrolledLines - visibleLineCount

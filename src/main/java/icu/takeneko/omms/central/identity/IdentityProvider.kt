@@ -7,7 +7,7 @@ import kotlin.io.path.*
 
 object IdentityProvider : Manager() {
 
-    private val dataPath = Path(Util.joinFilePaths("identity.json"))
+    private val dataPath = Util.absolutePath("identity.json")
     private lateinit var salt: String
     private lateinit var banned: MutableMap<String, SystemIdentifier>
     override fun init() {

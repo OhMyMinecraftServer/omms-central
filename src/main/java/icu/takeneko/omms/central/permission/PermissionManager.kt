@@ -19,7 +19,6 @@ import kotlin.random.Random
 object PermissionManager : Manager() {
     var permissionTable: HashMap<Int, MutableList<Permission>> = hashMapOf()
     val logger: Logger = LoggerFactory.getLogger("Main")
-    var tableHash: Int = 0
     val changes: MutableList<PermissionChange> = mutableListOf()
 
     data class PermissionStorage(
@@ -33,23 +32,17 @@ object PermissionManager : Manager() {
 
     override fun init() {
         permissionTable.clear()
-        if (!Files.exists(Path.of(Util.joinFilePaths("permissions.json")))) {
+        if (!Files.exists(Util.absolutePath("permissions.json"))) {
             logger.warn("Permission File does not exist!")
-            Files.createFile(
-                Path.of(
-                    Util.joinFilePaths(
-                        "permissions.json"
-                    )
-                )
-            )
+            Util.fileOf("permissions.json").createNewFile()
             logger.info("Creating empty permission file.")
-            Files.writeString(Path.of(Util.joinFilePaths("permissions.json")), "{\"permissions\":[]}")
+            Files.writeString(Util.absolutePath("permissions.json"), "{\"permissions\":[]}")
             val code = Random(System.nanoTime()).nextInt(100000, 999999)
             logger.info("Created temporary permission code: $code,this code has got super cow power and it is available to use until the next time omms startup.")
-            permissionTable[code] = Permission.values().toList().toMutableList()
+            permissionTable[code] = Permission.entries.toMutableList()
             return
         }
-        val reader = FileReader(Path.of(Util.joinFilePaths("permissions.json")).toFile())
+        val reader = FileReader(Util.absolutePath("permissions.json").toFile())
         val gson = GsonBuilder().serializeNulls().create()
         val perm = gson.fromJson(reader, PermissionStorage::class.javaObjectType)
         reader.close()
@@ -61,96 +54,89 @@ object PermissionManager : Manager() {
         permissionTable.forEach {
             logger.info("${it.key} -> ${it.value}")
         }
-        tableHash = permissionTable.hashCode()
     }
 
 
     fun readPermFromInt(components: PermissionEntry): MutableList<Permission> {
-
         val code: Int = components.permission
         val list: ArrayList<Permission> = ArrayList()
-        //HIGHEST perm : 131071
         for (i in 1..16) {
             val m = 1 shl i - 1
             val x = code and m
-            var p: Permission? = null
-            when (i) {
+            val p = when (i) {
                 1 -> {
-                    p = Permission.SERVER_OS_CONTROL
+                     Permission.SERVER_OS_CONTROL
                 }
 
                 2 -> {
-                    p = Permission.CENTRAL_SERVER_CONTROL
+                     Permission.CENTRAL_SERVER_CONTROL
                 }
 
                 3 -> {
-                    p = Permission.PERMISSION_LIST
+                     Permission.PERMISSION_LIST
                 }
 
                 4 -> {
-                    p = Permission.PERMISSION_MODIFY
+                     Permission.PERMISSION_MODIFY
                 }
 
                 5 -> {
-                    p = Permission.RESERVED_2
+                     Permission.RESERVED_2
                 }
 
                 6 -> {
-                    p = Permission.CONTROLLER_CONTROL
+                     Permission.CONTROLLER_CONTROL
                 }
 
                 7 -> {
-                    p = Permission.CONTROLLER_CREATE
+                     Permission.CONTROLLER_CREATE
                 }
 
                 8 -> {
-                    p = Permission.WHITELIST_ADD
+                     Permission.WHITELIST_ADD
                 }
 
                 9 -> {
-                    p = Permission.WHITELIST_REMOVE
+                     Permission.WHITELIST_REMOVE
                 }
 
                 10 -> {
-                    p = Permission.WHITELIST_CREATE
+                     Permission.WHITELIST_CREATE
                 }
 
                 11 -> {
-                    p = Permission.WHITELIST_DELETE
+                     Permission.WHITELIST_DELETE
                 }
 
                 12 -> {
-                    p = Permission.RESERVED_1
+                     Permission.RESERVED_1
                 }
 
                 13 -> {
-                    p = Permission.ANNOUNCEMENT_CREATE
+                     Permission.ANNOUNCEMENT_CREATE
                 }
 
                 14 -> {
-                    p = Permission.ANNOUNCEMENT_DELETE
+                     Permission.ANNOUNCEMENT_DELETE
                 }
 
                 15 -> {
-                    p = Permission.ANNOUNCEMENT_MODIFY
+                     Permission.ANNOUNCEMENT_MODIFY
                 }
 
                 16 -> {
-                    p = Permission.EXECUTE_PLUGIN_REQUEST
+                     Permission.EXECUTE_PLUGIN_REQUEST
+                }
+
+                else -> {
+                    throw IllegalArgumentException("how")
                 }
             }
             if (x == 0) {
                 continue
             } else {
-                p.let {
-                    if (it != null) {
-                        list.add(it)
-                    }
-                }
+                list.add(p)
             }
-        }
-        if (list.isEmpty()) {
-            throw java.lang.RuntimeException("Empty permission table at $components")
         }
         return list
     }
@@ -287,9 +273,9 @@ object PermissionManager : Manager() {
                     logger.info("${it.key} -> ${it.value}")
                 }
             }
-            Files.deleteIfExists(Path.of(Util.joinFilePaths("permissions.json")))
-            Files.createFile(Path.of(Util.joinFilePaths("permissions.json")))
-            val writer = FileWriter(Util.joinFilePaths("permissions.json"))
+            Files.deleteIfExists(Util.absolutePath("permissions.json"))
+            Files.createFile(Util.absolutePath("permissions.json"))
+            val writer = FileWriter(Util.fileOf("permissions.json"))
             writer.write(Util.toJson(perm))
             writer.close()
             reload()
@@ -404,9 +390,9 @@ object PermissionManager : Manager() {
                     src.sendFeedback("${it.key} -> ${it.value}")
                 }
             }
-            Files.deleteIfExists(Path.of(Util.joinFilePaths("permissions.json")))
-            Files.createFile(Path.of(Util.joinFilePaths("permissions.json")))
-            val writer = FileWriter(Util.joinFilePaths("permissions.json"))
+            Files.deleteIfExists(Util.absolutePath("permissions.json"))
+            Files.createFile(Util.absolutePath("permissions.json"))
+            val writer = FileWriter(Util.fileOf("permissions.json"))
             writer.write(Util.toJson(perm))
             writer.close()
             reload()
