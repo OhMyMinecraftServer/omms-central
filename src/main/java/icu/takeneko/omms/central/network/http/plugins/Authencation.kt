@@ -1,5 +1,6 @@
 package icu.takeneko.omms.central.network.http.plugins
 
+import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.security.HttpAuthUtil
 import io.ktor.http.*
@@ -17,10 +18,10 @@ fun Application.configureAuthentication() {
                 return@validate if (HttpAuthUtil.checkTokenMatches(it)) UserIdPrincipal(it.name + it.password) else null
             }
         }
-        basic(name = "omms-auth") {
-            realm = "omms simple auth"
+        basic(name = "omms-api-auth") {
+            realm = "http api"
             validate {
-                return@validate if (HttpAuthUtil.checkTokenMatches(it)) UserIdPrincipal(it.name + it.password) else null
+                return@validate if (it.password == Config.config.apiAccessKey) UserIdPrincipal(it.name + it.password) else null
             }
         }
         basic(name = "omms-controller-auth") {

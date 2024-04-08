@@ -18,7 +18,7 @@ fun Application.configureRouting() {
                 versionInfoString
             }
         }
-        authenticate("omms-auth") {
+        authenticate("omms-api-auth") {
             httpApiQueryRouting()
         }
         authenticate("omms-controller-auth") {
