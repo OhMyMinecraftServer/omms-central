@@ -97,7 +97,7 @@ object CentralServer {
             CommandManager.INSTANCE.init()
             RequestManager.init()
         } catch (e: Throwable) {
-            logger.error("Initialization error", e)
+            logger.error("Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.", e)
             exitProcess(2)
         }
         Util.listAll(logger)

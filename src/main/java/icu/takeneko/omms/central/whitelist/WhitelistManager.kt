@@ -5,14 +5,21 @@ import com.google.gson.JsonParseException
 import icu.takeneko.omms.central.plugin.callback.WhitelistLoadCallback
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.Util
+import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelist
+import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelistData
+import icu.takeneko.omms.central.whitelist.builtin.WhitelistAlias
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.decodeFromStream
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileReader
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.inputStream
 
 @SuppressWarnings("all")
 object WhitelistManager : Manager() {
@@ -20,11 +27,12 @@ object WhitelistManager : Manager() {
     private val whitelistMap = HashMap<String, Whitelist>()
     private val gson = GsonBuilder().serializeNulls().create()
     private val logger = LoggerFactory.getLogger("WhitelistManager")
+
+    @OptIn(ExperimentalSerializationApi::class)
     override fun init() {
         whitelistMap.clear()
         val folder = Util.fileOf("whitelists")
         val files = mutableListOf<Path>()
-        val gson = GsonBuilder().serializeNulls().create()
         Files.list(folder.toPath()).forEach {
             if (!it.toFile().isFile) return@forEach
             val file = it.toFile()
@@ -34,33 +42,52 @@ object WhitelistManager : Manager() {
         }
         files.forEach {
             try {
-                val reader = FileReader(it.toFile())
-                val whitelistImpl = gson.fromJson(reader, WhitelistImpl::class.java)
-                if (it.toFile().name != "${whitelistImpl.name}.json") {
-                    logger.warn("Whitelist name(${whitelistImpl.name}) does not match with file name(${it.toFile().name}).")
-                    logger.warn("Renaming ${it.toFile().name} -> ${whitelistImpl.name}.json")
-                    reader.close()
+                val instance = it.inputStream().use { BuiltinWhitelist.json.decodeFromStream<BuiltinWhitelistData>(it) }
+                if (it.toFile().name != "${instance.name}.json") {
+                    logger.warn("Whitelist name(${instance.name}) does not match with file name(${it.toFile().name}).")
+                    logger.warn("Renaming ${it.toFile().name} -> ${instance.name}.json")
                     whitelistNameFix(it)
                 }
-                if (whitelistMap.containsKey(whitelistImpl.name)) {
-                    throw RuntimeException("Duplicated whitelist name(${whitelistImpl.name}).")
+                if (whitelistMap.containsKey(instance.name)) {
+                    throw RuntimeException("Duplicated whitelist name(${instance.name}).")
                 }
-                whitelistMap[whitelistImpl.name] = whitelistImpl
-                reader.close()
+                whitelistMap[instance.name] = BuiltinWhitelist(data = instance)
             } catch (e: JsonParseException) {
                 throw e
             } catch (e: Exception) {
                 throw IOException("Cannot load whitelist file(${it.toFile().absolutePath}).", e)
             }
         }
+        whitelistMap.values.forEach {
+            it.saveModifiedBuffer()
+        }
+        for (value in whitelistMap.values) {
+            if (
+                if (value is ProxyableWhitelist) {
+                    var ret = false
+                    value.aliases.forEach {
+                        if (it == value.name) throw RuntimeException("A whitelist cannot has a alias has the same name with itself")
+                        if (it in whitelistMap) throw RuntimeException("Duplicated whitelist name($it).")
+                        whitelistMap[it] = WhitelistAlias(value, it).also { i -> value.onDelegateCreate(i) }
+                        ret = true
+                    }
+                    ret
+                } else {
+                    false
+                }
+            ) {
+                logger.info("Setting up whitelist proxies for ${value.name}")
+            }
+        }
         WhitelistLoadCallback.INSTANCE.invokeAll(this)
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private fun whitelistNameFix(filePath: Path) {
-        val reader = FileReader(filePath.toFile())
-        val whitelistImpl = gson.fromJson(reader, WhitelistImpl::class.javaObjectType)
-        reader.close()
-        val newFileName = whitelistImpl.name + ".json"
+        val data = FileInputStream(filePath.toFile()).use {
+            BuiltinWhitelist.json.decodeFromStream<BuiltinWhitelistData>(it)
+        }
+        val newFileName = data.name + ".json"
         FileUtils.moveFile(filePath.toFile(), Util.fileOf("whitelists", newFileName))
     }
 
@@ -166,15 +193,21 @@ object WhitelistManager : Manager() {
     @Throws(WhitelistAlreadyExistsException::class)
     fun createWhitelist(name: String) {
         if (name in whitelistMap) throw WhitelistAlreadyExistsException(name)
-        val whitelist = WhitelistImpl(mutableListOf(), name)
-        whitelistMap += name to whitelist
-        whitelist.saveModifiedBuffer()
+        val data = BuiltinWhitelistData(name)
+        val wl = BuiltinWhitelist(data)
+        whitelistMap += name to BuiltinWhitelist(data)
+        wl.saveModifiedBuffer()
     }
 
     @Throws(WhitelistNotExistException::class)
     fun deleteWhiteList(name: String) {
         val whitelist = this[name] ?: throw WhitelistNotExistException(name)
         whitelist.deleteWhitelist()
+        if (whitelist is ProxyableWhitelist) {
+            whitelist.aliases.forEach{
+                whitelistMap -= it
+            }
+        }
         this.whitelistMap.remove(name)
     }
 

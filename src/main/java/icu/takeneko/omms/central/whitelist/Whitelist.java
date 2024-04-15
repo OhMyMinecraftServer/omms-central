@@ -2,21 +2,21 @@ package icu.takeneko.omms.central.whitelist;
 
 import java.util.List;
 
-public abstract class Whitelist {
-    abstract public String getName();
+public interface Whitelist {
+    String getName();
 
-    abstract public void init();
+    void init();
 
-    abstract public boolean contains(String player);
+    boolean contains(String player);
 
-    abstract public List<String> getPlayers();
+    List<String> getPlayers();
 
-    abstract public void addPlayer(String player) throws PlayerAlreadyExistsException;
+    void addPlayer(String player) throws PlayerAlreadyExistsException;
 
-    abstract public void removePlayer(String player) throws PlayerNotFoundException;
+    void removePlayer(String player) throws PlayerNotFoundException;
 
-    abstract public void saveModifiedBuffer();
+    void saveModifiedBuffer();
 
-    abstract public void deleteWhitelist();
+    void deleteWhitelist();
 
 }

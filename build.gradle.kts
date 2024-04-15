@@ -39,9 +39,9 @@ publishing {
         maven {
             name = "NekoMavenRelease"
             url = uri("https://maven.takeneko.icu/releases")
-            credentials{
-                username = project.findProperty("nekomaven.user")as String? ?: System.getenv("NEKO_USERNAME")
-                password = project.findProperty("nekomaven.password")as String? ?: System.getenv("NEKO_TOKEN")
+            credentials {
+                username = project.findProperty("nekomaven.user") as String? ?: System.getenv("NEKO_USERNAME")
+                password = project.findProperty("nekomaven.password") as String? ?: System.getenv("NEKO_TOKEN")
             }
         }
     }
@@ -59,8 +59,6 @@ publishing {
         }
     }
 }
-
-println(configurations["shadow"])
 
 application {
     mainClass.set("icu.takeneko.omms.central.main.Main")
