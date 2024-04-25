@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {

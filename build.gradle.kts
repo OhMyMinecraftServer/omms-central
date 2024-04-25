@@ -218,6 +218,7 @@ fun generateProperties() {
     propertiesFile.printWriter().use { writer ->
         properties.forEach {
             val str = it.value.toString()
+            if("MAVEN" in it.key) return@forEach
             if ("@" in str || "(" in str || ")" in str || "extension" in str || "null" == str || "\'" in str || "\\" in str || "/" in str) return@forEach
             if ("PROJECT" in str.toUpperCaseAsciiOnly() || "PROJECT" in it.key.toUpperCaseAsciiOnly() || " " in str) return@forEach
             if ("GRADLE" in it.key.toUpperCaseAsciiOnly() || "GRADLE" in str.toUpperCaseAsciiOnly() || "PROP" in it.key.toUpperCaseAsciiOnly()) return@forEach
