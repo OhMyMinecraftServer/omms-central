@@ -17,9 +17,9 @@ public class Main {
             return;
         }
         GlobalVariable.INSTANCE.setArgs(args);
-        var env = System.getenv();
+        var env = System.getProperties();
         if (env.containsKey("omms.consoleFont")) {
-            GlobalVariable.INSTANCE.setConsoleFont(env.get("omms.consoleFont"));
+            GlobalVariable.INSTANCE.setConsoleFont(env.getProperty("omms.consoleFont"));
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {

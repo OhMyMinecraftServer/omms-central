@@ -23,7 +23,6 @@ object GlobalVariable {
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
     val logCache = CopyOnWriteArrayList<String>()
-    var consoleFontOverride = false
     var consoleFont = "Consolas"
     var args = mutableListOf<String>()
         private set
