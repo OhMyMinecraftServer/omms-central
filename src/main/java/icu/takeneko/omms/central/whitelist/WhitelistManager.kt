@@ -13,9 +13,7 @@ import kotlinx.serialization.json.decodeFromStream
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.io.FileInputStream
-import java.io.FileReader
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -61,17 +59,18 @@ object WhitelistManager : Manager() {
         whitelistMap.values.forEach {
             it.saveModifiedBuffer()
         }
+        val add = mutableMapOf<String, Whitelist>()
         for (value in whitelistMap.values) {
             if (
                 if (value is ProxyableWhitelist) {
-                    var ret = false
+                    var notConflicts = false
                     value.aliases.forEach {
                         if (it == value.name) throw RuntimeException("A whitelist cannot has a alias has the same name with itself")
                         if (it in whitelistMap) throw RuntimeException("Duplicated whitelist name($it).")
-                        whitelistMap[it] = WhitelistAlias(value, it).also { i -> value.onDelegateCreate(i) }
-                        ret = true
+                        add[it] = WhitelistAlias(value, it).also { i -> value.onDelegateCreate(i) }
+                        notConflicts = true
                     }
-                    ret
+                    notConflicts
                 } else {
                     false
                 }
@@ -79,6 +78,7 @@ object WhitelistManager : Manager() {
                 logger.info("Setting up whitelist proxies for ${value.name}")
             }
         }
+        whitelistMap += add
         WhitelistLoadCallback.INSTANCE.invokeAll(this)
     }
 
