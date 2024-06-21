@@ -1,7 +1,11 @@
-package icu.takeneko.omms.central.controller.crashreport;
+package icu.takeneko.omms.central.controller.crashreport
 
-import java.util.List;
+import kotlinx.serialization.Serializable
 
-public record CrashReportStorage(String controllerId, Long timeMillis, List<String> content) {
-}
+@Serializable
+data class CrashReportStorage(
+    val controllerId: String,
+    val timeMillis: Long,
+    val content: List<String>
+)
 

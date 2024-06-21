@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,11 +36,10 @@ public class UdpBroadcastSender extends Thread {
     }
 
     private static @NotNull MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
-        MulticastSocket socket;
-        socket = new MulticastSocket(port);
-        //socket.joinGroup(new InetSocketAddress(inetAddress, port), NetworkInterface.getByInetAddress(inetAddress));
+        MulticastSocket socket = new MulticastSocket(port);
+        InetAddress inetAddress = InetAddress.getByName(addr);
+        socket.joinGroup(new InetSocketAddress(addr, port), NetworkInterface.getByInetAddress(inetAddress));
         return socket;
-
     }
 
     @Override
