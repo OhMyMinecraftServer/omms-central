@@ -18,6 +18,7 @@ data class HttpResponseData(
 data class SystemStatusInfo(
     val systemDescription: String,
     val loadAvg: List<Double>,
+    val cpuFreq: List<Long>,
     val logicalProcessorCount: Int,
     val processorTemperature: Float,
     val memoryTotal:Long,

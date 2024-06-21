@@ -1,5 +1,7 @@
 package icu.takeneko.omms.central.system.info;
 
+import java.util.List;
+
 public class ProcessorInfo {
     private int physicalCPUCount;
     private int logicalProcessorCount;
@@ -7,6 +9,7 @@ public class ProcessorInfo {
     private double cpuLoadAvg;
     private String processorId;
     private double cpuTemp;
+    private List<Long> cpuFreqs;
 
     public double getCpuTemp() {
         return cpuTemp;
@@ -55,6 +58,14 @@ public class ProcessorInfo {
 
     public void setProcessorId(String processorId) {
         this.processorId = processorId;
+    }
+
+    public List<Long> getCpuFreqs() {
+        return cpuFreqs;
+    }
+
+    public void setCpuFreqs(List<Long> cpuFreqs) {
+        this.cpuFreqs = cpuFreqs;
     }
 
     @Override
