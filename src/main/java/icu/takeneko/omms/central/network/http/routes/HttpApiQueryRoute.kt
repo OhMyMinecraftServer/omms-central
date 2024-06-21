@@ -203,6 +203,7 @@ fun Route.httpApiQueryRouting() {
                 val status = SystemStatusInfo(
                     "${si.osName} ${si.osVersion} ${si.osArch}",
                     listOf(si.processorInfo.cpuLoadAvg),
+                    si.processorInfo.cpuFreqs,
                     si.processorInfo.logicalProcessorCount,
                     si.processorInfo.cpuTemp.toFloat(),
                     si.memoryInfo.memoryTotal,

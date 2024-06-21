@@ -10,8 +10,8 @@ import oshi.hardware.HardwareAbstractionLayer;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SystemInfoUtil {
     Logger logger = LoggerFactory.getLogger("SystemUtil");
@@ -68,6 +68,7 @@ public class SystemInfoUtil {
         processorInfo.setPhysicalCPUCount(processor.getPhysicalPackageCount());
         processorInfo.setLogicalProcessorCount(processor.getLogicalProcessorCount());
         processorInfo.setCpuLoadAvg(cpu);
+        processorInfo.setCpuFreqs(Arrays.stream(processor.getCurrentFreq()).collect(ArrayList::new, List::add, List::addAll));
         var sensors = hal.getSensors();
         processorInfo.setCpuTemp(sensors.getCpuTemperature());
         return processorInfo;
