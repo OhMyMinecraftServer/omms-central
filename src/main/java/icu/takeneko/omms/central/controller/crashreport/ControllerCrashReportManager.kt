@@ -4,9 +4,15 @@ import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.plugin.callback.RecievedControllerCrashReportCallback
 import icu.takeneko.omms.central.util.Manager
 import icu.takeneko.omms.central.util.Util
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import kotlin.io.path.Path
+import kotlin.io.path.inputStream
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.reader
 
@@ -14,15 +20,25 @@ object ControllerCrashReportManager : Manager() {
     private val storagePath = Util.absolutePath("crashReport")
     private val logger = LoggerFactory.getLogger("ControllerCrashReportManager")
     private val crashReports = mutableListOf<CrashReportStorage>()
+    private val json = Json{
+        encodeDefaults = true
+        prettyPrint = true
+    }
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun init() {
         crashReports.clear()
         if (!storagePath.toFile().exists()) {
             Files.createDirectory(storagePath)
         }
         storagePath.toAbsolutePath().listDirectoryEntries().forEach {
-            it.reader().use {reader ->
-                crashReports += Util.gson.fromJson(reader, CrashReportStorage::class.java)
+
+            it.inputStream().use { i ->
+                try {
+                    crashReports += json.decodeFromStream<CrashReportStorage>(i)
+                }catch (e:Exception){
+                    logger.error("Failed to load crashReport: $it")
+                }
             }
         }
     }
@@ -35,8 +51,16 @@ object ControllerCrashReportManager : Manager() {
         RecievedControllerCrashReportCallback.INSTANCE.invokeAll(crashReport)
         val fileName = storagePath.resolve(Util.generateRandomString(16) + ".json")
         fileName.toFile().writer().use {
-            Util.gson.toJson(crashReport, it)
+            it.write(json.encodeToString(crashReport))
+            it.flush()
         }
         crashReports += crashReport
+    }
+
+    fun getLatest(controllerId: String): CrashReportStorage? {
+        val collection = crashReports
+            .filter { it.controllerId == controllerId }
+        if (collection.isEmpty())return null
+        return collection.maxByOrNull { it.timeMillis }
     }
 }

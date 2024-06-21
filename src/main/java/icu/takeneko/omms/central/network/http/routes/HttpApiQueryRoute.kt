@@ -3,6 +3,7 @@ package icu.takeneko.omms.central.network.http.routes
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.controller.ControllerManager
+import icu.takeneko.omms.central.controller.crashreport.ControllerCrashReportManager
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
 import icu.takeneko.omms.central.network.http.*
@@ -59,6 +60,21 @@ fun Route.httpApiQueryRouting() {
                             status = RequestStatus.REFUSED,
                             content = "",
                             refuseReason = e.toString()
+                        )
+                    )
+                }
+            }
+            route("crashReport") {
+                get("latest") {
+                    val request = call.receive<ControllerQueryData>()
+                    val result = ControllerCrashReportManager.getLatest(request.controllerId) ?: return@get call.respond(
+                        HttpResponseData(
+                            content = ""
+                        )
+                    )
+                    return@get call.respond(
+                        HttpResponseData(
+                            content = result.content.joinToString(separator = "\n")
                         )
                     )
                 }
