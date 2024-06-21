@@ -7,6 +7,7 @@ import icu.takeneko.omms.central.controller.crashreport.ControllerCrashReportMan
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
 import icu.takeneko.omms.central.network.http.*
+import icu.takeneko.omms.central.system.info.SystemInfoUtil
 import icu.takeneko.omms.central.util.toStringMap
 import icu.takeneko.omms.central.whitelist.*
 import io.ktor.http.*
@@ -195,6 +196,21 @@ fun Route.httpApiQueryRouting() {
                 status = HttpStatusCode.OK,
                 HttpResponseData(content = sourceStack.feedbackLines.joinToString("\n"))
             )
+        }
+        route("system"){
+            get("brief") {
+                val si = SystemInfoUtil.getSystemInfo()
+                val status = SystemStatusInfo(
+                    "${si.osName} ${si.osVersion} ${si.osArch}",
+                    listOf(si.processorInfo.cpuLoadAvg),
+                    si.processorInfo.logicalProcessorCount,
+                    si.processorInfo.cpuTemp.toFloat(),
+                    si.memoryInfo.memoryTotal,
+                    si.memoryInfo.memoryUsed,
+                    System.currentTimeMillis()
+                )
+                call.respond(status)
+            }
         }
     }
 }
