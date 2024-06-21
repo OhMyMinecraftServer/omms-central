@@ -14,6 +14,16 @@ data class HttpResponseData(
     val extra: Map<String, String> = mapOf()
 )
 
+@Serializable
+data class SystemStatusInfo(
+    val systemDescription: String,
+    val loadAvg: List<Double>,
+    val logicalProcessorCount: Int,
+    val processorTemperature: Float,
+    val memoryTotal:Long,
+    val memoryUsed: Long,
+    val queryTimeMillis: Long
+)
 
 @Serializable
 data class WhitelistQueryData(val whitelistName: String, val players: List<String>)
