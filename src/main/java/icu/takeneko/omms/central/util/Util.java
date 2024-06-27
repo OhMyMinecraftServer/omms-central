@@ -38,7 +38,7 @@ public class Util {
     };
 
 
-    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x07;
+    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x10;
 
     public static final Gson gson = new GsonBuilder()
             .addDeserializationExclusionStrategy(new GlobalExclusionStrategy())
