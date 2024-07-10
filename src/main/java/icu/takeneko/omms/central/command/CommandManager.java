@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.takeneko.omms.central.command.builtin.BuiltinCommandKt;
 import icu.takeneko.omms.central.plugin.callback.CommandRegistrationCallback;
-import icu.takeneko.omms.central.util.Manager;
+import icu.takeneko.omms.central.fundation.Manager;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

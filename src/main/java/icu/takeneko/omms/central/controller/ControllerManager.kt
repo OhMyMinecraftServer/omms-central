@@ -5,12 +5,11 @@ import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.plugin.callback.ControllerLoadCallback
-import icu.takeneko.omms.central.util.Manager
+import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.io.FileReader
 import java.io.FilenameFilter
 

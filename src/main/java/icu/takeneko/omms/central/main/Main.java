@@ -1,6 +1,8 @@
 package icu.takeneko.omms.central.main;
 
-import icu.takeneko.omms.central.GlobalVariable;
+import icu.takeneko.omms.central.RunConfiguration;
+import icu.takeneko.omms.central.SharedObjects;
+import icu.takeneko.omms.central.State;
 import icu.takeneko.omms.central.config.Config;
 import icu.takeneko.omms.central.network.ChatbridgeImplementation;
 import org.jetbrains.annotations.NotNull;
@@ -12,26 +14,21 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String @NotNull [] args) throws IOException {
-        if (Arrays.stream(args).toList().contains("--controllerConsole")) {
-            RemoteControllerConsoleMain.main(args);
-            return;
-        }
-        GlobalVariable.INSTANCE.setArgs(args);
+        RunConfiguration.INSTANCE.getArgs().addAll(Arrays.stream(args).toList());
         var env = System.getProperties();
         if (env.containsKey("omms.consoleFont")) {
-            GlobalVariable.INSTANCE.setConsoleFont(env.getProperty("omms.consoleFont"));
+            RunConfiguration.INSTANCE.setConsoleFont(env.getProperty("omms.consoleFont"));
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (!GlobalVariable.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
+            if (!State.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
                 System.out.println("Stopping!");
-                Objects.requireNonNull(GlobalVariable.INSTANCE.getHttpServer()).interrupt();
+                Objects.requireNonNull(SharedObjects.INSTANCE.getHttpServer()).interrupt();
                 if (Objects.requireNonNull(Config.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getReceiver()).interrupt();
-                    Objects.requireNonNull(GlobalVariable.INSTANCE.getUdpBroadcastSender()).setStopped(true);
+                    Objects.requireNonNull(SharedObjects.INSTANCE.getUdpBroadcastReceiver()).interrupt();
+                    Objects.requireNonNull(SharedObjects.INSTANCE.getUdpBroadcastSender()).setStopped(true);
                 }
-                Objects.requireNonNull(GlobalVariable.INSTANCE.getSocketServer()).interrupt();
+                Objects.requireNonNull(SharedObjects.INSTANCE.getSocketServer()).interrupt();
                 System.out.println("Bye");
-                //Runtime.getRuntime().halt(0);
             }
         }, "ShutdownHook"));
         System.out.println("Starting icu.takeneko.omms.central.main.MainKt");

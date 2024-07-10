@@ -7,4 +7,3 @@ plugins {
 
 rootProject.name = "omms-central"
 
-include("bootstrap")

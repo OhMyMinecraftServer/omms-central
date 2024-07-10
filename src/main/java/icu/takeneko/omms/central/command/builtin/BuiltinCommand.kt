@@ -2,7 +2,8 @@ package icu.takeneko.omms.central.command.builtin
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
-import icu.takeneko.omms.central.GlobalVariable.args
+import icu.takeneko.omms.central.RunConfiguration
+import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.*
 import icu.takeneko.omms.central.command.arguments.ControllerArgumentType
@@ -37,6 +38,7 @@ import icu.takeneko.omms.central.whitelist.WhitelistManager.hasWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistManager.queryInAllWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistManager.searchInWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistNotExistException
+import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 import java.lang.management.ManagementFactory
@@ -262,7 +264,7 @@ val statusCommand = LiteralCommand("status") {
             sendFeedback("\t%s", it)
         }
         sendFeedback("main() Arguments:")
-        args.forEach {
+        RunConfiguration.args.forEach {
             sendFeedback("\t%s", it)
         }
         1
@@ -552,4 +554,9 @@ private fun searchWhitelist(player: String, s: String, context: CommandContext<C
 
 private fun joinToDependencyString(requirements: List<PluginDependencyRequirement>): String {
     return requirements.joinToString(separator = " ") { it.toString() }
+}
+
+private fun getOrCreateControllerHistory(controllerId: String): DefaultHistory {
+    return SharedObjects.controllerConsoleHistory[controllerId]
+        ?: DefaultHistory().run { SharedObjects.controllerConsoleHistory[controllerId] = this;this }
 }

@@ -1,15 +1,10 @@
 package icu.takeneko.omms.central.main
 
-import icu.takeneko.omms.central.GlobalVariable
-import icu.takeneko.omms.central.GlobalVariable.experimental
-import icu.takeneko.omms.central.GlobalVariable.httpServer
-import icu.takeneko.omms.central.GlobalVariable.noGui
-import icu.takeneko.omms.central.GlobalVariable.noPlugins
-import icu.takeneko.omms.central.GlobalVariable.normalShutdown
-import icu.takeneko.omms.central.GlobalVariable.receiver
-import icu.takeneko.omms.central.GlobalVariable.socketServer
-import icu.takeneko.omms.central.GlobalVariable.test
-import icu.takeneko.omms.central.GlobalVariable.udpBroadcastSender
+import icu.takeneko.omms.central.*
+import icu.takeneko.omms.central.SharedObjects.httpServer
+import icu.takeneko.omms.central.SharedObjects.socketServer
+import icu.takeneko.omms.central.SharedObjects.udpBroadcastReceiver
+import icu.takeneko.omms.central.SharedObjects.udpBroadcastSender
 import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.config.Config
@@ -49,15 +44,14 @@ object CentralServer {
         val timeStart = System.currentTimeMillis()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
-            noPlugins = argList.contains("--noplugin")
-            experimental = argList.contains("--experimental")
-            noGui = argList.contains("--nogui")
+            RunConfiguration.noPlugins = argList.contains("--noplugin")
+            RunConfiguration.noGui = argList.contains("--nogui")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
-        if (!noGui) {
+        if (!RunConfiguration.noGui) {
             guiMain()
         }
-        GlobalVariable.launchTime = timeStart
+        State.launchTime = timeStart
         printRuntimeEnv()
 
         logger.info("Hello World!")
@@ -97,23 +91,26 @@ object CentralServer {
             CommandManager.INSTANCE.init()
             RequestManager.init()
         } catch (e: Throwable) {
-            logger.error("Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.", e)
+            logger.error(
+                "Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.",
+                e
+            )
             exitProcess(2)
         }
         Util.listAll(logger)
         logger.info("Setting up services.")
 
-        val socketServer = SessionLoginServer()
-        socketServer.start()
-        GlobalVariable.socketServer = socketServer
+        val server = SessionLoginServer()
+        server.start()
+        socketServer = server
         if (config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
-            val receiver = UdpBroadcastReceiver()
-            receiver.start()
-            GlobalVariable.receiver = receiver
+            val rec = UdpBroadcastReceiver()
+            rec.start()
+            udpBroadcastReceiver = rec
         }
 
-        val httpServer = launchHttpServerAsync(args)
-        GlobalVariable.httpServer = httpServer
+        val thr = launchHttpServerAsync(args)
+        httpServer = thr
 
         if (config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
             val sender = UdpBroadcastSender()
@@ -125,13 +122,13 @@ object CentralServer {
         val timeComplete = System.currentTimeMillis()
         val timeUsed = (java.lang.Long.valueOf(timeComplete - timeStart).toString() + ".0f").toFloat() / 1000
         logger.info("Done(${timeUsed}s)! For help, type \"help\".")
-        initialized = true
         thread(name = "ConsoleThread") {
             while (true) {
                 val handler = ConsoleInputHandler.INSTANCE
                 handler.handle()
             }
         }
+        initialized = true
         while (true) {
             while (taskQueue.isNotEmpty()) {
                 try {
@@ -150,18 +147,17 @@ object CentralServer {
 
     @JvmStatic
     fun stop() {
-        if (test) exitProcess(0)
         try {
             logger.info("Stopping!")
-            normalShutdown = true
+            State.normalShutdown = true
             httpServer.interrupt()
             if (Config.config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
-                receiver.interrupt()
+                udpBroadcastReceiver.interrupt()
                 udpBroadcastSender.isStopped = true
             }
             socketServer.interrupt()
             logger.info("Bye")
-            if (normalShutdown) {
+            if (State.normalShutdown) {
                 exitProcess(0)
             }
         } catch (e: java.lang.Exception) {

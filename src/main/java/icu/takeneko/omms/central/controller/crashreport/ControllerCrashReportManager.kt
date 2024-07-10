@@ -2,19 +2,16 @@ package icu.takeneko.omms.central.controller.crashreport
 
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.plugin.callback.RecievedControllerCrashReportCallback
-import icu.takeneko.omms.central.util.Manager
+import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
-import kotlin.io.path.Path
 import kotlin.io.path.inputStream
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.reader
 
 object ControllerCrashReportManager : Manager() {
     private val storagePath = Util.absolutePath("crashReport")
