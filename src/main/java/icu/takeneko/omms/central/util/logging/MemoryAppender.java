@@ -16,7 +16,7 @@ public class MemoryAppender<E extends ILoggingEvent> extends UnsynchronizedAppen
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-        if (RunConfiguration.INSTANCE.getNoGui()) return;
+        if (!RunConfiguration.INSTANCE.hasGui()) return;
         var res = MessageFormat.format("[{0}] [{1}/{2}] ({3}): {4}",
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date())
                 , eventObject.getThreadName(), eventObject.getLevel().levelStr, eventObject.getLoggerName(), eventObject.getFormattedMessage());

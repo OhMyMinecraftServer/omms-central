@@ -45,10 +45,10 @@ object CentralServer {
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             RunConfiguration.noPlugins = argList.contains("--noplugin")
-            RunConfiguration.noGui = argList.contains("--nogui")
+            RunConfiguration.hasGui = argList.contains("--gui")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
-        if (!RunConfiguration.noGui) {
+        if (RunConfiguration.hasGui) {
             guiMain()
         }
         State.launchTime = timeStart

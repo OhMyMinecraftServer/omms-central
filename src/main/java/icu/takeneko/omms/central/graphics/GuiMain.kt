@@ -260,10 +260,7 @@ class SimpleGuiSkikoView : SkikoView {
     fun onMouseClicked(e: MouseEvent) {
         if (e.button == MouseEvent.BUTTON1) {
             val p = e.point
-//            println("$textFieldOffsetX $textFieldOffsetY ${textFieldOffsetX + textFieldWidth} ${textFieldOffsetY + textFieldHeight}")
-//            println("${isClickInTextField(p.x, p.y)} ${e.point}")
             if (isClickInTextField(p.x, p.y)) {
-//                println("wdnmd")
             }
         }
     }
