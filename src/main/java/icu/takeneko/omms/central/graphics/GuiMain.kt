@@ -1,6 +1,7 @@
 package icu.takeneko.omms.central.graphics
 
-import icu.takeneko.omms.central.GlobalVariable
+import icu.takeneko.omms.central.RunConfiguration
+import icu.takeneko.omms.central.SharedObjects.logCache
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.main.CentralServer
@@ -41,7 +42,7 @@ data class Rectangle(val height: Float, val width: Float)
 
 class SimpleGuiSkikoView : SkikoView {
     private var lastFrameTime = 1L
-    private val font: Font = Font(Typeface.makeFromName(GlobalVariable.consoleFont, FontStyle.NORMAL), 14.0f)
+    private val font: Font = Font(Typeface.makeFromName(RunConfiguration.consoleFont, FontStyle.NORMAL), 14.0f)
     private val runtime = ManagementFactory.getRuntimeMXBean()
     private val linePadding = 4f
     private val fontHeightWithPadding = font.measureText("[(1919810g]}").height + linePadding
@@ -80,8 +81,8 @@ class SimpleGuiSkikoView : SkikoView {
     fun onMouseScroll(e: MouseWheelEvent) {
         val scroll = e.wheelRotation
         this.scrolledLines -= if (e.isControlDown) scroll * 3 else scroll
-        if (scrolledLines >= GlobalVariable.logCache.size - visibleLineCount)
-            scrolledLines = GlobalVariable.logCache.size - visibleLineCount
+        if (scrolledLines >= logCache.size - visibleLineCount)
+            scrolledLines = logCache.size - visibleLineCount
         if (scrolledLines <= 0) {
             scrolledLines = 0
         }
@@ -126,13 +127,13 @@ class SimpleGuiSkikoView : SkikoView {
     override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
 
         try {
-            val totalCount = GlobalVariable.logCache.size
+            val totalCount = logCache.size
             var l = totalCount - scrolledLines - visibleLineCount
             var r = totalCount - scrolledLines
             l = if (l <= 0) 0 else l
             r = if (r >= totalCount) totalCount else r
             visibleLogs.clear()
-            visibleLogs += GlobalVariable.logCache.subList(l, r)
+            visibleLogs += logCache.subList(l, r)
             canvas.clear(Color.BLACK)
             val frameTime = ((nanoTime - lastFrameTime) / 1e6)
             val upTime = runtime.uptime / 1000.0

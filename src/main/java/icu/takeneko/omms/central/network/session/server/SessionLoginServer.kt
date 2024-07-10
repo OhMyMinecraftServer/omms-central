@@ -17,25 +17,29 @@ class SessionLoginServer : Thread() {
     }
 
     override fun run() {
-        runBlocking {
-            val selectorManager = SelectorManager(Dispatchers.IO)
-            val serverSocket = aSocket(selectorManager).tcp().bind("0.0.0.0", config.port)
+        try {
+            runBlocking {
+                val selectorManager = SelectorManager(Dispatchers.IO)
+                val serverSocket = aSocket(selectorManager).tcp().bind("0.0.0.0", config.port)
 
-            while (true) {
-                val socket = serverSocket.accept()
-                launch {
-                    try {
-                        val receiveChannel = socket.openReadChannel()
-                        val sendChannel = socket.openWriteChannel(autoFlush = true)
-                        val session = LoginSession(socket, receiveChannel, sendChannel)
-                        val sessionServer = session.processLogin() ?: return@launch
-                        sessionServer.handleRequest()
-                    } catch (e: Throwable) {
-                        logger.error("Unable to handle incoming connection.", e)
-                        socket.close()
+                while (true) {
+                    val socket = serverSocket.accept()
+                    launch {
+                        try {
+                            val receiveChannel = socket.openReadChannel()
+                            val sendChannel = socket.openWriteChannel(autoFlush = true)
+                            val session = LoginSession(socket, receiveChannel, sendChannel)
+                            val sessionServer = session.processLogin() ?: return@launch
+                            sessionServer.handleRequest()
+                        } catch (e: Throwable) {
+                            logger.error("Unable to handle incoming connection.", e)
+                            socket.close()
+                        }
                     }
                 }
             }
+        } catch (_: InterruptedException) {
+
         }
     }
 }

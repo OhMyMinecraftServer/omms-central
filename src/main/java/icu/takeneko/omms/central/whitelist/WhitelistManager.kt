@@ -3,7 +3,7 @@ package icu.takeneko.omms.central.whitelist
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import icu.takeneko.omms.central.plugin.callback.WhitelistLoadCallback
-import icu.takeneko.omms.central.util.Manager
+import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelist
 import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelistData

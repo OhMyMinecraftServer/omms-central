@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.util;
+package icu.takeneko.omms.central.fundation;
 
 import org.jetbrains.annotations.NotNull;
 

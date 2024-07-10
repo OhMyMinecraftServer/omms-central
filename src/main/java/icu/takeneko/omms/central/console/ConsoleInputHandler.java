@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.console;
 
-import icu.takeneko.omms.central.GlobalVariable;
+import icu.takeneko.omms.central.SharedObjects;
 import icu.takeneko.omms.central.command.CommandManager;
 import icu.takeneko.omms.central.command.CommandSourceStack;
 import icu.takeneko.omms.central.main.CentralServer;
@@ -43,7 +43,7 @@ public class ConsoleInputHandler {
         try {
             CommandManager.INSTANCE.reload();
             LineReader lineReader = LineReaderBuilder.builder()
-                    .history(GlobalVariable.INSTANCE.getConsoleHistory())
+                    .history(SharedObjects.INSTANCE.getConsoleHistory())
                     .terminal(terminal)
                     .completer(completer)
                     .build();

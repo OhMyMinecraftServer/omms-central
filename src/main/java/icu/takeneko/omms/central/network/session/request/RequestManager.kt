@@ -17,8 +17,8 @@ import icu.takeneko.omms.central.network.session.handler.builtin.system.GetSysin
 import icu.takeneko.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
-import icu.takeneko.omms.central.util.Manager
-import icu.takeneko.omms.central.util.StringPair
+import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.fundation.StringPair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*

@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.com.google.gson.Gson
-import org.jetbrains.kotlin.com.google.gson.GsonBuilder
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
-import org.jetbrains.kotlin.utils.addToStdlib.butIf
 import java.io.ByteArrayOutputStream
 
 /*
@@ -11,7 +9,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     `java-library`
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
@@ -68,7 +66,9 @@ description = "omms-central"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    compilerOptions{
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 repositories {
@@ -112,14 +112,6 @@ val target = "${targetOs}-${targetArch}"
 tasks {
     shadowJar {
         archiveClassifier.set("$target-full")
-        doLast {
-            val classpath = listOf(this@shadowJar.archiveFileName.get())
-            val mainClass = application.mainClass.get()
-            val bootstrapMeta = mapOf("classpath" to classpath, "mainClass" to mainClass)
-            project.buildDir.resolve("libs").resolve("${project.name}-$target-${project.version}-meta.json").apply {
-                this.writeText(GsonBuilder().setPrettyPrinting().create().toJson(bootstrapMeta))
-            }
-        }
     }
 }
 

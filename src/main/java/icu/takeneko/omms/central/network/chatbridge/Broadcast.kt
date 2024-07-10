@@ -1,7 +1,7 @@
 package icu.takeneko.omms.central.network.chatbridge
 
 import com.google.gson.GsonBuilder
-import icu.takeneko.omms.central.GlobalVariable
+import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.http.routes.sendToAllWS
@@ -15,7 +15,7 @@ fun buildToJson(broadcast: Broadcast?): String? =
 
 fun sendBroadcast(broadcast: Broadcast) {
     when (config.chatbridgeImplementation) {
-        ChatbridgeImplementation.UDP -> GlobalVariable.udpBroadcastSender.addToQueue(
+        ChatbridgeImplementation.UDP -> SharedObjects.udpBroadcastSender.addToQueue(
             Util.TARGET_CHAT,
             Util.toJson(broadcast)
         )

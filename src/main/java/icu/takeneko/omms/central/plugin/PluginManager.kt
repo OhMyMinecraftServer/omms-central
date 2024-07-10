@@ -1,12 +1,12 @@
 package icu.takeneko.omms.central.plugin
 
-import icu.takeneko.omms.central.GlobalVariable
+import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.plugin.depedency.PluginDependency
 import icu.takeneko.omms.central.plugin.exception.PluginException
 import icu.takeneko.omms.central.plugin.metadata.PluginDependencyRequirement
 import icu.takeneko.omms.central.plugin.metadata.PluginMetadata
 import icu.takeneko.omms.central.util.BuildProperties
-import icu.takeneko.omms.central.util.Manager
+import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -22,7 +22,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
     private lateinit var classLoader: JarClassLoader
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
-        if (GlobalVariable.noPlugins) {
+        if (RunConfiguration.noPlugins) {
             logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
             return
         }
