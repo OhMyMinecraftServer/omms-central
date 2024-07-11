@@ -7,6 +7,7 @@ import org.jline.reader.impl.history.DefaultHistory
 import java.util.concurrent.CopyOnWriteArrayList
 
 object RunConfiguration{
+    var noScripts: Boolean = false
     var hasGui: Boolean = false
         @JvmName("hasGui") get
     var noPlugins: Boolean = false
