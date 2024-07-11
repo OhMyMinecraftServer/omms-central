@@ -20,6 +20,7 @@ import icu.takeneko.omms.central.network.session.request.RequestManager
 import icu.takeneko.omms.central.network.session.server.SessionLoginServer
 import icu.takeneko.omms.central.permission.PermissionManager
 import icu.takeneko.omms.central.plugin.PluginManager
+import icu.takeneko.omms.central.script.ScriptManager
 import icu.takeneko.omms.central.util.Util
 import icu.takeneko.omms.central.util.printRuntimeEnv
 import icu.takeneko.omms.central.whitelist.WhitelistManager
@@ -46,6 +47,7 @@ object CentralServer {
             val argList = Arrays.stream(args).toList()
             RunConfiguration.noPlugins = argList.contains("--noplugin")
             RunConfiguration.hasGui = argList.contains("--gui")
+            RunConfiguration.noScripts = argList.contains("--noscripts")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
         if (RunConfiguration.hasGui) {
@@ -90,6 +92,7 @@ object CentralServer {
             IdentityProvider.init()
             CommandManager.INSTANCE.init()
             RequestManager.init()
+            ScriptManager.init()
         } catch (e: Throwable) {
             logger.error(
                 "Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.",
@@ -149,6 +152,7 @@ object CentralServer {
     fun stop() {
         try {
             logger.info("Stopping!")
+            ScriptManager.close()
             State.normalShutdown = true
             httpServer.interrupt()
             if (Config.config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {

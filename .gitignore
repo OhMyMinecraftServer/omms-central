@@ -18,3 +18,6 @@
 /*.json
 /run/
 /bootstrap/run/
+/script
+/run
+/src/main/resources/build.properties

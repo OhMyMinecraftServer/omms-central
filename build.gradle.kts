@@ -132,7 +132,7 @@ dependencies {
     api("ch.qos.logback:logback-classic:1.2.11")
     api("ch.qos.logback:logback-core:1.2.11")
     api("org.jetbrains:annotations:23.0.0")
-    api("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
+    api("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
     api("io.netty:netty-all:4.1.77.Final")
     api("com.github.oshi:oshi-core:6.1.6")
     api("net.java.dev.jna:jna:5.11.0")
@@ -156,6 +156,7 @@ dependencies {
     api("net.bytebuddy:byte-buddy-agent:1.14.0")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     api("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
+    api("black.ninia:jep:4.2.0")
 }
 
 task("generateProperties") {

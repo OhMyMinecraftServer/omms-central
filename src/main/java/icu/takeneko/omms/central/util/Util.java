@@ -34,7 +34,8 @@ public class Util {
             "controllers",
             "announcements",
             "whitelists",
-            "plugins"
+            "plugins",
+            "scripts"
     };
 
 
