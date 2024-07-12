@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.takeneko.omms.central.command.builtin.BuiltinCommandKt;
 import icu.takeneko.omms.central.plugin.callback.CommandRegistrationCallback;
 import icu.takeneko.omms.central.fundation.Manager;
+import icu.takeneko.omms.central.script.ScriptCommand;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,22 +20,22 @@ public class CommandManager extends Manager {
     public static final CommandManager INSTANCE = new CommandManager();
     private final Logger logger = LoggerFactory.getLogger("CommandManager");
     private @NotNull CommandDispatcher<CommandSourceStack> commandDispatcher = new CommandDispatcher<>();
-    private final HashMap<String, List<LiteralArgumentBuilder<CommandSourceStack>>> scriptRegisteredCommandMap = new HashMap<>();
+    private final HashMap<String, List<ScriptCommand>> scriptRegisteredCommandMap = new HashMap<>();
 
     @Override
     public void init() {
 
     }
 
-    public void registerScriptCommand(String pluginId, LiteralArgumentBuilder<CommandSourceStack> builder) {
-        if (scriptRegisteredCommandMap.containsKey(pluginId)) {
-            scriptRegisteredCommandMap.get(pluginId).add(builder);
+    public void registerScriptCommand(String script, ScriptCommand builder) {
+        if (scriptRegisteredCommandMap.containsKey(script)) {
+            scriptRegisteredCommandMap.get(script).add(builder);
         } else {
-            var l = new ArrayList<LiteralArgumentBuilder<CommandSourceStack>>();
+            var l = new ArrayList<ScriptCommand>();
             l.add(builder);
-            scriptRegisteredCommandMap.put(pluginId, l);
+            scriptRegisteredCommandMap.put(script, l);
         }
-        commandDispatcher.register(builder);
+        commandDispatcher.register(builder.getCommand());
     }
 
     public void dispatchCommand(String command, @NotNull CommandSourceStack commandSourceStack) {
@@ -50,10 +51,11 @@ public class CommandManager extends Manager {
 
     public void reload() {
         commandDispatcher = new CommandDispatcher<>();
-        scriptRegisteredCommandMap.forEach((s, literalArgumentBuilders) -> {
-            literalArgumentBuilders.forEach(commandDispatcher::register);
-        });
-        //BuiltinCommand.registerBuiltinCommand(commandDispatcher);
+        scriptRegisteredCommandMap.forEach((s, scriptCommands) ->
+                scriptCommands.forEach(scriptCommand ->
+                        commandDispatcher.register(scriptCommand.getCommand())
+                )
+        );
         BuiltinCommandKt.registerBuiltinCommand(commandDispatcher);
         CommandRegistrationCallback.INSTANCE.invokeAll(this);
     }
@@ -62,8 +64,8 @@ public class CommandManager extends Manager {
         scriptRegisteredCommandMap.clear();
     }
 
-    public void clearAllPluginCommand(String pluginId) {
-        scriptRegisteredCommandMap.remove(pluginId);
+    public void clearAllScriptCommand(String scriptId) {
+        scriptRegisteredCommandMap.remove(scriptId);
     }
 
     public @NotNull CommandDispatcher<CommandSourceStack> getCommandDispatcher() {

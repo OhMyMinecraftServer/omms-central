@@ -25,7 +25,7 @@ public class CommandSourceStack {
     }
 
     public enum Source {
-        CONSOLE, PLUGIN, INTERNAL, REMOTE
+        CONSOLE, PLUGIN, INTERNAL, REMOTE, SCRIPT
     }
 
     public void sendFeedback(String feedback) {
