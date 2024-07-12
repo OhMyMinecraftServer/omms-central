@@ -153,6 +153,7 @@ object CentralServer {
     fun stop() {
         try {
             logger.info("Stopping!")
+            ScriptManager.onUnload()
             ScriptManager.close()
             State.normalShutdown = true
             httpServer.interrupt()
