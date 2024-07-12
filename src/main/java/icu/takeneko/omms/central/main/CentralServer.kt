@@ -85,6 +85,8 @@ object CentralServer {
         try {
             PluginManager.init()
             PluginManager.loadAll()
+            ScriptManager.init()
+            ScriptManager.onLoad()
             PermissionManager.init()
             ControllerManager.init()
             AnnouncementManager.init()
@@ -92,7 +94,6 @@ object CentralServer {
             IdentityProvider.init()
             CommandManager.INSTANCE.init()
             RequestManager.init()
-            ScriptManager.init()
         } catch (e: Throwable) {
             logger.error(
                 "Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.",

@@ -5,12 +5,16 @@ import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import jep.Interpreter
+import jep.JepException
 import jep.SharedInterpreter
+import jep.python.PyObject
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.name
 
 object ScriptManager : Manager(), AutoCloseable {
 
@@ -23,6 +27,8 @@ object ScriptManager : Manager(), AutoCloseable {
             .setNamePrefix("PythonExecutor-")
             .build()
     )
+    private val modules = mutableMapOf<String, PyObject>()
+    private val scripts = mutableMapOf<String, PyObject>()
 
     override fun init() {
         if (RunConfiguration.noScripts) {
@@ -36,20 +42,31 @@ object ScriptManager : Manager(), AutoCloseable {
                         scriptFileList += it.absolutePathString()
                     }
                 interpreter = SharedInterpreter().apply {
-                    exec("import sys")
-                    exec("import os")
-                    exec("sys.path.append('.')")
-                    exec("from org.slf4j import LoggerFactory as lf")
-                    exec("logger = lf.getLogger('Python')")
-                    exec("cwd = os.getcwd()")
+                    val bridge = Thread.currentThread().contextClassLoader.getResourceAsStream("bridge.py")
+                        ?: throw RuntimeException("Python bridge not found.")
+                    bridge.use { exec(it.reader().readText()) }
+                    invoke("setup")
                 }
                 initialized = true
-                pythonLogDebug("'sys.path = ' + str(sys.path)")
-                pythonLogDebug("'os.getcwd() = ' + str(cwd)")
                 logger.info("Initialized python interpreter.")
             } catch (e: Exception) {
                 logger.error("Initialize python interpreter failed, script will be unavailable.", e)
             }
+            interpreter.apply {
+                for (s in scriptFileList) {
+                    val moduleName = "py_script$${Path(s).name}"
+                    val result = invoke("import_file", moduleName, s) as PyObject
+                    modules += moduleName to result
+                    val scriptId = try {
+                        result.getAttr("__script_id__", String::class.java)
+                    } catch (e: Exception) {
+                        moduleName.removeSuffix(".py").replace("$", "_").replace(".", "_")
+                            .also { logger.error("Script $s does not define __script_id__, defaulting to $it", e) }
+                    }
+                    scripts += scriptId to result
+                }
+            }
+            logger.info("Initialized python scripts.")
         }
     }
 
@@ -59,6 +76,32 @@ object ScriptManager : Manager(), AutoCloseable {
 
     private fun pythonLogDebug(expression: String) {
         exec("logger.debug($expression)")
+    }
+
+    fun onLoad() {
+        run {
+            scripts.keys.forEach {
+                load(it)
+            }
+        }
+    }
+
+    fun load(script: String) {
+        val obj = scripts[script] ?: throw IllegalArgumentException("Script $script does not exist")
+        try {
+            interpreter.invoke(
+                "invoke_entrypoint", mapOf(
+                    "module" to obj,
+                    "name" to "on_load",
+                    "kwargs" to mapOf(
+                        "server" to ServerInterface(script)
+                    )
+                )
+            )
+        } catch (e: JepException) {
+            logger.error("Load script $script failed.", e)
+        }
+        logger.info("Loaded script $script")
     }
 
     private fun checkInitialized() {
@@ -83,7 +126,13 @@ object ScriptManager : Manager(), AutoCloseable {
     }
 
     fun run(runnable: () -> Unit) {
-        executor.submit(runnable)
+        executor.submit {
+            try {
+                runnable()
+            }catch (e:Exception){
+                logger.error("Run Task failed.", e)
+            }
+        }
     }
 
     override fun close() {
@@ -98,6 +147,7 @@ object ScriptManager : Manager(), AutoCloseable {
 
 fun main() {
     ScriptManager.init()
+    ScriptManager.onLoad()
     Thread.sleep(1000)
     ScriptManager.close()
 }

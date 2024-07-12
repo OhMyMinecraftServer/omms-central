@@ -129,7 +129,7 @@ class JarClassLoader(parent: ClassLoader) : ClassLoader(parent) {
 
     override fun getResourceAsStream(name: String): InputStream? {
         synchronized(classLoadingLock) {
-            if (name !in jarEntries) return null
+            if (name !in jarEntries) return parent.getResourceAsStream(name)
             val bytes = (ZipFile(jarEntries[name]!!).use {
                 it.getInputStream(it.getEntry(name)).readAllBytes()
             } ?: return super.getResourceAsStream(name))
