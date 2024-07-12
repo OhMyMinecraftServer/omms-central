@@ -2,6 +2,7 @@ package icu.takeneko.omms.central.script
 
 import cn.hutool.core.thread.ThreadFactoryBuilder
 import icu.takeneko.omms.central.RunConfiguration
+import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import jep.Interpreter
@@ -37,10 +38,6 @@ object ScriptManager : Manager(), AutoCloseable {
         }
         run {
             try {
-                Files.list(Util.absolutePath("scripts"))
-                    .filter { it.toFile().extension == "py" }.forEach {
-                        scriptFileList += it.absolutePathString()
-                    }
                 interpreter = SharedInterpreter().apply {
                     val bridge = Thread.currentThread().contextClassLoader.getResourceAsStream("bridge.py")
                         ?: throw RuntimeException("Python bridge not found.")
@@ -51,6 +48,31 @@ object ScriptManager : Manager(), AutoCloseable {
                 logger.info("Initialized python interpreter.")
             } catch (e: Exception) {
                 logger.error("Initialize python interpreter failed, script will be unavailable.", e)
+            }
+        }
+        reloadScripts()
+    }
+
+    private fun pythonLogInfo(expression: String) {
+        exec("logger.info($expression)")
+    }
+
+    private fun pythonLogDebug(expression: String) {
+        exec("logger.debug($expression)")
+    }
+
+    fun reloadScripts() {
+        run {
+            onUnload()
+            scriptFileList.clear()
+            scripts.clear()
+            modules.clear()
+            Files.list(Util.absolutePath("scripts"))
+                .filter { it.toFile().extension == "py" }.forEach {
+                    scriptFileList += it.absolutePathString()
+                }
+            scripts.keys.forEach {
+                CommandManager.INSTANCE.clearAllScriptCommand(it)
             }
             interpreter.apply {
                 for (s in scriptFileList) {
@@ -70,12 +92,12 @@ object ScriptManager : Manager(), AutoCloseable {
         }
     }
 
-    private fun pythonLogInfo(expression: String) {
-        exec("logger.info($expression)")
-    }
-
-    private fun pythonLogDebug(expression: String) {
-        exec("logger.debug($expression)")
+    fun onUnload() {
+        run {
+            scripts.keys.forEach {
+                unload(it)
+            }
+        }
     }
 
     fun onLoad() {
@@ -104,6 +126,26 @@ object ScriptManager : Manager(), AutoCloseable {
         logger.info("Loaded script $script")
     }
 
+    fun unload(script: String) {
+        run {
+            val obj = scripts[script] ?: throw IllegalArgumentException("Script $script does not exist")
+            try {
+                interpreter.invoke(
+                    "invoke_entrypoint", mapOf(
+                        "module" to obj,
+                        "name" to "on_unload",
+                        "kwargs" to mapOf(
+                            "server" to ServerInterface(script)
+                        )
+                    )
+                )
+            } catch (e: JepException) {
+                logger.error("Unload script $script failed.", e)
+            }
+            logger.info("Unloaded script $script")
+        }
+    }
+
     private fun checkInitialized() {
         if (!initialized) {
             throw IllegalStateException("Not Initialized")
@@ -129,7 +171,7 @@ object ScriptManager : Manager(), AutoCloseable {
         executor.submit {
             try {
                 runnable()
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 logger.error("Run Task failed.", e)
             }
         }
