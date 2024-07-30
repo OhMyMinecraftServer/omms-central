@@ -2,34 +2,26 @@ package icu.takeneko.omms.central.script
 
 import cn.hutool.core.thread.ThreadFactoryBuilder
 import icu.takeneko.omms.central.RunConfiguration
-import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import jep.Interpreter
-import jep.JepException
 import jep.SharedInterpreter
-import jep.python.PyObject
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.name
 
 object ScriptManager : Manager(), AutoCloseable {
 
     private lateinit var interpreter: Interpreter
     private val logger = LoggerFactory.getLogger("ScriptManager")
     private var initialized = false
-    private var scriptFileList = mutableListOf<String>()
+    private var scriptFileList = mutableListOf<Path>()
     private var executor = Executors.newSingleThreadExecutor(
-        ThreadFactoryBuilder()
-            .setNamePrefix("PythonExecutor-")
-            .build()
+        ThreadFactoryBuilder().setNamePrefix("PythonExecutor-").build()
     )
-    private val modules = mutableMapOf<String, PyObject>()
-    private val scripts = mutableMapOf<String, PyObject>()
+    private val scripts = mutableMapOf<Path, ScriptInstance>()
 
     override fun init() {
         if (RunConfiguration.noScripts) {
@@ -49,99 +41,33 @@ object ScriptManager : Manager(), AutoCloseable {
             } catch (e: Exception) {
                 logger.error("Initialize python interpreter failed, script will be unavailable.", e)
             }
-        }
-        reloadScripts()
-    }
-
-    private fun pythonLogInfo(expression: String) {
-        exec("logger.info($expression)")
-    }
-
-    private fun pythonLogDebug(expression: String) {
-        exec("logger.debug($expression)")
-    }
-
-    fun reloadScripts() {
-        run {
-            onUnload()
-            scriptFileList.clear()
-            scripts.clear()
-            modules.clear()
             Files.list(Util.absolutePath("scripts"))
                 .filter { it.toFile().extension == "py" }.forEach {
-                    scriptFileList += it.absolutePathString()
+                    scriptFileList.add(it)
+                    scripts[it] = ScriptInstance(it, interpreter)
                 }
-            scripts.keys.forEach {
-                CommandManager.INSTANCE.clearAllScriptCommand(it)
-            }
-            interpreter.apply {
-                for (s in scriptFileList) {
-                    val moduleName = "py_script$${Path(s).name}"
-                    val result = invoke("import_file", moduleName, s) as PyObject
-                    modules += moduleName to result
-                    val scriptId = try {
-                        result.getAttr("__script_id__", String::class.java)
-                    } catch (e: Exception) {
-                        moduleName.removeSuffix(".py").replace("$", "_").replace(".", "_")
-                            .also { logger.error("Script $s does not define __script_id__, defaulting to $it", e) }
-                    }
-                    scripts += scriptId to result
-                }
-            }
-            logger.info("Initialized python scripts.")
+
         }
     }
 
     fun onUnload() {
         run {
-            scripts.keys.forEach {
-                unload(it)
+            scripts.values.forEach {
+                it.onUnload()
             }
         }
     }
 
     fun onLoad() {
         run {
-            scripts.keys.forEach {
-                load(it)
+            scriptFileList.forEach {
+
             }
         }
-    }
-
-    fun load(script: String) {
-        val obj = scripts[script] ?: throw IllegalArgumentException("Script $script does not exist")
-        try {
-            interpreter.invoke(
-                "invoke_entrypoint", mapOf(
-                    "module" to obj,
-                    "name" to "on_load",
-                    "kwargs" to mapOf(
-                        "server" to ServerInterface(script)
-                    )
-                )
-            )
-        } catch (e: JepException) {
-            logger.error("Load script $script failed.", e)
-        }
-        logger.info("Loaded script $script")
     }
 
     fun unload(script: String) {
         run {
-            val obj = scripts[script] ?: throw IllegalArgumentException("Script $script does not exist")
-            try {
-                interpreter.invoke(
-                    "invoke_entrypoint", mapOf(
-                        "module" to obj,
-                        "name" to "on_unload",
-                        "kwargs" to mapOf(
-                            "server" to ServerInterface(script)
-                        )
-                    )
-                )
-            } catch (e: JepException) {
-                logger.error("Unload script $script failed.", e)
-            }
             logger.info("Unloaded script $script")
         }
     }

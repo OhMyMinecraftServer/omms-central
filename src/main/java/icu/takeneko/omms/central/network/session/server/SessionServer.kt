@@ -65,10 +65,19 @@ class SessionServer(private val session: Session, private var permissions: List<
             while (shouldKeepRunning) {
                 try {
                     if (session.socket.isClosed) break
-                    val request = sessionChannel.receiveRequest() ?: continue
+                    val request = sessionChannel.receiveRequest()
+                    if (request == null){
+                        logger.warn("Null request received, disconnecting.")
+                        sessionChannel.sendResponse(Response().withResponseCode(Result.DISCONNECT))
+                        break
+                    }
                     if (!shouldKeepRunning) break
                     logger.debug("Received {}", request)
-                    val handler = getRequestHandler(request.request) ?: continue
+                    val handler = getRequestHandler(request.request)
+                    if (handler == null){
+                        logger.warn("No handler registered for ${request.request}, dropping request.")
+                        continue
+                    }
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
                         sessionChannel.sendResponse(
