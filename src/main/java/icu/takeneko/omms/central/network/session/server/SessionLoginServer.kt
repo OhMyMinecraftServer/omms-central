@@ -4,6 +4,7 @@ import icu.takeneko.omms.central.config.Config.config
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
@@ -24,7 +25,7 @@ class SessionLoginServer : Thread() {
 
                 while (true) {
                     val socket = serverSocket.accept()
-                    launch {
+                    GlobalScope.launch {
                         try {
                             val receiveChannel = socket.openReadChannel()
                             val sendChannel = socket.openWriteChannel(autoFlush = true)
