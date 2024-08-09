@@ -8,6 +8,7 @@ import icu.takeneko.omms.central.network.session.handler.set
 import icu.takeneko.omms.central.network.session.request.Request
 import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.network.session.response.Result
+import icu.takeneko.omms.central.permission.Permission
 
 object SetChatMessagePassthroughRequestHandler: BuiltinRequestHandler() {
     override fun handle(request: Request, session: SessionContext): Response {
@@ -16,5 +17,5 @@ object SetChatMessagePassthroughRequestHandler: BuiltinRequestHandler() {
         return (Response() + Result.CHAT_PASSTHROUGH_STATE_CHANGED).apply { this["state"] = state.toString() }
     }
 
-    override fun requiresPermission() = null
+    override fun requiresPermission(): Permission? = null
 }

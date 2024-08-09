@@ -9,7 +9,7 @@ public class WSStatusPacket implements WSPacket {
 
     public static final Codec<WSStatusPacket> CODEC = RecordCodecBuilder.create(ins -> ins.group(
             PacketType.CODEC.fieldOf("packetType").forGetter(o -> o.packetType),
-            Codec.INT.optionalFieldOf("version").forGetter(o -> Optional.ofNullable(o.version))
+            Codec.INT.optionalFieldOf("version").forGetter(o -> Optional.of(o.version))
     ).apply(ins, WSStatusPacket::new));
 
     private final PacketType packetType;

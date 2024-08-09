@@ -2,6 +2,7 @@ package icu.takeneko.omms.central.network.session.server
 
 import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.config.Config.config
+import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.network.session.EncryptedMessageChannel
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.request.LoginRequest
@@ -41,11 +42,11 @@ class LoginSession(
                 val request = gson.fromJson(line, LoginRequest::class.java)
                 logger.debug("Got request:{}", request)
                 if (request.request == "PING") {
-                    if (request.version != Util.PROTOCOL_VERSION) {
+                    if (request.version != Constants.PROTOCOL_VERSION) {
                         channel.send(
                             Response.serialize(
                                 Response().withResponseCode(Result.VERSION_NOT_MATCH)
-                                    .withContentPair("version", Util.PROTOCOL_VERSION.toString())
+                                    .withContentPair("version", Constants.PROTOCOL_VERSION.toString())
                             )
                         )
                         return null

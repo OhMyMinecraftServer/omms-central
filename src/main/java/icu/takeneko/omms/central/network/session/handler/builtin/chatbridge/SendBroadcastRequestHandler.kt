@@ -21,9 +21,7 @@ object SendBroadcastRequestHandler: BuiltinRequestHandler() {
         }
     }
 
-    override fun requiresPermission(): Permission? {
-        return null
-    }
+    override fun requiresPermission(): Permission? = null
 }
 
 
