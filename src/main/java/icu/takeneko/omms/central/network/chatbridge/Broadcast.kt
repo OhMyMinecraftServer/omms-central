@@ -14,6 +14,9 @@ fun buildToJson(broadcast: Broadcast?): String? =
     GsonBuilder().serializeNulls().create().toJson(broadcast, Broadcast::class.java)
 
 fun sendBroadcast(broadcast: Broadcast) {
+    if (config.chatbridgeImplementation != ChatbridgeImplementation.DISABLE){
+        ChatMessageCache += broadcast
+    }
     when (config.chatbridgeImplementation) {
         ChatbridgeImplementation.UDP -> SharedObjects.udpBroadcastSender.addToQueue(
             Util.TARGET_CHAT,
@@ -32,6 +35,6 @@ fun buildBroadcast(channel: String, content: String) = Broadcast()
     .apply {
         setChannel(channel)
         setContent(content)
-        setPlayer("********")
+        setPlayer("")
         setServer("OMMS CENTRAL")
     }

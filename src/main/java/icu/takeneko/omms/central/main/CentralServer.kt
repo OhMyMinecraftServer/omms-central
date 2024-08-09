@@ -16,7 +16,7 @@ import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.chatbridge.UdpBroadcastReceiver
 import icu.takeneko.omms.central.network.chatbridge.UdpBroadcastSender
 import icu.takeneko.omms.central.network.http.launchHttpServerAsync
-import icu.takeneko.omms.central.network.session.request.RequestManager
+import icu.takeneko.omms.central.network.session.request.RequestHandlerManager
 import icu.takeneko.omms.central.network.session.server.SessionLoginServer
 import icu.takeneko.omms.central.permission.PermissionManager
 import icu.takeneko.omms.central.plugin.PluginManager
@@ -93,7 +93,7 @@ object CentralServer {
             WhitelistManager.init()
             IdentityProvider.init()
             CommandManager.INSTANCE.init()
-            RequestManager.init()
+            RequestHandlerManager.init()
         } catch (e: Throwable) {
             logger.error(
                 "Looks like OMMS Central Server is not properly configured at current directory, server will not start up until the errors are resolved.",
