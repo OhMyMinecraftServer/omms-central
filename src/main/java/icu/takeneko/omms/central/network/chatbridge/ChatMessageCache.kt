@@ -7,12 +7,12 @@ import kotlinx.serialization.json.Json
 
 object ChatMessageCache {
     private val list = mutableListOf<Broadcast>()
-    private var maxCapacity: Int = 50
+    private var maxCapacity: Int = 500
 
     fun add(broadcast: Broadcast) {
-        SessionServer.sessions.forEach {
-            it.sendBroadcastMessage(broadcast)
-        }
+        SessionServer.sessions
+            .filter { it.started && it.sessionContext.isChatMessagePassthroughEnabled }
+            .forEach { it.sendBroadcastMessage(broadcast) }
         synchronized(list) {
             if (list.size + 1 > maxCapacity) {
                 list.removeAt(0)
@@ -45,7 +45,7 @@ object ChatMessageCache {
         val server: String,
         val player: String,
         val content: String,
-        val id: String,
+        val id: String
     ) {
         companion object {
             fun fromBroadcast(broadcast: Broadcast): Message {

@@ -8,7 +8,6 @@ import icu.takeneko.omms.central.command.CommandSourceStack;
 import icu.takeneko.omms.central.controller.ControllerHttpClient;
 import icu.takeneko.omms.central.controller.ControllerManager;
 import icu.takeneko.omms.central.network.chatbridge.Target;
-import icu.takeneko.omms.central.network.session.request.LoginRequest;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
@@ -36,8 +35,6 @@ public class Util {
             "scripts"
     };
 
-
-    public static final long PROTOCOL_VERSION = LoginRequest.VERSION_BASE + 0x10;
 
     public static final Gson gson = new GsonBuilder()
             .addDeserializationExclusionStrategy(new GlobalExclusionStrategy())

@@ -22,7 +22,8 @@ import java.net.SocketException
 class SessionServer(private val session: Session, private var permissions: List<Permission>) {
     private val sessionChannel = session.createChannel()
     private val logger: Logger = LoggerFactory.getLogger("SessionServer")
-    private lateinit var sessionContext: SessionContext
+    lateinit var sessionContext: SessionContext
+    var started = false
     private var shouldKeepRunning = true
 
     init {
@@ -61,6 +62,7 @@ class SessionServer(private val session: Session, private var permissions: List<
             session,
             permissions
         )
+        started = true
         try {
             while (shouldKeepRunning) {
                 try {

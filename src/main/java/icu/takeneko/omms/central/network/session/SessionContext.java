@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SessionContext {
-    EncryptedMessageChannel messageChannel;
-    Session session;
-    SessionServer server;
-    List<Permission> permissions;
-    boolean chatMessagePassthroughEnabled = false;
-    @NotNull HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
+    private final EncryptedMessageChannel messageChannel;
+    private Session session;
+    private SessionServer server;
+    private final List<Permission> permissions;
+    private boolean chatMessagePassthroughEnabled = false;
+    private final @NotNull HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
 
     public SessionContext(SessionServer sessionServer, EncryptedMessageChannel sessionChannel, Session session, List<Permission> permissions) {
         this.messageChannel = sessionChannel;
