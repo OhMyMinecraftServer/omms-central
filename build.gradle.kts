@@ -121,6 +121,7 @@ dependencies {
     api("uk.org.lidalia:sysout-over-slf4j:1.0.2")
     api("org.jline:jline:3.21.0")
     api("com.mojang:brigadier:1.0.18")
+    api("com.mojang:datafixerupper:6.0.8")
     api("io.ktor:ktor-server-call-logging-jvm:2.0.2")
     api("io.ktor:ktor-server-content-negotiation-jvm:2.0.2")
     api("io.ktor:ktor-server-core-jvm:2.0.2")
