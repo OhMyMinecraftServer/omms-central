@@ -14,17 +14,17 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class PermissionCodeArgumentType implements ArgumentType<Integer> {
+public class PermissionCodeArgumentType implements ArgumentType<String> {
 
     private PermissionCodeArgumentType() {
     }
 
     @Override
-    public Integer parse(StringReader stringReader) throws CommandSyntaxException {
-        var i = stringReader.readInt();
+    public String parse(StringReader stringReader) throws CommandSyntaxException {
+        var i = stringReader.readUnquotedString();
         if (PermissionManager.INSTANCE.getPermission(i) == null) {
             throw new DynamicCommandExceptionType(o ->
-                    new LiteralMessage("Permission code " + o + " not exist.")
+                    new LiteralMessage("Permission name " + o + " not exist.")
             ).createWithContext(stringReader, i);
         }
         return i;

@@ -311,7 +311,7 @@ val permissionCommand = LiteralCommand("permission") {
     literal("create") {
         integerArgument("code") {
             execute {
-                val c = getIntegerArgument("code")
+                val c = getStringArgument("name")
                 val change = PermissionChange(Operation.CREATE, c, mutableListOf())
                 PermissionManager.submitPermissionChanges(change)
                 sendFeedback("Submitted permission change: $change")
@@ -323,7 +323,7 @@ val permissionCommand = LiteralCommand("permission") {
     literal("delete") {
         argument("code", PermissionCodeArgumentType.code()) {
             execute {
-                val c = getArgument("code", Int::class.java)
+                val c = getStringArgument("name")
                 val change = PermissionChange(Operation.DELETE, c, mutableListOf())
                 PermissionManager.submitPermissionChanges(change)
                 sendFeedback("Submitted permission change: $change")
@@ -336,7 +336,7 @@ val permissionCommand = LiteralCommand("permission") {
             literal("allow") {
                 argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
-                        val c = getArgument("code", Int::class.java)
+                        val c = getStringArgument("name")
                         val change = PermissionChange(
                             Operation.GRANT,
                             c,
@@ -351,7 +351,7 @@ val permissionCommand = LiteralCommand("permission") {
             literal("deny") {
                 argument("permission", PermissionNameArgumentType.permission()) {
                     execute {
-                        val c = getArgument("code", Int::class.java)
+                        val c = getStringArgument("name")
                         val change = PermissionChange(
                             Operation.DENY,
                             c,

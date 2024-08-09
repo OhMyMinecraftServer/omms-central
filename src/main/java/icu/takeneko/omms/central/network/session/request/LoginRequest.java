@@ -3,7 +3,7 @@ package icu.takeneko.omms.central.network.session.request;
 import org.jetbrains.annotations.NotNull;
 
 public class LoginRequest extends Request {
-    long version = VERSION_BASE + 0xffffL;
+    long version;
 
     public static final long VERSION_BASE = 0xc0000000L;
 

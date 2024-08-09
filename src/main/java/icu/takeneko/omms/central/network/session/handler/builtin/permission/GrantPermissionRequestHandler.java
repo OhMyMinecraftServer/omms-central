@@ -22,7 +22,7 @@ public class GrantPermissionRequestHandler extends BuiltinRequestHandler {
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
                             Operation.GRANT
-                            , Integer.parseInt(request.getContent("code"))
+                            ,request.getContent("name")
                             , Arrays.asList(Util.gson.fromJson(request.getContent("permissions"), Permission[].class))
                     )
             );
