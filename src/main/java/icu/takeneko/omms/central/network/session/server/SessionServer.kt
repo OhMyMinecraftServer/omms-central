@@ -5,7 +5,7 @@ import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.SessionContext
-import icu.takeneko.omms.central.network.session.request.RequestManager.getRequestHandler
+import icu.takeneko.omms.central.network.session.request.RequestHandlerManager.getRequestHandler
 import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.network.session.response.Result
 import icu.takeneko.omms.central.permission.Permission

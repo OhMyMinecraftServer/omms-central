@@ -19,12 +19,13 @@ import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.fundation.StringPair
+import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatbidgeImplementationRequestHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 
-object RequestManager : Manager() {
+object RequestHandlerManager : Manager() {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
     private var requestTable: Hashtable<String, RequestHandler> = Hashtable()
     private val pluginRequestTable: MutableList<StringPair> = mutableListOf()
@@ -133,5 +134,6 @@ val builtinRequestMap = mutableMapOf(
 
     "SEND_BROADCAST" to SendBroadcastRequestHandler,
     "GET_CHAT_HISTORY" to GetChatHistoryRequestHandler,
-    "SET_CHAT_PASSTHROUGH_STATE" to SetChatMessagePassthroughRequestHandler
+    "SET_CHAT_PASSTHROUGH_STATE" to SetChatMessagePassthroughRequestHandler,
+    "GET_CHATBRIDGE_IMPL" to GetChatbidgeImplementationRequestHandler
 )
