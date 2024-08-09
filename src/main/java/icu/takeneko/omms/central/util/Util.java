@@ -20,9 +20,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class Util {
 
@@ -66,8 +64,6 @@ public class Util {
         int k = new SimpleDateFormat("yyyyMMddhhmm").format(date).hashCode();
         return resolveToken(token, password, i, j, k);
     }
-
-
     public static int calculateToken(int password, int i, int j, int k) {
         int token = 114514;
         token += i;
@@ -193,5 +189,15 @@ public class Util {
         }
     }
 
+    public static String joinToString(List<String> list, String sep){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i != list.size() - 1){
+                sb.append(sep);
+            }
+        }
+        return sb.toString();
+    }
 
 }

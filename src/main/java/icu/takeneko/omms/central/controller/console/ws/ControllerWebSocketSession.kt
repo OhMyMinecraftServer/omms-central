@@ -1,5 +1,10 @@
-package icu.takeneko.omms.central.controller.console
+package icu.takeneko.omms.central.controller.console.ws
 
+import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.mojang.datafixers.util.Either
+import com.mojang.serialization.Codec
+import com.mojang.serialization.JsonOps
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.asSalted
 import io.ktor.client.*
@@ -7,24 +12,28 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.websocket.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ControllerWebSocketSession(
-    val onLogReceiveCallback: ControllerWebSocketSession.(String) -> Unit,
-    private val controllerImpl: ControllerImpl
-) :
-    Thread("Console@${controllerImpl.name}") {
-    val list = mutableListOf<String>()
+    private val controllerImpl: ControllerImpl,
+    private val handler: WSPacketHandler
+) : Thread("Console@${controllerImpl.name}") {
+    private val codec: Codec<Either<WSStatusPacket, WSStringPacket>> = Codec.either(
+        WSStatusPacket.CODEC,
+        WSStringPacket.CODEC
+    )
+    private val gson = Gson()
+    private val logger = LoggerFactory.getLogger("ControllerWSConsoleImpl")
+    val list = mutableListOf<WSPacket>()
     var connected = AtomicBoolean(false)
-    val client = HttpClient(CIO) {
+    private val client = HttpClient(CIO) {
         install(WebSockets)
         engine {
             threadsCount = 4
@@ -40,17 +49,6 @@ class ControllerWebSocketSession(
         }
     }
 
-    fun getHistoryLogs() {
-        val baseUrl = "http://" + controllerImpl.httpQueryAddress + "/"
-        runBlocking {
-            val result = client.get(baseUrl + "logs")
-            val content = String(result.readBytes())
-            content.split("\n").forEach {
-                onLogReceiveCallback(it)
-            }
-        }
-    }
-
     override fun run() {
         try {
             runBlocking {
@@ -62,8 +60,18 @@ class ControllerWebSocketSession(
                             val output = launch(Dispatchers.IO) {
                                 for (line in incoming) {
                                     line as? Frame.Text ?: continue
-                                    runBlocking {
-                                        onLogReceiveCallback(line.readText())
+                                    val s = line.readText()
+                                    launch {
+                                        try {
+                                            val jElem = JsonParser.parseString(s)
+                                            codec.decode(JsonOps.INSTANCE, jElem)
+                                                .getOrThrow(false, logger::error)
+                                                .first
+                                                .map(WSPacket::cast, WSPacket::cast)
+                                                .handle(handler)
+                                        } catch (e: Exception) {
+                                            logger.error("Message parse failed:", e)
+                                        }
                                     }
                                 }
                             }
@@ -73,13 +81,19 @@ class ControllerWebSocketSession(
                                         if (list.isNotEmpty()) {
                                             for (s in list) {
                                                 runBlocking {
-                                                    this@webSocket.send(s)
+                                                    val e = codec.encodeStart(
+                                                        JsonOps.INSTANCE, when (s) {
+                                                            is WSStatusPacket -> Either.left(s)
+                                                            is WSStringPacket -> Either.right(s)
+                                                            else -> return@runBlocking
+                                                        }
+                                                    ).getOrThrow(false, logger::error).toString()
+                                                    this@webSocket.send(e)
                                                 }
                                             }
                                             list.clear()
                                         }
                                     }
-                                    sleep(50)
                                 }
                             }
                             input.join()
@@ -101,9 +115,15 @@ class ControllerWebSocketSession(
         }
     }
 
-    fun inputLine(line: String) {
+    fun packet(packet: WSPacket) {
         synchronized(list) {
-            list.add(line)
+            list.add(packet)
+        }
+    }
+
+    fun command(line: String) {
+        synchronized(list) {
+            list.add(WSStringPacket(PacketType.COMMAND, line))
         }
     }
 

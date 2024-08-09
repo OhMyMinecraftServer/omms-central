@@ -3,10 +3,7 @@ package icu.takeneko.omms.central.network.session.server
 import icu.takeneko.omms.central.config.Config.config
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -17,6 +14,7 @@ class SessionLoginServer : Thread() {
         setName("SessionLoginServer#" + this.id)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun run() {
         try {
             runBlocking {
