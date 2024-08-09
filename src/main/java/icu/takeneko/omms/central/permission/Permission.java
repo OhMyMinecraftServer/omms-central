@@ -1,47 +1,22 @@
 package icu.takeneko.omms.central.permission;
 
 public enum Permission {
+    // 0
     SERVER_OS_CONTROL,
     CENTRAL_SERVER_CONTROL,
     PERMISSION_LIST,
     PERMISSION_MODIFY,
+    RESERVED_2,
     CONTROLLER_CONTROL,
     CONTROLLER_CREATE,
-    RESERVED_2,
     WHITELIST_ADD,
     WHITELIST_REMOVE,
     WHITELIST_CREATE,
     WHITELIST_DELETE,
+    RESERVED_1,
     ANNOUNCEMENT_CREATE,
     ANNOUNCEMENT_DELETE,
     ANNOUNCEMENT_MODIFY,
-    EXECUTE_PLUGIN_REQUEST,
-    RESERVED_1
+    EXECUTE_PLUGIN_REQUEST;
+    // 15
 }
-
-/*
-low
-group_server:
-    server_os_control
-    omms_configuration
-    none
-    none
-group_minecraft_server_control:
-    run_mcdr_command
-    run_minecraft_command
-    start_server
-    stop_server
-group_whitelists:
-    whitelist_add
-    whitelist_remove
-    whitelist_create
-    whitelist_delete
-group_announcement:
-    announcement_create
-    announcement_delete
-    announcement_edit
-    none
-high
-
-16371: owner
- */

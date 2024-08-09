@@ -11,6 +11,8 @@ import icu.takeneko.omms.central.permission.PermissionChange;
 import icu.takeneko.omms.central.permission.PermissionManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class CreatePermissionRequestHandler extends BuiltinRequestHandler {
 
     @Override
@@ -20,8 +22,8 @@ public class CreatePermissionRequestHandler extends BuiltinRequestHandler {
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
                             Operation.CREATE
-                            , Integer.parseInt(request.getContent("code"))
-                            , null
+                            , request.getContent("name")
+                            , List.of()
                     )
             );
             return response.withResponseCode(Result.PERMISSION_CREATED);

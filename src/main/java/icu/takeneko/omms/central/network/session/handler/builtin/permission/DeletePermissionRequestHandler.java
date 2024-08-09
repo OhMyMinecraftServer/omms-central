@@ -19,7 +19,7 @@ public class DeletePermissionRequestHandler extends BuiltinRequestHandler {
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
                             Operation.DENY
-                            , Integer.parseInt(request.getContent("code"))
+                            , request.getContent("name")
                             , null
                     )
             );

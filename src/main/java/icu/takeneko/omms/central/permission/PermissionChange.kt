@@ -3,37 +3,37 @@ package icu.takeneko.omms.central.permission
 import java.util.*
 
 class PermissionChange(
-    @JvmField var operation: Operation,
-    @JvmField var code: Int,
-    @JvmField var changes: List<Permission>
+    var operation: Operation,
+    var name: String,
+    var changes: List<Permission>
 ) {
 
     override fun hashCode(): Int {
-        return Objects.hash(operation, code, changes)
+        return Objects.hash(operation, name, changes)
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        return if (o !is PermissionChange) false else code == o.code && operation == o.operation && changes == o.changes
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return if (other !is PermissionChange) false else name == other.name && operation == other.operation && changes == other.changes
     }
 
     override fun toString(): String {
         val changes = changes.joinToString(", ")
         return when (operation) {
             Operation.GRANT -> {
-                "Grant those permissions: [$changes] to permission code $code"
+                "Grant those permissions: [$changes] to permission name $name"
             }
 
             Operation.DENY -> {
-                "Deny those permissions: [$changes] from permission code $code"
+                "Deny those permissions: [$changes] from permission name $name"
             }
 
             Operation.DELETE -> {
-                "Delete permission code $code"
+                "Delete permission name $name"
             }
 
             Operation.CREATE -> {
-                "Create permission code $code with default permissions: [$changes]"
+                "Create permission name $name with default permissions: [$changes]"
             }
         }
     }

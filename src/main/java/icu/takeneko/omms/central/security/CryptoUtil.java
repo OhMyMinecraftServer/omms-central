@@ -104,19 +104,7 @@ public class CryptoUtil {
         return generateTokenFromHashed(getChecksumMD5(original));
     }
 
-    public static String getHashedCode(String encoded) {
-        LocalDateTime date = LocalDateTime.now();
-        String time = date.format(DateTimeFormatter.ofPattern("yyyyMMddhhmm"));
-        String[] tok = new String(Base64.getDecoder().decode(encoded)).split(";");
-        if (tok.length != 2) throw new IllegalArgumentException("Invalid token: expect \";\"");
-        String t = tok[0];
-        String hashed = tok[1];
-        if (!t.equals(time))
-            throw new IllegalArgumentException("Invalid token: time mismatch, expect %s, got %s".formatted(time, t));
-        return hashed;
-    }
-
-    public static String getChecksumMD5(String original) {
+    public static String getChecksumMD5(String original){
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -125,4 +113,5 @@ public class CryptoUtil {
         }
         return Base64.getEncoder().encodeToString(digest.digest(original.getBytes()));
     }
+
 }

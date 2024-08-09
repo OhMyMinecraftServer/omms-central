@@ -21,9 +21,9 @@ public class DenyPermissionRequestHandler extends BuiltinRequestHandler {
         try {
             PermissionManager.INSTANCE.submitPermissionChanges(
                     new PermissionChange(
-                            Operation.DENY
-                            , Integer.parseInt(request.getContent("code"))
-                            , Arrays.asList(Util.gson.fromJson(request.getContent("permissions"), Permission[].class))
+                            Operation.DENY,
+                            request.getContent("name"),
+                            Arrays.asList(Util.gson.fromJson(request.getContent("permissions"), Permission[].class))
                     )
             );
             return response.withResponseCode(Result.PERMISSION_REMOVED);

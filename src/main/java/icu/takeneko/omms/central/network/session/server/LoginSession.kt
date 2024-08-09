@@ -52,37 +52,48 @@ class LoginSession(
                         return null
                     }
                     val stringToken = request.getContent("token")
-                    val (code, permissions) = doAuth(stringToken)
-                    logger.debug("$code has following permissions: ${permissions?.joinToString(", ")}")
-                    val isCodeExist = permissions != null
-                    if (isCodeExist) {
-                        val randomKey = Util.generateRandomString(32)
-                        channel.send(
-                            Response.serialize(
-                                Response()
-                                    .withResponseCode(Result.OK)
-                                    .withContentPair("key", randomKey)
-                                    .withContentPair("serverName", config.serverName)
+                    try {
+                        val (name, permissions) = doAuth(stringToken) ?: (null to null)
+                        logger.debug("$name has following permissions: ${permissions?.joinToString(", ")}")
+                        val isCodeExist = permissions != null
+                        if (isCodeExist) {
+                            val randomKey = Util.generateRandomString(32)
+                            channel.send(
+                                Response.serialize(
+                                    Response()
+                                        .withResponseCode(Result.OK)
+                                        .withContentPair("key", randomKey)
+                                        .withContentPair("serverName", config.serverName)
+                                )
                             )
-                        )
-                        logger.info("Starting SessionServer for ${socket.remoteAddress}")
-                        logger.debug("Key of {} is {}", socket.remoteAddress, randomKey)
-                        return SessionServer(
-                            Session(
-                                socket,
-                                randomKey.toByteArray(StandardCharsets.UTF_8),
-                                receiveChannel,
-                                writeChannel
-                            ), permissions!!
-                        )
-                    } else {
-                        logger.warn("Permission code $code not exist")
+                            logger.info("Starting SessionServer for ${socket.remoteAddress}")
+                            logger.debug("Key of {} is {}", socket.remoteAddress, randomKey)
+                            return SessionServer(
+                                Session(
+                                    socket,
+                                    randomKey.toByteArray(StandardCharsets.UTF_8),
+                                    receiveChannel,
+                                    writeChannel
+                                ),
+                                permissions!!
+                            )
+                        } else {
+                            logger.warn("Permission name (hashed) $name not exist")
+                            channel.send(
+                                Response.serialize(
+                                    Response().withResponseCode(Result.PERMISSION_DENIED)
+                                        .withContentPair("reason", "Permission name (hashed) $name not exist")
+                                )
+                            )
+                            return null
+                        }
+                    }catch (e:Exception) {
                         channel.send(
                             Response.serialize(
                                 Response().withResponseCode(Result.PERMISSION_DENIED)
+                                    .withContentPair("reason", e.toString())
                             )
                         )
-                        return null
                     }
                 } else {
                     return null
