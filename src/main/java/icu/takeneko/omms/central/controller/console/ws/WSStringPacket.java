@@ -24,9 +24,9 @@ public class WSStringPacket implements WSPacket {
         this.lines = lines;
     }
 
-    public WSStringPacket(PacketType packetType, String lines) {
+    public WSStringPacket(PacketType packetType, String line) {
         this.packetType = packetType;
-        this.lines = List.of(lines);
+        this.line = line;
     }
 
     private final PacketType packetType;
