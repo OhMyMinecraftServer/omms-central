@@ -2,6 +2,7 @@ package icu.takeneko.omms.central.script
 
 import cn.hutool.core.thread.ThreadFactoryBuilder
 import icu.takeneko.omms.central.RunConfiguration
+import icu.takeneko.omms.central.fundation.FeatureOption
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import jep.Interpreter
@@ -24,10 +25,7 @@ object ScriptManager : Manager(), AutoCloseable {
     private val scripts = mutableMapOf<Path, ScriptInstance>()
 
     override fun init() {
-        if (RunConfiguration.noScripts) {
-            logger.warn("--noscripts has been set, ${Util.PRODUCT_NAME} won`t load any scripts")
-            return
-        }
+        if (!FeatureOption["script"]) return
         run {
             try {
                 interpreter = SharedInterpreter().apply {
@@ -60,8 +58,8 @@ object ScriptManager : Manager(), AutoCloseable {
 
     fun onLoad() {
         run {
-            scriptFileList.forEach {
-
+            for (value in scripts.values) {
+                value.load()
             }
         }
     }
@@ -94,6 +92,7 @@ object ScriptManager : Manager(), AutoCloseable {
     }
 
     fun run(runnable: () -> Unit) {
+        if (!FeatureOption["script"]) return
         executor.submit {
             try {
                 runnable()

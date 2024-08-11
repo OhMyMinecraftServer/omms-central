@@ -68,12 +68,14 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
         printTarget.println(info, this);
     }
 
-    public void gracefullyStop() {
+    public boolean gracefullyStop() {
         try {
             session.packet(DISCONNECT_PACKET);
             gracefullyStopped.get(5000, TimeUnit.MILLISECONDS);
+            return true;
         } catch (Exception e) {
             logger.warn("Console Session was not gracefully terminated as the disconnect request did not complete properly: {}", e.toString());
+            return false;
         }
     }
 
@@ -88,8 +90,11 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
         if (line.startsWith(":")) {
             if (line.equals(":q")) {
                 info("Disconnecting.");
-                session.close();
-                this.interrupt();
+                if (!gracefullyStop()){
+                    close();
+                } else {
+                    interrupt();
+                }
             }
         } else {
             session.command(line);

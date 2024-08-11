@@ -1,6 +1,5 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.chatbridge
 
-import icu.takeneko.omms.central.command.builtin.broadcastCommand
 import icu.takeneko.omms.central.network.chatbridge.buildBroadcast
 import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
 import icu.takeneko.omms.central.network.session.SessionContext

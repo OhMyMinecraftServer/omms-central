@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.chatbridge
 
 import icu.takeneko.omms.central.config.Config
-import icu.takeneko.omms.central.network.chatbridge.ChatMessageCache
 import icu.takeneko.omms.central.network.session.SessionContext
 import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
 import icu.takeneko.omms.central.network.session.handler.plus

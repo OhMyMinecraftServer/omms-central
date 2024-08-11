@@ -4,6 +4,7 @@ import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects.logCache
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.command.CommandSourceStack
+import icu.takeneko.omms.central.fundation.FeatureOption
 import icu.takeneko.omms.central.main.CentralServer
 import icu.takeneko.omms.central.system.OperatingSystem
 import icu.takeneko.omms.central.util.BuildProperties
@@ -269,6 +270,7 @@ class SimpleGuiSkikoView : SkikoView {
 lateinit var window: JFrame
 lateinit var view: SimpleGuiSkikoView
 fun guiMain() {
+    if (!FeatureOption["gui"])return
     val skiaLayer = SkiaLayer()
     view = SimpleGuiSkikoView()
     skiaLayer.addMouseWheelListener {
