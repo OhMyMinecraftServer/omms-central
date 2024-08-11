@@ -64,12 +64,14 @@ class ControllerWebSocketSession(
                                     val s = line.readText()
                                     launch {
                                         try {
+                                            logger.debug("Incoming message: $s")
                                             val jElem = JsonParser.parseString(s)
                                             codec.decode(JsonOps.INSTANCE, jElem)
                                                 .getOrThrow(false, logger::error)
                                                 .first
                                                 .map(WSPacket::cast, WSPacket::cast)
                                                 .handle(handler)
+
                                         } catch (e: Exception) {
                                             logger.error("Message parse failed:", e)
                                         }
@@ -82,14 +84,24 @@ class ControllerWebSocketSession(
                                         if (list.isNotEmpty()) {
                                             for (s in list) {
                                                 runBlocking {
-                                                    val e = codec.encodeStart(
-                                                        JsonOps.INSTANCE, when (s) {
-                                                            is WSStatusPacket -> Either.left(s)
-                                                            is WSStringPacket -> Either.right(s)
-                                                            else -> return@runBlocking
-                                                        }
-                                                    ).getOrThrow(false, logger::error).toString()
-                                                    this@webSocket.send(e)
+                                                    try {
+                                                        println(s)
+                                                        val e = codec.encodeStart(
+                                                            JsonOps.INSTANCE,
+                                                            when (s) {
+                                                                is WSStatusPacket -> Either.left(s)
+                                                                is WSStringPacket -> Either.right(s)
+                                                                else -> {
+                                                                    logger.warn("Dropping illegal packet: $s")
+                                                                    return@runBlocking
+                                                                }
+                                                            }
+                                                        ).getOrThrow(false, logger::error).toString()
+                                                        logger.debug("Sending $e")
+                                                        this@webSocket.send(e)
+                                                    } catch (e: Exception) {
+                                                        logger.warn("Send packet $s failed.", e)
+                                                    }
                                                 }
                                             }
                                             list.clear()

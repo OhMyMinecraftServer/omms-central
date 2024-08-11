@@ -8,7 +8,7 @@ import java.util.Optional;
 public class WSStatusPacket implements WSPacket {
 
     public static final Codec<WSStatusPacket> CODEC = RecordCodecBuilder.create(ins -> ins.group(
-            PacketType.CODEC.fieldOf("packetType").forGetter(o -> o.packetType),
+            PacketType.CODEC.fieldOf("action").forGetter(o -> o.packetType),
             Codec.INT.optionalFieldOf("version").forGetter(o -> Optional.of(o.version))
     ).apply(ins, WSStatusPacket::new));
 
