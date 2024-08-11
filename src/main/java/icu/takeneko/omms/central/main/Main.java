@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Main {
-    public static void main(String @NotNull [] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         RunConfiguration.INSTANCE.getArgs().addAll(Arrays.stream(args).toList());
         var env = System.getProperties();
         if (env.containsKey("omms.consoleFont")) {
@@ -22,10 +22,10 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!State.INSTANCE.getNormalShutdown() && CentralServer.INSTANCE.getInitialized()) {
                 System.out.println("Stopping!");
-                Objects.requireNonNull(SharedObjects.INSTANCE.getHttpServer()).interrupt();
+                SharedObjects.INSTANCE.getHttpServer().interrupt();
                 if (Objects.requireNonNull(Config.INSTANCE.getConfig()).getChatbridgeImplementation() == ChatbridgeImplementation.UDP) {
-                    Objects.requireNonNull(SharedObjects.INSTANCE.getUdpBroadcastReceiver()).interrupt();
-                    Objects.requireNonNull(SharedObjects.INSTANCE.getUdpBroadcastSender()).setStopped(true);
+                    SharedObjects.INSTANCE.getUdpBroadcastReceiver().interrupt();
+                    SharedObjects.INSTANCE.getUdpBroadcastSender().setStopped(true);
                 }
                 Objects.requireNonNull(SharedObjects.INSTANCE.getSocketServer()).interrupt();
                 System.out.println("Bye");

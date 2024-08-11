@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.locks.LockSupport
 
 class ControllerWebSocketSession(
     private val controllerImpl: ControllerImpl,
@@ -94,6 +95,7 @@ class ControllerWebSocketSession(
                                             list.clear()
                                         }
                                     }
+                                    LockSupport.parkNanos(1000)
                                 }
                             }
                             input.join()

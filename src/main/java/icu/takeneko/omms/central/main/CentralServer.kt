@@ -10,6 +10,7 @@ import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.console.ConsoleInputHandler
 import icu.takeneko.omms.central.controller.ControllerManager
+import icu.takeneko.omms.central.fundation.FeatureOption
 import icu.takeneko.omms.central.graphics.guiMain
 import icu.takeneko.omms.central.identity.IdentityProvider
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
@@ -42,17 +43,14 @@ object CentralServer {
     @Throws(IOException::class)
     @JvmStatic
     fun main(args: Array<String>) {
+        FeatureOption.parse(args)
         val timeStart = System.currentTimeMillis()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             RunConfiguration.noPlugins = argList.contains("--noplugin")
-            RunConfiguration.hasGui = argList.contains("--gui")
-            RunConfiguration.noScripts = argList.contains("--noscripts")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
-        if (RunConfiguration.hasGui) {
-            guiMain()
-        }
+        guiMain()
         State.launchTime = timeStart
         printRuntimeEnv()
 

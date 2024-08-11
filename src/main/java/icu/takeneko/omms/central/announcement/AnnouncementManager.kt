@@ -3,7 +3,7 @@ package icu.takeneko.omms.central.announcement
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.fundation.Manager
-import icu.takeneko.omms.central.fundation.SearchResult
+import icu.takeneko.omms.central.util.SearchResult
 import icu.takeneko.omms.central.util.Util
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.slf4j.Logger
