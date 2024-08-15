@@ -1,7 +1,9 @@
 package icu.takeneko.omms.central.command.builtin
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
+import com.sun.jdi.connect.Connector.StringArgument
 import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.announcement.AnnouncementManager
@@ -309,7 +311,7 @@ val permissionCommand = LiteralCommand("permission") {
         }
     }
     literal("create") {
-        integerArgument("code") {
+        argument("name", StringArgumentType.string()) {
             execute {
                 val c = getStringArgument("name")
                 val change = PermissionChange(Operation.CREATE, c, mutableListOf())
@@ -321,7 +323,7 @@ val permissionCommand = LiteralCommand("permission") {
 
     }
     literal("delete") {
-        argument("code", PermissionCodeArgumentType.code()) {
+        argument("name", PermissionCodeArgumentType.code()) {
             execute {
                 val c = getStringArgument("name")
                 val change = PermissionChange(Operation.DELETE, c, mutableListOf())
@@ -332,15 +334,16 @@ val permissionCommand = LiteralCommand("permission") {
         }
     }
     literal("modify") {
-        argument("code", PermissionCodeArgumentType.code()) {
+        argument("name", PermissionCodeArgumentType.code()) {
             literal("allow") {
-                argument("permission", PermissionNameArgumentType.permission()) {
+                StringArgumentType.word()
+                argument("permissions", PermissionNameArgumentType.permission()) {
                     execute {
                         val c = getStringArgument("name")
                         val change = PermissionChange(
                             Operation.GRANT,
                             c,
-                            mutableListOf(getArgument("permission", Permission::class.java))
+                            getArgument("permissions", List::class.java) as List<Permission>
                         )
                         PermissionManager.submitPermissionChanges(change)
                         sendFeedback("Submitted permission change: $change")
@@ -349,13 +352,13 @@ val permissionCommand = LiteralCommand("permission") {
                 }
             }
             literal("deny") {
-                argument("permission", PermissionNameArgumentType.permission()) {
+                argument("permissions", PermissionNameArgumentType.permission()) {
                     execute {
                         val c = getStringArgument("name")
                         val change = PermissionChange(
                             Operation.DENY,
                             c,
-                            mutableListOf(getArgument("permission", Permission::class.java))
+                            getArgument("permissions", List::class.java) as List<Permission>
                         )
                         PermissionManager.submitPermissionChanges(change)
                         sendFeedback("Submitted permission change: $change")

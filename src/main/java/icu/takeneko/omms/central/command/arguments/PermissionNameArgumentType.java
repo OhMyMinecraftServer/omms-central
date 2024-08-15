@@ -12,18 +12,23 @@ import icu.takeneko.omms.central.permission.Permission;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class PermissionNameArgumentType implements ArgumentType<Permission> {
+public class PermissionNameArgumentType implements ArgumentType<List<Permission>> {
 
     private PermissionNameArgumentType() {
     }
 
     @Override
-    public Permission parse(StringReader stringReader) throws CommandSyntaxException {
-        var word = stringReader.readUnquotedString();
+    public List<Permission> parse(StringReader stringReader) throws CommandSyntaxException {
+        var word = stringReader.readString();
         try {
-            return Permission.valueOf(word);
+            if (word.equals("all")) {
+                return Arrays.stream(Permission.values()).toList();
+            }
+            return Collections.singletonList(Permission.valueOf(word));
         } catch (IllegalArgumentException e) {
             throw new DynamicCommandExceptionType(o ->
                     new LiteralMessage("Permission " + o + " is not a valid permission enum name.")
@@ -41,6 +46,7 @@ public class PermissionNameArgumentType implements ArgumentType<Permission> {
         } else {
             Arrays.stream(Permission.values()).map(Enum::name)
                     .forEach(builder::suggest);
+            builder.suggest("*");
         }
         return builder.buildFuture();
     }
