@@ -35,7 +35,7 @@ public class Main {
             }
         }, "ShutdownHook"));
         System.out.println("Starting icu.takeneko.omms.central.main.MainKt");
-        //SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
+        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         new Thread("Server Thread") {
             @Override
             public void run() {
