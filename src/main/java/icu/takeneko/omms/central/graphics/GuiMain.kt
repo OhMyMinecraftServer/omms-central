@@ -1,14 +1,52 @@
 package icu.takeneko.omms.central.graphics
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,9 +54,13 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -72,14 +114,14 @@ fun guiElements() {
         )
     }
     var commandString by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
+    val scrollState = rememberLazyListState()
     var autoScroll by remember { mutableStateOf(GuiConfig.config.autoScroll) }
     var showSettingPage by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     if (onValueUpdate == null) {
         logLines.addAll(logCache)
         coroutineScope.launch {
-            scrollState.animateScrollTo(scrollState.maxValue)
+            scrollState.animateScrollToItem(logLines.size)
         }
         logCache.clear()
         onValueUpdate = {
@@ -87,7 +129,7 @@ fun guiElements() {
             if (autoScroll) {
                 coroutineScope.launch {
                     while (scrollState.canScrollForward){
-                        scrollState.animateScrollTo(scrollState.maxValue)
+                        scrollState.animateScrollToItem(logLines.size)
                     }
                 }
             }
@@ -156,16 +198,50 @@ fun guiElements() {
                         .weight(1f)
                         .padding(vertical = 5.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(scrollState)
-                            .fillMaxSize()
-                            .padding(12.dp)
-                    ) {
-                        Text(
-                            text = logLines.joinToString("\n"),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SelectionContainer {
+                        LazyColumn(
+                            state = scrollState,
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(logLines) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        val time = it.substringBefore(']') + ']'
+                                        withStyle(SpanStyle(
+                                            color = Color(114, 171, 108)
+                                        )) {
+                                            append(time)
+                                        }
+                                        val lineWithOutTime = it.substringAfter(']')
+                                        if (
+                                            lineWithOutTime.contains("WARN")
+                                            || lineWithOutTime.contains("ERROR")
+                                        ) {
+                                            withStyle(SpanStyle(
+                                                color = MaterialTheme.colorScheme.onError
+                                            )) {
+                                                append(lineWithOutTime)
+                                            }
+                                        } else {
+                                            append(lineWithOutTime)
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            color = if (
+                                                it.contains("WARN")
+                                                || it.contains("ERROR")
+                                            ) {
+                                                MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
+                                            } else {
+                                                Color.Transparent
+                                            }
+                                        )
+                                )
+                            }
+                        }
                     }
 
                 }
@@ -272,7 +348,7 @@ fun guiElements() {
                                         GuiConfig.save()
                                         if (it){
                                             coroutineScope.launch {
-                                                scrollState.animateScrollTo(scrollState.maxValue)
+                                                scrollState.animateScrollToItem(logLines.size)
                                             }
                                         }
                                     },
@@ -305,6 +381,7 @@ fun guiMain() {
     application {
         Window(
             onCloseRequest = {
+                exitApplication()
                 CentralServer.stop()
             },
             title = Constants.PRODUCT_NAME
