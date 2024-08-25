@@ -3,6 +3,7 @@ package icu.takeneko.omms.central.network.chatbridge
 import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.config.Config.config
+import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.http.routes.sendToAllWS
 import icu.takeneko.omms.central.util.Util
@@ -19,7 +20,7 @@ fun sendBroadcast(broadcast: Broadcast) {
     }
     when (config.chatbridgeImplementation) {
         ChatbridgeImplementation.UDP -> SharedObjects.udpBroadcastSender.addToQueue(
-            Util.TARGET_CHAT,
+            Constants.TARGET_CHAT,
             Util.toJson(broadcast)
         )
         ChatbridgeImplementation.WS -> sendToAllWS(broadcast)

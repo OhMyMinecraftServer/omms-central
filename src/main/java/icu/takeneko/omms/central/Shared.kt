@@ -23,7 +23,6 @@ object SharedObjects{
     lateinit var httpServer: Thread
     lateinit var udpBroadcastReceiver: UdpBroadcastReceiver
     lateinit var udpBroadcastSender: UdpBroadcastSender
-    val logCache = CopyOnWriteArrayList<String>()
     val consoleHistory = DefaultHistory()
     val controllerConsoleHistory = hashMapOf<String, DefaultHistory>()
 }

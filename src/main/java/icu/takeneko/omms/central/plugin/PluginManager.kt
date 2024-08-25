@@ -1,6 +1,7 @@
 package icu.takeneko.omms.central.plugin
 
 import icu.takeneko.omms.central.RunConfiguration
+import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.plugin.depedency.PluginDependency
 import icu.takeneko.omms.central.plugin.exception.PluginException
 import icu.takeneko.omms.central.plugin.metadata.PluginDependencyRequirement
@@ -23,7 +24,7 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
         if (RunConfiguration.noPlugins) {
-            logger.warn("--noplugins has been set, ${Util.PRODUCT_NAME} won`t load any plugins")
+            logger.warn("--noplugins has been set, ${Constants.PRODUCT_NAME} won`t load any plugins")
             return
         }
         pluginMap.clear()

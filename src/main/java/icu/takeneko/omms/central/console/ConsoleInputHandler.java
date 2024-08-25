@@ -23,7 +23,7 @@ public class ConsoleInputHandler {
                 @Override
                 public void handle(Terminal.Signal signal) {
                     if (signal == Terminal.Signal.INT) {
-                        CentralServer.stop();
+                        CentralServer.INSTANCE.stop();
                     }
                 }
             }).build();

@@ -97,8 +97,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                             } ?: run {
                                 logger.info("Session terminated.")
                                 sessionChannel.sendResponse(
-                                    Response()
-                                        .withResponseCode(Result.DISCONNECT)
+                                    Response().withResponseCode(Result.DISCONNECT)
                                 )
                                 requestSessionTermination()
                                 null
