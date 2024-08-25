@@ -15,6 +15,8 @@ plugins {
     application
     id("maven-publish")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.21"
+    id("org.jetbrains.compose") version "1.6.11"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 group = "icu.takeneko"
@@ -74,6 +76,7 @@ tasks.withType<KotlinCompile> {
 repositories {
     mavenCentral()
     mavenLocal()
+    google()
     maven {
         url = uri("https://libraries.minecraft.net")
     }
@@ -88,7 +91,6 @@ repositories {
     }
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven("https://source.korostudio.cn/repository/maven-releases/")
-    maven("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/")
 }
 
 val osName = System.getProperty("os.name")
@@ -161,6 +163,10 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
     api("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
     api("black.ninia:jep:4.2.0")
+
+    api(compose.desktop.currentOs)
+    api(compose.components.resources)
+    api(compose.material3)
 }
 
 task("generateProperties") {

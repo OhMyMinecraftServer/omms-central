@@ -3,7 +3,6 @@ package icu.takeneko.omms.central.command.builtin
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.sun.jdi.connect.Connector.StringArgument
 import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.announcement.AnnouncementManager
@@ -28,7 +27,10 @@ import icu.takeneko.omms.central.permission.PermissionChange
 import icu.takeneko.omms.central.permission.PermissionManager
 import icu.takeneko.omms.central.plugin.PluginManager
 import icu.takeneko.omms.central.plugin.metadata.PluginDependencyRequirement
-import icu.takeneko.omms.central.util.*
+import icu.takeneko.omms.central.util.Util
+import icu.takeneko.omms.central.util.controllerPrettyPrinting
+import icu.takeneko.omms.central.util.printRuntimeEnv
+import icu.takeneko.omms.central.util.whitelistPrettyPrinting
 import icu.takeneko.omms.central.whitelist.PlayerAlreadyExistsException
 import icu.takeneko.omms.central.whitelist.PlayerNotFoundException
 import icu.takeneko.omms.central.whitelist.WhitelistManager
@@ -45,7 +47,6 @@ import org.slf4j.LoggerFactory
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 import java.lang.management.ManagementFactory
 import java.util.concurrent.locks.LockSupport
-import kotlin.collections.mutableListOf
 
 private val logger = LoggerFactory.getLogger("BuiltinCommand")
 private val config = Config.config

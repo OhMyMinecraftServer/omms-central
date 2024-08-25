@@ -3,6 +3,7 @@ package icu.takeneko.omms.central.util
 import icu.takeneko.omms.central.controller.Controller
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.Status
+import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.whitelist.Whitelist
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -52,7 +53,7 @@ val versionInfoString: String
         val version = BuildProperties["version"]
         val buildTimeMillis = BuildProperties["buildTime"]?.toLong() ?: 0L
         val buildTime = Date(buildTimeMillis)
-        return "${Util.PRODUCT_NAME} $version (${BuildProperties["branch"]}:${
+        return "${Constants.PRODUCT_NAME} $version (${BuildProperties["branch"]}:${
             BuildProperties["commitId"]?.substring(0, 7)
         } $buildTime)"
     }

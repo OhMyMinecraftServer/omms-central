@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import icu.takeneko.omms.central.command.CommandSourceStack;
 import icu.takeneko.omms.central.controller.ControllerHttpClient;
 import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.network.chatbridge.Target;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
@@ -22,18 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Util {
-
-
-    public static final String PRODUCT_NAME = "Oh My Minecraft Server Central Server";
-    public static final String PRODUCT_NAME_SHORT = "OMMS Central Server";
-    public static final Target TARGET_CHAT = new Target("224.114.51.4", 10086);
-    public static final String[] DATA_FOLDERS = {
-            "controllers",
-            "announcements",
-            "whitelists",
-            "plugins",
-            "scripts"
-    };
 
 
     public static final Gson gson = new GsonBuilder()

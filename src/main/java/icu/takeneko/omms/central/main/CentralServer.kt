@@ -1,15 +1,17 @@
 package icu.takeneko.omms.central.main
 
-import icu.takeneko.omms.central.*
+import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects.httpServer
 import icu.takeneko.omms.central.SharedObjects.socketServer
 import icu.takeneko.omms.central.SharedObjects.udpBroadcastReceiver
 import icu.takeneko.omms.central.SharedObjects.udpBroadcastSender
+import icu.takeneko.omms.central.State
 import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.console.ConsoleInputHandler
 import icu.takeneko.omms.central.controller.ControllerManager
+import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.fundation.FeatureOption
 import icu.takeneko.omms.central.graphics.guiMain
 import icu.takeneko.omms.central.identity.IdentityProvider
@@ -28,7 +30,6 @@ import icu.takeneko.omms.central.whitelist.WhitelistManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.IOException
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.LockSupport
@@ -40,26 +41,21 @@ object CentralServer {
     private val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
     var initialized = false
 
-    @Throws(IOException::class)
-    @JvmStatic
     fun main(args: Array<String>) {
-        FeatureOption.parse(args)
         val timeStart = System.currentTimeMillis()
         if (args.isNotEmpty()) {
             val argList = Arrays.stream(args).toList()
             RunConfiguration.noPlugins = argList.contains("--noplugin")
         }
         ConsoleInputHandler.INSTANCE.prepareTerminal()
-        guiMain()
         State.launchTime = timeStart
         printRuntimeEnv()
-
         logger.info("Hello World!")
         logger.info("Loading Config.")
         if (!Config.load()) {
             exitProcess(1)
         }
-        (Util.DATA_FOLDERS.map { File(Util.getWorkingDirString() + File.separator + it) }
+        (Constants.DATA_FOLDERS.map { File(Util.getWorkingDirString() + File.separator + it) }
             .filter { !(it.isDirectory or it.exists()) }.toList())
             .run {
                 if (isNotEmpty()) {
@@ -118,7 +114,7 @@ object CentralServer {
             val sender = UdpBroadcastSender()
             sender.start()
             udpBroadcastSender = sender
-            udpBroadcastSender.createMulticastSocketCache(Util.TARGET_CHAT)
+            udpBroadcastSender.createMulticastSocketCache(Constants.TARGET_CHAT)
         }
 
         val timeComplete = System.currentTimeMillis()
@@ -143,16 +139,17 @@ object CentralServer {
         }
     }
 
-    fun runOnMainThread(fn: () -> Unit) {
+    fun runOnServerThread(fn: () -> Unit) {
         taskQueue.add(fn)
     }
 
-    @JvmStatic
     fun stop() {
         try {
             logger.info("Stopping!")
-            ScriptManager.onUnload()
-            ScriptManager.close()
+            if (FeatureOption["script"]) {
+                ScriptManager.onUnload()
+                ScriptManager.close()
+            }
             State.normalShutdown = true
             httpServer.interrupt()
             if (Config.config.chatbridgeImplementation == ChatbridgeImplementation.UDP) {
@@ -165,7 +162,7 @@ object CentralServer {
                 exitProcess(0)
             }
         } catch (e: java.lang.Exception) {
-            logger.error("Cannot stop server.", e)
+            logger.error("An exception was thrown while stopping server", e)
         }
     }
 }
