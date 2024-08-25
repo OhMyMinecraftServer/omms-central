@@ -1,3 +1,8 @@
+
+/build/
+/.idea/
+/.gradle/
+/.kotlin/
 # Project exclude paths
 /target/
 /logs/
@@ -7,8 +12,6 @@
 /announcements/
 /controllers/
 /permissions.json
-.idea/workspace.xml
-/.idea/
 /image
 /plugins
 /scripts
