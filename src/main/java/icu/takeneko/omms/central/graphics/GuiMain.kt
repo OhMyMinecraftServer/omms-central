@@ -59,7 +59,7 @@ fun FrameWindowScope.setMinimumSize(
 
 @Composable
 fun guiElements() {
-    var logLines = remember { mutableStateListOf<String>() }
+    val logLines = remember { mutableStateListOf<String>() }
     val darkDefault = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(darkDefault) }
     var theme: ColorScheme by remember {
@@ -76,7 +76,6 @@ fun guiElements() {
     var autoScroll by remember { mutableStateOf(GuiConfig.config.autoScroll) }
     var showSettingPage by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    
     if (onValueUpdate == null) {
         logLines.addAll(logCache)
         coroutineScope.launch {
@@ -87,7 +86,9 @@ fun guiElements() {
             logLines.add(it)
             if (autoScroll) {
                 coroutineScope.launch {
-                    scrollState.animateScrollTo(scrollState.maxValue)
+                    while (scrollState.canScrollForward){
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                    }
                 }
             }
         }
@@ -128,7 +129,7 @@ fun guiElements() {
                             }) {
                                 Icon(
                                     Res.drawable.settings_24px.asIcon(),
-                                    "",     // 建议直接 null
+                                    null,
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
