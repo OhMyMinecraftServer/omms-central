@@ -13,6 +13,7 @@ import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 public class Main {
     public static void main(String[] args) throws IOException {
