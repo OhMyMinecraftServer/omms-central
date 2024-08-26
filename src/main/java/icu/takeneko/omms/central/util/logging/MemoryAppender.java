@@ -3,31 +3,30 @@ package icu.takeneko.omms.central.util.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class MemoryAppender<E extends ILoggingEvent> extends UnsynchronizedAppenderBase<E> {
-    private static final List<Consumer<String>> loggingEventHandlers = new ArrayList<>();
+    public static final List<LogEvent> logCaches = new ArrayList<>();
+    private static final List<Consumer<LogEvent>> loggingEventHandlers = new ArrayList<>();
     private static final int maxLineWidthChars = 160;
 
     @Override
     protected void append(E eventObject) {
-        var res = MessageFormat.format(
-                "[{0}] [{1}/{2}] ({3}): {4}",
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()),
-                eventObject.getThreadName(),
-                eventObject.getLevel().levelStr,
-                eventObject.getLoggerName(),
-                eventObject.getFormattedMessage()
-        );
-        loggingEventHandlers.forEach(it -> it.accept(res));
+        LogEvent event = LogEvent.Companion.create(eventObject);
+        loggingEventHandlers.forEach(it -> it.accept(event));
+        logCaches.add(event);
     }
 
-    public static void subscribe(Consumer<String> eventHandler){
+    public static void subscribe(Consumer<LogEvent> eventHandler, boolean playback){
         loggingEventHandlers.add(eventHandler);
+        if (playback) {
+            logCaches.forEach(eventHandler);
+        }
+    }
+
+    public static void subscribe(Consumer<LogEvent> eventHandler){
+        subscribe(eventHandler, true);
     }
 }
