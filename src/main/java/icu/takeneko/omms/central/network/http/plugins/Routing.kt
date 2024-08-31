@@ -22,7 +22,6 @@ fun Application.configureRouting() {
             httpApiQueryRouting()
         }
         authenticate("omms-controller-auth") {
-            announcementQueryRouting()
             whitelistQueryRouting()
             identityQueryRoute()
             crashReportQueryRoute()

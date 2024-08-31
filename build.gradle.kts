@@ -167,6 +167,10 @@ dependencies {
     api(compose.desktop.currentOs)
     api(compose.components.resources)
     api(compose.material3)
+
+    implementation("top.colter.skiko:skiko-layout:0.0.1"){
+        exclude(group = "org.jetbrains.skiko")
+    }
 }
 
 task("generateProperties") {

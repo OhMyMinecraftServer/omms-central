@@ -1,7 +1,5 @@
 package icu.takeneko.omms.central.storage;
 
-import icu.takeneko.omms.central.announcement.Announcement;
-import icu.takeneko.omms.central.announcement.AnnouncementNotExistException;
 import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.permission.PermissionCodeAlreadyExistsException;
 import icu.takeneko.omms.central.whitelist.Whitelist;
@@ -46,10 +44,6 @@ public interface StorageProvider {
     void loadPermissions() throws Exception;
 
     void savePermissions() throws Exception;
-
-    Announcement getAnnouncementById(String id) throws AnnouncementNotExistException;
-
-    void createAnnouncment(Announcement announcement) throws Exception;
 
     void loadAnnouncements() throws Exception;
 

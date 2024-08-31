@@ -2,10 +2,6 @@ package icu.takeneko.omms.central.network.session.request
 
 import icu.takeneko.omms.central.network.session.handler.RequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.EndRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.announcement.CreateAnnouncementRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.announcement.DeleteAnnouncementRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.announcement.GetAnnouncementRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.announcement.ListAnnouncementRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.SetChatMessagePassthroughRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatHistoryRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.SendBroadcastRequestHandler
@@ -114,14 +110,10 @@ val builtinRequestMap = mutableMapOf(
     "WHITELIST_REMOVE" to RemoveFromWhitelistHandler(),
     "CONTROLLER_GET_STATUS" to GetControllerStatusRequestHandler(),
     "CONTROLLER_EXECUTE_COMMAND" to SendCommandToControllerRequestHandler(),
-    "ANNOUNCEMENT_LIST" to ListAnnouncementRequestHandler(),
-    "ANNOUNCEMENT_DELETE" to DeleteAnnouncementRequestHandler(),
     "WHITELIST_DELETE" to DeleteWhitelistRequestHandler(),
     "PERMISSION_CREATE" to CreatePermissionRequestHandler(),
     "SYSTEM_GET_RUNNER_OUTPUT" to GetRunnerOutputRequestHandler(),
     "CONTROLLER_LIST" to ListControllersRequestHandler(),
-    "ANNOUNCEMENT_GET" to GetAnnouncementRequestHandler(),
-    "ANNOUNCEMENT_CREATE" to CreateAnnouncementRequestHandler(),
     "END" to EndRequestHandler(),
     "WHITELIST_CREATE" to CreateWhitelistRequestHandler(),
     "CONTROLLER_GET" to GetControllerRequestHandler(),

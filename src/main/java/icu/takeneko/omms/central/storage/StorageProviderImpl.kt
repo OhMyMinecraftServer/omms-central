@@ -1,6 +1,5 @@
 package icu.takeneko.omms.central.storage
 
-import icu.takeneko.omms.central.announcement.Announcement
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.whitelist.Whitelist
 
@@ -34,14 +33,6 @@ class StorageProviderImpl : StorageProvider {
     }
 
     override fun savePermissions() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAnnouncementById(id: String?): Announcement {
-        TODO("Not yet implemented")
-    }
-
-    override fun createAnnouncment(announcement: Announcement?) {
         TODO("Not yet implemented")
     }
 

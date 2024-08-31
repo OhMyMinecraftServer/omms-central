@@ -6,14 +6,12 @@ import icu.takeneko.omms.central.SharedObjects.socketServer
 import icu.takeneko.omms.central.SharedObjects.udpBroadcastReceiver
 import icu.takeneko.omms.central.SharedObjects.udpBroadcastSender
 import icu.takeneko.omms.central.State
-import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.console.ConsoleInputHandler
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.fundation.Constants
 import icu.takeneko.omms.central.fundation.FeatureOption
-import icu.takeneko.omms.central.graphics.guiMain
 import icu.takeneko.omms.central.identity.IdentityProvider
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.chatbridge.UdpBroadcastReceiver
@@ -83,7 +81,6 @@ object CentralServer {
             ScriptManager.onLoad()
             PermissionManager.init()
             ControllerManager.init()
-            AnnouncementManager.init()
             WhitelistManager.init()
             IdentityProvider.init()
             CommandManager.INSTANCE.init()
