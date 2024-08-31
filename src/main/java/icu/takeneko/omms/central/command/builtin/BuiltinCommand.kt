@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects
-import icu.takeneko.omms.central.announcement.AnnouncementManager
 import icu.takeneko.omms.central.command.*
 import icu.takeneko.omms.central.command.arguments.ControllerArgumentType
 import icu.takeneko.omms.central.command.arguments.PermissionCodeArgumentType
@@ -225,7 +224,6 @@ val reloadCommand = LiteralCommand("reload") {
         CommandManager.INSTANCE.clear()
         PermissionManager.init()
         ControllerManager.init()
-        AnnouncementManager.init()
         WhitelistManager.init()
         CommandManager.INSTANCE.reload()
         1
@@ -456,26 +454,6 @@ val controllerCommand = LiteralCommand("controller") {
     }
 }
 
-val announcementCommand = LiteralCommand("announcement") {
-    literal("list") {
-        execute {
-            AnnouncementManager.announcementMap.forEach { entry ->
-                sendFeedback("Announcement: ${entry.value.title} (id: ${entry.value.id})")
-                entry.value.content.forEach {
-                    sendFeedback("    $it")
-                }
-            }
-            1
-        }
-    }
-    literal("create") {
-        execute {
-
-            1
-        }
-    }
-}
-
 val pluginCommand = LiteralCommand("plugin") {
     literal("list") {
         execute {
@@ -531,7 +509,6 @@ fun registerBuiltinCommand(dispatcher: CommandDispatcher<CommandSourceStack>) {
     dispatcher.register(helpCommand)
     dispatcher.register(permissionCommand)
     dispatcher.register(controllerCommand)
-    dispatcher.register(announcementCommand)
     dispatcher.register(pluginCommand)
 }
 

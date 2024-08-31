@@ -2,24 +2,21 @@ package icu.takeneko.omms.central.plugin
 
 import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.fundation.Constants
+import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.plugin.depedency.PluginDependency
 import icu.takeneko.omms.central.plugin.exception.PluginException
 import icu.takeneko.omms.central.plugin.metadata.PluginDependencyRequirement
 import icu.takeneko.omms.central.plugin.metadata.PluginMetadata
 import icu.takeneko.omms.central.util.BuildProperties
-import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.lang.module.ModuleDescriptor
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
 
 object PluginManager : Manager(), Iterable<PluginInstance> {
     private var pluginMap = LinkedHashMap<String, PluginInstance>()
-    private var pluginFileList = arrayListOf<String>()
+    private var pluginFileList = arrayListOf<Path>()
     private lateinit var classLoader: JarClassLoader
     private val logger = LoggerFactory.getLogger("PluginManager")
     override fun init() {
@@ -30,32 +27,31 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         pluginMap.clear()
         pluginFileList.clear()
         Files.list(Util.absolutePath("plugins"))
-            .filter { it.toFile().extension == "jar" }.forEach {
-                pluginFileList += it.absolutePathString()
-            }
+            .filter { it.toFile().extension == "jar" }.forEach(pluginFileList::add)
         classLoader = JarClassLoader(this::class.java.classLoader).apply {
-            pluginFileList.map { File(it) }.forEach(this::loadJar)
+            pluginFileList.map { it.toFile() }.forEach(this::loadJar)
         }
         pluginFileList.forEach {
-            loadPluginFromFile(Path(it))?.apply { pluginMap += this }
+            loadPluginFromFile(it)?.apply { pluginMap += this }
         }
+        logger.debug("Current Thread: {}", Thread.currentThread())
         Thread.currentThread().contextClassLoader = classLoader
     }
 
     private fun loadPluginFromFile(it: Path): Pair<String, PluginInstance>? {
-        return PluginInstance(classLoader, it).run {
+        logger.debug("Discovered plugin {}", it)
+        val instance = PluginInstance(classLoader, it).apply {
             loadJar()
-            if (pluginState != PluginState.PRE_LOAD) return null
-            this
-        }.run {
+        }
+        instance.run {
             if (pluginMetadata.id in pluginMap) {
-                logger.error("Plugin $it has a same id with plugin ${pluginMap[pluginMetadata.id]!!.pluginPathUrl.path}")
+                logger.error("Plugin $it has a duplicate id with plugin ${pluginMap[pluginMetadata.id]!!.pluginPathUrl.path}")
                 return null
             }
             loadPluginClasses()
             if (pluginState == PluginState.ERROR) return null
-            this.pluginMetadata.id to this
         }
+        return instance.pluginMetadata.id to instance
     }
 
     fun loadAll() {
@@ -70,16 +66,14 @@ object PluginManager : Manager(), Iterable<PluginInstance> {
         val beforeFiles = ArrayList(pluginFileList)
         val afterFiles = buildList {
             Files.list(Util.absolutePath("plugins"))
-                .filter { it.toFile().extension == "jar" }.forEach {
-                    this += it.absolutePathString()
-                }
+                .filter { it.toFile().extension == "jar" }.forEach(this::add)
         }
         beforeFiles.forEach {
             if (it !in afterFiles) throw UnsupportedOperationException("Cannot remove plugins.")
         }
         pluginFileList.clear()
         pluginFileList += afterFiles
-        val newFiles = (afterFiles - beforeFiles.toSet()).map { File(it) }
+        val newFiles = (afterFiles - beforeFiles.toSet()).map { it.toFile() }
         newFiles.forEach(this.classLoader::loadJar)
         newFiles.forEach {
             logger.info("Loading plugin from $it")
