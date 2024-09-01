@@ -5,7 +5,7 @@ import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.controller.crashreport.ControllerCrashReportManager
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
-import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
+import icu.takeneko.omms.central.network.chatbridge.send
 import icu.takeneko.omms.central.network.http.*
 import icu.takeneko.omms.central.system.info.SystemInfoUtil
 import icu.takeneko.omms.central.util.toStringMap
@@ -171,14 +171,14 @@ fun Route.httpApiQueryRouting() {
         route("/broadcast") {
             post {
                 val request = call.receive<BroadcastData>()
-                val broadcast = Broadcast().apply {
-                    channel = request.channel
-                    content = request.content
-                    player = request.playerName
-                    server = request.server
-                }
+                val broadcast = Broadcast(
+                    request.channel,
+                    request.server,
+                    request.playerName,
+                    request.content
+                )
                 launch {
-                    sendBroadcast(broadcast)
+                    broadcast.send()
                 }
                 return@post call.respond(HttpResponseData())
             }

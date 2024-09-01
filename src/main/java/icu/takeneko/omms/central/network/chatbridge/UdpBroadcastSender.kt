@@ -1,94 +1,73 @@
-package icu.takeneko.omms.central.network.chatbridge;
+package icu.takeneko.omms.central.network.chatbridge
 
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.io.IOException
+import java.net.*
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.locks.LockSupport
 
-import java.io.IOException;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.LockSupport;
+class UdpBroadcastSender : Thread() {
+    private val logger: Logger = LoggerFactory.getLogger("UdpBroadcastSender")
+    var isStopped: Boolean = false
+    private val queue = LinkedBlockingQueue<Pair<UdpBroadcastTarget, ByteArray>>()
+    private val multicastSocketCache = mutableMapOf<UdpBroadcastTarget, MulticastSocket>()
 
-public class UdpBroadcastSender extends Thread {
-
-    private final Logger logger = LoggerFactory.getLogger("UdpBroadcastSender");
-    boolean stopped = false;
-    private final ConcurrentHashMap<Target, byte[]> queue = new ConcurrentHashMap<>();
-    private final HashMap<Target, MulticastSocket> multicastSocketCache = new HashMap<>();
-
-    public UdpBroadcastSender() {
-        this.setName("UdpBroadcastSender#" + this.getId());
+    init {
+        this.name = "UdpBroadcastSender#" + this.id
     }
 
-    public void createMulticastSocketCache(@NotNull Target target) {
+    fun createMulticastSocketCache(target: UdpBroadcastTarget) {
         try {
-            multicastSocketCache.put(target, createMulticastSocket(target.getAddress(), target.getPort()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            multicastSocketCache[target] = createMulticastSocket(target.address, target.port)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
     }
 
-    public void clearMulticastSocketCache() {
-        multicastSocketCache.clear();
+    fun clearMulticastSocketCache() {
+        multicastSocketCache.clear()
     }
 
-    private static @NotNull MulticastSocket createMulticastSocket(String addr, int port) throws IOException {
-        MulticastSocket socket = new MulticastSocket(port);
-        InetAddress inetAddress = InetAddress.getByName(addr);
-        socket.joinGroup(new InetSocketAddress(addr, port), NetworkInterface.getByInetAddress(inetAddress));
-        return socket;
-    }
-
-    @Override
-    public void run() {
-        logger.info("Starting UdpBroadcastSender.");
-        while (!stopped) {
+    override fun run() {
+        logger.info("Starting UdpBroadcastSender.")
+        while (!isStopped) {
             try {
-                if (!queue.isEmpty()) {
-                    queue.forEach(this::send);
+                while (queue.isNotEmpty()) {
+                    val (t, b) = queue.poll()
+                    this.send(t, b)
                 }
-                LockSupport.parkNanos(10);
-            } catch (Exception e) {
-                e.printStackTrace();
+                LockSupport.parkNanos(1000)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
-        logger.info("Stopped!");
+        logger.info("Stopping!")
     }
 
-    public boolean isStopped() {
-        return stopped;
+    fun addToQueue(target: UdpBroadcastTarget, content: String) {
+        queue.add(target to content.toByteArray(StandardCharsets.UTF_8))
     }
 
-    public void setStopped(boolean stopped) {
-        this.stopped = stopped;
-    }
-
-    public void addToQueue(@NotNull Target target, @NotNull String content) {
-        queue.put(target, content.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private void send(@NotNull Target target, byte @NotNull [] content) {
-        queue.remove(target, content);
-        MulticastSocket socket;
+    private fun send(target: UdpBroadcastTarget, content: ByteArray) {
         try {
-            if (multicastSocketCache.containsKey(target)) {
-                socket = multicastSocketCache.get(target);
+            val socket = if (multicastSocketCache.containsKey(target)) {
+                multicastSocketCache[target]!!
             } else {
-                socket = createMulticastSocket(target.getAddress(), target.getPort());
-                multicastSocketCache.put(target, socket);
+                createMulticastSocket(target.address, target.port).also { multicastSocketCache[target] = it }
             }
-            DatagramPacket packet = new DatagramPacket(content, content.length, InetAddress.getByName(target.getAddress()), target.getPort());
-
-            socket.send(packet);
-        } catch (Exception e) {
-            logger.error("Cannot send UDP Broadcast.\n\tTarget=%s\n\tContent=%s"
-                            .formatted(target.toString(), Arrays.toString(content))
-                    , e);
+            val packet = DatagramPacket(content, content.size, InetAddress.getByName(target.address), target.port)
+            socket.send(packet)
+        } catch (e: Exception) {
+            logger.error("Send UDP Broadcast failed, target={}, content={}", target, content)
         }
     }
 
-
+    private fun createMulticastSocket(addr: String, port: Int): MulticastSocket {
+        val socket = MulticastSocket(port)
+        val inetAddress = InetAddress.getByName(addr)
+        socket.joinGroup(InetSocketAddress(addr, port), NetworkInterface.getByInetAddress(inetAddress))
+        return socket
+    }
 }

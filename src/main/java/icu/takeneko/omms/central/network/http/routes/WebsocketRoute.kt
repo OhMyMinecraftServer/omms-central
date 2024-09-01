@@ -2,7 +2,6 @@ package icu.takeneko.omms.central.network.http.routes
 
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.chatbridge.ChatMessageCache
-import icu.takeneko.omms.central.network.chatbridge.buildToJson
 import icu.takeneko.omms.central.plugin.callback.ChatbridgeBroadcastReceivedCallback
 import icu.takeneko.omms.central.util.Util
 import io.ktor.server.routing.*
@@ -14,14 +13,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 
-val list = mutableListOf<DefaultWebSocketSession>()
+private val list = mutableListOf<DefaultWebSocketSession>()
 private val logger = LoggerFactory.getLogger("WebsocketRoute")
-fun sendToAllWS(broadcast: Broadcast) {
+
+fun Broadcast.sendToAllWS() {
     runBlocking {
         synchronized(list) {
             for (session in list) {
                 launch(Dispatchers.IO) {
-                    session.send(buildToJson(broadcast)!!)
+                    session.send(this@sendToAllWS.toJson())
                 }
             }
         }
