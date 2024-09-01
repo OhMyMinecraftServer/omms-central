@@ -9,14 +9,16 @@ import java.io.ByteArrayOutputStream
 
 plugins {
     `java-library`
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
     id("maven-publish")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
     id("org.jetbrains.compose") version "1.6.11"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
+    kotlin("plugin.lombok") version "2.0.20"
+    id("io.freefair.lombok") version "8.10"
 }
 
 group = "icu.takeneko"
@@ -164,12 +166,24 @@ dependencies {
     api("org.jetbrains.skiko:skiko-awt-runtime-$target:$versionSkiko")
     api("black.ninia:jep:4.2.0")
 
+
     api(compose.desktop.currentOs)
     api(compose.components.resources)
     api(compose.material3)
 
-    implementation("top.colter.skiko:skiko-layout:0.0.1"){
-        exclude(group = "org.jetbrains.skiko")
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.34")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
+}
+
+tasks{
+    test{
+        useJUnitPlatform()
     }
 }
 

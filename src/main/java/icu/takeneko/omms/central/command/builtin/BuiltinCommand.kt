@@ -18,8 +18,8 @@ import icu.takeneko.omms.central.controller.console.input.StdinInputSource
 import icu.takeneko.omms.central.controller.console.output.StdOutPrintTarget
 import icu.takeneko.omms.central.main.CentralServer
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
-import icu.takeneko.omms.central.network.chatbridge.buildBroadcast
-import icu.takeneko.omms.central.network.chatbridge.sendBroadcast
+import icu.takeneko.omms.central.network.chatbridge.Broadcast
+import icu.takeneko.omms.central.network.chatbridge.send
 import icu.takeneko.omms.central.permission.Operation
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.permission.PermissionChange
@@ -204,8 +204,7 @@ val broadcastCommand = LiteralCommand("broadcast") {
             }
             val text = getStringArgument("text")
             sendFeedback("Sending message:$text")
-            val broadcast = buildBroadcast("GLOBAL", text)
-            sendBroadcast(broadcast)
+            Broadcast("GLOBAL", text).send()
             1
         }
     }
