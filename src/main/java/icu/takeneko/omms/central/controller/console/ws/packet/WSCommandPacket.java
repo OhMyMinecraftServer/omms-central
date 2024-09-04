@@ -12,7 +12,7 @@ public class WSCommandPacket extends WSPacket<WSCommandPacket>{
 
     private final String command;
 
-    protected WSCommandPacket(String command) {
+    public WSCommandPacket(String command) {
         super(PacketTypes.COMMAND);
         this.command = command;
     }
