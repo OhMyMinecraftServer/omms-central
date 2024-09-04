@@ -9,6 +9,7 @@ import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.asSalted
 import icu.takeneko.omms.central.controller.console.ws.packet.PacketRegistry
 import icu.takeneko.omms.central.controller.console.ws.packet.PacketType
+import icu.takeneko.omms.central.controller.console.ws.packet.WSCommandPacket
 import icu.takeneko.omms.central.controller.console.ws.packet.WSPacket
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -111,7 +112,7 @@ class ControllerWebSocketSession(
         }
     }
 
-    fun packet(packet: WSPacket) {
+    fun packet(packet: WSPacket<*>) {
         synchronized(list) {
             list.add(packet)
         }
@@ -119,7 +120,7 @@ class ControllerWebSocketSession(
 
     fun command(line: String) {
         synchronized(list) {
-            list.add(WSStringPacket(PacketType.COMMAND, line))
+            list.add(WSCommandPacket(line))
         }
     }
 
