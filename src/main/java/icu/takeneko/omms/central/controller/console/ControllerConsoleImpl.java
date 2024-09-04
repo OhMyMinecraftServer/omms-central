@@ -5,10 +5,8 @@ import icu.takeneko.omms.central.controller.ControllerImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.console.ws.ControllerWebSocketSession;
-import icu.takeneko.omms.central.controller.console.ws.PacketType;
+import icu.takeneko.omms.central.controller.console.ws.packet.PacketType;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
-import icu.takeneko.omms.central.controller.console.ws.WSStatusPacket;
-import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 

@@ -7,6 +7,9 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.asSalted
+import icu.takeneko.omms.central.controller.console.ws.packet.PacketRegistry
+import icu.takeneko.omms.central.controller.console.ws.packet.PacketType
+import icu.takeneko.omms.central.controller.console.ws.packet.WSPacket
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
@@ -26,13 +29,9 @@ class ControllerWebSocketSession(
     private val controllerImpl: ControllerImpl,
     private val handler: WSPacketHandler
 ) : Thread("Console@${controllerImpl.name}") {
-    private val codec: Codec<Either<WSStatusPacket, WSStringPacket>> = Codec.either(
-        WSStatusPacket.CODEC,
-        WSStringPacket.CODEC
-    )
     private val gson = Gson()
     private val logger = LoggerFactory.getLogger("ControllerWSConsoleImpl")
-    val list = mutableListOf<WSPacket>()
+    val list = mutableListOf<WSPacket<*>>()
     var connected = AtomicBoolean(false)
     private val client = HttpClient(CIO) {
         install(WebSockets)
@@ -65,13 +64,7 @@ class ControllerWebSocketSession(
                                     launch {
                                         try {
                                             logger.debug("Incoming message: $s")
-                                            val jElem = JsonParser.parseString(s)
-                                            codec.decode(JsonOps.INSTANCE, jElem)
-                                                .getOrThrow(false, logger::error)
-                                                .first
-                                                .map(WSPacket::cast, WSPacket::cast)
-                                                .handle(handler)
-
+                                            PacketRegistry.decodePacket(s).handle(handler)
                                         } catch (e: Exception) {
                                             logger.error("Message parse failed:", e)
                                         }
@@ -85,18 +78,7 @@ class ControllerWebSocketSession(
                                             for (s in list) {
                                                 runBlocking {
                                                     try {
-                                                        println(s)
-                                                        val e = codec.encodeStart(
-                                                            JsonOps.INSTANCE,
-                                                            when (s) {
-                                                                is WSStatusPacket -> Either.left(s)
-                                                                is WSStringPacket -> Either.right(s)
-                                                                else -> {
-                                                                    logger.warn("Dropping illegal packet: $s")
-                                                                    return@runBlocking
-                                                                }
-                                                            }
-                                                        ).getOrThrow(false, logger::error).toString()
+                                                        val e = PacketRegistry.encodePacket(s)
                                                         logger.debug("Sending $e")
                                                         this@webSocket.send(e)
                                                     } catch (e: Exception) {
