@@ -5,18 +5,18 @@
 /.kotlin/
 # Project exclude paths
 /target/
-/logs/
+/run/logs/
 /clients/
-/config.json/
-/whitelists/
-/announcements/
-/controllers/
+/run/config.json/
+/run/whitelists/
+/run/announcements/
+/run/controllers/
 /permissions.json
 /image
-/plugins
-/scripts
-/config
-/config.json
+/run/plugins
+/run/scripts
+/run/config
+/run/config.json
 /*.db
 /*.json
 /run/

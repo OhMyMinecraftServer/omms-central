@@ -28,6 +28,12 @@ public class PacketTypes {
             WSLogPacket.CODEC
     );
 
+    public static final PacketType<WSDisconnectPacket> DISCONNECT = register(
+            Identifier.of("disconnect"),
+            WSDisconnectPacket.class,
+            WSDisconnectPacket.CODEC
+    );
+
 
     private static <T extends WSPacket<T>> PacketType<T> register(Identifier id, Class<? extends T> clazz, Codec<T> codec) {
         PacketType<T> pc = new PacketType<>(
