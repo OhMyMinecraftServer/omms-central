@@ -7,6 +7,7 @@ import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.console.ws.ControllerWebSocketSession;
 import icu.takeneko.omms.central.controller.console.ws.packet.PacketType;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
+import icu.takeneko.omms.central.controller.console.ws.packet.WSDisconnectPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -18,8 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 public class ControllerConsoleImpl extends Thread implements ControllerConsole {
-    public static final WSStatusPacket DISCONNECT_PACKET = new WSStatusPacket(PacketType.DISCONNECT);
-
     private final Controller controller;
     private final @NotNull ControllerWebSocketSession session;
     private final PrintTarget<?, ControllerConsole> printTarget;
@@ -67,7 +66,7 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
 
     public boolean gracefullyStop() {
         try {
-            session.packet(DISCONNECT_PACKET);
+            session.packet(new WSDisconnectPacket());
             gracefullyStopped.get(5000, TimeUnit.MILLISECONDS);
             return true;
         } catch (Exception e) {
