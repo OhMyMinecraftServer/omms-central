@@ -1,11 +1,12 @@
 package icu.takeneko.omms.central.fundation.registry;
 
+import com.google.common.base.Objects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import lombok.Getter;
 
 @Getter
-public class Identifier {
+public class Identifier implements Comparable<Identifier> {
     public static final Codec<Identifier> CODEC = Codec.STRING.comapFlatMap(
             Identifier::read,
             Identifier::toString
@@ -32,7 +33,6 @@ public class Identifier {
                 strings[0] = location.substring(0, i);
             }
         }
-
         return strings;
     }
 
@@ -53,7 +53,28 @@ public class Identifier {
         return this.namespace + ":" + this.path;
     }
 
+    public int compareTo(Identifier identifier) {
+        int wtf = this.path.compareTo(identifier.path);
+        if (wtf == 0) {
+            wtf = this.namespace.compareTo(identifier.namespace);
+        }
+
+        return wtf;
+    }
+
     public static Identifier of(String path) {
         return new Identifier("omms", path);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Identifier that)) return false;
+        return java.util.Objects.equals(namespace, that.namespace) && java.util.Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.namespace, this.path);
     }
 }

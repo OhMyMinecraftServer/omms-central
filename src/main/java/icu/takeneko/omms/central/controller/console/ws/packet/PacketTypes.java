@@ -34,6 +34,23 @@ public class PacketTypes {
             WSDisconnectPacket.CODEC
     );
 
+    public static final PacketType<WSCompletionRequestPacket> COMPLETION_REQUEST = register(
+            Identifier.of("completion_request"),
+            WSCompletionRequestPacket.class,
+            WSCompletionRequestPacket.CODEC
+    );
+
+    public static final PacketType<WSCompletionResultPacket> COMPLETION_RESULT = register(
+            Identifier.of("completion_result"),
+            WSCompletionResultPacket.class,
+            WSCompletionResultPacket.CODEC
+    );
+
+
+    public static void init(){
+        //intentionally empty
+    }
+
 
     private static <T extends WSPacket<T>> PacketType<T> register(Identifier id, Class<? extends T> clazz, Codec<T> codec) {
         PacketType<T> pc = new PacketType<>(

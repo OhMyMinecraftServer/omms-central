@@ -1,15 +1,11 @@
 package icu.takeneko.omms.central.controller.console.ws
 
 import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.mojang.datafixers.util.Either
-import com.mojang.serialization.Codec
-import com.mojang.serialization.JsonOps
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.asSalted
 import icu.takeneko.omms.central.controller.console.ws.packet.PacketRegistry
-import icu.takeneko.omms.central.controller.console.ws.packet.PacketType
 import icu.takeneko.omms.central.controller.console.ws.packet.WSCommandPacket
+import icu.takeneko.omms.central.controller.console.ws.packet.WSCompletionRequestPacket
 import icu.takeneko.omms.central.controller.console.ws.packet.WSPacket
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -23,6 +19,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.LockSupport
 
@@ -33,6 +30,7 @@ class ControllerWebSocketSession(
     private val gson = Gson()
     private val logger = LoggerFactory.getLogger("ControllerWSConsoleImpl")
     val list = mutableListOf<WSPacket<*>>()
+    private val completionCallback = mutableMapOf<String, CompletableFuture<List<String>>>()
     var connected = AtomicBoolean(false)
     private val client = HttpClient(CIO) {
         install(WebSockets)
@@ -127,5 +125,18 @@ class ControllerWebSocketSession(
     fun close() {
         this.client.close()
         this.interrupt()
+    }
+
+    fun requestCompletion(input: String, cursorPos: Int): CompletableFuture<List<String>> {
+        val packet = WSCompletionRequestPacket(input, cursorPos)
+        packet(packet)
+        return CompletableFuture<List<String>>().also { completionCallback[packet.requestId] = it }
+    }
+
+    fun handleCompletionResult(requestId: String, result: List<String>) {
+        synchronized(completionCallback) {
+            if (requestId !in completionCallback) return
+            completionCallback[requestId]!!.complete(result)
+        }
     }
 }

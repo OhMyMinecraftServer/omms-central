@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapRegistry<I, T> implements FreezableRegistry<I, T> {
-    private final Map<I, T> map = new HashMap<>();
-    private final Map<T, I> reversedMap = new HashMap<>();
+    protected final Map<I, T> map = new HashMap<>();
+    protected final Map<T, I> reversedMap = new HashMap<>();
     @Getter
     private boolean frozen = false;
 
@@ -19,9 +19,11 @@ public class MapRegistry<I, T> implements FreezableRegistry<I, T> {
 
     @Override
     public void register(I key, T value) {
-        checkFrozen();
-        map.put(key, value);
-        reversedMap.put(value, key);
+        synchronized (map){
+            checkFrozen();
+            map.put(key, value);
+            reversedMap.put(value, key);
+        }
     }
 
     private void checkFrozen() {
@@ -38,12 +40,16 @@ public class MapRegistry<I, T> implements FreezableRegistry<I, T> {
 
     @Override
     public @Nullable T get(I key) {
-        return map.get(key);
+        synchronized (map){
+            return map.get(key);
+        }
     }
 
     @Override
     @Nullable
     public I getKey(T entry) {
-        return reversedMap.get(entry);
+        synchronized (reversedMap) {
+            return reversedMap.get(entry);
+        }
     }
 }

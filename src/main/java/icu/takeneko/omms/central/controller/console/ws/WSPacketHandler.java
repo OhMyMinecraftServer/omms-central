@@ -8,4 +8,6 @@ public interface WSPacketHandler {
     void onDisconnect();
 
     void onLog(List<String> line);
+
+    void onCompletionResult(String requestId,List<String> result);
 }
