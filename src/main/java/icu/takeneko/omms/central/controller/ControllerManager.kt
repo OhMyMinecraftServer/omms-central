@@ -4,6 +4,7 @@ import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import icu.takeneko.omms.central.controller.console.ws.packet.PacketTypes
 import icu.takeneko.omms.central.plugin.callback.ControllerLoadCallback
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.Util
@@ -52,6 +53,7 @@ object ControllerManager : Manager() {
         }
         ControllerBindingManager.init()
         ControllerLoadCallback.INSTANCE.invokeAll(this)
+        PacketTypes.init()
     }
 
     operator fun plusAssign(controller: Controller) {

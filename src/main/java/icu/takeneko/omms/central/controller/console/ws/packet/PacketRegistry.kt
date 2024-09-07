@@ -21,8 +21,9 @@ object PacketRegistry : MapRegistry<Identifier, PacketType<*>>() {
 
     fun decodePacket(content: String): WSPacket<*> {
         val (key, line) = content.split("::")
-        val packetType = get(Identifier(key.decodeBase64String()))
-            ?: throw IllegalArgumentException("Unknown packet type: ${key.decodeBase64String()}")
+        val id = Identifier(key.decodeBase64String())
+        val packetType = map[id]
+            ?: throw IllegalArgumentException("Unknown packet type: $id")
         val packetContent = line.decodeBase64String()
         return packetType.decode(packetContent)
     }

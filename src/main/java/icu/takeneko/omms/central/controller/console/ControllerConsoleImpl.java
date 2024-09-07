@@ -8,10 +8,12 @@ import icu.takeneko.omms.central.controller.console.ws.ControllerWebSocketSessio
 import icu.takeneko.omms.central.controller.console.ws.packet.PacketType;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
 import icu.takeneko.omms.central.controller.console.ws.packet.WSDisconnectPacket;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -19,17 +21,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 public class ControllerConsoleImpl extends Thread implements ControllerConsole {
+    @Getter
     private final Controller controller;
     private final @NotNull ControllerWebSocketSession session;
     private final PrintTarget<?, ControllerConsole> printTarget;
+    @Getter
     private final InputSource inputSource;
+    @Getter
     private final String consoleId;
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
     private final CompletableFuture<Boolean> gracefullyStopped = new CompletableFuture<>();
-
-    public Controller getController() {
-        return controller;
-    }
 
     public static @NotNull ControllerConsole newInstance(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
         return new ControllerConsoleImpl(controller, consoleId, printTarget, inputSource);
@@ -45,7 +46,6 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
         session = new ControllerWebSocketSession((ControllerImpl) this.controller, new WSPacketHandler() {
             @Override
             public void onConnect(int version) {
-
             }
 
             @Override
@@ -56,6 +56,11 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
             @Override
             public void onLog(List<String> line) {
                 printTarget.printMultiLine(line, ControllerConsoleImpl.this);
+            }
+
+            @Override
+            public void onCompletionResult(String requestId, List<String> result) {
+                session.handleCompletionResult(requestId, result);
             }
         });
     }
@@ -76,8 +81,14 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
     }
 
     public void close() {
+        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
         session.close();
         this.interrupt();
+    }
+
+    @Override
+    public CompletableFuture<List<String>> complete(String input, int cursorPos) {
+        return session.requestCompletion(input, cursorPos);
     }
 
     public void input(@Nullable String line) {
@@ -91,6 +102,11 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
                 } else {
                     interrupt();
                 }
+            }
+            if (line.startsWith(":c ")){
+                String partialCommand = line.replaceFirst(":c ", "");
+                this.complete(partialCommand, partialCommand.length())
+                        .thenAccept(result -> result.forEach(logger::info));
             }
         } else {
             session.command(line);
@@ -107,6 +123,7 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
                 if (!session.isAlive()) return;
             }
             info("Connected.");
+            SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J();
             var line = inputSource.getLine();
             while (true) {
                 input(line);
@@ -117,11 +134,4 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
         }
     }
 
-    public String getConsoleId() {
-        return consoleId;
-    }
-
-    public InputSource getInputSource() {
-        return inputSource;
-    }
 }
