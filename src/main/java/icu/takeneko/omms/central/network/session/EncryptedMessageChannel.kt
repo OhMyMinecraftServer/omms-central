@@ -6,49 +6,53 @@ import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.security.CryptoUtil
 import icu.takeneko.omms.central.util.Util
 import io.ktor.utils.io.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.charset.StandardCharsets
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
-import javax.crypto.BadPaddingException
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.NoSuchPaddingException
 
 class EncryptedMessageChannel(
     private val receiveChannel: ByteReadChannel,
     private val writeChannel: ByteWriteChannel,
-    private val rateLimit: Int = Config.config.rateLimit,
+    val rateLimit: Int = Config.config.rateLimit,
     val key: ByteArray
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger("EncryptedMessageChannel")
-    private val enableRateLimit = rateLimit >= 1
-    private var time = 0L
-    private var count = 0
-    suspend fun println(content: String) {
-        this.send(content)
+    val enableRateLimit = rateLimit >= 1
+    var lastReceiveTime = 0L
+    var incomingMessageCount = 0
+    val json = Json {
+        ignoreUnknownKeys = true
+        prettyPrint = false
+        encodeDefaults = true
     }
 
     suspend fun receiveRequest(): Request? {
+        return receive<Request>()
+    }
+
+    suspend inline fun <reified T> receive(): T? where T : Any {
         val line: String = this.readLine() ?: return null
         if (enableRateLimit) {
-            if (System.currentTimeMillis() - time >= 1000L) {
-                time = System.currentTimeMillis()
-                count = 1
+            if (System.currentTimeMillis() - lastReceiveTime >= 1000L) {
+                lastReceiveTime = System.currentTimeMillis()
+                incomingMessageCount = 1
             } else {
-                count++
-                if (count > rateLimit) {
+                incomingMessageCount++
+                if (incomingMessageCount > rateLimit) {
                     throw RateExceedException("Current speed limit exceeded")
                 }
             }
         }
-        return Util.fromJson(
-            line,
-            Request::class.java
-        )
+        return json.decodeFromString<T>(line)
     }
 
+    suspend inline fun <reified T> send(message: T) where T : Any {
+        send(json.encodeToString<T>(message))
+    }
 
     suspend fun send(content: String) {
         val data = CryptoUtil.encryptECB(content.toByteArray(StandardCharsets.UTF_8), this.key)
@@ -61,10 +65,5 @@ class EncryptedMessageChannel(
         logger.debug("Received: $line")
         val data = CryptoUtil.decryptECB(line.toByteArray(StandardCharsets.UTF_8), this.key)
         return String(data, StandardCharsets.UTF_8)
-    }
-
-    suspend fun sendResponse(response: Response) {
-        val line = Util.toJson(response)
-        println(line)
     }
 }

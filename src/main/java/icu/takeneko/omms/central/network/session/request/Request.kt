@@ -1,55 +1,21 @@
-package icu.takeneko.omms.central.network.session.request;
+package icu.takeneko.omms.central.network.session.request
 
-import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.NotNull;
+@kotlinx.serialization.Serializable
+data class LoginRequest(
+    val version: Long,
+    val token:String
+)
 
-import java.util.HashMap;
-
-public class Request {
-
-    public Request() {
+@kotlinx.serialization.Serializable
+data class Request(
+    val request:String,
+    val content:Map<String, String> = mapOf()
+){
+    fun getContent(key: String): String? {
+        return content[key]
     }
 
-    public Request(String req) {
-        this.request = req;
-    }
-
-    @SerializedName("request")
-    String request = "";
-
-    @SerializedName("content")
-    HashMap<String, String> content = new HashMap<>();
-
-    public String getContent(String key) {
-        return content.get(key);
-    }
-
-    public void setContent(HashMap<String, String> content) {
-        this.content = content;
-    }
-
-    public String getRequest() {
-        return request;
-    }
-
-    public void setRequest(String request) {
-        this.request = request;
-    }
-
-    public boolean containsKey(String key){
-        return content.containsKey(key);
-    }
-
-    public @NotNull Request withContentKeyPair(String key, String pair) {
-        content.put(key, pair);
-        return this;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Request{" +
-                "request='" + request + '\'' +
-                ", content=" + content +
-                '}';
+    fun containsKey(key: String): Boolean {
+        return content.containsKey(key)
     }
 }

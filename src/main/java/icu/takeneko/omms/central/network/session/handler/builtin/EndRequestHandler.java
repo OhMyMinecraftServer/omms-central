@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.network.session.handler.builtin;
 
 import icu.takeneko.omms.central.network.session.SessionContext;
-import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.permission.Permission;
 import org.jetbrains.annotations.Nullable;

@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.network.session;
 
 import icu.takeneko.omms.central.network.EncryptedSocket;
-import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
 import icu.takeneko.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;

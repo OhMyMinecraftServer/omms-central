@@ -15,7 +15,7 @@ import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
 import icu.takeneko.omms.central.fundation.Manager
 import icu.takeneko.omms.central.util.StringPair
-import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatbidgeImplementationRequestHandler
+import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatbridgeImplementationRequestHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -127,5 +127,5 @@ val builtinRequestMap = mutableMapOf(
     "SEND_BROADCAST" to SendBroadcastRequestHandler,
     "GET_CHAT_HISTORY" to GetChatHistoryRequestHandler,
     "SET_CHAT_PASSTHROUGH_STATE" to SetChatMessagePassthroughRequestHandler,
-    "GET_CHATBRIDGE_IMPL" to GetChatbidgeImplementationRequestHandler
+    "GET_CHATBRIDGE_IMPL" to GetChatbridgeImplementationRequestHandler
 )

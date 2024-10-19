@@ -5,6 +5,7 @@ import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.SessionContext
+import icu.takeneko.omms.central.network.session.request.Request
 import icu.takeneko.omms.central.network.session.request.RequestHandlerManager.getRequestHandler
 import icu.takeneko.omms.central.network.session.response.Response
 import icu.takeneko.omms.central.network.session.response.Result
@@ -42,7 +43,7 @@ class SessionServer(private val session: Session, private var permissions: List<
 
     fun sendBroadcastMessage(broadcast: Broadcast) {
         runBlocking {
-            sessionChannel.sendResponse(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
+            sessionChannel.send(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
                 this["broadcast"] = Util.toJson(broadcast)
             }))
         }
@@ -67,10 +68,10 @@ class SessionServer(private val session: Session, private var permissions: List<
             while (shouldKeepRunning) {
                 try {
                     if (session.socket.isClosed) break
-                    val request = sessionChannel.receiveRequest()
+                    val request = sessionChannel.receive<Request>()
                     if (request == null){
                         logger.warn("Null request received, disconnecting.")
-                        sessionChannel.sendResponse(Response().withResponseCode(Result.DISCONNECT))
+                        sessionChannel.send(Response().withResponseCode(Result.DISCONNECT))
                         break
                     }
                     if (!shouldKeepRunning) break
@@ -82,7 +83,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     }
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
-                        sessionChannel.sendResponse(
+                        sessionChannel.send(
                             Response().withResponseCode(Result.PERMISSION_DENIED)
                         )
                         continue
@@ -96,14 +97,14 @@ class SessionServer(private val session: Session, private var permissions: List<
                                 Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString())
                             } ?: run {
                                 logger.info("Session terminated.")
-                                sessionChannel.sendResponse(
+                                sessionChannel.send(
                                     Response().withResponseCode(Result.DISCONNECT)
                                 )
                                 requestSessionTermination()
                                 null
                             }
                             if (response != null) {
-                                sessionChannel.sendResponse(response)
+                                sessionChannel.send(response)
                             }
                         }
                     }
@@ -116,7 +117,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     logger.warn(e.toString())
                     break
                 } catch (e: RateExceedException) {
-                    sessionChannel.sendResponse(
+                    sessionChannel.send(
                         Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED)
                     )
                     logger.warn("Rate limit exceeded.")
@@ -136,7 +137,7 @@ class SessionServer(private val session: Session, private var permissions: List<
 
     fun sendResponseBlocking(response: Response) {
         runBlocking {
-            sessionChannel.sendResponse(response)
+            sessionChannel.send(response)
         }
     }
 
