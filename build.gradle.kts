@@ -157,7 +157,6 @@ dependencies {
     api("commons-io:commons-io:2.11.0")
     api("cn.hutool:hutool-all:5.8.11")
     api("io.ktor:ktor-http:2.2.3")
-    api("com.github.gotson:sqlite-jdbc:3.32.3.8")
     api("io.ktor:ktor-client-serialization:2.2.3")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     api("io.ktor:ktor-server-websockets-jvm:2.0.2")

@@ -16,28 +16,22 @@ import java.util.concurrent.CompletableFuture
 fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
 
 class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
-    val client: HttpClient
-    private val baseUrl: String
-    private val logger: org.slf4j.Logger
-
-    init {
-        client = HttpClient(CIO) {
-            engine {
-                threadsCount = 4
-                pipelining = true
-            }
-            install(Auth) {
-                basic {
-                    credentials {
-                        BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
-                    }
-                    realm = "Access to the client"
+    private val client: HttpClient = HttpClient(CIO) {
+        engine {
+            threadsCount = 4
+            pipelining = true
+        }
+        install(Auth) {
+            basic {
+                credentials {
+                    BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
                 }
+                realm = "Access to the client"
             }
         }
-        logger = LoggerFactory.getLogger("ControllerHttpClient#${controllerImpl.name}")
-        baseUrl = "http://" + controllerImpl.httpQueryAddress + "/"
     }
+    private val baseUrl: String = "http://" + controllerImpl.httpQueryAddress + "/"
+    private val logger: org.slf4j.Logger = LoggerFactory.getLogger("ControllerHttpClient#${controllerImpl.name}")
 
     private suspend fun get(path: String): HttpResponse {
         return client.get(makeUrl(path))

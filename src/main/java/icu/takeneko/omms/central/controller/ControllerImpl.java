@@ -6,24 +6,26 @@ import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.crashreport.CrashReportStorage;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class ControllerImpl extends Controller {
-    String name;
-    String displayName;
-    String type;
-    String httpQueryAddress;
-    boolean statusQueryable;
-    String mcdrCommandPrefix = "!!";
+    @Getter
+    protected String name;
+    protected String displayName;
+    @Getter
+    protected String type;
+    @Getter
+    protected String httpQueryAddress;
+    @Getter
+    protected boolean statusQueryable;
+    protected String mcdrCommandPrefix = "!!";
 
     @Expose(serialize = false, deserialize = false)
     private ControllerHttpClient controllerHttpClient;
-
-    public boolean isStatusQueryable() {
-        return statusQueryable;
-    }
 
     @Override
     public CommandExecutionResult sendCommand(@NotNull String command) throws Exception {
@@ -32,8 +34,8 @@ public class ControllerImpl extends Controller {
     }
 
     @Override
-    public @NotNull ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ControllerConsole> printTarget, String id) {
-        return ControllerConsoleImpl.newInstance(this, id, printTarget, inputSource);
+    public @NotNull ControllerConsole startControllerConsole(InputSource.InputSourceFactory factory, PrintTarget<?, ControllerConsole> printTarget, String id) {
+        return ControllerConsoleImpl.newInstance(this, id, printTarget, factory);
     }
 
 
@@ -63,10 +65,6 @@ public class ControllerImpl extends Controller {
         this.controllerHttpClient = new ControllerHttpClient(this);
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public String toString() {
         return "ControllerImpl{" +
@@ -78,18 +76,6 @@ public class ControllerImpl extends Controller {
                 ", mcdrCommandPrefix='" + mcdrCommandPrefix + '\'' +
                 ", controllerHttpClient=" + controllerHttpClient +
                 '}';
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getHttpQueryAddress() {
-        return httpQueryAddress;
     }
 
     @Override

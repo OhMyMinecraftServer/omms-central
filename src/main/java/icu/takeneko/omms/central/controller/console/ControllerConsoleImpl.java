@@ -32,16 +32,26 @@ public class ControllerConsoleImpl extends Thread implements ControllerConsole {
     private final Logger logger = LoggerFactory.getLogger("ControllerConsole");
     private final CompletableFuture<Boolean> gracefullyStopped = new CompletableFuture<>();
 
-    public static @NotNull ControllerConsole newInstance(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
-        return new ControllerConsoleImpl(controller, consoleId, printTarget, inputSource);
+    public static @NotNull ControllerConsole newInstance(
+            Controller controller,
+            String consoleId,
+            PrintTarget<?, ControllerConsole> printTarget,
+            InputSource.InputSourceFactory factory
+    ) {
+        return new ControllerConsoleImpl(controller, consoleId, printTarget, factory);
     }
 
 
-    private ControllerConsoleImpl(Controller controller, String consoleId, PrintTarget<?, ControllerConsole> printTarget, InputSource inputSource) {
+    private ControllerConsoleImpl(
+            Controller controller,
+            String consoleId,
+            PrintTarget<?, ControllerConsole> printTarget,
+            InputSource.InputSourceFactory factory
+    ) {
         super("ControllerConsole");
         this.controller = controller;
         this.printTarget = printTarget;
-        this.inputSource = inputSource;
+        this.inputSource = factory.create(this);
         this.consoleId = consoleId;
         session = new ControllerWebSocketSession((ControllerImpl) this.controller, new WSPacketHandler() {
             @Override

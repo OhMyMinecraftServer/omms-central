@@ -10,7 +10,11 @@ abstract public class Controller {
 
     public abstract CommandExecutionResult sendCommand(String command) throws Exception;
 
-    public abstract ControllerConsole startControllerConsole(InputSource inputSource, PrintTarget<?, ControllerConsole> printTarget, String id);
+    public abstract ControllerConsole startControllerConsole(
+            InputSource.InputSourceFactory inputSource,
+            PrintTarget<?, ControllerConsole> printTarget,
+            String id
+    );
 
     public abstract Status queryControllerStatus();
 

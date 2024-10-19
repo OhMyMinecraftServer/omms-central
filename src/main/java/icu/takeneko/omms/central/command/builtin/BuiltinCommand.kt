@@ -404,13 +404,16 @@ val controllerCommand = LiteralCommand("controller") {
         argument("controller", ControllerArgumentType.queryable()) {
             execute {
                 val controller = this.getArgument("controller", Controller::class.java)
-                val inputSource = StdinInputSource()
-                    .withHistory(getOrCreateControllerHistory(controller.name))
-                val outputTarget =
-                    StdOutPrintTarget()
+                val outputTarget = StdOutPrintTarget()
                 sendFeedback("Attaching console to controller, use \":q\" to exit console.")
                 SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J()
-                val console = controller.startControllerConsole(inputSource, outputTarget, "console")
+                val console = controller.startControllerConsole(
+                    {
+                        StdinInputSource(it, getOrCreateControllerHistory(controller.name))
+                    },
+                    outputTarget,
+                    "console"
+                )
                 console.start()
                 while (console.isAlive) {
                     LockSupport.parkNanos(10)
@@ -436,7 +439,7 @@ val controllerCommand = LiteralCommand("controller") {
                 1
             }
         }
-        literal("all"){
+        literal("all") {
             execute {
                 ControllerManager.controllers.values.filter(Controller::isStatusQueryable).forEach {
                     try {

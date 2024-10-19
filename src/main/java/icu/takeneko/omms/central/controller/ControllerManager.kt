@@ -51,7 +51,6 @@ object ControllerManager : Manager() {
             logger.warn("No Controller added to this server.")
             return
         }
-        ControllerBindingManager.init()
         ControllerLoadCallback.INSTANCE.invokeAll(this)
         PacketTypes.init()
     }
@@ -90,7 +89,6 @@ object ControllerManager : Manager() {
         }
     }
 
-    //controller execute survival give @a dirt
     fun getControllerByName(name: String): Controller? {
         return if (name in controllers) controllers[name] else null
     }
