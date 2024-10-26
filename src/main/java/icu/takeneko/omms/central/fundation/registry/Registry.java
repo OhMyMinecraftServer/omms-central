@@ -1,12 +1,10 @@
 package icu.takeneko.omms.central.fundation.registry;
 
+import icu.takeneko.omms.central.fundation.Lookup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface Registry<I, T> {
-
-    @Nullable
-    T get(I key);
+public interface Registry<I, T> extends Lookup<I, T> {
 
     @NotNull
     default T getOrThrow(I key){
