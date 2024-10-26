@@ -125,7 +125,7 @@ dependencies {
     api("uk.org.lidalia:sysout-over-slf4j:1.0.2")
     api("org.jline:jline:3.21.0")
     api("com.mojang:brigadier:1.0.18")
-    api("com.mojang:datafixerupper:6.0.8"){
+    api("com.mojang:datafixerupper:8.0.16"){
         exclude(group = "org.slf4j")
         exclude(group = "com.google.code.gson")
     }
