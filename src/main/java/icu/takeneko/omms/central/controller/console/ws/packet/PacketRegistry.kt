@@ -1,8 +1,8 @@
 package icu.takeneko.omms.central.controller.console.ws.packet
 
 import com.mojang.serialization.MapCodec
-import icu.takeneko.omms.central.fundation.registry.Identifier
-import icu.takeneko.omms.central.fundation.registry.MapRegistry
+import icu.takeneko.omms.central.foundation.registry.Identifier
+import icu.takeneko.omms.central.foundation.registry.MapRegistry
 
 @Suppress("UNCHECKED_CAST")
 object PacketRegistry : MapRegistry<Identifier, MapCodec<WSPacket>>() {

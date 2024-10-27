@@ -1,7 +1,6 @@
-package icu.takeneko.omms.central.fundation;
+package icu.takeneko.omms.central.foundation;
 
 import icu.takeneko.omms.central.network.chatbridge.UdpBroadcastTarget;
-import icu.takeneko.omms.central.network.session.request.LoginRequest;
 
 public class Constants {
     public static final long VERSION_BASE = 0xc0000000L;

@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation.registry;
+package icu.takeneko.omms.central.foundation.registry;
 
 import com.google.common.base.Objects;
 import com.mojang.serialization.Codec;

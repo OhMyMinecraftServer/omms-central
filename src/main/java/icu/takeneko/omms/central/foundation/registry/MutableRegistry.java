@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation.registry;
+package icu.takeneko.omms.central.foundation.registry;
 
 public interface MutableRegistry<I, T> extends Registry<I, T> {
 

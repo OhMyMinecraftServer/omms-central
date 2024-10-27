@@ -1,6 +1,5 @@
-package icu.takeneko.omms.central.fundation.registry;
+package icu.takeneko.omms.central.foundation.registry;
 
-import icu.takeneko.omms.central.fundation.Lookup;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

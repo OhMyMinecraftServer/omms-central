@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation.registry;
+package icu.takeneko.omms.central.foundation.registry;
 
 import org.jetbrains.annotations.Nullable;
 

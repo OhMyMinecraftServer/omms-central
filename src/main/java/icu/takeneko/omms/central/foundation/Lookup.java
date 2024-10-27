@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation;
+package icu.takeneko.omms.central.foundation;
 
 import java.util.function.Function;
 
