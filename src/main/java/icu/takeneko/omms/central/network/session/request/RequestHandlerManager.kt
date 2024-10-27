@@ -13,7 +13,7 @@ import icu.takeneko.omms.central.network.session.handler.builtin.system.GetSysin
 import icu.takeneko.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.StringPair
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatbridgeImplementationRequestHandler
 import org.slf4j.Logger

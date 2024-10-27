@@ -2,8 +2,8 @@ package icu.takeneko.omms.central.script
 
 import cn.hutool.core.thread.ThreadFactoryBuilder
 import icu.takeneko.omms.central.RunConfiguration
-import icu.takeneko.omms.central.fundation.FeatureOption
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.FeatureOption
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
 import jep.Interpreter
 import jep.SharedInterpreter

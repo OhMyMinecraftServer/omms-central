@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.foundation
+package icu.takeneko.omms.central.util
 
 import net.bytebuddy.agent.ByteBuddyAgent
 import java.lang.instrument.Instrumentation

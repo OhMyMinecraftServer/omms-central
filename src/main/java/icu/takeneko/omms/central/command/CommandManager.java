@@ -1,11 +1,10 @@
 package icu.takeneko.omms.central.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import icu.takeneko.omms.central.command.builtin.BuiltinCommandKt;
 import icu.takeneko.omms.central.plugin.callback.CommandRegistrationCallback;
-import icu.takeneko.omms.central.fundation.Manager;
+import icu.takeneko.omms.central.foundation.Manager;
 import icu.takeneko.omms.central.script.ScriptCommand;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

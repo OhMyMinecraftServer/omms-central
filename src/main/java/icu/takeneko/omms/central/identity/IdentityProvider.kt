@@ -1,7 +1,7 @@
 package icu.takeneko.omms.central.identity
 
 import cn.hutool.crypto.SecureUtil
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
 import kotlin.io.path.*
 

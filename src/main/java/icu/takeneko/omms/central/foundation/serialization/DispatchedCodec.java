@@ -6,7 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
-import icu.takeneko.omms.central.fundation.Lookup;
+import icu.takeneko.omms.central.foundation.Lookup;
 
 import java.util.stream.Stream;
 

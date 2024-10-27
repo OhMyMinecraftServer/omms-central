@@ -10,8 +10,8 @@ import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.console.ConsoleInputHandler
 import icu.takeneko.omms.central.controller.ControllerManager
-import icu.takeneko.omms.central.fundation.Constants
-import icu.takeneko.omms.central.fundation.FeatureOption
+import icu.takeneko.omms.central.foundation.Constants
+import icu.takeneko.omms.central.foundation.FeatureOption
 import icu.takeneko.omms.central.identity.IdentityProvider
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.chatbridge.UdpBroadcastReceiver

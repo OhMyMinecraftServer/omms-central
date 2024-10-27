@@ -2,7 +2,7 @@ package icu.takeneko.omms.central.controller.crashreport
 
 import icu.takeneko.omms.central.controller.ControllerManager
 import icu.takeneko.omms.central.plugin.callback.RecievedControllerCrashReportCallback
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString

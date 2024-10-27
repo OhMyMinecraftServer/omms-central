@@ -5,7 +5,7 @@ import com.google.gson.FieldAttributes
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import icu.takeneko.omms.central.plugin.callback.ControllerLoadCallback
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
 import org.jetbrains.annotations.NotNull
 import org.slf4j.Logger

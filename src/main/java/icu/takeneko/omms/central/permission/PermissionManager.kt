@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.command.sendError
 import icu.takeneko.omms.central.command.sendFeedback
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.network.session.server.getChecksumMD5
 import icu.takeneko.omms.central.util.Util
 import kotlinx.serialization.ExperimentalSerializationApi

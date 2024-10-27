@@ -3,7 +3,7 @@ package icu.takeneko.omms.central.util
 import icu.takeneko.omms.central.controller.Controller
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.Status
-import icu.takeneko.omms.central.fundation.Constants
+import icu.takeneko.omms.central.foundation.Constants
 import icu.takeneko.omms.central.whitelist.Whitelist
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

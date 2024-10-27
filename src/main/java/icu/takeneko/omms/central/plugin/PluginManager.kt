@@ -1,8 +1,8 @@
 package icu.takeneko.omms.central.plugin
 
 import icu.takeneko.omms.central.RunConfiguration
-import icu.takeneko.omms.central.fundation.Constants
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Constants
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.plugin.depedency.PluginDependency
 import icu.takeneko.omms.central.plugin.exception.PluginException
 import icu.takeneko.omms.central.plugin.metadata.PluginDependencyRequirement

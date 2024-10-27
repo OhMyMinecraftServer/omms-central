@@ -4,7 +4,7 @@ import icu.takeneko.omms.central.RunConfiguration;
 import icu.takeneko.omms.central.SharedObjects;
 import icu.takeneko.omms.central.State;
 import icu.takeneko.omms.central.config.Config;
-import icu.takeneko.omms.central.fundation.FeatureOption;
+import icu.takeneko.omms.central.foundation.FeatureOption;
 import icu.takeneko.omms.central.graphics.GuiMainKt;
 import icu.takeneko.omms.central.network.ChatbridgeImplementation;
 import org.jetbrains.annotations.NotNull;

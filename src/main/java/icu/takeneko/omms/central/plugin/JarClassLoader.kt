@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.plugin
 
-import icu.takeneko.omms.central.fundation.InstrumentationAccess
+import icu.takeneko.omms.central.util.InstrumentationAccess
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.io.File

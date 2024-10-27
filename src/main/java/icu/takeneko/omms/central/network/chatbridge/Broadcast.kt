@@ -2,7 +2,7 @@ package icu.takeneko.omms.central.network.chatbridge
 
 import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.config.Config.config
-import icu.takeneko.omms.central.fundation.Constants
+import icu.takeneko.omms.central.foundation.Constants
 import icu.takeneko.omms.central.network.ChatbridgeImplementation
 import icu.takeneko.omms.central.network.http.routes.sendToAllWS
 import icu.takeneko.omms.central.util.Util

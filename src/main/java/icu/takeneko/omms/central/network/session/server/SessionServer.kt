@@ -43,9 +43,9 @@ class SessionServer(private val session: Session, private var permissions: List<
 
     fun sendBroadcastMessage(broadcast: Broadcast) {
         runBlocking {
-            sessionChannel.send(Response(Result.BROADCAST_MESSAGE, buildMap<String, String> {
-                this["broadcast"] = Util.toJson(broadcast)
-            }))
+            sessionChannel.send(
+                Response().withResponseCode(Result.BROADCAST_MESSAGE).withContentPair("broadcast", Util.toJson(broadcast))
+            )
         }
     }
 

@@ -29,7 +29,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import icu.takeneko.omms.central.command.CommandManager
 import icu.takeneko.omms.central.command.CommandSourceStack
-import icu.takeneko.omms.central.fundation.Constants
+import icu.takeneko.omms.central.foundation.Constants
 import icu.takeneko.omms.central.main.CentralServer
 import icu.takeneko.omms.central.util.logging.LogEvent
 import icu.takeneko.omms.central.util.logging.MemoryAppender

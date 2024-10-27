@@ -1,7 +1,7 @@
 package icu.takeneko.omms.central.network.session.server
 
 import icu.takeneko.omms.central.config.Config.config
-import icu.takeneko.omms.central.fundation.Constants
+import icu.takeneko.omms.central.foundation.Constants
 import icu.takeneko.omms.central.network.session.EncryptedMessageChannel
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.request.LoginRequest
@@ -46,10 +46,8 @@ class LoginSession(
 
                 if (request.version != Constants.PROTOCOL_VERSION) {
                     channel.send(
-                        Response.serialize(
-                            Response().withResponseCode(Result.VERSION_NOT_MATCH)
-                                .withContentPair("version", Constants.PROTOCOL_VERSION.toString())
-                        )
+                        Response().withResponseCode(Result.VERSION_NOT_MATCH)
+                            .withContentPair("version", Constants.PROTOCOL_VERSION.toString())
                     )
                     return null
                 }
@@ -61,12 +59,10 @@ class LoginSession(
                     if (isCodeExist) {
                         val randomKey = Util.generateRandomString(32)
                         channel.send(
-                            Response.serialize(
-                                Response()
-                                    .withResponseCode(Result.OK)
-                                    .withContentPair("key", randomKey)
-                                    .withContentPair("serverName", config.serverName)
-                            )
+                            Response()
+                                .withResponseCode(Result.OK)
+                                .withContentPair("key", randomKey)
+                                .withContentPair("serverName", config.serverName)
                         )
                         logger.info("Starting SessionServer for ${socket.remoteAddress}")
                         logger.debug("Key of {} is {}", socket.remoteAddress, randomKey)
@@ -82,20 +78,19 @@ class LoginSession(
                     } else {
                         logger.warn("Permission name (hashed) $name not exist")
                         channel.send(
-                            Response.serialize(
-                                Response().withResponseCode(Result.PERMISSION_DENIED)
-                                    .withContentPair("reason", "Permission name (hashed) $name not exist")
-                            )
+                            Response()
+                                .withResponseCode(Result.PERMISSION_DENIED)
+                                .withContentPair("reason", "Permission name (hashed) $name not exist")
                         )
                         return null
                     }
                 } catch (e: Exception) {
                     channel.send(
-                        Response.serialize(
-                            Response().withResponseCode(Result.PERMISSION_DENIED)
-                                .withContentPair("reason", e.toString())
-                        )
+                        Response()
+                            .withResponseCode(Result.PERMISSION_DENIED)
+                            .withContentPair("reason", e.toString())
                     )
+
                 }
             }
         } catch (e: Throwable) {

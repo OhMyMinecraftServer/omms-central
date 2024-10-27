@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.system.runner
 
-import icu.takeneko.omms.central.fundation.Manager
+import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
 
 object RunnerManager : Manager() {
