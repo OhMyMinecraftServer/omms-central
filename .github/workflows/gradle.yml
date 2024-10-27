@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir omms-central
           cp ./build/libs/*.jar ./omms-central
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: omms-central-macos-dev
           path: omms-central
@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir omms-central
           cp ./build/libs/*.jar ./omms-central
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: omms-central-linux-dev
           path: omms-central
@@ -72,7 +72,7 @@ jobs:
         run: |
           mkdir omms-central
           cp ./build/libs/*.jar ./omms-central
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: omms-central-windows-dev
           path: omms-central
