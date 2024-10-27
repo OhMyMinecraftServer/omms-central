@@ -1,9 +1,8 @@
 package icu.takeneko.omms.central.controller.console.ws
 
-import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.mojang.serialization.JsonOps
 import icu.takeneko.omms.central.controller.ControllerImpl
-import icu.takeneko.omms.central.controller.asSalted
-import icu.takeneko.omms.central.controller.console.ws.packet.PacketRegistry
 import icu.takeneko.omms.central.controller.console.ws.packet.WSCommandPacket
 import icu.takeneko.omms.central.controller.console.ws.packet.WSCompletionRequestPacket
 import icu.takeneko.omms.central.controller.console.ws.packet.WSPacket
@@ -13,6 +12,7 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
+import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
@@ -27,9 +27,8 @@ class ControllerWebSocketSession(
     private val controllerImpl: ControllerImpl,
     private val handler: WSPacketHandler
 ) : Thread("Console@${controllerImpl.name}") {
-    private val gson = Gson()
     private val logger = LoggerFactory.getLogger("ControllerWSConsoleImpl")
-    val list = mutableListOf<WSPacket<*>>()
+    private val cache = mutableListOf<WSPacket>()
     private val completionCallback = mutableMapOf<String, CompletableFuture<List<String>>>()
     var connected = AtomicBoolean(false)
     private val client = HttpClient(CIO) {
@@ -41,7 +40,7 @@ class ControllerWebSocketSession(
         install(Auth) {
             basic {
                 credentials {
-                    BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
+                    BasicAuthCredentials(username = controllerImpl.name, password = controllerImpl.name.encodeBase64())
                 }
                 realm = "Access to the client"
             }
@@ -63,7 +62,7 @@ class ControllerWebSocketSession(
                                     launch {
                                         try {
                                             logger.debug("Incoming message: $s")
-                                            PacketRegistry.decodePacket(s).handle(handler)
+                                            decodePacket(s).handle(handler)
                                         } catch (e: Exception) {
                                             logger.error("Message parse failed:", e)
                                         }
@@ -72,12 +71,12 @@ class ControllerWebSocketSession(
                             }
                             val input = launch(Dispatchers.IO) {
                                 while (true) {
-                                    synchronized(list) {
-                                        if (list.isNotEmpty()) {
-                                            for (s in list) {
+                                    synchronized(cache) {
+                                        if (cache.isNotEmpty()) {
+                                            for (s in cache) {
                                                 runBlocking {
                                                     try {
-                                                        val e = PacketRegistry.encodePacket(s)
+                                                        val e = encodePacket(s)
                                                         logger.debug("Sending $e")
                                                         this@webSocket.send(e)
                                                     } catch (e: Exception) {
@@ -85,7 +84,7 @@ class ControllerWebSocketSession(
                                                     }
                                                 }
                                             }
-                                            list.clear()
+                                            cache.clear()
                                         }
                                     }
                                     LockSupport.parkNanos(1000)
@@ -110,16 +109,24 @@ class ControllerWebSocketSession(
         }
     }
 
-    fun packet(packet: WSPacket<*>) {
-        synchronized(list) {
-            list.add(packet)
+    fun packet(packet: WSPacket) {
+        synchronized(cache) {
+            cache.add(packet)
         }
     }
 
     fun command(line: String) {
-        synchronized(list) {
-            list.add(WSCommandPacket(line))
+        synchronized(cache) {
+            cache.add(WSCommandPacket(line))
         }
+    }
+
+    private fun decodePacket(content:String):WSPacket {
+        return WSPacket.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseString(content)).orThrow.first
+    }
+
+    private fun encodePacket(packet:WSPacket): String {
+        return WSPacket.CODEC.encodeStart(JsonOps.INSTANCE, packet).orThrow.toString()
     }
 
     fun close() {

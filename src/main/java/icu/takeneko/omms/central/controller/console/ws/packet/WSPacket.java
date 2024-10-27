@@ -1,23 +1,22 @@
 package icu.takeneko.omms.central.controller.console.ws.packet;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
-import lombok.Getter;
+import icu.takeneko.omms.central.fundation.registry.Identifier;
+import icu.takeneko.omms.central.foundation.serialization.DispatchedCodec;
 
-@Getter
-public abstract class WSPacket<T extends WSPacket<T>> {
-    private final PacketType<T> packetType;
+public interface WSPacket {
+    @SuppressWarnings("unchecked")
+    Codec<WSPacket> CODEC = new DispatchedCodec<>(
+        PacketRegistry.INSTANCE,
+        it -> (MapCodec<WSPacket>) it.codec(),
+        ins -> PacketRegistry.INSTANCE.reversedLookup().get((MapCodec<WSPacket>) ins.codec()),
+        Identifier.CODEC,
+        "type"
+    ).codec();
 
-    protected WSPacket(PacketType<T> packetType) {
-        this.packetType = packetType;
-    }
+    void handle(WSPacketHandler handler);
 
-    public String encodeSelf() {
-        return packetType.encode((T) this);
-    }
-
-    abstract public void handle(WSPacketHandler handler);
-
-    public static <T extends WSPacket<T>> WSPacket<? extends T> cast(T packet) {
-        return packet;
-    }
+    MapCodec<? extends WSPacket> codec();
 }

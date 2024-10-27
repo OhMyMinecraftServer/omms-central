@@ -13,8 +13,6 @@ import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 
-fun asSalted(original: String) = original.encodeBase64() + "WTF IS IT".encodeBase64()
-
 class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
     private val client: HttpClient = HttpClient(CIO) {
         engine {
@@ -24,7 +22,7 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
         install(Auth) {
             basic {
                 credentials {
-                    BasicAuthCredentials(username = controllerImpl.name, password = asSalted(controllerImpl.name))
+                    BasicAuthCredentials(username = controllerImpl.name, password = controllerImpl.name.encodeBase64())
                 }
                 realm = "Access to the client"
             }

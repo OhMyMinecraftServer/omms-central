@@ -1,15 +1,16 @@
 package icu.takeneko.omms.central.controller.console.ws.packet;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
 import icu.takeneko.omms.central.util.Util;
 import lombok.Getter;
 
-public class WSCompletionRequestPacket extends WSPacket<WSCompletionRequestPacket>{
+public class WSCompletionRequestPacket implements WSPacket{
 
 
-    public static final Codec<WSCompletionRequestPacket> CODEC = RecordCodecBuilder.create(ins -> ins.group(
+    public static final MapCodec<WSCompletionRequestPacket> CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
             Codec.STRING.fieldOf("requestId").forGetter(o -> o.requestId),
             Codec.STRING.fieldOf("input").forGetter(o -> o.input),
             Codec.INT.fieldOf("cursorPosition").forGetter(o -> o.cursorPosition)
@@ -21,14 +22,12 @@ public class WSCompletionRequestPacket extends WSPacket<WSCompletionRequestPacke
     private final int cursorPosition;
 
     public WSCompletionRequestPacket(String requestId, String input, int cursorPosition) {
-        super(PacketTypes.COMPLETION_REQUEST);
         this.requestId = requestId;
         this.input = input;
         this.cursorPosition = cursorPosition;
     }
 
     public WSCompletionRequestPacket(String input, int cursorPosition) {
-        super(PacketTypes.COMPLETION_REQUEST);
         this.requestId = Util.generateRandomString(8);
         this.input = input;
         this.cursorPosition = cursorPosition;
@@ -37,5 +36,10 @@ public class WSCompletionRequestPacket extends WSPacket<WSCompletionRequestPacke
     @Override
     public void handle(WSPacketHandler handler) {
 
+    }
+
+    @Override
+    public MapCodec<? extends WSPacket> codec() {
+        return CODEC;
     }
 }

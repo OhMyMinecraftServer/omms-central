@@ -1,31 +1,48 @@
 package icu.takeneko.omms.central.controller.console.ws.packet
 
+import com.mojang.serialization.MapCodec
 import icu.takeneko.omms.central.fundation.registry.Identifier
 import icu.takeneko.omms.central.fundation.registry.MapRegistry
-import io.ktor.util.*
 
-object PacketRegistry : MapRegistry<Identifier, PacketType<*>>() {
-    override fun register(key: Identifier, value: PacketType<*>) {
+@Suppress("UNCHECKED_CAST")
+object PacketRegistry : MapRegistry<Identifier, MapCodec<WSPacket>>() {
+
+    init {
+        register(
+            Identifier.of("connect"),
+            WSConnectPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("ack"),
+            WSAckPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("command"),
+            WSCommandPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("log"),
+            WSLogPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("disconnect"),
+            WSDisconnectPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("completion_request"),
+            WSCompletionRequestPacket.CODEC as MapCodec<WSPacket>
+        )
+        register(
+            Identifier.of("completion_result"),
+            WSCompletionResultPacket.CODEC as MapCodec<WSPacket>
+        )
+    }
+
+    override fun register(key: Identifier, value: MapCodec<WSPacket>) {
         if (this.get(key) != null) {
             throw IllegalArgumentException("Duplicate packetType: $key")
         }
         super.register(key, value)
-    }
-
-    fun encodePacket(packet: WSPacket<*>): String {
-        val pt = packet.packetType
-        val packetContent = packet.encodeSelf().encodeBase64()
-        val registryKey = getKey(pt) ?: throw IllegalArgumentException("")
-        return "${registryKey.toString().encodeBase64()}::$packetContent"
-    }
-
-    fun decodePacket(content: String): WSPacket<*> {
-        val (key, line) = content.split("::")
-        val id = Identifier(key.decodeBase64String())
-        val packetType = map[id]
-            ?: throw IllegalArgumentException("Unknown packet type: $id")
-        val packetContent = line.decodeBase64String()
-        return packetType.decode(packetContent)
     }
 
 }

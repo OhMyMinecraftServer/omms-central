@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation.serization;
+package icu.takeneko.omms.central.foundation.serialization;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;

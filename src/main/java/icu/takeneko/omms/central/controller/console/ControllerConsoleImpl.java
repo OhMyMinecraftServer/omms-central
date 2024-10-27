@@ -5,7 +5,6 @@ import icu.takeneko.omms.central.controller.ControllerImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.console.ws.ControllerWebSocketSession;
-import icu.takeneko.omms.central.controller.console.ws.packet.PacketType;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
 import icu.takeneko.omms.central.controller.console.ws.packet.WSDisconnectPacket;
 import lombok.Getter;

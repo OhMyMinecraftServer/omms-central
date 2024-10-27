@@ -1,16 +1,17 @@
 package icu.takeneko.omms.central.controller.console.ws.packet;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import icu.takeneko.omms.central.controller.console.ws.WSPacketHandler;
-import icu.takeneko.omms.central.fundation.serization.EnumCodec;
-import icu.takeneko.omms.central.fundation.serization.SerializableEnum;
+import icu.takeneko.omms.central.foundation.serialization.EnumCodec;
+import icu.takeneko.omms.central.foundation.serialization.SerializableEnum;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class WSAckPacket extends WSPacket<WSAckPacket> {
-    public static final Codec<WSAckPacket> CODEC = RecordCodecBuilder.create(ins -> ins.group(
+public class WSAckPacket implements WSPacket {
+    public static final MapCodec<WSAckPacket> CODEC = RecordCodecBuilder.mapCodec(ins -> ins.group(
             Codec.INT.optionalFieldOf("clientVersion").forGetter(o ->
                     o.clientVersion <= 0 ? Optional.empty() : Optional.of(o.clientVersion)
             ),
@@ -21,7 +22,6 @@ public class WSAckPacket extends WSPacket<WSAckPacket> {
     private final Action action;
 
     protected WSAckPacket(Optional<Integer> clientVersion, Action action) {
-        super(PacketTypes.ACK);
         this.clientVersion = clientVersion.orElse(-1);
         this.action = action;
     }
@@ -32,6 +32,11 @@ public class WSAckPacket extends WSPacket<WSAckPacket> {
             case CONNECT -> handler.onConnect(clientVersion);
             case DISCONNECT -> handler.onDisconnect();
         }
+    }
+
+    @Override
+    public MapCodec<? extends WSPacket> codec() {
+        return CODEC;
     }
 
     public enum Action implements SerializableEnum {

@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.fundation.serization;
+package icu.takeneko.omms.central.foundation.serialization;
 
 import org.jetbrains.annotations.NotNull;
 

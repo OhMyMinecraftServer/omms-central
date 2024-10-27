@@ -17,4 +17,8 @@ public interface Registry<I, T> extends Lookup<I, T> {
 
     @Nullable
     I getKey(T entry);
+
+    default Lookup<T, I> reversedLookup(){
+        return this::getKey;
+    }
 }
