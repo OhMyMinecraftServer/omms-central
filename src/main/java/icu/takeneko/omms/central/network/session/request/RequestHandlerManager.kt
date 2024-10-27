@@ -123,7 +123,7 @@ val builtinRequestMap = mutableMapOf(
     "CONTROLLER_LAUNCH_CONSOLE" to LaunchControllerConsoleRequestHandler(),
     "CONTROLLER_END_CONSOLE" to EndControllerConsoleRequestHandler(),
     "CONTROLLER_INPUT_CONSOLE" to SendControllerConsoleInputRequestHandler(),
-
+    "CONTROLLER_CONSOLE_COMPLETE" to RequestCommandCompletionRequestHandler(),
     "SEND_BROADCAST" to SendBroadcastRequestHandler,
     "GET_CHAT_HISTORY" to GetChatHistoryRequestHandler,
     "SET_CHAT_PASSTHROUGH_STATE" to SetChatMessagePassthroughRequestHandler,

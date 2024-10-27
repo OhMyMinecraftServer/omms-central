@@ -141,6 +141,16 @@ class SessionServer(private val session: Session, private var permissions: List<
         }
     }
 
+    fun sendCompletionResult(result: List<String>, completionId: String) {
+        runBlocking {
+            sessionChannel.send(Response()
+                .withResponseCode(Result.CONTROLLER_CONSOLE_COMPLETION_RESULT)
+                .withContentPair("completionId", completionId)
+                .withContentPair("result", Util.toJson(result))
+            )
+        }
+    }
+
     companion object {
         val sessions = mutableListOf<SessionServer>()
     }

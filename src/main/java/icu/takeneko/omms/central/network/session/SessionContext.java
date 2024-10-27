@@ -3,6 +3,8 @@ package icu.takeneko.omms.central.network.session;
 import icu.takeneko.omms.central.controller.console.ControllerConsole;
 import icu.takeneko.omms.central.network.session.server.SessionServer;
 import icu.takeneko.omms.central.permission.Permission;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -10,9 +12,16 @@ import java.util.List;
 
 public class SessionContext {
     private final EncryptedMessageChannel messageChannel;
+    @Getter
+    @Setter
     private Session session;
+    @Setter
+    @Getter
     private SessionServer server;
+    @Getter
     private final List<Permission> permissions;
+    @Setter
+    @Getter
     private boolean chatMessagePassthroughEnabled = false;
     private final @NotNull HashMap<String, ControllerConsole> controllerConsoleMap = new HashMap<>();
 
@@ -27,35 +36,8 @@ public class SessionContext {
         return messageChannel;
     }
 
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
-    }
-
-    public List<Permission> getPermissions() {
-        return permissions;
-    }
-
     public @NotNull HashMap<String, ControllerConsole> getControllerConsoleMap() {
         return controllerConsoleMap;
     }
 
-    public SessionServer getServer() {
-        return server;
-    }
-
-    public void setServer(SessionServer server) {
-        this.server = server;
-    }
-
-    public boolean isChatMessagePassthroughEnabled() {
-        return chatMessagePassthroughEnabled;
-    }
-
-    public void setChatMessagePassthroughEnabled(boolean chatMessagePassthroughEnabled) {
-        this.chatMessagePassthroughEnabled = chatMessagePassthroughEnabled;
-    }
 }
