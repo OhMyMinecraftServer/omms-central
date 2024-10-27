@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.foundation.registry;
 
-import icu.takeneko.omms.central.fundation.Lookup;
+import icu.takeneko.omms.central.foundation.Lookup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
