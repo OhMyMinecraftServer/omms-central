@@ -1,49 +1,47 @@
-package icu.takeneko.omms.central.network.session.handler.builtin.controller;
+package icu.takeneko.omms.central.network.session.handler.builtin.controller
 
-import icu.takeneko.omms.central.controller.Controller;
-import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.controller.console.ControllerConsole;
-import icu.takeneko.omms.central.controller.console.input.SessionInputSource;
-import icu.takeneko.omms.central.controller.console.output.EncryptedSocketPrintTarget;
-import icu.takeneko.omms.central.network.session.SessionContext;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.util.Util;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import icu.takeneko.omms.central.controller.ControllerManager.getControllerByName
+import icu.takeneko.omms.central.controller.console.ControllerConsole
+import icu.takeneko.omms.central.controller.console.input.SessionInputSource
+import icu.takeneko.omms.central.controller.console.output.EncryptedSocketPrintTarget
+import icu.takeneko.omms.central.network.session.SessionContext
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
+import icu.takeneko.omms.central.network.session.FailureReasons
+import icu.takeneko.omms.central.network.session.request.Request
+import icu.takeneko.omms.central.network.session.response.Response
+import icu.takeneko.omms.central.permission.Permission
+import icu.takeneko.omms.central.util.Util
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.function.BiConsumer
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-public class LaunchControllerConsoleRequestHandler extends BuiltinRequestHandler {
-    @Override
-    public @Nullable Response handle(@NotNull Request request, @NotNull SessionContext session) {
-        String controllerName = request.getContent("controller");
-        Controller controller = ControllerManager.INSTANCE.getControllerByName(controllerName);
-        if (controller == null) {
-            return new Response().withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", controllerName);
-        }
-        String id = Util.generateRandomString(16);
-        ControllerConsole controllerConsoleImpl = controller.startControllerConsole(SessionInputSource::new, new EncryptedSocketPrintTarget(session.getServer()), id);
-        controllerConsoleImpl.start();
-        session.getControllerConsoleMap().put(id, controllerConsoleImpl);
-        var consoleAlreadyStarted = new AtomicBoolean(false);
-        session.getControllerConsoleMap().forEach(((s, console) -> {
-            if (Objects.equals(console.getController().getName(), controllerName)) {
-                consoleAlreadyStarted.set(false);
+class LaunchControllerConsoleRequestHandler : BuiltinRequestHandler() {
+    override fun handle(request: Request, session: SessionContext): Response? {
+        val controllerName = request.getContent("controller")
+        val controller = getControllerByName(controllerName)
+            ?: return request.fail("controller.not_found")
+                .withContentPair("controllerId", controllerName)
+        val id = Util.generateRandomString(16)
+        val controllerConsoleImpl =
+            controller.startControllerConsole({ console: ControllerConsole? ->
+                SessionInputSource(console)
+            }, EncryptedSocketPrintTarget(session.server), id)
+        controllerConsoleImpl.start()
+        session.controllerConsoleMap[id] = controllerConsoleImpl
+        val consoleAlreadyStarted = AtomicBoolean(false)
+        session.controllerConsoleMap.forEach((BiConsumer { s: String?, console: ControllerConsole ->
+            if (console.controller.name == controllerName) {
+                consoleAlreadyStarted.set(false)
             }
-        }));
+        }))
         if (consoleAlreadyStarted.get()) {
-            return new Response().withResponseCode(Result.CONSOLE_ALREADY_EXISTS).withContentPair("controller", controllerName);
+            return request.fail(FailureReasons.CONSOLE_EXISTS)
+                .withContentPair("controller", controllerName)
         }
-        return new Response().withResponseCode(Result.CONSOLE_LAUNCHED).withContentPair("consoleId", id).withContentPair("controller", controllerName);
+        return request.success().withContentPair("consoleId", id)
+            .withContentPair("controller", controllerName)
     }
 
-    @Override
-    public @Nullable Permission requiresPermission() {
-        return Permission.CONTROLLER_CONTROL;
+    override fun requiresPermission(): Permission? {
+        return Permission.CONTROLLER_CONTROL
     }
 }

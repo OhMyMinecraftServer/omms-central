@@ -1,50 +1,43 @@
-package icu.takeneko.omms.central.network.session.handler.builtin.controller;
+package icu.takeneko.omms.central.network.session.handler.builtin.controller
 
-import icu.takeneko.omms.central.controller.ControllerManager;
-import icu.takeneko.omms.central.controller.RequestUnauthorisedException;
-import icu.takeneko.omms.central.network.http.UtilKt;
-import icu.takeneko.omms.central.network.session.SessionContext;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.permission.Permission;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import icu.takeneko.omms.central.controller.ControllerManager.getControllerByName
+import icu.takeneko.omms.central.controller.ControllerManager.sendCommand
+import icu.takeneko.omms.central.controller.RequestUnauthorisedException
+import icu.takeneko.omms.central.network.http.joinToString
+import icu.takeneko.omms.central.network.session.SessionContext
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
+import icu.takeneko.omms.central.network.session.FailureReasons
+import icu.takeneko.omms.central.network.session.request.Request
+import icu.takeneko.omms.central.network.session.response.Response
+import icu.takeneko.omms.central.permission.Permission
 
-public class SendCommandToControllerRequestHandler extends BuiltinRequestHandler {
-    @Override
-    public Response handle(@NotNull Request request, SessionContext session) {
-        Response response = new Response();
-        var name = request.getContent("controller");
-        var command = request.getContent("command");
-        var controller = ControllerManager.INSTANCE.getControllerByName(name);
-        if (controller == null) {
-            return response.withResponseCode(Result.CONTROLLER_NOT_EXIST).withContentPair("controllerId", name);
-        }
+class SendCommandToControllerRequestHandler : BuiltinRequestHandler() {
+    override fun handle(request: Request, session: SessionContext): Response {
+        val name = request.getContent("controller")
+        val command = request.getContent("command")
+        val controller = getControllerByName(name)
+            ?: return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
+                .withContentPair("controllerId", name)
         try {
-            var result = ControllerManager.INSTANCE.sendCommand(controller.getName(), command);
-            if (result.getStatus()) {
-                response.withResponseCode(Result.CONTROLLER_COMMAND_SENT)
-                        .withContentPair("controllerId", name)
-                        .withContentPair("status", String.valueOf(result.getStatus()))
-                        .withContentPair("output", UtilKt.joinToString(result.getResult()));
+            val result = sendCommand(controller.name, command)
+            return if (result.status) {
+                request.success()
+                    .withContentPair("controllerId", name)
+                    .withContentPair("status", result.status.toString())
+                    .withContentPair("output", joinToString<String>(result.result))
             } else {
-                response.withResponseCode(Result.CONTROLLER_COMMAND_SENT)
-                        .withContentPair("controllerId", name)
-                        .withContentPair("status", String.valueOf(result.getStatus()))
-                        .withContentPair("output", result.getExceptionMessage())
-                        .withContentPair("errorDetail", result.getExceptionDetail());
+                request.success()
+                    .withContentPair("controllerId", name)
+                    .withContentPair("status", result.status.toString())
+                    .withContentPair("output", result.exceptionMessage)
+                    .withContentPair("errorDetail", result.exceptionDetail)
             }
-            return response;
-        } catch (RequestUnauthorisedException e) {
-            return response.withResponseCode(Result.CONTROLLER_AUTH_FAILED).withContentPair("controllerId", name);
+        } catch (e: RequestUnauthorisedException) {
+            return request.fail(FailureReasons.CONTROLLER_UNAUTHORISED).withContentPair("controllerId", name)
         }
-
     }
 
-    @Override
-    public @Nullable Permission requiresPermission() {
-        return null;
+    override fun requiresPermission(): Permission? {
+        return null
     }
 }

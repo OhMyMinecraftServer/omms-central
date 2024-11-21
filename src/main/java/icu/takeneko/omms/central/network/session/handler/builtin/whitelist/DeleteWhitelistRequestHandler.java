@@ -2,24 +2,23 @@ package icu.takeneko.omms.central.network.session.handler.builtin.whitelist;
 
 import icu.takeneko.omms.central.network.session.SessionContext;
 import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
+import icu.takeneko.omms.central.network.session.FailureReasons;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
 import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
+import icu.takeneko.omms.central.whitelist.WhitelistNotExistException;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteWhitelistRequestHandler extends BuiltinRequestHandler {
     @Override
     public Response handle(@NotNull Request request, SessionContext session) {
-        Result result = Result.FAIL;
         try {
             WhitelistManager.INSTANCE.deleteWhiteList(request.getContent("whitelist"));
-            result = Result.WHITELIST_DELETED;
-        } catch (Exception e) {
-
+            return request.success();
+        } catch (WhitelistNotExistException e) {
+            return request.fail(FailureReasons.WHITELIST_NOT_FOUND);
         }
-        return new Response().withResponseCode(result).withContentPair("whitelist", request.getContent("whitelist"));
     }
 
     @Override

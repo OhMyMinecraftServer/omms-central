@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.LockSupport;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -37,14 +38,18 @@ public class Main {
         }, "ShutdownHook"));
         System.out.println("Starting icu.takeneko.omms.central.main.MainKt");
         SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
-        new Thread("Server Thread") {
+        Thread serverThread = new Thread("Server Thread") {
             @Override
             public void run() {
                 CentralServer.INSTANCE.main(args);
             }
-        }.start();
+        };
+        serverThread.start();
         if (FeatureOption.INSTANCE.get("gui")){
             GuiMainKt.guiMain();
+        }
+        while (serverThread.isAlive()){
+            LockSupport.parkNanos(500);
         }
     }
 }

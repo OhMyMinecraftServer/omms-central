@@ -5,9 +5,13 @@ import icu.takeneko.omms.central.config.Config;
 import io.ktor.network.sockets.Socket;
 import io.ktor.utils.io.ByteReadChannel;
 import io.ktor.utils.io.ByteWriteChannel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Session {
     private final Socket socket;
+    @Setter
     private byte[] key;
 
     private final ByteReadChannel readChannel;
@@ -18,26 +22,6 @@ public class Session {
         this.key = key;
         this.readChannel = readChannel;
         this.writeChannel = writeChannel;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public byte[] getKey() {
-        return key;
-    }
-
-    public void setKey(byte[] key) {
-        this.key = key;
-    }
-
-    public ByteReadChannel getReadChannel() {
-        return readChannel;
-    }
-
-    public ByteWriteChannel getWriteChannel() {
-        return writeChannel;
     }
 
     public EncryptedMessageChannel createChannel(){

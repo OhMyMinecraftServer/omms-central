@@ -5,10 +5,12 @@ import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.SessionContext
+import icu.takeneko.omms.central.network.session.SkippedException
+import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.network.session.request.Request
 import icu.takeneko.omms.central.network.session.request.RequestHandlerManager.getRequestHandler
 import icu.takeneko.omms.central.network.session.response.Response
-import icu.takeneko.omms.central.network.session.response.Result
+import icu.takeneko.omms.central.network.session.response.Status
 import icu.takeneko.omms.central.permission.Permission
 import icu.takeneko.omms.central.util.Util
 import io.ktor.network.sockets.*
@@ -44,7 +46,8 @@ class SessionServer(private val session: Session, private var permissions: List<
     fun sendBroadcastMessage(broadcast: Broadcast) {
         runBlocking {
             sessionChannel.send(
-                Response().withResponseCode(Result.BROADCAST_MESSAGE).withContentPair("broadcast", Util.toJson(broadcast))
+                Response("", Status.BROADCAST, mutableMapOf())
+                    .withContentPair("broadcast", Util.toJson(broadcast))
             )
         }
     }
@@ -69,43 +72,51 @@ class SessionServer(private val session: Session, private var permissions: List<
                 try {
                     if (session.socket.isClosed) break
                     val request = sessionChannel.receive<Request>()
-                    if (request == null){
+                    if (request == null) {
                         logger.warn("Null request received, disconnecting.")
-                        sessionChannel.send(Response().withResponseCode(Result.DISCONNECT))
+                        requestSessionTermination()
                         break
                     }
                     if (!shouldKeepRunning) break
                     logger.debug("Received {}", request)
                     val handler = getRequestHandler(request.request)
-                    if (handler == null){
+                    if (handler == null) {
                         logger.warn("No handler registered for ${request.request}, dropping request.")
                         continue
                     }
                     val permission = handler.requiresPermission()
                     if (permission != null && !permissions.contains(permission)) {
                         sessionChannel.send(
-                            Response().withResponseCode(Result.PERMISSION_DENIED)
+                            request.permissionDenied(permission)
                         )
                         continue
                     }
                     withContext(Dispatchers.IO) {
                         launch {
+                            var skipped = false
                             val response: Response? = try {
                                 handler.handle(request, sessionContext)
+                            } catch (e: SkippedException) {
+                                skipped = true
+                                null
                             } catch (t: Throwable) {
                                 t.printStackTrace()
-                                Response().withResponseCode(Result.FAIL).withContentPair("error", t.toString())
-                            } ?: run {
-                                logger.info("Session terminated.")
-                                sessionChannel.send(
-                                    Response().withResponseCode(Result.DISCONNECT)
-                                )
-                                requestSessionTermination()
-                                null
+                                request.fail(FailureReasons.SERVER_INTERNAL_ERROR)
+                                    .withContentPair("error", t.toString())
                             }
-                            if (response != null) {
-                                sessionChannel.send(response)
+                            if (response == null) {
+                                if (skipped) {
+                                    return@launch
+                                } else {
+                                    logger.info("Session terminated.")
+                                    sessionChannel.send(
+                                        request.disconnect()
+                                    )
+                                    requestSessionTermination()
+                                    return@launch
+                                }
                             }
+                            sessionChannel.send(response)
                         }
                     }
                     if (session.socket.isClosed) {
@@ -117,9 +128,7 @@ class SessionServer(private val session: Session, private var permissions: List<
                     logger.warn(e.toString())
                     break
                 } catch (e: RateExceedException) {
-                    sessionChannel.send(
-                        Response().withResponseCode(Result.RATE_LIMIT_EXCEEDED)
-                    )
+                    sessionChannel.send(Response.rateExceeded())
                     logger.warn("Rate limit exceeded.")
                     break
                 } catch (e: Exception) {
@@ -141,13 +150,9 @@ class SessionServer(private val session: Session, private var permissions: List<
         }
     }
 
-    fun sendCompletionResult(result: List<String>, completionId: String) {
+    fun sendCompletionResult(result: List<String>, request: Request) {
         runBlocking {
-            sessionChannel.send(Response()
-                .withResponseCode(Result.CONTROLLER_CONSOLE_COMPLETION_RESULT)
-                .withContentPair("completionId", completionId)
-                .withContentPair("result", Util.toJson(result))
-            )
+            sessionChannel.send(request.success().withContentPair("result", result))
         }
     }
 

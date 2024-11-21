@@ -1,4 +1,4 @@
-package icu.takeneko.omms.central.network.session.request;
+package icu.takeneko.omms.central.network.session;
 
 public class RequestAlreadyExistsException extends RuntimeException {
     public RequestAlreadyExistsException(String message) {

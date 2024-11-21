@@ -6,7 +6,7 @@ import icu.takeneko.omms.central.network.session.EncryptedMessageChannel
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.request.LoginRequest
 import icu.takeneko.omms.central.network.session.response.Response
-import icu.takeneko.omms.central.network.session.response.Result
+import icu.takeneko.omms.central.network.session.response.Status
 import icu.takeneko.omms.central.util.Util
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -46,7 +46,7 @@ class LoginSession(
 
                 if (request.version != Constants.PROTOCOL_VERSION) {
                     channel.send(
-                        Response().withResponseCode(Result.VERSION_NOT_MATCH)
+                        Response().withResponseCode(Status.VERSION_NOT_MATCH)
                             .withContentPair("version", Constants.PROTOCOL_VERSION.toString())
                     )
                     return null
@@ -60,7 +60,7 @@ class LoginSession(
                         val randomKey = Util.generateRandomString(32)
                         channel.send(
                             Response()
-                                .withResponseCode(Result.OK)
+                                .withResponseCode(Status.OK)
                                 .withContentPair("key", randomKey)
                                 .withContentPair("serverName", config.serverName)
                         )
@@ -79,7 +79,7 @@ class LoginSession(
                         logger.warn("Permission name (hashed) $name not exist")
                         channel.send(
                             Response()
-                                .withResponseCode(Result.PERMISSION_DENIED)
+                                .withResponseCode(Status.PERMISSION_DENIED)
                                 .withContentPair("reason", "Permission name (hashed) $name not exist")
                         )
                         return null
@@ -87,7 +87,7 @@ class LoginSession(
                 } catch (e: Exception) {
                     channel.send(
                         Response()
-                            .withResponseCode(Result.PERMISSION_DENIED)
+                            .withResponseCode(Status.PERMISSION_DENIED)
                             .withContentPair("reason", e.toString())
                     )
 

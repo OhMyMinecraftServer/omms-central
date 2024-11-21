@@ -7,19 +7,18 @@ import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetC
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.SendBroadcastRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.controller.*
 import icu.takeneko.omms.central.network.session.handler.builtin.permission.*
-import icu.takeneko.omms.central.network.session.handler.builtin.system.GetAllRunnerRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.system.GetRunnerOutputRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.system.GetSysinfoRequestHandler
-import icu.takeneko.omms.central.network.session.handler.builtin.system.RunSystemCommandRequestHandler
 import icu.takeneko.omms.central.network.session.handler.builtin.whitelist.*
 import icu.takeneko.omms.central.plugin.callback.RequestManagerLoadCallback
 import icu.takeneko.omms.central.foundation.Manager
-import icu.takeneko.omms.central.util.StringPair
+import icu.takeneko.omms.central.network.session.RequestAlreadyExistsException
 import icu.takeneko.omms.central.network.session.handler.builtin.chatbridge.GetChatbridgeImplementationRequestHandler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
+
+private typealias StringPair = Pair<String, String>
 
 object RequestHandlerManager : Manager() {
     val logger: Logger = LoggerFactory.getLogger("RequestManager")
@@ -64,13 +63,13 @@ object RequestHandlerManager : Manager() {
             throw RequestAlreadyExistsException("Command $request already registered by ${requestTable[request]?.register}")
         }
         requestTable[request] = handler
-        pluginRequestTable.add(pairOf(pluginId, request))
+        pluginRequestTable.add(pluginId to request)
     }
 
     fun unRegisterPluginRequest(pluginId: String, request: String) {
         if (requestTable.containsKey(request)) {
             pluginRequestTable.forEach {
-                if (it.a() == pluginId && it.b() == request) {
+                if (it.first == pluginId && it.second == request) {
                     pluginRequestTable.remove(it)
                     requestTable.remove(request)
                     return
@@ -82,19 +81,14 @@ object RequestHandlerManager : Manager() {
     fun unRegisterPluginRequest(pluginId: String) {
         val deleted = mutableListOf<StringPair>()
         pluginRequestTable.forEach {
-            if (it.a() == pluginId) {
+            if (it.first == pluginId) {
                 deleted.add(it)
-                requestTable.remove(it.b())
+                requestTable.remove(it.second)
                 return@forEach
             }
         }
         pluginRequestTable.removeAll(deleted)
     }
-
-
-    private fun pairOf(a: String, b: String) = StringPair(a, b)
-
-
 }
 
 

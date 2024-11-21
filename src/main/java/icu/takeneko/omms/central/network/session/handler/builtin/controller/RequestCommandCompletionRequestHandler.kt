@@ -1,37 +1,34 @@
-package icu.takeneko.omms.central.network.session.handler.builtin.controller;
+package icu.takeneko.omms.central.network.session.handler.builtin.controller
 
-import icu.takeneko.omms.central.controller.console.ControllerConsole;
-import icu.takeneko.omms.central.network.session.SessionContext;
-import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
-import icu.takeneko.omms.central.network.session.request.Request;
-import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
-import icu.takeneko.omms.central.permission.Permission;
-import icu.takeneko.omms.central.util.Util;
-import org.jetbrains.annotations.Nullable;
+import icu.takeneko.omms.central.network.session.SessionContext
+import icu.takeneko.omms.central.network.session.SkippedException
+import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
+import icu.takeneko.omms.central.network.session.FailureReasons
+import icu.takeneko.omms.central.network.session.request.Request
+import icu.takeneko.omms.central.network.session.response.Response
+import icu.takeneko.omms.central.permission.Permission
 
-public class RequestCommandCompletionRequestHandler extends BuiltinRequestHandler {
-
-    @Override
-    public @Nullable Response handle(Request request, SessionContext session) {
-        String id = request.getContent("consoleId");
-        if (session.getControllerConsoleMap().containsKey(id)) {
-            ControllerConsole console = session.getControllerConsoleMap().get(id);
-            String line = request.getContent("input");
-            String completionId = Util.generateRandomString(8);
-            int cursorPosition = Integer.parseInt(request.getContent("cursor"));
-            console.complete(line, cursorPosition)
-                .thenAccept(it -> session.getServer().sendCompletionResult(it, completionId));
-            return new Response()
-                .withResponseCode(Result.CONTROLLER_CONSOLE_COMPLETION_SENT)
-                .withContentPair("completionId", completionId);
+class RequestCommandCompletionRequestHandler : BuiltinRequestHandler() {
+    override fun handle(request: Request, session: SessionContext): Response {
+        val id = request.getContent("consoleId")
+        if (session.controllerConsoleMap.containsKey(id)) {
+            val console = session.controllerConsoleMap[id]
+            val line = request.getContent("input")
+            val cursorPosition = request.getContent("cursor")!!.toInt()
+            console!!.complete(line, cursorPosition)
+                .thenAccept { it: List<String> ->
+                    session.server.sendCompletionResult(
+                        it,
+                        request
+                    )
+                }
+            throw SkippedException()
         } else {
-            return new Response().withResponseCode(Result.CONSOLE_NOT_EXIST);
+            return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
         }
     }
 
-    @Override
-    public @Nullable Permission requiresPermission() {
-        return null;
+    override fun requiresPermission(): Permission? {
+        return null
     }
 }

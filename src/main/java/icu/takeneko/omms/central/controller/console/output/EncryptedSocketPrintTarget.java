@@ -2,7 +2,7 @@ package icu.takeneko.omms.central.controller.console.output;
 
 import icu.takeneko.omms.central.controller.console.ControllerConsole;
 import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
+import icu.takeneko.omms.central.network.session.response.Status;
 import icu.takeneko.omms.central.network.session.server.SessionServer;
 import icu.takeneko.omms.central.util.Util;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
 
     @NotNull
     Response buildResponse(String content, String id) {
-        return new Response().withResponseCode(Result.CONTROLLER_LOG).withContentPair("consoleId", id).withContentPair("content", content);
+        return new Response().withResponseCode(Status.CONTROLLER_LOG).withContentPair("consoleId", id).withContentPair("content", content);
     }
 
     @Override

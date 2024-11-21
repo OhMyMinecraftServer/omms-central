@@ -2,9 +2,9 @@ package icu.takeneko.omms.central.network.session.handler.builtin.whitelist;
 
 import icu.takeneko.omms.central.network.session.SessionContext;
 import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler;
+import icu.takeneko.omms.central.network.session.FailureReasons;
 import icu.takeneko.omms.central.network.session.request.Request;
 import icu.takeneko.omms.central.network.session.response.Response;
-import icu.takeneko.omms.central.network.session.response.Result;
 import icu.takeneko.omms.central.permission.Permission;
 import icu.takeneko.omms.central.util.Util;
 import icu.takeneko.omms.central.whitelist.WhitelistManager;
@@ -18,10 +18,9 @@ public class GetWhitelistRequestHandler extends BuiltinRequestHandler {
     public Response handle(@NotNull Request request, SessionContext session) {
         var whitelist = request.getContent("whitelist");
         if (!WhitelistManager.INSTANCE.hasWhitelist(whitelist)) {
-            return new Response().withResponseCode(Result.WHITELIST_NOT_EXIST)
-                    .withContentPair("whitelist", whitelist);
+            return request.fail(FailureReasons.WHITELIST_NOT_FOUND);
         }
-        return new Response().withResponseCode(Result.WHITELIST_GOT)
+        return request.success()
                 .withContentPair("whitelist", whitelist)
                 .withContentPair(
                         "players",

@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.network.http.routes
 
-import icu.takeneko.omms.central.network.session.response.Result
+import icu.takeneko.omms.central.network.http.Status
 import icu.takeneko.omms.central.util.Util
 import icu.takeneko.omms.central.whitelist.WhitelistManager
 import icu.takeneko.omms.central.whitelist.WhitelistNotExistException
@@ -10,7 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.slf4j.LoggerFactory
 
-data class HttpResponse(val result: Result, val data: MutableList<String>)
+data class HttpResponse(val status: Status, val data: MutableList<String>)
 
 fun Route.whitelistQueryRouting() {
     val logger = LoggerFactory.getLogger("WhitelistQueryRouting")
@@ -34,13 +34,13 @@ fun Route.whitelistQueryRouting() {
             val content = WhitelistManager.getWhitelist(name)
             if (content == null) {
                 call.respondText(
-                    Util.toJson(HttpResponse(result = Result.WHITELIST_NOT_EXIST, mutableListOf())),
+                    Util.toJson(HttpResponse(status = Status.WHITELIST_NOT_EXIST, mutableListOf())),
                     status = HttpStatusCode.OK
                 )
                 return@get
             }
             call.respondText(
-                Util.toJson(HttpResponse(result = Result.OK, content.players.toMutableList())),
+                Util.toJson(HttpResponse(status = Status.OK, content.players.toMutableList())),
                 status = HttpStatusCode.OK
             )
         }
@@ -57,11 +57,11 @@ fun Route.whitelistQueryRouting() {
             try {
                 val result = WhitelistManager.queryWhitelist(name, playerName)
                 call.respondText(status = HttpStatusCode.OK) {
-                    "{\"result\":\"${if (result) Result.OK else Result.PLAYER_NOT_EXIST}\"}"
+                    "{\"result\":\"${if (result) Status.OK else Status.PLAYER_NOT_EXIST}\"}"
                 }
             } catch (e: WhitelistNotExistException) {
                 call.respondText(status = HttpStatusCode.OK) {
-                    "{\"result\":\"${Result.WHITELIST_NOT_EXIST}\"}"
+                    "{\"result\":\"${Status.WHITELIST_NOT_EXIST}\"}"
                 }
             }
 
