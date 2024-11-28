@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, ControllerConsole> {
     private final Logger logger = LoggerFactory.getLogger("EncryptedSocketPrintTarget");
@@ -25,7 +26,11 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
 
     @NotNull
     Response buildResponse(String content, String id) {
-        return new Response().withResponseCode(Status.CONTROLLER_LOG).withContentPair("consoleId", id).withContentPair("content", content);
+        String requestId = this.target.sessionContext.getControllerConsoleRequestIds().get(id);
+        return new Response(requestId, Status.SUCCESS, Map.of(
+            "content", content,
+            "marker_log",""
+        ));
     }
 
     @Override

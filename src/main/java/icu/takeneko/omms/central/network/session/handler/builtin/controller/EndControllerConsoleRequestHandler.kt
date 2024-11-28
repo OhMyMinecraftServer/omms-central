@@ -1,5 +1,6 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.controller
 
+import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.network.session.SessionContext
 import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
 import icu.takeneko.omms.central.network.session.request.Request
@@ -12,10 +13,13 @@ class EndControllerConsoleRequestHandler : BuiltinRequestHandler() {
         if (session.controllerConsoleMap.containsKey(id)) {
             val console = session.controllerConsoleMap[id]
             console!!.close()
-            session.controllerConsoleMap.remove(id)
-            return request.success().withContentPair("consoleId", id)
+            session.controllerConsoleMap -= id
+            session.controllerConsoleRequestIds -= id
+            return request.success()
+                .withContentPair("consoleId", id)
         } else {
-            return request.fail().withContentPair("consoleId", id)
+            return request.fail(FailureReasons.CONSOLE_NOT_FOUND)
+                .withContentPair("consoleId", id)
         }
     }
 

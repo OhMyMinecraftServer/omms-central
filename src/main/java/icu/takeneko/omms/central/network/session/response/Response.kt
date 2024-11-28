@@ -1,7 +1,6 @@
 package icu.takeneko.omms.central.network.session.response
 
 import icu.takeneko.omms.central.network.session.FailureReasons
-import icu.takeneko.omms.central.network.session.request.Request
 import icu.takeneko.omms.central.util.Util
 
 @kotlinx.serialization.Serializable
@@ -16,6 +15,17 @@ data class Response(
         content[a] = b
         return this
     }
+
+    fun withMark(m:String):Response{
+        content["marker_$m"] = ""
+        return this;
+    }
+
+    fun withFailureReason(b: String): Response {
+        content["reason"] = b
+        return this
+    }
+
 
     fun withContentPair(a: String, b: Any): Response  = withContentPair(a, Util.toJson(b))
 

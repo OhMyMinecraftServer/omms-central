@@ -3,6 +3,7 @@ package icu.takeneko.omms.central.network.session.server
 import icu.takeneko.omms.central.config.Config.config
 import icu.takeneko.omms.central.foundation.Constants
 import icu.takeneko.omms.central.network.session.EncryptedMessageChannel
+import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.request.LoginRequest
 import icu.takeneko.omms.central.network.session.response.Response
@@ -46,8 +47,9 @@ class LoginSession(
 
                 if (request.version != Constants.PROTOCOL_VERSION) {
                     channel.send(
-                        Response().withResponseCode(Status.VERSION_NOT_MATCH)
+                        Response("", Status.FAIL, mutableMapOf())
                             .withContentPair("version", Constants.PROTOCOL_VERSION.toString())
+                            .withFailureReason(FailureReasons.VERSION_NOT_MATCH)
                     )
                     return null
                 }
@@ -59,8 +61,7 @@ class LoginSession(
                     if (isCodeExist) {
                         val randomKey = Util.generateRandomString(32)
                         channel.send(
-                            Response()
-                                .withResponseCode(Status.OK)
+                            Response("", Status.SUCCESS, mutableMapOf())
                                 .withContentPair("key", randomKey)
                                 .withContentPair("serverName", config.serverName)
                         )
@@ -78,17 +79,15 @@ class LoginSession(
                     } else {
                         logger.warn("Permission name (hashed) $name not exist")
                         channel.send(
-                            Response()
-                                .withResponseCode(Status.PERMISSION_DENIED)
-                                .withContentPair("reason", "Permission name (hashed) $name not exist")
+                            Response("", Status.FAIL, mutableMapOf())
+                                .withFailureReason(FailureReasons.PERMISSION_DENIED)
                         )
                         return null
                     }
                 } catch (e: Exception) {
                     channel.send(
-                        Response()
-                            .withResponseCode(Status.PERMISSION_DENIED)
-                            .withContentPair("reason", e.toString())
+                        Response("", Status.FAIL, mutableMapOf())
+                            .withFailureReason(FailureReasons.SERVER_INTERNAL_ERROR)
                     )
 
                 }

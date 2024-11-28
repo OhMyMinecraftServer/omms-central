@@ -94,8 +94,6 @@ object RequestHandlerManager : Manager() {
 
 val builtinRequestMap = mutableMapOf(
     "PERMISSION_DELETE" to DeletePermissionRequestHandler(),
-    "SYSTEM_GET_ALL_RUNNER" to GetAllRunnerRequestHandler(),
-    "SYSTEM_RUN_COMMAND" to RunSystemCommandRequestHandler(),
     "CONTROLLER_CREATE" to CreateControllerRequestHandler(),
     "PERMISSION_GRANT" to GrantPermissionRequestHandler(),
     "WHITELIST_LIST" to ListWhitelistRequestHandler(),
@@ -106,11 +104,9 @@ val builtinRequestMap = mutableMapOf(
     "CONTROLLER_EXECUTE_COMMAND" to SendCommandToControllerRequestHandler(),
     "WHITELIST_DELETE" to DeleteWhitelistRequestHandler(),
     "PERMISSION_CREATE" to CreatePermissionRequestHandler(),
-    "SYSTEM_GET_RUNNER_OUTPUT" to GetRunnerOutputRequestHandler(),
     "CONTROLLER_LIST" to ListControllersRequestHandler(),
     "END" to EndRequestHandler(),
     "WHITELIST_CREATE" to CreateWhitelistRequestHandler(),
-    "CONTROLLER_GET" to GetControllerRequestHandler(),
     "WHITELIST_GET" to GetWhitelistRequestHandler(),
     "SYSTEM_GET_INFO" to GetSysinfoRequestHandler(),
     "PERMISSION_LIST" to ListPermissionRequestHandler(),

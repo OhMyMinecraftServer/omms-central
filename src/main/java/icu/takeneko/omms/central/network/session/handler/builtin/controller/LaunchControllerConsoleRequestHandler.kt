@@ -15,8 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.BiConsumer
 
 class LaunchControllerConsoleRequestHandler : BuiltinRequestHandler() {
-    override fun handle(request: Request, session: SessionContext): Response? {
+    override fun handle(request: Request, session: SessionContext): Response {
         val controllerName = request.getContent("controller")
+        if (session.controllerConsoleMap.any { it.value.controller.name == controllerName }) {
+            return request.fail(FailureReasons.CONSOLE_EXISTS)
+                .withContentPair("controller", controllerName)
+        }
         val controller = getControllerByName(controllerName)
             ?: return request.fail("controller.not_found")
                 .withContentPair("controllerId", controllerName)
@@ -27,21 +31,14 @@ class LaunchControllerConsoleRequestHandler : BuiltinRequestHandler() {
             }, EncryptedSocketPrintTarget(session.server), id)
         controllerConsoleImpl.start()
         session.controllerConsoleMap[id] = controllerConsoleImpl
-        val consoleAlreadyStarted = AtomicBoolean(false)
-        session.controllerConsoleMap.forEach((BiConsumer { s: String?, console: ControllerConsole ->
-            if (console.controller.name == controllerName) {
-                consoleAlreadyStarted.set(false)
-            }
-        }))
-        if (consoleAlreadyStarted.get()) {
-            return request.fail(FailureReasons.CONSOLE_EXISTS)
-                .withContentPair("controller", controllerName)
-        }
+        session.controllerConsoleRequestIds[id] = request.requestId
+
         return request.success().withContentPair("consoleId", id)
             .withContentPair("controller", controllerName)
+            .withMark("launched")
     }
 
-    override fun requiresPermission(): Permission? {
+    override fun requiresPermission(): Permission {
         return Permission.CONTROLLER_CONTROL
     }
 }

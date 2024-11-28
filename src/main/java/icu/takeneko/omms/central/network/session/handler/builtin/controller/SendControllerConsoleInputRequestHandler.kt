@@ -18,7 +18,7 @@ class SendControllerConsoleInputRequestHandler : BuiltinRequestHandler() {
             inputSource.put(line)
             return request.success()
         } else {
-            return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
+            return request.fail(FailureReasons.CONSOLE_NOT_FOUND)
         }
     }
 
