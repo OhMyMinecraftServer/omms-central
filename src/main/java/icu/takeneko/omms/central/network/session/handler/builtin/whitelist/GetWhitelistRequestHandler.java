@@ -21,13 +21,13 @@ public class GetWhitelistRequestHandler extends BuiltinRequestHandler {
             return request.fail(FailureReasons.WHITELIST_NOT_FOUND);
         }
         return request.success()
-                .withContentPair("whitelist", whitelist)
-                .withContentPair(
-                        "players",
-                        Util.gson.toJson(
-                                Objects.requireNonNull(WhitelistManager.INSTANCE.getWhitelist(whitelist)).getPlayers()
-                        )
-                );
+            .withContentPair("whitelist", whitelist)
+            .withContentPair(
+                "players",
+                Util.gson.toJson(
+                    Objects.requireNonNull(WhitelistManager.INSTANCE.getWhitelist(whitelist)).getPlayers()
+                )
+            );
     }
 
     @Override

@@ -1,7 +1,7 @@
 package icu.takeneko.omms.central.network.session.handler.builtin.controller
 
 import icu.takeneko.omms.central.network.session.SessionContext
-import icu.takeneko.omms.central.network.session.SkippedException
+import icu.takeneko.omms.central.network.session.ContinueException
 import icu.takeneko.omms.central.network.session.handler.builtin.BuiltinRequestHandler
 import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.network.session.request.Request
@@ -22,7 +22,7 @@ class RequestCommandCompletionRequestHandler : BuiltinRequestHandler() {
                         request
                     )
                 }
-            throw SkippedException()
+            throw ContinueException()
         } else {
             return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
         }

@@ -1,8 +1,5 @@
 package icu.takeneko.omms.central.network.session;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 public class FailureReasons {
     public static final String CONTROLLER_NOT_FOUND = "controller.not_found";
     public static final String CONTROLLER_UNAUTHORISED = "controller.unauthorised";

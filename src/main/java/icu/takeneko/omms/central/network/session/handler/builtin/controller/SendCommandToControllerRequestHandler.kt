@@ -33,7 +33,8 @@ class SendCommandToControllerRequestHandler : BuiltinRequestHandler() {
                     .withContentPair("errorDetail", result.exceptionDetail)
             }
         } catch (e: RequestUnauthorisedException) {
-            return request.fail(FailureReasons.CONTROLLER_UNAUTHORISED).withContentPair("controllerId", name)
+            return request.fail(FailureReasons.CONTROLLER_UNAUTHORISED)
+                .withContentPair("controllerId", name)
         }
     }
 

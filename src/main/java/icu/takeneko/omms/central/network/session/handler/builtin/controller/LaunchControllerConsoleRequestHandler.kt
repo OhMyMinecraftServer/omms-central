@@ -22,18 +22,21 @@ class LaunchControllerConsoleRequestHandler : BuiltinRequestHandler() {
                 .withContentPair("controller", controllerName)
         }
         val controller = getControllerByName(controllerName)
-            ?: return request.fail("controller.not_found")
+            ?: return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
                 .withContentPair("controllerId", controllerName)
         val id = Util.generateRandomString(16)
         val controllerConsoleImpl =
-            controller.startControllerConsole({ console: ControllerConsole? ->
-                SessionInputSource(console)
-            }, EncryptedSocketPrintTarget(session.server), id)
+            controller.startControllerConsole(
+                SessionInputSource::create,
+                EncryptedSocketPrintTarget(session.server),
+                id
+            )
         controllerConsoleImpl.start()
         session.controllerConsoleMap[id] = controllerConsoleImpl
         session.controllerConsoleRequestIds[id] = request.requestId
 
-        return request.success().withContentPair("consoleId", id)
+        return request.success()
+            .withContentPair("consoleId", id)
             .withContentPair("controller", controllerName)
             .withMark("launched")
     }

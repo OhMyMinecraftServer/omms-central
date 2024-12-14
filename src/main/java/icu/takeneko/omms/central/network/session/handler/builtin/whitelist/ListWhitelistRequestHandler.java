@@ -14,7 +14,6 @@ public class ListWhitelistRequestHandler extends BuiltinRequestHandler {
 
     @Override
     public Response handle(Request request, SessionContext session) {
-
         Response response = request.success()
             .withContentPair(
                 "whitelists",

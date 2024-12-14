@@ -8,8 +8,12 @@ public class SessionInputSource extends InputSource {
 
     final Stack<String> cache = new Stack<>();
 
-    public SessionInputSource(ControllerConsole console) {
+    SessionInputSource(ControllerConsole console) {
         super(console);
+    }
+
+    public static SessionInputSource create(ControllerConsole console){
+        return new SessionInputSource(console);
     }
 
     @Override

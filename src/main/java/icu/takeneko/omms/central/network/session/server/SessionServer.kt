@@ -5,7 +5,7 @@ import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.session.RateExceedException
 import icu.takeneko.omms.central.network.session.Session
 import icu.takeneko.omms.central.network.session.SessionContext
-import icu.takeneko.omms.central.network.session.SkippedException
+import icu.takeneko.omms.central.network.session.ContinueException
 import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.network.session.request.Request
 import icu.takeneko.omms.central.network.session.request.RequestHandlerManager.getRequestHandler
@@ -47,7 +47,7 @@ class SessionServer(private val session: Session, private var permissions: List<
         runBlocking {
             sessionChannel.send(
                 Response("", Status.BROADCAST, mutableMapOf())
-                    .withContentPair("broadcast", Util.toJson(broadcast))
+                    .withContentPair("message", Util.toJson(broadcast))
             )
         }
     }
@@ -93,28 +93,22 @@ class SessionServer(private val session: Session, private var permissions: List<
                     }
                     withContext(Dispatchers.IO) {
                         launch {
-                            var skipped = false
                             val response: Response? = try {
                                 handler.handle(request, sessionContext)
-                            } catch (e: SkippedException) {
-                                skipped = true
-                                null
+                            } catch (e: ContinueException) {
+                                return@launch
                             } catch (t: Throwable) {
                                 t.printStackTrace()
                                 request.fail(FailureReasons.SERVER_INTERNAL_ERROR)
                                     .withContentPair("error", t.toString())
                             }
                             if (response == null) {
-                                if (skipped) {
-                                    return@launch
-                                } else {
-                                    logger.info("Session terminated.")
-                                    sessionChannel.send(
-                                        request.disconnect()
-                                    )
-                                    requestSessionTermination()
-                                    return@launch
-                                }
+                                logger.info("Session terminated.")
+                                sessionChannel.send(
+                                    request.disconnect()
+                                )
+                                requestSessionTermination()
+                                return@launch
                             }
                             sessionChannel.send(response)
                         }

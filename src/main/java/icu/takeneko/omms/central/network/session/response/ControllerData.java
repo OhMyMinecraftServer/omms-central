@@ -1,8 +1,10 @@
 package icu.takeneko.omms.central.network.session.response;
 
 import icu.takeneko.omms.central.controller.Controller;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class ControllerData {
     //{\"name\":\"creative\",\"executable\":\"python\",\"type\":\"fabric\",\"launchParams\":\"-m mcdreforged\",\"workingDir\":\"..\\\\creative\",\"httpQueryAddress\":\"127.0.0.1:50014\",\"statusQueryable\":true}
     private ControllerData() {
@@ -22,19 +24,4 @@ public class ControllerData {
         return data;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public boolean isStatusQueryable() {
-        return statusQueryable;
-    }
 }
