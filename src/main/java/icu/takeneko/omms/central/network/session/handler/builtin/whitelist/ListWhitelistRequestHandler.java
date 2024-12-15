@@ -20,7 +20,7 @@ public class ListWhitelistRequestHandler extends BuiltinRequestHandler {
                 WhitelistManager.INSTANCE.getWhitelistNames()
             );
         for (String name : WhitelistManager.INSTANCE.getWhitelistNames()) {
-            response.withContentPair(name, WhitelistManager.INSTANCE.getWhitelist(name));
+            response.withContentPair(name, WhitelistManager.INSTANCE.getWhitelist(name).getPlayers());
         }
         return response;
     }

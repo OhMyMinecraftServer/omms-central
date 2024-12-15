@@ -17,7 +17,7 @@ class ListControllersRequestHandler : BuiltinRequestHandler() {
             .withContentPair("names", json)
             .apply {
                 controllerNames.forEach {
-                    withContentPair("it",ControllerData.fromController(controllers[it]!!))
+                    withContentPair(it, ControllerData.fromController(controllers[it]!!))
                 }
             }
     }
