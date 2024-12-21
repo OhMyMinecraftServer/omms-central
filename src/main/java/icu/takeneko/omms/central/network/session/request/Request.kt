@@ -33,7 +33,7 @@ data class Request(
 
     fun fail(reason: String? = null): Response = Response(
         requestId,
-        Status.SUCCESS,
+        Status.FAIL,
         if (reason == null)
             mutableMapOf()
         else

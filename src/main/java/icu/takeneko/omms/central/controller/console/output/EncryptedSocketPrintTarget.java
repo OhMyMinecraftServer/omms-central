@@ -29,7 +29,8 @@ public class EncryptedSocketPrintTarget extends PrintTarget<SessionServer, Contr
         String requestId = this.target.sessionContext.getControllerConsoleRequestIds().get(id);
         return new Response(requestId, Status.SUCCESS, Map.of(
             "content", content,
-            "marker_log",""
+            "marker_log","",
+            "consoleId",id
         ));
     }
 

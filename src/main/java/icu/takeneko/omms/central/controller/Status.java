@@ -1,10 +1,18 @@
 package icu.takeneko.omms.central.controller;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class Status {
     boolean isAlive = false;
     boolean isQueryable = false;
@@ -21,56 +29,8 @@ public class Status {
         return isQueryable;
     }
 
-    public void setQueryable(boolean queryable) {
-        isQueryable = queryable;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
     public boolean isAlive() {
         return isAlive;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getPlayerCount() {
-        return playerCount;
-    }
-
-    public void setPlayerCount(int playerCount) {
-        this.playerCount = playerCount;
-    }
-
-    public int getMaxPlayerCount() {
-        return maxPlayerCount;
-    }
-
-    public void setMaxPlayerCount(int maxPlayerCount) {
-        this.maxPlayerCount = maxPlayerCount;
-    }
-
-    public List<String> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(List<String> players) {
-        this.players = players;
     }
 
     public Status(String type, int playerCount, int maxPlayerCount, List<String> players) {
@@ -78,18 +38,5 @@ public class Status {
         this.playerCount = playerCount;
         this.maxPlayerCount = maxPlayerCount;
         this.players = players;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Status{" +
-                "isAlive=" + isAlive +
-                ", isQueryable=" + isQueryable +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", playerCount=" + playerCount +
-                ", maxPlayerCount=" + maxPlayerCount +
-                ", players=" + players +
-                '}';
     }
 }
