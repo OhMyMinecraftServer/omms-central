@@ -23,7 +23,7 @@ class LaunchControllerConsoleRequestHandler : BuiltinRequestHandler() {
         }
         val controller = getControllerByName(controllerName)
             ?: return request.fail(FailureReasons.CONTROLLER_NOT_FOUND)
-                .withContentPair("controllerId", controllerName)
+                .withContentPair("controller", controllerName)
         val id = Util.generateRandomString(16)
         val controllerConsoleImpl =
             controller.startControllerConsole(

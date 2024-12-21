@@ -73,7 +73,6 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
                     HttpStatusCode.Unauthorized -> {
                         result.completeExceptionally(
                             RequestUnauthorisedException(
-                                "ControllerName",
                                 controllerImpl.name
                             )
                         )
@@ -111,7 +110,7 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
                     }
 
                     HttpStatusCode.Unauthorized -> {
-                        throw RequestUnauthorisedException("ControllerName", controllerImpl.name)
+                        throw RequestUnauthorisedException(controllerImpl.name)
                     }
 
                     else -> {
@@ -130,5 +129,5 @@ class ControllerHttpClient(private val controllerImpl: ControllerImpl) {
     }
 }
 
-class RequestUnauthorisedException(val key: String, controllerName: String) :
+class RequestUnauthorisedException(val controllerName: String) :
     java.lang.IllegalArgumentException("Request to controller $controllerName was refused.")
