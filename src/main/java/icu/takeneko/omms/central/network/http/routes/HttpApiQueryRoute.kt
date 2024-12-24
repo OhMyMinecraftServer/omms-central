@@ -7,6 +7,7 @@ import icu.takeneko.omms.central.controller.crashreport.ControllerCrashReportMan
 import icu.takeneko.omms.central.network.chatbridge.Broadcast
 import icu.takeneko.omms.central.network.chatbridge.send
 import icu.takeneko.omms.central.network.http.*
+import icu.takeneko.omms.central.network.session.FailureReasons
 import icu.takeneko.omms.central.system.info.SystemInfoUtil
 import icu.takeneko.omms.central.util.toStringMap
 import icu.takeneko.omms.central.whitelist.*
@@ -26,14 +27,15 @@ fun Route.httpApiQueryRouting() {
                 val request = call.receive<ControllerQueryData>()
                 try {
                     val result = ControllerManager.sendCommand(request.controllerId, request.command)
-                    return@post call.respond(HttpResponseData(
-                        content = result.result.joinToString("\n"),
-                        extra = buildMap {
-                            this["commandStatus"] = result.status.toString()
-                            this["controllerExceptionMessage"] = result.exceptionMessage
-                            this["controllerExceptionDetail"] = result.exceptionDetail
-                        }
-                    ))
+                    return@post call.respond(
+                        HttpResponseData(
+                            content = result.result.joinToString("\n"),
+                            extra = buildMap {
+                                this["commandStatus"] = result.status.toString()
+                                this["controllerExceptionMessage"] = result.exceptionMessage
+                                this["controllerExceptionDetail"] = result.exceptionDetail
+                            }
+                        ))
                 } catch (e: Exception) {
                     return@post call.respond(
                         HttpResponseData(
@@ -68,11 +70,12 @@ fun Route.httpApiQueryRouting() {
             route("crashReport") {
                 get("latest") {
                     val request = call.receive<ControllerQueryData>()
-                    val result = ControllerCrashReportManager.getLatest(request.controllerId) ?: return@get call.respond(
-                        HttpResponseData(
-                            content = ""
+                    val result =
+                        ControllerCrashReportManager.getLatest(request.controllerId) ?: return@get call.respond(
+                            HttpResponseData(
+                                content = ""
+                            )
                         )
-                    )
                     return@get call.respond(
                         HttpResponseData(
                             content = result.content.joinToString(separator = "\n")
@@ -88,84 +91,71 @@ fun Route.httpApiQueryRouting() {
                 if (request.whitelistName !in WhitelistManager.getWhitelistNames()) {
                     return@post call.respond(
                         status = HttpStatusCode.BadRequest,
-                        HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not found")
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = FailureReasons.WHITELIST_NOT_FOUND)
                     )
                 }
-                val resultMap = mapOf(
-                    "success" to mutableListOf<String>(),
-                    "failure" to mutableListOf<String>()
-                )
-                request.players.forEach {
-                    try {
-                        WhitelistManager.addToWhiteList(request.whitelistName, it, false)
-                        resultMap["success"]!! += it
-                    } catch (_: PlayerAlreadyExistsException) {
-                        resultMap["failure"]!! += it
-                    }
+                return@post try {
+                    WhitelistManager.addToWhiteList(request.whitelistName, request.playerName)
+                    WhitelistManager.flush(request.whitelistName)
+                    call.respond(status = HttpStatusCode.OK, HttpResponseData())
+                } catch (e: Exception) {
+                    call.respond(
+                        status = HttpStatusCode.Conflict,
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = FailureReasons.PLAYER_EXISTS)
+                    )
                 }
-                WhitelistManager.flush(request.whitelistName)
-                call.respond(HttpResponseData(
-                    extra = resultMap.mapValues { Json.encodeToString(it.value) }
-                ))
             }
             post("remove") {
-                //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()
                 if (request.whitelistName !in WhitelistManager.getWhitelistNames()) {
                     return@post call.respond(
                         status = HttpStatusCode.BadRequest,
-                        HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not found")
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = FailureReasons.WHITELIST_NOT_FOUND)
                     )
                 }
-                val resultMap = mapOf(
-                    "success" to mutableListOf<String>(),
-                    "failure" to mutableListOf<String>()
-                )
-                request.players.forEach {
-                    try {
-                        WhitelistManager.removeFromWhiteList(request.whitelistName, it)
-                        resultMap["success"]!! += it
-                    } catch (_: PlayerNotFoundException) {
-                        resultMap["failure"]!! += it
-                    }
+                return@post try {
+                    WhitelistManager.removeFromWhiteList(request.whitelistName, request.playerName)
+                    WhitelistManager.flush(request.whitelistName)
+                    call.respond(status = HttpStatusCode.OK, HttpResponseData())
+                } catch (e: Exception) {
+                    call.respond(
+                        status = HttpStatusCode.Conflict,
+                        HttpResponseData(RequestStatus.REFUSED, refuseReason = FailureReasons.PLAYER_NOT_FOUND)
+                    )
                 }
-                call.respond(HttpResponseData(
-                    extra = resultMap.mapValues { Json.encodeToString(it.value) }
-                ))
             }
             post("create") {
                 //whitelistName
                 val request = call.receive<WhitelistQueryData>()
-                try {
+                return@post try {
                     WhitelistManager.createWhitelist(request.whitelistName)
                     call.respond(HttpResponseData())
                 } catch (_: WhitelistAlreadyExistsException) {
-                    call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist exists"))
+                    call.respond(
+                        HttpResponseData(
+                            RequestStatus.REFUSED,
+                            refuseReason = FailureReasons.WHITELIST_EXISTS
+                        )
+                    )
                 }
             }
             delete("delete") {
                 //whitelistName;username
                 val request = call.receive<WhitelistQueryData>()
-                try {
+                return@delete try {
                     WhitelistManager.deleteWhiteList(request.whitelistName)
                     call.respond(HttpResponseData())
                 } catch (_: WhitelistNotExistException) {
-                    call.respond(HttpResponseData(RequestStatus.REFUSED, refuseReason = "whitelist not exist"))
+                    call.respond(
+                        HttpResponseData(
+                            RequestStatus.REFUSED,
+                            refuseReason = FailureReasons.WHITELIST_EXISTS
+                        )
+                    )
                 }
             }
-        }
-        route("/announcement") {
             get("list") {
-
-            }
-            get("content") {
-
-            }
-            post("create") {
-
-            }
-            delete("delete") {
-
+                return@get call.respond(status = HttpStatusCode.OK,WhitelistManager.getWhitelistNames().toList())
             }
         }
         route("/broadcast") {
@@ -197,7 +187,7 @@ fun Route.httpApiQueryRouting() {
                 HttpResponseData(content = sourceStack.feedbackLines.joinToString("\n"))
             )
         }
-        route("system"){
+        route("system") {
             get("brief") {
                 val si = SystemInfoUtil.getSystemInfo()
                 val status = SystemStatusInfo(

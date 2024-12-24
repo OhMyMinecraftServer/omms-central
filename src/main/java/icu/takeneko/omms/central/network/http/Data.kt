@@ -27,7 +27,7 @@ data class SystemStatusInfo(
 )
 
 @Serializable
-data class WhitelistQueryData(val whitelistName: String, val players: List<String>)
+data class WhitelistQueryData(val whitelistName: String, val playerName: String)
 
 @Serializable
 data class WhitelistQueryResult(val acceptedPlayers: List<String>, val refusedPlayers: List<String>)
