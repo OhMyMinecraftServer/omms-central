@@ -67,12 +67,12 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew --no-daemon shadowJar
+        run: ./gradlew --no-daemon createThinJar
       - name: Create Dev Build
         run: |
           mkdir omms-central
-          cp ./build/libs/*.jar ./omms-central
+          cp ./build/libs/*.jar ./omms-central-devbuilds
       - uses: actions/upload-artifact@v4
         with:
           name: omms-central-windows-dev
-          path: omms-central
+          path: omms-central-devbuilds

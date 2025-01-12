@@ -1,17 +1,15 @@
 package icu.takeneko.omms.central.script
 
-import cn.hutool.core.thread.ThreadFactoryBuilder
-import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.foundation.FeatureOption
 import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
+import io.netty.util.concurrent.DefaultThreadFactory
 import jep.Interpreter
 import jep.SharedInterpreter
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 object ScriptManager : Manager(), AutoCloseable {
 
@@ -20,7 +18,7 @@ object ScriptManager : Manager(), AutoCloseable {
     private var initialized = false
     private var scriptFileList = mutableListOf<Path>()
     private var executor = Executors.newSingleThreadExecutor(
-        ThreadFactoryBuilder().setNamePrefix("PythonExecutor-").build()
+        DefaultThreadFactory("PythonExecutor-", true)
     )
     private val scripts = mutableMapOf<Path, ScriptInstance>()
 
@@ -107,8 +105,6 @@ object ScriptManager : Manager(), AutoCloseable {
             if (!initialized) return@run
             interpreter.close()
         }
-        executor.shutdown()
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS)
     }
 }
 

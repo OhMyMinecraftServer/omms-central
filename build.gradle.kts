@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
@@ -112,10 +113,24 @@ var targetArch = when (val osArch = System.getProperty("os.arch")) {
 val versionSkiko = "0.7.9" // or any more recent version
 val target = "${targetOs}-${targetArch}"
 
-
 tasks {
     shadowJar {
         archiveClassifier.set("$target-full")
+    }
+
+    register<Copy>("unpackJar") {
+        from(zipTree(shadowJar.get().archiveFile))
+        into(layout.buildDirectory.dir("thinJar"))
+        exclude("androidx/**")
+        exclude("drawable/**")
+        exclude("libskiko*")
+    }
+
+    register<Zip>("createThinJar") {
+        dependsOn("unpackJar")
+        from(layout.buildDirectory.dir("thinJar"))
+        archiveFileName.set("${rootProject.name}-$version-thin.jar")
+        destinationDirectory.set(file("build/libs"))
     }
 }
 
@@ -155,7 +170,6 @@ dependencies {
     api("io.ktor:ktor-client-auth-jvm:2.1.2")
     api("io.ktor:ktor-client-auth:2.1.2")
     api("commons-io:commons-io:2.11.0")
-    api("cn.hutool:hutool-all:5.8.11")
     api("io.ktor:ktor-http:2.2.3")
     api("io.ktor:ktor-client-serialization:2.2.3")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")

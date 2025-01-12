@@ -1,8 +1,8 @@
 package icu.takeneko.omms.central.identity
 
-import cn.hutool.crypto.SecureUtil
 import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
+import io.ktor.util.*
 import kotlin.io.path.*
 
 object IdentityProvider : Manager() {
@@ -42,7 +42,7 @@ object IdentityProvider : Manager() {
     }
 
     fun generateIdentityCode(identifier: SystemIdentifier): String =
-        SecureUtil.sha256("${identifier.serialNumber} ${identifier.hardwareUuid} $salt")
+        sha1("${identifier.serialNumber} ${identifier.hardwareUuid} $salt".encodeToByteArray()).encodeBase64()
 
 
     data class IdentityStorage(val salt: String, val banned: MutableMap<String, SystemIdentifier>)
