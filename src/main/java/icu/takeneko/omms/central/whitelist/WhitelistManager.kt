@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException
 import icu.takeneko.omms.central.plugin.callback.WhitelistLoadCallback
 import icu.takeneko.omms.central.foundation.Manager
 import icu.takeneko.omms.central.util.Util
+import icu.takeneko.omms.central.util.plusAssign
 import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelist
 import icu.takeneko.omms.central.whitelist.builtin.BuiltinWhitelistData
 import icu.takeneko.omms.central.whitelist.builtin.WhitelistAlias
@@ -23,7 +24,6 @@ import kotlin.io.path.inputStream
 object WhitelistManager : Manager() {
 
     private val whitelistMap = HashMap<String, Whitelist>()
-    private val gson = GsonBuilder().serializeNulls().create()
     private val logger = LoggerFactory.getLogger("WhitelistManager")
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -49,7 +49,7 @@ object WhitelistManager : Manager() {
                 if (whitelistMap.containsKey(instance.name)) {
                     throw RuntimeException("Duplicated whitelist name(${instance.name}).")
                 }
-                whitelistMap[instance.name] = BuiltinWhitelist(data = instance)
+                whitelistMap += BuiltinWhitelist(data = instance)
             } catch (e: JsonParseException) {
                 throw e
             } catch (e: Exception) {

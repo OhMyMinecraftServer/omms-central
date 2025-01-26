@@ -1,8 +1,10 @@
 package icu.takeneko.omms.central.whitelist;
 
+import icu.takeneko.omms.central.foundation.IdHolder;
+
 import java.util.List;
 
-public interface Whitelist {
+public interface Whitelist extends IdHolder {
     String getName();
 
     void init();
@@ -19,4 +21,8 @@ public interface Whitelist {
 
     void deleteWhitelist();
 
+    @Override
+    default String getId() {
+        return getName();
+    }
 }

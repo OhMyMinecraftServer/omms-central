@@ -4,6 +4,7 @@ import icu.takeneko.omms.central.controller.Controller
 import icu.takeneko.omms.central.controller.ControllerImpl
 import icu.takeneko.omms.central.controller.Status
 import icu.takeneko.omms.central.foundation.Constants
+import icu.takeneko.omms.central.foundation.IdHolder
 import icu.takeneko.omms.central.whitelist.Whitelist
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -74,5 +75,15 @@ fun Status.toStringMap(): Map<String, String> {
         this["playerCount"] = playerCount.toString()
         this["maxPlayerCount"] = maxPlayerCount.toString()
         this["players"] = Json.encodeToString<List<String>>(players)
+    }
+}
+
+operator fun <V : IdHolder> MutableMap<String, V>.plusAssign(rhs: V) {
+    this.put(rhs.id, rhs)
+}
+
+operator fun <V : IdHolder> MutableMap<String, V>.plusAssign(rhs: Collection<V>) {
+    rhs.forEach {
+        this.put(it.id, it)
     }
 }

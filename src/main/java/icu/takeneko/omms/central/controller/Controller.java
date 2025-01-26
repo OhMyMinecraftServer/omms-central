@@ -4,8 +4,9 @@ import icu.takeneko.omms.central.controller.console.ControllerConsole;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.crashreport.CrashReportStorage;
+import icu.takeneko.omms.central.foundation.IdHolder;
 
-abstract public class Controller {
+abstract public class Controller implements IdHolder {
     public abstract boolean isStatusQueryable();
 
     public abstract CommandExecutionResult sendCommand(String command) throws Exception;
@@ -27,4 +28,9 @@ abstract public class Controller {
     }
 
     public abstract String getType();
+
+    @Override
+    public String getId() {
+        return getName();
+    }
 }

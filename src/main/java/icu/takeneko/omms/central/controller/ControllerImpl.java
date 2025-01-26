@@ -6,12 +6,15 @@ import icu.takeneko.omms.central.controller.console.ControllerConsoleImpl;
 import icu.takeneko.omms.central.controller.console.input.InputSource;
 import icu.takeneko.omms.central.controller.console.output.PrintTarget;
 import icu.takeneko.omms.central.controller.crashreport.CrashReportStorage;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+@AllArgsConstructor
 public class ControllerImpl extends Controller {
     @Getter
     protected String name;
@@ -22,9 +25,6 @@ public class ControllerImpl extends Controller {
     protected String httpQueryAddress;
     @Getter
     protected boolean statusQueryable;
-    protected String mcdrCommandPrefix = "!!";
-
-    @Expose(serialize = false, deserialize = false)
     private ControllerHttpClient controllerHttpClient;
 
     @Override
@@ -49,33 +49,13 @@ public class ControllerImpl extends Controller {
         return new CrashReportStorage(this.name, System.currentTimeMillis(), Arrays.stream(raw.split("\n")).toList());
     }
 
-    public ControllerImpl() {
-    }
-
-    public void fixFields() {
-        this.controllerHttpClient = new ControllerHttpClient(this);
-        if (this.mcdrCommandPrefix == null) {
-            this.mcdrCommandPrefix = "!!";
-        }
-    }
-
-    public ControllerImpl(String name, String type) {
+    public ControllerImpl(String name, String displayName, String type, String httpQueryAddress, boolean statusQueryable) {
         this.name = name;
+        this.displayName = displayName;
         this.type = type;
-        this.controllerHttpClient = new ControllerHttpClient(this);
-    }
-
-    @Override
-    public String toString() {
-        return "ControllerImpl{" +
-                "name='" + name + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", type='" + type + '\'' +
-                ", httpQueryAddress='" + httpQueryAddress + '\'' +
-                ", statusQueryable=" + statusQueryable +
-                ", mcdrCommandPrefix='" + mcdrCommandPrefix + '\'' +
-                ", controllerHttpClient=" + controllerHttpClient +
-                '}';
+        this.httpQueryAddress = httpQueryAddress;
+        this.statusQueryable = statusQueryable;
+        controllerHttpClient = new ControllerHttpClient(this);
     }
 
     @Override
