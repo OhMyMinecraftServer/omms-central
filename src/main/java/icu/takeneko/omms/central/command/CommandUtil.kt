@@ -5,34 +5,20 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.omms.central.command.arguments.WhitelistArgumentType
 import icu.takeneko.omms.central.whitelist.Whitelist
+import kotlin.reflect.KProperty
+import com.mojang.brigadier.context.CommandContext as MojCommandCtx
 
 typealias S = CommandSourceStack
-
-fun CommandContext<S>.sendFeedback(component: String) {
-    this.source.sendFeedback(component)
-}
-
-fun CommandContext<S>.sendFeedback(format: String, vararg obj: Any) {
-    this.source.sendFeedback(String.format(format, *obj))
-}
-
-fun CommandContext<S>.sendError(format: String, vararg obj: Any) {
-    this.source.sendError(String.format(format, *obj))
-}
-
-fun CommandContext<S>.sendError(component: String) {
-    this.source.sendError(component)
-}
-
-fun CommandContext<S>.getStringArgument(name: String): String = StringArgumentType.getString(this, name)
-fun CommandContext<S>.getIntegerArgument(name: String) = IntegerArgumentType.getInteger(this, name)
 
 
 class LiteralCommand(root: String) {
     val node: LiteralArgumentBuilder<S> = LiteralArgumentBuilder.literal(root)
+
+    operator fun String.invoke(function: LiteralCommand.() -> Unit) {
+        this@LiteralCommand.node.then(LiteralCommand(this).apply(function).node)
+    }
 }
 
 class ArgumentCommand<T>(name: String, argumentType: ArgumentType<T>) {
@@ -65,7 +51,7 @@ fun <T> ArgumentCommand<T>.requires(predicate: (S) -> Boolean, function: Argumen
 
 fun LiteralCommand.execute(function: CommandContext<S>.() -> Int) {
     this.node.executes {
-        function(it)
+        CommandContext(it).function()
     }
 }
 
@@ -85,7 +71,7 @@ fun <T> ArgumentCommand<T>.literal(literal: String, function: LiteralCommand.() 
 
 fun <T> ArgumentCommand<T>.execute(function: CommandContext<S>.() -> Int) {
     this.node.executes {
-        function(it)
+        CommandContext(it).function()
     }
 }
 
@@ -164,5 +150,46 @@ fun LiteralCommand.greedyStringArgument(
 ) {
     this.node.then(ArgumentCommand(name, StringArgumentType.greedyString()).apply(function).node)
 }
+
+class CommandContext<S>(
+    val delegate: MojCommandCtx<S>
+) {
+    inline operator fun <reified T> getValue(thisRef: Any?, prop: KProperty<*>): T {
+        if (T::class.java == MojCommandCtx::class.java) {
+            return delegate as T
+        }
+        if (T::class.java == S::class.java){
+            return delegate.source as T
+        }
+        return delegate.getArgument<T>(prop.name, T::class.java)
+    }
+
+}
+
+fun CommandContext<S>.sendFeedback(component: String) {
+    val context: MojCommandCtx<S> by this
+    context.source.sendFeedback(component)
+}
+
+fun CommandContext<S>.sendFeedback(format: String, vararg obj: Any) {
+    val context: MojCommandCtx<S> by this
+    context.source.sendFeedback(String.format(format, *obj))
+}
+
+fun CommandContext<S>.sendError(format: String, vararg obj: Any) {
+    val context: MojCommandCtx<S> by this
+    context.source.sendError(String.format(format, *obj))
+}
+
+fun CommandContext<S>.sendError(component: String) {
+    val context: MojCommandCtx<S> by this
+    context.source.sendError(component)
+}
+
+fun CommandContext<S>.getStringArgument(name: String): String =
+    StringArgumentType.getString(this.delegate, name)
+
+fun CommandContext<S>.getIntegerArgument(name: String) =
+    IntegerArgumentType.getInteger(this.delegate, name)
 
 

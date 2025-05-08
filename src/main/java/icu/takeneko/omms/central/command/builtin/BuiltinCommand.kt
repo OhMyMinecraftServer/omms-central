@@ -2,14 +2,12 @@ package icu.takeneko.omms.central.command.builtin
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.context.CommandContext
 import icu.takeneko.omms.central.RunConfiguration
 import icu.takeneko.omms.central.SharedObjects
 import icu.takeneko.omms.central.command.*
 import icu.takeneko.omms.central.command.arguments.ControllerArgumentType
 import icu.takeneko.omms.central.command.arguments.PermissionCodeArgumentType
 import icu.takeneko.omms.central.command.arguments.PermissionNameArgumentType
-import icu.takeneko.omms.central.command.arguments.WhitelistArgumentType
 import icu.takeneko.omms.central.config.Config
 import icu.takeneko.omms.central.console.printControllerStatus
 import icu.takeneko.omms.central.controller.Controller
@@ -30,9 +28,7 @@ import icu.takeneko.omms.central.util.Util
 import icu.takeneko.omms.central.util.controllerPrettyPrinting
 import icu.takeneko.omms.central.util.printRuntimeEnv
 import icu.takeneko.omms.central.util.whitelistPrettyPrinting
-import icu.takeneko.omms.central.whitelist.PlayerAlreadyExistsException
-import icu.takeneko.omms.central.whitelist.PlayerNotFoundException
-import icu.takeneko.omms.central.whitelist.WhitelistManager
+import icu.takeneko.omms.central.whitelist.*
 import icu.takeneko.omms.central.whitelist.WhitelistManager.addToWhiteList
 import icu.takeneko.omms.central.whitelist.WhitelistManager.createWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistManager.deleteWhiteList
@@ -40,7 +36,6 @@ import icu.takeneko.omms.central.whitelist.WhitelistManager.getWhitelistNames
 import icu.takeneko.omms.central.whitelist.WhitelistManager.hasWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistManager.queryInAllWhitelist
 import icu.takeneko.omms.central.whitelist.WhitelistManager.searchInWhitelist
-import icu.takeneko.omms.central.whitelist.WhitelistNotExistException
 import org.jline.reader.impl.history.DefaultHistory
 import org.slf4j.LoggerFactory
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
@@ -54,9 +49,9 @@ val whitelistCommand = LiteralCommand("whitelist") {
     literal("get") {
         whitelistArgument("whitelist") {
             execute {
-                val w = WhitelistArgumentType.getWhitelist(this, "whitelist")
-                sendFeedback("Whitelist ${w.name}")
-                w.players.forEach {
+                val whitelist: Whitelist by this
+                sendFeedback("Whitelist ${whitelist.name}")
+                whitelist.players.forEach {
                     sendFeedback("\t- $it")
                 }
                 1
@@ -73,7 +68,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
     literal("query") {
         wordArgument("player") {
             execute {
-                val player = getStringArgument("player")
+                val player: String by this
                 val names = queryInAllWhitelist(player)
                 if (names.isEmpty()) {
                     sendFeedback("Player $player does not exist in any whitelists.")
@@ -89,8 +84,8 @@ val whitelistCommand = LiteralCommand("whitelist") {
         whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = WhitelistArgumentType.getWhitelist(this, "whitelist")
-                    val player = getStringArgument("player")
+                    val whitelist: Whitelist by this
+                    val player: String by this
                     try {
                         addToWhiteList(whitelist.name, player)
                         sendFeedback("Successfully added $player to ${whitelist.name}")
@@ -107,8 +102,8 @@ val whitelistCommand = LiteralCommand("whitelist") {
         whitelistArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = WhitelistArgumentType.getWhitelist(this, "whitelist")
-                    val player = getStringArgument("player")
+                    val whitelist: Whitelist by this
+                    val player: String by this
                     try {
                         WhitelistManager.removeFromWhiteList(whitelist.name, player)
                         sendFeedback("Successfully removed $player from $whitelist")
@@ -125,13 +120,14 @@ val whitelistCommand = LiteralCommand("whitelist") {
         wordArgument("whitelist") {
             wordArgument("player") {
                 execute {
-                    val whitelist = getStringArgument("whitelist")
-                    val player = getStringArgument("player")
+                    val whitelist: String by this
+                    val player: String by this
                     if (whitelist == "all") {
                         getWhitelistNames().forEach {
                             searchWhitelist(
                                 player,
-                                it, this
+                                it,
+                                this
                             )
                         }
                         return@execute 0
@@ -160,7 +156,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
     literal("create") {
         wordArgument("name") {
             execute {
-                val name = getStringArgument("name")
+                val name: String by this
                 if (hasWhitelist(name)) {
                     sendError("Whitelist %s already exists", name)
                     return@execute 1
@@ -178,7 +174,7 @@ val whitelistCommand = LiteralCommand("whitelist") {
     literal("delete") {
         wordArgument("name") {
             execute {
-                val name = getStringArgument("name")
+                val name: String by this
                 if (!hasWhitelist(name)) {
                     sendError("Whitelist $name not exist")
                     return@execute 1
@@ -249,7 +245,8 @@ val statusCommand = LiteralCommand("status") {
         val maxMemory = (heapMemoryUsage.max + nonHeapMemoryUsage.max) / 1024.0 / 1024.0
         val usedMemory = (heapMemoryUsage.used + nonHeapMemoryUsage.used) / 1024.0 / 1024.0
         sendFeedback(String.format("Memory usage: %.3fMiB/%.3fMiB", usedMemory, maxMemory))
-        Util.listAllByCommandSource(this.source)
+        val src: CommandSourceStack by this
+        Util.listAllByCommandSource(src)
         val threadGroup = Thread.currentThread().threadGroup
         val count = threadGroup.activeCount()
         val threads = arrayOfNulls<Thread>(count)
@@ -337,11 +334,12 @@ val permissionCommand = LiteralCommand("permission") {
                 StringArgumentType.word()
                 argument("permissions", PermissionNameArgumentType.permission()) {
                     execute {
-                        val c = getStringArgument("name")
+                        val name: String by this
+                        val permissions: List<Permission> by this
                         val change = PermissionChange(
                             Operation.GRANT,
-                            c,
-                            getArgument("permissions", List::class.java) as List<Permission>
+                            name,
+                            permissions
                         )
                         PermissionManager.submitPermissionChanges(change)
                         sendFeedback("Submitted permission change: $change")
@@ -352,11 +350,12 @@ val permissionCommand = LiteralCommand("permission") {
             literal("deny") {
                 argument("permissions", PermissionNameArgumentType.permission()) {
                     execute {
-                        val c = getStringArgument("name")
+                        val name: String by this
+                        val permissions: List<Permission> by this
                         val change = PermissionChange(
                             Operation.DENY,
-                            c,
-                            getArgument("permissions", List::class.java) as List<Permission>
+                            name,
+                            permissions
                         )
                         PermissionManager.submitPermissionChanges(change)
                         sendFeedback("Submitted permission change: $change")
@@ -380,7 +379,7 @@ val controllerCommand = LiteralCommand("controller") {
         argument("controller", ControllerArgumentType.queryable()) {
             greedyStringArgument("command") {
                 execute {
-                    val controller = getArgument("controller", Controller::class.java)
+                    val controller: Controller by this
                     val command = getStringArgument("command")
                     val result = ControllerManager.sendCommand(controller, command)
                     result.result.forEach {
@@ -403,7 +402,7 @@ val controllerCommand = LiteralCommand("controller") {
     literal("console") {
         argument("controller", ControllerArgumentType.queryable()) {
             execute {
-                val controller = this.getArgument("controller", Controller::class.java)
+                val controller: Controller by this
                 val outputTarget = StdOutPrintTarget()
                 sendFeedback("Attaching console to controller, use \":q\" to exit console.")
                 SysOutOverSLF4J.stopSendingSystemOutAndErrToSLF4J()
@@ -428,10 +427,11 @@ val controllerCommand = LiteralCommand("controller") {
     literal("status") {
         argument("controller", ControllerArgumentType.queryable()) {
             execute {
-                val controller = this.getArgument("controller", Controller::class.java)
+                val controller: Controller by this
+                val src: CommandSourceStack by this
                 try {
                     val status = controller.queryControllerStatus()
-                    printControllerStatus(this.source, controller.name, status)
+                    printControllerStatus(src, controller.name, status)
                 } catch (e: Exception) {
                     sendError("Error occurred while querying controller status: $e")
                     logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")
@@ -442,9 +442,10 @@ val controllerCommand = LiteralCommand("controller") {
         literal("all") {
             execute {
                 ControllerManager.controllers.values.filter(Controller::isStatusQueryable).forEach {
+                    val src: CommandSourceStack by this
                     try {
                         val status = it.queryControllerStatus()
-                        printControllerStatus(this.source, it.name, status)
+                        printControllerStatus(src, it.name, status)
                     } catch (e: Exception) {
                         sendError("Error occurred while querying controller status: $e")
                         logger.debug("Error occurred while querying controller status: ${e.stackTraceToString()}")

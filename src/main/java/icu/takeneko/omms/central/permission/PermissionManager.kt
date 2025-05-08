@@ -1,6 +1,6 @@
 package icu.takeneko.omms.central.permission
 
-import com.mojang.brigadier.context.CommandContext
+import icu.takeneko.omms.central.command.CommandContext
 import icu.takeneko.omms.central.command.CommandSourceStack
 import icu.takeneko.omms.central.command.sendError
 import icu.takeneko.omms.central.command.sendFeedback
